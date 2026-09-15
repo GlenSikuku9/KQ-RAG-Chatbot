@@ -1,0 +1,23 @@
+# Python
+backend/venv/
+backend/.env
+backend/__pycache__/
+backend/**/__pycache__/
+backend/**/*.py[cod]
+backend/.pytest_cache/
+backend/.mypy_cache/
+
+# Local vector database / generated runtime data
+chroma_db/
+
+# Frontend dependencies and builds
+frontend/node_modules/
+frontend/dist/
+frontend/build/
+
+# Editors and OS files
+.vscode/
+.idea/
+*.swp
+Thumbs.db
+.DS_Store
