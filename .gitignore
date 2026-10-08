@@ -7,6 +7,9 @@ backend/**/*.py[cod]
 backend/.pytest_cache/
 backend/.mypy_cache/
 
+# Local service-account credentials
+/credentials/
+
 # Local vector database / generated runtime data
 chroma_db/
 

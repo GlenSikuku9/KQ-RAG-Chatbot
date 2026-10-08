@@ -154,11 +154,36 @@ Application settings are loaded from the local environment file. The copy comman
 | `APP_NAME`, `APP_VERSION`, `ENVIRONMENT`, `DEBUG` | Application identity and development settings |
 | `API_PREFIX` | API route prefix; defaults to `/api/v1` |
 | `CORS_ORIGINS` | Allowed browser origins; local ports 5173 and 3000 are configured by default |
-| `FIRESTORE_PROJECT_ID` | Firebase project ID used during Admin SDK initialization |
-| `FIREBASE_CREDENTIALS_PATH` | Optional path to Firebase service-account credentials |
+| `FIRESTORE_PROJECT_ID` | Firebase project ID, required for protected authentication endpoints |
+| `FIREBASE_CREDENTIALS_PATH` | Service-account JSON path; empty selects Application Default Credentials |
 | `RAW_DATA_DIR`, `PROCESSED_DATA_DIR` | Input documents and exported chunk locations |
 | `CHROMA_PERSIST_DIR` | Vector storage directory |
 | `RAG_CHUNK_SIZE`, `RAG_CHUNK_OVERLAP` | Character-based chunk size and overlap; defaults are 1000 and 150 |
 | `EMBEDDING_MODEL_NAME`, `DEFAULT_GENERATION_MODEL_ID` | Embedding and generation model selection |
 
 Relative filesystem settings are resolved from the backend directory. Model selection is not required for backend startup or document extraction.
+
+### Authentication configuration
+
+Email/Password and Google sign-in use Firebase ID tokens sent as `Authorization: Bearer <ID_TOKEN>`. Google sign-in requires an authorized application domain. Users default to `passenger`; `admin` access requires a trusted custom claim.
+
+Locally, store the service-account file at `credentials\firebase-admin.json` and set `FIREBASE_CREDENTIALS_PATH='../credentials/firebase-admin.json'`. Credentials and the backend environment file are Git-ignored, but may still sync through cloud storage. Deployments should use managed secrets or Application Default Credentials.
+
+| Endpoint | Access |
+|---|---|
+| `GET /api/v1/auth/me` | Authenticated passenger or administrator |
+| `GET /api/v1/auth/admin-check` | Administrator only |
+
+**Assign an administrator** from the backend directory:
+
+```powershell
+.\venv\Scripts\python.exe .\scripts\set_user_role.py --uid "<FIREBASE_USER_UID>" --role admin --project-id "<FIREBASE_PROJECT_ID>"
+```
+
+Use `--role passenger` to remove admin access. Changes revoke existing sessions and require a new sign-in; retry any reported partial failure.
+
+**Run authentication tests** from the same directory (mocked Firebase; no real users are modified):
+
+```powershell
+.\venv\Scripts\python.exe -m unittest discover -s tests -p "test_*.py" -v
+```
