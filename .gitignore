@@ -12,6 +12,8 @@ backend/.mypy_cache/
 
 # Local vector database / generated runtime data
 chroma_db/
+model_cache/
+backend/data/processed/kq_ingestion_report.json
 
 # docs
 docs/

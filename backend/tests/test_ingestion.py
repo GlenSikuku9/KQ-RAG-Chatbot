@@ -49,6 +49,15 @@ class IngestionTests(unittest.TestCase):
         def collection(name):
             result = Mock()
             result.document.side_effect = lambda identifier: reference(name, identifier)
+            def stream(**kwargs):
+                output = []
+                for key in sorted(self.stored):
+                    if key.startswith(name + "/"):
+                        item = snapshot(reference(name, key.split("/", 1)[1]), **kwargs)
+                        item.id = key.split("/", 1)[1]
+                        output.append(item)
+                return output
+            result.stream.side_effect = stream
             return result
 
         def snapshot(ref, transaction=None, **kwargs):
@@ -113,6 +122,17 @@ class IngestionTests(unittest.TestCase):
         self.assertIsInstance(raw["active"]["published_at"], datetime)
         self.assertEqual(record.last_attempt.status, "processed")
         self.assertEqual(self.store.read_active_chunks("policy.docx"), prepare_document(self.path, self.settings).chunks)
+
+    def test_index_snapshot_uses_only_active_versions_and_honors_removals(self):
+        self.publish()
+        initial = self.store.read_index_snapshot()
+        self.assertTrue(initial)
+        self.path.write_bytes(b"invalid")
+        with self.assertLogs(level="ERROR"):
+            self.publish()
+        self.assertEqual(self.store.read_index_snapshot(), initial)
+        remove_document("policy.docx", self.settings, self.store)
+        self.assertEqual(self.store.read_index_snapshot(), [])
 
     def test_repeated_identical_input_performs_no_writes_or_duplicate_records(self):
         first = self.publish()

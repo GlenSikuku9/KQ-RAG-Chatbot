@@ -65,6 +65,25 @@ class KnowledgeBaseStore:
             return self._read_active_chunks(record, transaction)
         return run_transaction(self.client, operation)
 
+    def read_index_snapshot(self) -> list[DocumentChunk]:
+        """Read all active manifests and their chunks from a single Firestore snapshot."""
+        def operation(transaction: Transaction) -> list[DocumentChunk]:
+            snapshots = self.client.collection("documents").stream(
+                transaction=transaction, timeout=FIRESTORE_READ_TIMEOUT,
+            )
+            chunks: list[DocumentChunk] = []
+            for snapshot in snapshots:
+                try:
+                    record = DocumentRecord.model_validate(snapshot.to_dict())
+                    if snapshot.id != encode_document_id(record.document_id):
+                        raise ValueError("Document manifest key mismatch.")
+                except ValueError as exc:
+                    logger.error("Invalid document manifest encountered while reading index snapshot.")
+                    raise HTTPException(500, "Stored document manifest is invalid.") from exc
+                chunks.extend(self._read_active_chunks(record, transaction))
+            return sorted(chunks, key=lambda chunk: chunk.chunk_id)
+        return run_transaction(self.client, operation)
+
     def _read_active_chunks(self, record: DocumentRecord, transaction: Transaction) -> list[DocumentChunk]:
         if record.active is None:
             return []
