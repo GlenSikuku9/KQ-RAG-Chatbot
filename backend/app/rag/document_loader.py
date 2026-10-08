@@ -48,8 +48,8 @@ def _extract_text(file_path: Path) -> str:
     return _extract_document(file_path).text
 
 
-def load_knowledge_base_documents(raw_data_dir: Path) -> list[KnowledgeBaseDocument]:
-    """Load DOCX review content; warned documents are withheld from chunking."""
+def discover_documents(raw_data_dir: Path) -> list[Path]:
+    """Discover input files without treating missing files as deletion requests."""
 
     if not raw_data_dir.is_dir():
         logger.error("Knowledge-base directory is unavailable.")
@@ -68,17 +68,30 @@ def load_knowledge_base_documents(raw_data_dir: Path) -> list[KnowledgeBaseDocum
         logger.error("No DOCX knowledge-base documents found.")
         raise FileNotFoundError(f"No supported knowledge-base files (.docx) were found in: {raw_data_dir}")
 
-    documents: list[KnowledgeBaseDocument] = []
-    for file_path in source_files:
-        result = _extract_document(file_path)
-        documents.append(
-            KnowledgeBaseDocument(
-                source=str(file_path.relative_to(raw_data_dir)),
-                file_type="docx",
-                category=_category_from_file_name(file_path),
-                text=result.text,
-                extraction_warnings=result.warnings,
-                blocks=result.blocks,
-            )
-        )
-    return documents
+    return source_files
+
+
+def source_path(file_path: Path, raw_data_dir: Path) -> str:
+    try:
+        relative = file_path.resolve().relative_to(raw_data_dir.resolve())
+    except ValueError as exc:
+        logger.error("Document path is outside the configured raw-data directory.")
+        raise ValueError("Document path must be inside the raw-data directory.") from exc
+    if not relative.parts or file_path.suffix.lower() not in SUPPORTED_EXTENSIONS or file_path.name.startswith("~$"):
+        logger.error("Invalid DOCX source path.")
+        raise ValueError("A DOCX source path, not a directory or lock file, is required.")
+    return str(relative)
+
+
+def load_knowledge_base_document(file_path: Path, raw_data_dir: Path) -> KnowledgeBaseDocument:
+    source = source_path(file_path, raw_data_dir)
+    result = _extract_document(file_path)
+    return KnowledgeBaseDocument(
+        source=source, file_type="docx", category=_category_from_file_name(file_path),
+        text=result.text, extraction_warnings=result.warnings, blocks=result.blocks,
+    )
+
+
+def load_knowledge_base_documents(raw_data_dir: Path) -> list[KnowledgeBaseDocument]:
+    """Load DOCX review content; warned documents are withheld from chunking."""
+    return [load_knowledge_base_document(path, raw_data_dir) for path in discover_documents(raw_data_dir)]

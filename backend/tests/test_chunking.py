@@ -298,7 +298,7 @@ class ChunkingTests(unittest.TestCase):
         output = self.root / "processed"
         settings = Settings(raw_data_dir=self.root, processed_data_dir=output)
         with patch.object(ingest_documents, "get_settings", return_value=settings):
-            ingest_documents.main()
+            self.assertEqual(ingest_documents.main([]), 0)
         report = json.loads((output / ingest_documents.OUTPUT_FILE_NAME).read_text(encoding="utf-8"))
         self.assertEqual(report["chunking_version"], CHUNKING_VERSION)
         self.assertEqual(report["review_required_count"], 0)

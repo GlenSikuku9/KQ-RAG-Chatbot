@@ -415,9 +415,11 @@ class ExtractionTests(unittest.TestCase):
         )
         settings = Settings(processed_data_dir=self.root)
         with patch.object(ingest_documents, "get_settings", return_value=settings):
-            with patch.object(ingest_documents, "load_knowledge_base_documents", return_value=[clean, flagged]):
+            with patch("app.rag.ingestion.discover_documents", return_value=[
+                settings.raw_data_dir / "clean.docx", settings.raw_data_dir / "flagged.docx",
+            ]), patch("app.rag.ingestion.load_knowledge_base_document", side_effect=[clean, flagged]):
                 with self.assertLogs("app.rag.chunking", level="WARNING"):
-                    ingest_documents.main()
+                    self.assertEqual(ingest_documents.main([]), 1)
         report = json.loads((self.root / ingest_documents.OUTPUT_FILE_NAME).read_text(encoding="utf-8"))
         self.assertEqual(report["review_required_count"], 1)
         self.assertEqual(report["documents"][1]["extraction_status"], "needs_review")
