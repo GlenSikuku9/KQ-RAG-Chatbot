@@ -53,11 +53,15 @@ The application is an informational customer-support system rather than a transa
 | Application database | Firestore | Users, conversations, messages, feedback, and administrative records |
 | Vector database | ChromaDB | Document embeddings and semantic retrieval |
 | RAG orchestration | LangChain | Retrieval, context preparation, and generation workflow |
-| Document processing | python-docx, pypdf | Word content, tables, and selectable-text PDF extraction |
+| Document processing | python-docx | Editable DOCX paragraphs and tables |
 | Embeddings | Multilingual embedding model | Semantic representations of documents and questions |
 | Answer generation | Generative AI APIs | Evidence-based responses and comparative model evaluation |
 
 Backend package versions are listed in [requirements.txt](backend/requirements.txt).
+
+The knowledge base accepts DOCX documents containing editable text and tables. Extraction preserves row/column positions, empty cells, standard merged cells, nested tables, and declared headers without guessing header meanings. Bullets and simple decimal/alphabetical lists retain their labels and nesting. Headers, footers, and notes are included as labelled supplementary content.
+
+Unsupported or ambiguous content produces review warnings. Flagged documents retain their extracted text in the ingestion report but are excluded from chatbot chunks until the extraction limitation or source issue is resolved and the document reprocessed. Empty, unreadable, and image-only documents fail explicitly; unsupported file formats are reported and skipped.
 
 ## System workflow
 

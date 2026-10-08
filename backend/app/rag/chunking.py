@@ -1,7 +1,11 @@
 import re
+import logging
 
 from app.models.document import KnowledgeBaseDocument
 from app.models.document_chunk import DocumentChunk
+
+
+logger = logging.getLogger(__name__)
 
 
 def _normalize_text(text: str) -> str:
@@ -73,9 +77,13 @@ def chunk_documents(
     all_chunks: list[DocumentChunk] = []
 
     for document in documents:
+        if document.extraction_warnings:
+            logger.warning("Withholding %s from chunking: extraction review required.", document.source)
+            continue
         clean_text = _normalize_text(document.text)
         if not clean_text:
-            continue
+            logger.error("Cannot chunk empty document %s.", document.source)
+            raise ValueError(f"Cannot chunk empty document: {document.source}")
 
         text_chunks = _split_with_overlap(clean_text, chunk_size, chunk_overlap)
 
