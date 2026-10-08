@@ -4,7 +4,7 @@ import unittest
 from unittest.mock import patch
 
 from app.models.document_chunk import DocumentChunk
-from app.rag.vector_index import VectorIndex
+from app.rag.vector_index import IndexStateError, VectorIndex
 
 
 class FakeEmbedder:
@@ -142,6 +142,43 @@ class VectorIndexTests(unittest.TestCase):
         with self.assertLogs(level="ERROR"):
             with self.assertRaises(ValueError):
                 self.index.sync([chunk()])
+
+    def test_candidates_expand_for_distinct_parents_without_reembedding_question(self):
+        parts = [f"bag segment {i} " for i in range(10)]
+        parent = chunk(text="".join(parts))
+        parents = [parent, chunk("two", "refund"), chunk("three", "refund"), chunk("four", "refund")]
+        with patch.object(self.embedder, "segments", side_effect=lambda text: parts if text == parent.text else [text]):
+            self.index.sync(parents)
+        collection = self.index.client.get_collection(self.index._manifest().collection)
+        query = collection.query
+        with patch.object(type(collection), "query", side_effect=query) as calls, \
+                patch.object(self.embedder, "embed_query", wraps=self.embedder.embed_query) as embed:
+            hits = self.index.search("baggage", 3)
+        self.assertEqual([call.kwargs["n_results"] for call in calls.call_args_list], [6, 12])
+        embed.assert_called_once_with("baggage")
+        self.assertEqual(len({hit.chunk.chunk_id for hit in hits}), 3)
+        self.assertEqual(hits[0].chunk, parent)
+        self.assertEqual([hit.score for hit in hits], sorted([hit.score for hit in hits], reverse=True))
+
+    def test_small_search_does_not_fetch_entire_index(self):
+        self.index.sync([chunk(str(i)) for i in range(12)])
+        collection = self.index.client.get_collection(self.index._manifest().collection)
+        with patch.object(type(collection), "query", wraps=collection.query) as query:
+            self.assertEqual(len(self.index.search("baggage", 2)), 2)
+        self.assertEqual(query.call_args.kwargs["n_results"], 4)
+
+    def test_corrupt_payload_nonfinite_score_or_missing_candidates_are_explicit_errors(self):
+        self.index.sync([chunk()])
+        collection = self.index.client.get_collection(self.index._manifest().collection)
+        for result in (
+            {"metadatas": [[{"payload": "{}"}]], "distances": [[0.1]]},
+            {"metadatas": [[{"payload": chunk().model_dump_json()}]], "distances": [[float("nan")]]},
+            {"metadatas": [[]], "distances": [[]]},
+            {"metadatas": None, "distances": None},
+        ):
+            with patch.object(type(collection), "query", return_value=result), self.assertLogs(level="ERROR"):
+                with self.assertRaises(IndexStateError):
+                    self.index.search("baggage", 1)
 
 
 if __name__ == "__main__":

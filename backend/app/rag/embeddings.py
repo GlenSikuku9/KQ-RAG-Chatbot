@@ -15,6 +15,14 @@ from app.models.document_chunk import DocumentChunk
 logger = logging.getLogger(__name__)
 
 
+class EmbeddingInputError(ValueError):
+    """Input cannot fit the model without losing information."""
+
+
+class EmbeddingConfigurationError(ValueError):
+    """Model configuration or output cannot be used for retrieval."""
+
+
 class Embedder(Protocol):
     @property
     def fingerprint(self) -> dict: ...
@@ -46,14 +54,18 @@ class E5Embedder:
             if self._model is None:
                 if not self.settings.embedding_model_name or not self.settings.embedding_model_revision:
                     logger.error("Embedding model name and immutable revision must be configured.")
-                    raise ValueError("Set EMBEDDING_MODEL_NAME and EMBEDDING_MODEL_REVISION before indexing.")
+                    raise EmbeddingConfigurationError("Set EMBEDDING_MODEL_NAME and EMBEDDING_MODEL_REVISION before indexing.")
                 if not re.fullmatch(r"[0-9a-f]{40}", self.settings.embedding_model_revision):
                     logger.error("Embedding revision must be a full immutable commit hash.")
-                    raise ValueError("EMBEDDING_MODEL_REVISION must be a 40-character commit hash.")
-                self._model = load_model(
-                    self.settings.embedding_model_name, self.settings.embedding_model_revision,
-                    str(self.settings.embedding_cache_dir),
-                )
+                    raise EmbeddingConfigurationError("EMBEDDING_MODEL_REVISION must be a 40-character commit hash.")
+                try:
+                    self._model = load_model(
+                        self.settings.embedding_model_name, self.settings.embedding_model_revision,
+                        str(self.settings.embedding_cache_dir),
+                    )
+                except ValueError as exc:
+                    logger.error("Configured embedding model could not be loaded.")
+                    raise EmbeddingConfigurationError("Invalid embedding model configuration.") from exc
             return self._model
 
     @property
@@ -107,15 +119,15 @@ class E5Embedder:
     def _validate(self, text: str, prefix: str, label: str) -> str:
         if not text.strip():
             logger.error("Cannot embed empty text: %s.", label)
-            raise ValueError("Embedding input must not be empty.")
+            raise EmbeddingInputError("Embedding input must not be empty.")
         model = self._get_model()
         value = prefix + text
         tokens = model.tokenizer(value, add_special_tokens=True, truncation=False)["input_ids"]
         limit = min(512, model.max_seq_length)
         if len(tokens) > limit:
             logger.error("Embedding input %s has %s tokens; limit is %s.", label, len(tokens), limit)
-            raise ValueError(
-                f"{label}: {len(tokens)} tokens exceeds {limit}; reduce/reprocess this chunk. No text was truncated."
+            raise EmbeddingInputError(
+                f"{label}: {len(tokens)} tokens exceeds {limit}; shorten/reprocess this input. No text was truncated."
             )
         return value
 
@@ -134,7 +146,7 @@ class E5Embedder:
                 or not np.isfinite(vectors).all()
                 or not np.allclose(np.linalg.norm(vectors, axis=1), 1.0, atol=1e-4)):
             logger.error("Embedding model returned invalid or unnormalized vectors.")
-            raise ValueError("Invalid embedding model output.")
+            raise EmbeddingConfigurationError("Invalid embedding model output.")
         return vectors.tolist()
 
     def embed_passages(self, chunks: list[DocumentChunk]) -> list[list[float]]:

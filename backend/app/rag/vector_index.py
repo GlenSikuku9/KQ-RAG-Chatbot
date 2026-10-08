@@ -8,7 +8,7 @@ from uuid import uuid4
 import chromadb
 from chromadb.config import Settings as ChromaSettings
 from filelock import FileLock
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from app.models.document_chunk import DocumentChunk
 from app.rag.embeddings import Embedder
@@ -18,9 +18,13 @@ from app.rag.ingestion import write_json_atomic
 logger = logging.getLogger(__name__)
 
 
+class IndexStateError(ValueError):
+    """Persistent index state is invalid or incompatible with the configured model."""
+
+
 class SearchHit(BaseModel):
     chunk: DocumentChunk
-    score: float
+    score: float = Field(allow_inf_nan=False)
 
 
 class IndexManifest(BaseModel):
@@ -60,9 +64,9 @@ class VectorIndex:
             if not manifest.collection.startswith("kq_generation_"):
                 raise ValueError("Invalid collection ownership.")
             return manifest
-        except ValueError:
+        except ValueError as exc:
             logger.error("Active vector-index manifest is invalid; restore it before indexing.")
-            raise
+            raise IndexStateError("Invalid vector-index manifest.") from exc
 
     def _compatible(self, manifest: IndexManifest) -> bool:
         return manifest.fingerprint == self.embedder.fingerprint
@@ -95,11 +99,11 @@ class VectorIndex:
             compatible = previous is not None and self._compatible(previous)
             if previous is not None and not compatible and not rebuild:
                 logger.error("Embedding configuration changed; an explicit rebuild is required.")
-                raise ValueError("Embedding configuration mismatch. Run index_documents.py --rebuild.")
+                raise IndexStateError("Embedding configuration mismatch. Run index_documents.py --rebuild.")
             old = self.client.get_collection(previous.collection, embedding_function=None) if previous else None
             if old is not None and old.count() != previous.count:
                 logger.error("Stored vector count does not match the published manifest.")
-                raise ValueError("Incomplete vector index; restore storage before proceeding.")
+                raise IndexStateError("Incomplete vector index; restore storage before proceeding.")
             if previous and compatible and previous.content_hash == digest and not rebuild:
                 if still_current is not None and not still_current():
                     logger.error("Published document snapshot changed during indexing.")
@@ -172,24 +176,35 @@ class VectorIndex:
                 raise FileNotFoundError("Build the vector index before searching.")
             if not self._compatible(manifest):
                 logger.error("Query embedding configuration does not match the stored index.")
-                raise ValueError("Embedding configuration mismatch; rebuild the index.")
+                raise IndexStateError("Embedding configuration mismatch; rebuild the index.")
             collection = self.client.get_collection(manifest.collection, embedding_function=None)
             if collection.count() != manifest.count:
                 logger.error("Active vector-index count mismatch.")
-                raise ValueError("Stored vector index is incomplete.")
+                raise IndexStateError("Stored vector index is incomplete.")
             if manifest.count == 0:
                 return []
             vector = self.embedder.embed_query(query)
-            results = collection.query(
-                query_embeddings=[vector], n_results=manifest.count, include=["metadatas", "distances"],
-            )
-            hits = []
-            seen: set[str] = set()
-            for metadata, distance in zip(results["metadatas"][0], results["distances"][0], strict=True):
-                chunk = DocumentChunk.model_validate_json(metadata["payload"])
-                if chunk.chunk_id not in seen:
-                    seen.add(chunk.chunk_id)
-                    hits.append(SearchHit(chunk=chunk, score=1.0 - distance))
-                    if len(hits) == limit:
-                        break
-            return hits
+            # Oversample progressively so multiple segments of one parent do not crowd out other chunks.
+            candidates = min(manifest.count, limit * 2)
+            while True:
+                results = collection.query(
+                    query_embeddings=[vector], n_results=candidates, include=["metadatas", "distances"],
+                )
+                hits: dict[str, SearchHit] = {}
+                try:
+                    metadatas = results["metadatas"][0]
+                    distances = results["distances"][0]
+                    if len(metadatas) != candidates or len(distances) != candidates:
+                        raise ValueError("Incomplete retrieval response.")
+                    for metadata, distance in zip(metadatas, distances, strict=True):
+                        chunk = DocumentChunk.model_validate_json(metadata["payload"])
+                        hit = SearchHit(chunk=chunk, score=1.0 - distance)
+                        if chunk.chunk_id not in hits or hit.score > hits[chunk.chunk_id].score:
+                            hits[chunk.chunk_id] = hit
+                except (ValueError, KeyError, TypeError, IndexError) as exc:
+                    logger.error("Invalid stored retrieval payload or score.")
+                    raise IndexStateError("Stored retrieval payload is invalid.") from exc
+                ranked = sorted(hits.values(), key=lambda hit: (-hit.score, hit.chunk.chunk_id))
+                if len(ranked) >= limit or candidates == manifest.count:
+                    return ranked[:limit]
+                candidates = min(manifest.count, candidates * 2)

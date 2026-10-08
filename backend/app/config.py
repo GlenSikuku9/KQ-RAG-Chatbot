@@ -49,6 +49,7 @@ class Settings(BaseModel):
     embedding_model_revision: str | None = None
     embedding_batch_size: int = Field(default=4, gt=0, le=64, strict=True)
     embedding_cache_dir: Path = BASE_DIR.parent / "model_cache"
+    retrieval_top_k: int = Field(default=5, ge=1, le=20, strict=True)
     default_generation_model_id: str | None = None
 
     @model_validator(mode="after")
@@ -114,5 +115,6 @@ def get_settings() -> Settings:
         embedding_model_revision=_get_optional("EMBEDDING_MODEL_REVISION"),
         embedding_batch_size=_get_int("EMBEDDING_BATCH_SIZE", 4),
         embedding_cache_dir=_get_path("EMBEDDING_CACHE_DIR", BASE_DIR.parent / "model_cache"),
+        retrieval_top_k=_get_int("RETRIEVAL_TOP_K", 5),
         default_generation_model_id=_get_optional("DEFAULT_GENERATION_MODEL_ID"),
     )
