@@ -9,7 +9,7 @@ BACKEND_DIR = Path(__file__).resolve().parents[1]
 sys.path.append(str(BACKEND_DIR))
 
 from app.config import get_settings
-from app.rag.chunking import chunk_documents
+from app.rag.chunking import CHUNKING_VERSION, chunk_documents
 from app.rag.document_loader import load_knowledge_base_documents
 
 
@@ -39,6 +39,7 @@ def main() -> None:
         "chunk_count": len(chunks),
         "chunk_size": settings.rag_chunk_size,
         "chunk_overlap": settings.rag_chunk_overlap,
+        "chunking_version": CHUNKING_VERSION,
         "review_required_count": sum(bool(document.extraction_warnings) for document in documents),
         "documents": [
             {

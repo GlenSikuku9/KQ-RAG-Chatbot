@@ -81,6 +81,7 @@ class DocxOnlyTests(unittest.TestCase):
             (KnowledgeBaseDocument, {"source": "source", "category": "policy", "text": "text"}),
             (DocumentChunk, {
                 "chunk_id": "source:0", "source": "source", "category": "policy",
+                "document_id": "source-id", "version": "sha256:content",
                 "chunk_index": 0, "text": "text",
             }),
         ):

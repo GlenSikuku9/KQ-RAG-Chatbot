@@ -1,13 +1,31 @@
 from functools import lru_cache
+import logging
 import os
 from pathlib import Path
+from typing import Self
 
 from dotenv import load_dotenv
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
 
 
 BASE_DIR = Path(__file__).resolve().parents[1]
 load_dotenv(BASE_DIR / ".env")
+logger = logging.getLogger(__name__)
+DEFAULT_CHUNK_SIZE = 1600
+DEFAULT_CHUNK_OVERLAP = 250
+
+
+def validate_chunk_settings(chunk_size: int, chunk_overlap: int) -> None:
+    if type(chunk_size) is not int or chunk_size <= 0:
+        message = "chunk_size must be a positive integer."
+    elif type(chunk_overlap) is not int or chunk_overlap < 0:
+        message = "chunk_overlap must be a non-negative integer."
+    elif chunk_overlap >= chunk_size:
+        message = "chunk_overlap must be smaller than chunk_size."
+    else:
+        return
+    logger.error(message)
+    raise ValueError(message)
 
 
 class Settings(BaseModel):
@@ -24,11 +42,16 @@ class Settings(BaseModel):
     raw_data_dir: Path = BASE_DIR / "data" / "raw"
     processed_data_dir: Path = BASE_DIR / "data" / "processed"
     chroma_persist_dir: Path = BASE_DIR.parent / "chroma_db"
-    rag_chunk_size: int = Field(default=1000)
-    rag_chunk_overlap: int = Field(default=150)
+    rag_chunk_size: int = Field(default=DEFAULT_CHUNK_SIZE, strict=True)
+    rag_chunk_overlap: int = Field(default=DEFAULT_CHUNK_OVERLAP, strict=True)
 
     embedding_model_name: str | None = None
     default_generation_model_id: str | None = None
+
+    @model_validator(mode="after")
+    def validate_chunking(self) -> Self:
+        validate_chunk_settings(self.rag_chunk_size, self.rag_chunk_overlap)
+        return self
 
 
 def _get_bool(name: str, default: bool) -> bool:
@@ -82,8 +105,8 @@ def get_settings() -> Settings:
         raw_data_dir=_get_path("RAW_DATA_DIR", BASE_DIR / "data" / "raw"),
         processed_data_dir=_get_path("PROCESSED_DATA_DIR", BASE_DIR / "data" / "processed"),
         chroma_persist_dir=_get_path("CHROMA_PERSIST_DIR", BASE_DIR.parent / "chroma_db"),
-        rag_chunk_size=_get_int("RAG_CHUNK_SIZE", 1000),
-        rag_chunk_overlap=_get_int("RAG_CHUNK_OVERLAP", 150),
+        rag_chunk_size=_get_int("RAG_CHUNK_SIZE", DEFAULT_CHUNK_SIZE),
+        rag_chunk_overlap=_get_int("RAG_CHUNK_OVERLAP", DEFAULT_CHUNK_OVERLAP),
         embedding_model_name=_get_optional("EMBEDDING_MODEL_NAME"),
         default_generation_model_id=_get_optional("DEFAULT_GENERATION_MODEL_ID"),
     )

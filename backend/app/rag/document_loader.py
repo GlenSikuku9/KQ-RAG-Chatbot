@@ -78,6 +78,7 @@ def load_knowledge_base_documents(raw_data_dir: Path) -> list[KnowledgeBaseDocum
                 category=_category_from_file_name(file_path),
                 text=result.text,
                 extraction_warnings=result.warnings,
+                blocks=result.blocks,
             )
         )
     return documents
