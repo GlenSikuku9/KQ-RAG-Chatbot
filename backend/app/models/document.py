@@ -5,6 +5,10 @@ from typing import Literal
 from pydantic import BaseModel, Field, computed_field
 
 
+def document_id_for_source(source: str) -> str:
+    return sha256(source.replace("\\", "/").encode("utf-8")).hexdigest()
+
+
 class TableRow(BaseModel):
     row_index: int = Field(ge=1)
     text: str
@@ -34,7 +38,7 @@ class KnowledgeBaseDocument(BaseModel):
     @property
     def document_id(self) -> str:
         """Stable identity for a source path, independent of its current contents."""
-        return sha256(self.source.replace("\\", "/").encode("utf-8")).hexdigest()
+        return document_id_for_source(self.source)
 
     @computed_field
     @property

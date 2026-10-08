@@ -61,9 +61,11 @@ Backend package versions are listed in [requirements.txt](backend/requirements.t
 
 The knowledge base accepts DOCX documents containing editable text and tables. Extraction preserves row/column positions, empty cells, standard merged cells, nested tables, and declared headers without guessing header meanings. Bullets and simple decimal/alphabetical lists retain their labels and nesting. Headers, footers, and notes are included as labelled supplementary content.
 
-Unsupported or ambiguous content produces review warnings. Flagged documents retain their extracted text in the ingestion report but are excluded from chatbot chunks until the extraction limitation or source issue is resolved and the document reprocessed. Empty, unreadable, and image-only documents fail explicitly; unsupported file formats are reported and skipped.
+Unsupported or ambiguous content produces review warnings. Flagged versions retain their extracted text in the offline report but cannot be published; an existing successful version stays active. Empty, unreadable, and image-only documents fail explicitly; unsupported file formats are reported and skipped.
 
 Chunking uses configurable character targets (`RAG_CHUNK_SIZE`, `RAG_CHUNK_OVERLAP`), not hard limits. Table rows stay intact with repeated declared headers or explicitly labelled opening-row context; merged/nested tables stay together. Chunks carry stable document IDs, content-fingerprint versions, source locations, and explicit headings where available; DOCX page numbers are not guessed.
+
+From the repository root, `.\backend\venv\Scripts\python.exe .\backend\scripts\ingest_documents.py` creates an offline review export. Add `--publish` to persist document records and chunks in Firestore, or `--remove "KQ Data\Example.docx"` to remove one stored source without deleting its file. Publication is idempotent and replaces old chunks atomically per document; missing files are never automatically deleted. Failed or review-required attempts return a nonzero exit code. Publishing again can restore a removed source still present in the input folder.
 
 ## System workflow
 

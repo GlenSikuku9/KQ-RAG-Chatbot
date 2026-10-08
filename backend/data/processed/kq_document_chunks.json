@@ -1,10 +1,13 @@
 {
+  "purpose": "offline_review_only",
   "document_count": 14,
+  "attempted_document_count": 14,
   "chunk_count": 188,
   "chunk_size": 1600,
   "chunk_overlap": 250,
   "chunking_version": "adaptive-rows-v1",
   "review_required_count": 0,
+  "failed_count": 0,
   "documents": [
     {
       "source": "KQ Data\\Baggage Allowance Information.docx",
@@ -11440,6 +11443,232 @@
       "document_id": "8c70a3ef59e12474c479c96d3250078f8da8441141765bbcaa4e81c4fd75e428",
       "version": "sha256:f19730d3779e5a5d23b6d7ec40f414f0cbacfafd5c52f7e84485bbcd18d723d9",
       "extraction_status": "extracted"
+    }
+  ],
+  "processing_results": [
+    {
+      "document_id": "53dfd4dbb829ce5842ff1fa8f29c76a5b62f01f74f97d08f1c2b552b4a17618b",
+      "source": "KQ Data\\Baggage Allowance Information.docx",
+      "status": "processed",
+      "version": "sha256:bf6e46412d55565ebd8b6f2e8491f149583d63a819a3e8b95b06f073e7b1e622",
+      "chunk_count": 28,
+      "chunking": {
+        "revision": "adaptive-rows-v1",
+        "size": 1600,
+        "overlap": 250
+      },
+      "completed_at": "2026-10-08T15:37:57.603988Z",
+      "warnings": [],
+      "error": null,
+      "persisted": false
+    },
+    {
+      "document_id": "297a9b7b16dd4647dd1eb88a86db35ced2a3d1447a15d9d2f8e5d1a98784e6af",
+      "source": "KQ Data\\Baggage Conditions Rules.docx",
+      "status": "processed",
+      "version": "sha256:6f0dec5fda6fbd2182b37aeaf8a94899657123af8d827d8b6ad78b4ff9c25b43",
+      "chunk_count": 8,
+      "chunking": {
+        "revision": "adaptive-rows-v1",
+        "size": 1600,
+        "overlap": 250
+      },
+      "completed_at": "2026-10-08T15:37:57.623271Z",
+      "warnings": [],
+      "error": null,
+      "persisted": false
+    },
+    {
+      "document_id": "4de2e412d5153dc64d73d063469bc8d48f29c648ffd26e44c9bb15934e051340",
+      "source": "KQ Data\\Baggage Restrictions.docx",
+      "status": "processed",
+      "version": "sha256:e6c7da68ea26282da14ba6ac0655a0615509497343596d751cf7100261c5f5da",
+      "chunk_count": 5,
+      "chunking": {
+        "revision": "adaptive-rows-v1",
+        "size": 1600,
+        "overlap": 250
+      },
+      "completed_at": "2026-10-08T15:37:57.650325Z",
+      "warnings": [],
+      "error": null,
+      "persisted": false
+    },
+    {
+      "document_id": "5c6a33f3edbc6615d71893ae25e2361a0496db205d123044bd771535c0e35fb4",
+      "source": "KQ Data\\Bookings and Self-Rebooking.docx",
+      "status": "processed",
+      "version": "sha256:d26ea3306091dd43cf4b3d6537c2c8ade2b1938d3e305619ab533ab2bc11c452",
+      "chunk_count": 5,
+      "chunking": {
+        "revision": "adaptive-rows-v1",
+        "size": 1600,
+        "overlap": 250
+      },
+      "completed_at": "2026-10-08T15:37:57.674537Z",
+      "warnings": [],
+      "error": null,
+      "persisted": false
+    },
+    {
+      "document_id": "e776fbf9b3ddeeee59736da652eb50ae0b1cca56035046e9084342a71a101a1b",
+      "source": "KQ Data\\Check-in.docx",
+      "status": "processed",
+      "version": "sha256:7a4b7027d533c936812ba523d2b09bba2d374b7a5351d35842a3117dbab1e284",
+      "chunk_count": 3,
+      "chunking": {
+        "revision": "adaptive-rows-v1",
+        "size": 1600,
+        "overlap": 250
+      },
+      "completed_at": "2026-10-08T15:37:57.687933Z",
+      "warnings": [],
+      "error": null,
+      "persisted": false
+    },
+    {
+      "document_id": "ace038e896a088b8b163f7f2ff133bd8e8eff09ed8cf434889a63f667f116a8f",
+      "source": "KQ Data\\Conditions of Carriage.docx",
+      "status": "processed",
+      "version": "sha256:6f8983774ebcf539cd54e8cf992798688de154a7d7376094ec583e03f500d81a",
+      "chunk_count": 49,
+      "chunking": {
+        "revision": "adaptive-rows-v1",
+        "size": 1600,
+        "overlap": 250
+      },
+      "completed_at": "2026-10-08T15:37:57.780804Z",
+      "warnings": [],
+      "error": null,
+      "persisted": false
+    },
+    {
+      "document_id": "d9291fc6a87a3d4d7631d680f249e8af4d54e609fe8bd60e80107a98d49d96cc",
+      "source": "KQ Data\\Contact.docx",
+      "status": "processed",
+      "version": "sha256:3d198523349b9c0e6e1504f28552c8cd01e3f0a61c3b9bf63791d1f9d9a189f0",
+      "chunk_count": 1,
+      "chunking": {
+        "revision": "adaptive-rows-v1",
+        "size": 1600,
+        "overlap": 250
+      },
+      "completed_at": "2026-10-08T15:37:57.792170Z",
+      "warnings": [],
+      "error": null,
+      "persisted": false
+    },
+    {
+      "document_id": "b469b537f8db95b4d7579cc8530cf7fdf90a654e7788d71a116d23725e9fea91",
+      "source": "KQ Data\\Delayed or Lost or Damaged Baggage.docx",
+      "status": "processed",
+      "version": "sha256:44da4f8275da4eb0035c11680f30f20a36cbd6d8a5468ea213869092f38a8ebc",
+      "chunk_count": 4,
+      "chunking": {
+        "revision": "adaptive-rows-v1",
+        "size": 1600,
+        "overlap": 250
+      },
+      "completed_at": "2026-10-08T15:37:57.811036Z",
+      "warnings": [],
+      "error": null,
+      "persisted": false
+    },
+    {
+      "document_id": "6abbfd3a4569ed844c211cd8841037627165aaef98684f68fadb1d6c1acf035e",
+      "source": "KQ Data\\FAQs.docx",
+      "status": "processed",
+      "version": "sha256:e63ecb895994838447294f5531477a91aa937503632674b6bdbf356ab38b8839",
+      "chunk_count": 14,
+      "chunking": {
+        "revision": "adaptive-rows-v1",
+        "size": 1600,
+        "overlap": 250
+      },
+      "completed_at": "2026-10-08T15:37:57.874097Z",
+      "warnings": [],
+      "error": null,
+      "persisted": false
+    },
+    {
+      "document_id": "51438c824b61992df033f13135c24dc551201b59993edf833f1f4c8dc5670540",
+      "source": "KQ Data\\Flight upgrade.docx",
+      "status": "processed",
+      "version": "sha256:86f5814b4d93ac2f1f68414d63623cfb145b01e1fefecbe306f9bf659063c61b",
+      "chunk_count": 9,
+      "chunking": {
+        "revision": "adaptive-rows-v1",
+        "size": 1600,
+        "overlap": 250
+      },
+      "completed_at": "2026-10-08T15:37:57.902644Z",
+      "warnings": [],
+      "error": null,
+      "persisted": false
+    },
+    {
+      "document_id": "b2b0683e1a95293d44f3eab5f57f7db58c3c2d221e8fabf02e1df91f200db988",
+      "source": "KQ Data\\Online Refunds.docx",
+      "status": "processed",
+      "version": "sha256:73fe538d2c5036b0a85fb4489220631537b2dd349744a09b0136c6a665304247",
+      "chunk_count": 5,
+      "chunking": {
+        "revision": "adaptive-rows-v1",
+        "size": 1600,
+        "overlap": 250
+      },
+      "completed_at": "2026-10-08T15:37:57.923135Z",
+      "warnings": [],
+      "error": null,
+      "persisted": false
+    },
+    {
+      "document_id": "66c9ffdd922dac0c5b892d5b901373ddbb53d098151784bb3489f89eabb479a2",
+      "source": "KQ Data\\Payments.docx",
+      "status": "processed",
+      "version": "sha256:9a4800853da8cfbc65ab891ce8a036df9e787021bd3c35f4264126db2f866947",
+      "chunk_count": 20,
+      "chunking": {
+        "revision": "adaptive-rows-v1",
+        "size": 1600,
+        "overlap": 250
+      },
+      "completed_at": "2026-10-08T15:37:57.953540Z",
+      "warnings": [],
+      "error": null,
+      "persisted": false
+    },
+    {
+      "document_id": "83f66af659fba964ee475adbea3059b03e9d36db058c964b77502ab3041ef5b1",
+      "source": "KQ Data\\Pet Carriage.docx",
+      "status": "processed",
+      "version": "sha256:0119e2f3f1d71cb11171b0ff58246ea7afb5d1e77a96c4a8c20f4b19502ab1f1",
+      "chunk_count": 3,
+      "chunking": {
+        "revision": "adaptive-rows-v1",
+        "size": 1600,
+        "overlap": 250
+      },
+      "completed_at": "2026-10-08T15:37:57.966341Z",
+      "warnings": [],
+      "error": null,
+      "persisted": false
+    },
+    {
+      "document_id": "8c70a3ef59e12474c479c96d3250078f8da8441141765bbcaa4e81c4fd75e428",
+      "source": "KQ Data\\Special Care.docx",
+      "status": "processed",
+      "version": "sha256:f19730d3779e5a5d23b6d7ec40f414f0cbacfafd5c52f7e84485bbcd18d723d9",
+      "chunk_count": 34,
+      "chunking": {
+        "revision": "adaptive-rows-v1",
+        "size": 1600,
+        "overlap": 250
+      },
+      "completed_at": "2026-10-08T15:37:58.067654Z",
+      "warnings": [],
+      "error": null,
+      "persisted": false
     }
   ],
   "chunks": [
