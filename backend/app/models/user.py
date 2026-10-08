@@ -24,6 +24,8 @@ class AuthenticatedUser(BaseModel):
     role: UserRole = Field(default=UserRole.PASSENGER, description="Role used for access control.")
     email_verified: bool = Field(default=False, description="Whether Firebase says the email has been verified.")
     disabled: bool = Field(default=False, description="False for users who pass the Firebase disabled-account check.")
+    # Internal sign-in time: token refreshes must not count as new logins.
+    auth_time: int | None = Field(default=None, strict=True, ge=0, le=253402300799, exclude=True)
 
     @classmethod
     def from_firebase_claims(cls, claims: dict[str, Any]) -> "AuthenticatedUser":
@@ -45,4 +47,5 @@ class AuthenticatedUser(BaseModel):
             display_name=claims.get("name"),
             role=role,
             email_verified=bool(claims.get("email_verified", False)),
+            auth_time=claims.get("auth_time"),
         )
