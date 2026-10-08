@@ -1,0 +1,20 @@
+{
+  "description": "Development set, not held-out evaluation. Each positive requires its named source and all evidence excerpts in one chunk. Negative cases require live/private information absent from static policies; nearest-neighbour results are not proof of answerability.",
+  "cases": [
+    {"id": "fees-en", "language": "en", "question": "How much does a name correction cost for an international booking?", "source": "Payments.docx", "evidence": ["Name Correction", "Column 2: USD 15 | Column 3: USD 75"]},
+    {"id": "fees-sw", "language": "sw", "question": "Kusahihisha jina kwenye tiketi ya ndege ya kimataifa kunagharimu kiasi gani?", "source": "Payments.docx", "evidence": ["Name Correction", "Column 2: USD 15 | Column 3: USD 75"]},
+    {"id": "fees-mixed", "language": "mixed", "question": "Name correction ya international booking ni how much?", "source": "Payments.docx", "evidence": ["Name Correction", "Column 2: USD 15 | Column 3: USD 75"]},
+    {"id": "wheelchair-en", "language": "en", "question": "Can I bring my own wheelchair free of charge and how early should I reserve?", "source": "Special Care.docx", "evidence": ["You may bring your own wheelchair", "48 hours before departure"]},
+    {"id": "wheelchair-sw", "language": "sw", "question": "Ninaweza kuleta kiti changu cha magurudumu bila malipo na niweke nafasi saa ngapi kabla ya safari?", "source": "Special Care.docx", "evidence": ["You may bring your own wheelchair", "48 hours before departure"]},
+    {"id": "wheelchair-mixed", "language": "mixed", "question": "Can I bring kiti changu cha magurudumu free of charge, na reservation ni how many hours before departure?", "source": "Special Care.docx", "evidence": ["You may bring your own wheelchair", "48 hours before departure"]},
+    {"id": "baggage-en", "language": "en", "question": "What is the business class checked baggage allowance between Africa and Europe?", "source": "Baggage Allowance Information.docx", "evidence": ["Africa <-> America/Europe", "Column 2: 2 PC 32kg/70lbs max each"]},
+    {"id": "baggage-sw", "language": "sw", "question": "Ninaruhusiwa kubeba mizigo kiasi gani katika daraja la biashara kati ya Afrika na Ulaya?", "source": "Baggage Allowance Information.docx", "evidence": ["Africa <-> America/Europe", "Column 2: 2 PC 32kg/70lbs max each"]},
+    {"id": "baggage-mixed", "language": "mixed", "question": "Business class Africa to Europe checked baggage allowance ni kiasi gani?", "source": "Baggage Allowance Information.docx", "evidence": ["Africa <-> America/Europe", "Column 2: 2 PC 32kg/70lbs max each"]},
+    {"id": "upgrade-en", "language": "en", "question": "If my upgrade refund is approved, will it go back to the credit card used to pay?", "source": "Flight upgrade.docx", "evidence": ["If the refund is approved", "refunded to the credit card that was used to pay for the Upgrade"]},
+    {"id": "upgrade-sw", "language": "sw", "question": "Marejesho ya pesa za kuboresha daraja la safari yakikubaliwa, zitarudishwa kwenye kadi niliyotumia kulipa?", "source": "Flight upgrade.docx", "evidence": ["If the refund is approved", "refunded to the credit card that was used to pay for the Upgrade"]},
+    {"id": "upgrade-mixed", "language": "mixed", "question": "Upgrade refund ikiapproved, pesa zinarudi kwa original credit card?", "source": "Flight upgrade.docx", "evidence": ["If the refund is approved", "refunded to the credit card that was used to pay for the Upgrade"]},
+    {"id": "unanswerable-en", "language": "en", "question": "What is the current departure gate for my flight today?", "source": null, "evidence": []},
+    {"id": "unanswerable-sw", "language": "sw", "question": "Salio la akaunti yangu ya benki ni kiasi gani sasa?", "source": null, "evidence": []},
+    {"id": "unanswerable-mixed", "language": "mixed", "question": "My booking ABC123 iko seat gani right now?", "source": null, "evidence": []}
+  ]
+}
