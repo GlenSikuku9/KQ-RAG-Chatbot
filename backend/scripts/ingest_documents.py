@@ -39,6 +39,14 @@ def main() -> None:
         "chunk_count": len(chunks),
         "chunk_size": settings.rag_chunk_size,
         "chunk_overlap": settings.rag_chunk_overlap,
+        "review_required_count": sum(bool(document.extraction_warnings) for document in documents),
+        "documents": [
+            {
+                **document.model_dump(),
+                "extraction_status": "needs_review" if document.extraction_warnings else "extracted",
+            }
+            for document in documents
+        ],
         "chunks": [chunk.model_dump() for chunk in chunks],
     }
 
@@ -49,6 +57,7 @@ def main() -> None:
     )
 
     print(f"Processed {len(documents)} documents into {len(chunks)} chunks.")
+    print(f"Withheld {payload['review_required_count']} documents pending extraction review.")
     print(f"Saved chunks to: {output_path}")
 
 
