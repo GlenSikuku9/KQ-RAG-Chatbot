@@ -14,35 +14,35 @@ The chatbot uses Retrieval-Augmented Generation (RAG) to retrieve relevant infor
 
 ## Supported Languages
 
-* English
-* Kiswahili
-* Mixed English–Kiswahili queries
+- English
+- Kiswahili
+- Mixed English–Kiswahili queries
 
 **Sheng is outside the project scope.**
 
 ## Supported Customer-Support Areas
 
-* Booking information
-* Baggage
-* Check-in
-* Refunds
-* Payment information
-* Upgrades
-* Travel requirements
-* General Kenya Airways FAQs and policies
+- Booking information
+- Baggage
+- Check-in
+- Refunds
+- Payment information
+- Upgrades
+- Travel requirements
+- General Kenya Airways FAQs and policies
 
 ## Out of Scope
 
 Do NOT implement:
 
-* Ticket booking
-* Payment processing
-* Flight modification
-* Live reservation systems
-* Live airline operational systems
-* Voice interaction
-* Mobile applications
-* Internal airline staff workflows
+- Ticket booking
+- Payment processing
+- Flight modification
+- Live reservation systems
+- Live airline operational systems
+- Voice interaction
+- Mobile applications
+- Internal airline staff workflows
 
 If the knowledge base does not contain enough information to answer a question, the chatbot should use a fallback response instead of inventing an answer. Where appropriate, it can offer clarification or a human-support option.
 
@@ -52,20 +52,20 @@ If the knowledge base does not contain enough information to answer a question, 
 
 ## Frontend
 
-* React.js
-* Passenger chatbot interface
-* Admin dashboard
+- React.js
+- Passenger chatbot interface
+- Admin dashboard
 
 ## Backend
 
-* Python
-* FastAPI
-* LangChain
+- Python
+- FastAPI
+- LangChain
 
 ## Data
 
-* Firebase / Firestore — application data
-* ChromaDB — vector storage and semantic retrieval
+- Firebase / Firestore — application data
+- ChromaDB — vector storage and semantic retrieval
 
 ## AI
 
@@ -149,15 +149,15 @@ Formats the generated answer and attaches relevant sources or citations before r
 
 Records:
 
-* Conversations
-* Messages
-* Retrieved document chunks
-* Similarity scores
-* AI model used
-* User feedback
-* Errors and system events
-* Model evaluation results
-* Response-time information
+- Conversations
+- Messages
+- Retrieved document chunks
+- Similarity scores
+- AI model used
+- User feedback
+- Errors and system events
+- Model evaluation results
+- Response-time information
 
 ---
 
@@ -422,27 +422,27 @@ Evaluate AI Model
 
 Can:
 
-* Register
-* Log in
-* Ask support questions
-* View conversation history
-* End conversations
-* Submit feedback
+- Register
+- Log in
+- Ask support questions
+- View conversation history
+- End conversations
+- Submit feedback
 
 ## Administrator
 
 Can:
 
-* Log in
-* Upload documents
-* Update documents
-* Delete documents
-* Process the knowledge base
-* View conversations
-* View analytics
-* Manage users
-* Manage AI models
-* Evaluate AI models
+- Log in
+- Upload documents
+- Update documents
+- Delete documents
+- Process the knowledge base
+- View conversations
+- View analytics
+- Manage users
+- Manage AI models
+- Evaluate AI models
 
 ---
 
@@ -450,31 +450,31 @@ Can:
 
 ## Passenger
 
-* Login
-* Registration
-* Chatbot
-* Conversation History
+- Login
+- Registration
+- Chatbot
+- Conversation History
 
 ## Admin
 
-* Dashboard Overview
-* Analytics
-* Document Management
-* Conversations
-* AI Model Management / Evaluation
-* User Management
+- Dashboard Overview
+- Analytics
+- Document Management
+- Conversations
+- AI Model Management / Evaluation
+- User Management
 
 ## Chatbot Interface
 
 Include:
 
-* New Conversation
-* Previous Conversations
-* Language Selection
-* Chat Messages
-* Message Input
-* Send Button
-* Sources / Citations where applicable
+- New Conversation
+- Previous Conversations
+- Language Selection
+- Chat Messages
+- Message Input
+- Send Button
+- Sources / Citations where applicable
 
 ---
 
@@ -484,42 +484,42 @@ Include:
 
 Provide a summary of:
 
-* Users
-* Conversations
-* Documents
-* System activity
+- Users
+- Conversations
+- Documents
+- System activity
 
 ## Analytics
 
 Show:
 
-* Conversation activity
-* User interactions
-* Feedback
-* Usage information
-* AI model evaluation results
-* Performance information
+- Conversation activity
+- User interactions
+- Feedback
+- Usage information
+- AI model evaluation results
+- Performance information
 
 ## Document Management
 
 Administrators should be able to:
 
-* Upload
-* View
-* Update
-* Delete
-* Process documents
+- Upload
+- View
+- Update
+- Delete
+- Process documents
 
 Display:
 
-* Document name
-* Title
-* Category
-* Version
-* Upload date
-* Uploaded by
-* Status
-* Actions
+- Document name
+- Title
+- Category
+- Version
+- Upload date
+- Uploaded by
+- Status
+- Actions
 
 ## Conversations
 
@@ -531,10 +531,10 @@ Allow administrators to view configured models and compare their evaluation resu
 
 Evaluation should support:
 
-* Faithfulness
-* Answer Relevance
-* Context Precision
-* Context Recall
+- Faithfulness
+- Answer Relevance
+- Context Precision
+- Context Recall
 
 ---
 
@@ -567,74 +567,74 @@ Keep API keys, credentials, and configuration secrets in environment variables.
 
 ## Frontend
 
-* React.js
-* Component-based architecture
-* State management
-* Form handling
-* API integration
-* Responsive UI
-* Authentication-aware interfaces
-* Admin dashboard development
+- React.js
+- Component-based architecture
+- State management
+- Form handling
+- API integration
+- Responsive UI
+- Authentication-aware interfaces
+- Admin dashboard development
 
 ## Backend
 
-* Python
-* FastAPI
-* REST API design
-* Request validation
-* Error handling
-* Authentication
-* Role-based access control
-* Modular service architecture
+- Python
+- FastAPI
+- REST API design
+- Request validation
+- Error handling
+- Authentication
+- Role-based access control
+- Modular service architecture
 
 ## RAG / AI
 
-* Retrieval-Augmented Generation
-* Document processing
-* Text preprocessing
-* Document chunking
-* Embeddings
-* Semantic search
-* Vector databases
-* Context construction
-* Prompt construction
-* AI model API integration
-* Multilingual queries
-* English–Kiswahili code-switching
-* RAG evaluation
+- Retrieval-Augmented Generation
+- Document processing
+- Text preprocessing
+- Document chunking
+- Embeddings
+- Semantic search
+- Vector databases
+- Context construction
+- Prompt construction
+- AI model API integration
+- Multilingual queries
+- English–Kiswahili code-switching
+- RAG evaluation
 
 ## Databases
 
-* Firebase
-* Firestore
-* ChromaDB
-* Data modelling
-* Document metadata
-* Retrieval traceability
+- Firebase
+- Firestore
+- ChromaDB
+- Data modelling
+- Document metadata
+- Retrieval traceability
 
 ## Software Engineering
 
-* Clean code
-* Modular architecture
-* Separation of concerns
-* Reusable components
-* API/service separation
-* Environment configuration
-* Input validation
-* Error handling
-* Logging
-* Testing
-* Git/version control
+- Clean code
+- Modular architecture
+- Separation of concerns
+- Reusable components
+- API/service separation
+- Environment configuration
+- Input validation
+- Error handling
+- Logging
+- Testing
+- Git/version control
 
 ## Security
 
-* Secure authentication
-* Password hashing
-* Role-based authorisation
-* Environment variables for secrets
-* Input validation
-* Protected admin endpoints
-* Safe API responses
+- Secure authentication
+- Password hashing
+- Role-based authorisation
+- Environment variables for secrets
+- Input validation
+- Protected admin endpoints
+- Safe API responses
 
 ---
 
@@ -686,11 +686,11 @@ Develop incrementally:
 
 Before implementing each stage:
 
-* Inspect the existing code.
-* Identify what is already working.
-* Reuse existing components where appropriate.
-* Make the smallest necessary changes.
-* Keep the implementation consistent with the architecture and schema.
+- Inspect the existing code.
+- Identify what is already working.
+- Reuse existing components where appropriate.
+- Make the smallest necessary changes.
+- Keep the implementation consistent with the architecture and schema.
 
 ---
 
@@ -698,7 +698,7 @@ Before implementing each stage:
 
 Track approved follow-up work here so future increments remain aligned with the project plan.
 
-* [ ] Improve PDF ingestion by adding `pdfplumber` for PDF table extraction, then format extracted PDF table rows into readable text before chunking.
+- [ ] Improve PDF ingestion by adding `pdfplumber` for PDF table extraction, then format extracted PDF table rows into readable text before chunking.
 
 ---
 
@@ -706,22 +706,22 @@ Track approved follow-up work here so future increments remain aligned with the 
 
 Write code that is:
 
-* Clear
-* Simple
-* Readable
-* Modular
-* Maintainable
-* Properly documented where necessary
+- Clear
+- Simple
+- Readable
+- Modular
+- Maintainable
+- Properly documented where necessary
 
 Avoid:
 
-* Over-engineering
-* Unnecessary abstractions
-* Duplicate code
-* Hard-coded secrets
-* Hard-coded model names
-* Unnecessary dependencies
-* Large files containing unrelated responsibilities
+- Over-engineering
+- Unnecessary abstractions
+- Duplicate code
+- Hard-coded secrets
+- Hard-coded model names
+- Unnecessary dependencies
+- Large files containing unrelated responsibilities
 
 Prioritise working functionality first, then improve the structure where necessary.
 
@@ -731,11 +731,24 @@ Prioritise working functionality first, then improve the structure where necessa
 
 This is a **final-year academic project**, so all implementation decisions should remain consistent with the documented:
 
-* System architecture
-* Use cases
-* Sequence flow
-* Class design
-* Database schema
-* Project scope
+- System architecture
+- Use cases
+- Sequence flow
+- Class design
+- Database schema
+- Project scope
 
-When there is a choice between adding a new feature and keeping the implementation aligned with the documented design, **prefer alignment with the documented design unless the change is necessary and explicitly approved.**
+- When there is a choice between adding a new feature and keeping the implementation aligned with the documented design, **prefer alignment with the documented design unless the change is necessary and explicitly approved.**
+
+- What you should do in your proposal
+- You should answer it like this:
+
+- State that the project uses RAG instead of fine-tuning/training.
+- Introduce the baseline and candidate models.
+- Explain the inputs and outputs.
+- Explain how documents are prepared.
+- Explain how chunks are indexed.
+- Explain how retrieval works.
+- Explain how prompting works.
+- Explain how the final model/configuration will be selected.
+- State that no model training hyperparameters apply unless later fine-tuning is added.
