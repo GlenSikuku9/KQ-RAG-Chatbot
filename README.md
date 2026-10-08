@@ -173,6 +173,12 @@ Locally, store the service-account file at `credentials\firebase-admin.json` and
 |---|---|
 | `GET /api/v1/auth/me` | Authenticated passenger or administrator |
 | `GET /api/v1/auth/admin-check` | Administrator only |
+| `POST /api/v1/auth/profile/sync` | Create or synchronize the signed-in user's profile |
+| `GET /api/v1/auth/profile` | Read the signed-in user's saved profile |
+
+After login, call profile sync with no body (or `{}`). Profiles are stored in the default Firestore database under `users`, keyed by Firebase UID (URL-encoded when needed). Name, email, and role come from the verified token; creation time is preserved, and `last_login` records Firebase's sign-in time rather than token refreshes. Missing display names remain empty; passwords are never stored in profiles.
+
+Firestore uses the existing backend credentials. Production-mode rules should deny direct client access; the Admin SDK bypasses those rules, so these backend endpoints enforce ownership. Missing profiles return 404 and unavailable storage returns 503. Stored roles are informational snapshots; authorization uses verified Firebase claims.
 
 **Assign an administrator** from the backend directory:
 
@@ -182,7 +188,7 @@ Locally, store the service-account file at `credentials\firebase-admin.json` and
 
 Use `--role passenger` to remove admin access. Changes revoke existing sessions and require a new sign-in; retry any reported partial failure.
 
-**Run authentication tests** from the same directory (mocked Firebase; no real users are modified):
+**Run authentication and profile tests** from the same directory (mocked Firebase/Firestore; no real users are modified):
 
 ```powershell
 .\venv\Scripts\python.exe -m unittest discover -s tests -p "test_*.py" -v
