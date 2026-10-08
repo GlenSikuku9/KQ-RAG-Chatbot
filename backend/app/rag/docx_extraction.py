@@ -6,35 +6,75 @@ from docx.oxml.ns import qn
 from lxml import etree
 from lxml.etree import _Element
 
+from app.models.document import DocumentBlock, TableRow
+
 
 @dataclass
 class ExtractionResult:
     text: str
     warnings: list[str] = field(default_factory=list)
+    blocks: list[DocumentBlock] = field(default_factory=list)
 
 
 class DocxExtractor:
     """Preserve Word structure without inferring semantic table headers."""
 
-    def __init__(self, numbering: _Element | None = None) -> None:
+    def __init__(self, numbering: _Element | None = None, styles: _Element | None = None) -> None:
         self.warnings: list[str] = []
         self.has_text = False
         self.numbering = numbering
         self.list_counts: dict[tuple[str, int], int] = {}
+        self.styles = {
+            style.get(qn("w:styleId")): style for style in styles
+        } if styles is not None else {}
 
     def warn(self, location: str, message: str) -> None:
         warning = f"{location}: {message}"
         if warning not in self.warnings:
             self.warnings.append(warning)
 
-    def blocks(self, parent: _Element, location: str) -> str:
+    def heading_level(self, paragraph: _Element) -> int | None:
+        properties = paragraph.find(qn("w:pPr"))
+        visited: set[str] = set()
+        while properties is not None:
+            outline = properties.find(qn("w:outlineLvl"))
+            if outline is not None:
+                value = int(outline.get(qn("w:val"), "9"))
+                return value if 0 <= value <= 8 else None
+            reference = properties.find(qn("w:pStyle"))
+            if reference is None:
+                break
+            identifier = reference.get(qn("w:val"), "")
+            while identifier and identifier not in visited:
+                visited.add(identifier)
+                style = self.styles.get(identifier)
+                if style is None:
+                    return None
+                style_properties = style.find(qn("w:pPr"))
+                if style_properties is not None:
+                    outline = style_properties.find(qn("w:outlineLvl"))
+                    if outline is not None:
+                        value = int(outline.get(qn("w:val"), "9"))
+                        return value if 0 <= value <= 8 else None
+                base = style.find(qn("w:basedOn"))
+                identifier = base.get(qn("w:val"), "") if base is not None else ""
+            break
+        return None
+
+    def blocks(
+        self, parent: _Element, location: str, structured: list[DocumentBlock] | None = None,
+    ) -> str:
         output: list[str] = []
+        headings: dict[int, str] = {}
         for index, child in enumerate(parent, start=1):
             current = f"{location}/block {index}"
+            rows: list[TableRow] = []
+            heading = None
             if child.tag == qn("w:p"):
                 text = self.paragraph(child, current)
+                heading = self.heading_level(child)
             elif child.tag == qn("w:tbl"):
-                text = self.table(child, current)
+                text = self.table(child, current, rows)
             elif child.tag in {qn("w:sdt"), qn("w:sdtContent"), qn("w:customXml")}:
                 self.warn(current, "Content control or custom XML requires review.")
                 text = self.blocks(child, current)
@@ -49,6 +89,22 @@ class DocxExtractor:
                 continue
             if text.strip():
                 output.append(text.strip())
+                if structured is not None:
+                    if heading is not None:
+                        headings = {level: title for level, title in headings.items() if level < heading}
+                        headings[heading] = text.strip()
+                    is_table = child.tag == qn("w:tbl")
+                    complex_table = is_table and (
+                        len(list(child.iter(qn("w:tbl")))) > 1
+                        or any(list(child.iter(qn(f"w:{tag}"))) for tag in ("gridSpan", "vMerge", "hMerge"))
+                        or any(row.is_header and not previous.is_header for previous, row in zip(rows, rows[1:]))
+                    )
+                    structured.append(DocumentBlock(
+                        kind="table" if is_table else "heading" if heading is not None else "paragraph",
+                        text=text.strip(), source_location=current,
+                        section=" / ".join(headings.values()) or None,
+                        rows=rows, keep_together=complex_table,
+                    ))
         return "\n\n".join(output)
 
     def paragraph(self, paragraph: _Element, location: str) -> str:
@@ -143,7 +199,7 @@ class DocxExtractor:
             self.warn(location, "Document comments require review.")
         return "".join(self.inline(child, location) for child in element)
 
-    def table(self, table: _Element, location: str) -> str:
+    def table(self, table: _Element, location: str, rows: list[TableRow] | None = None) -> str:
         grid = table.find(qn("w:tblGrid"))
         width = len(grid) if grid is not None else 0
         if not width:
@@ -195,7 +251,10 @@ class DocxExtractor:
             header = properties.find(qn("w:tblHeader")) if properties is not None else None
             is_header = header is not None and header.get(qn("w:val"), "true") not in {"0", "false", "off"}
             suffix = " (declared header)" if is_header else ""
-            lines.append(f"Row {row_number}{suffix}: " + " | ".join(cells))
+            row_text = f"Row {row_number}{suffix}: " + " | ".join(cells)
+            lines.append(row_text)
+            if rows is not None:
+                rows.append(TableRow(row_index=row_number, text=row_text, is_header=is_header))
             previous_merges = current_merges
         if any(child.tag not in {qn("w:tblPr"), qn("w:tblGrid"), qn("w:tr")} for child in table):
             self.warn(location, "Wrapped or revised table rows require review.")
@@ -222,13 +281,14 @@ def extract_docx(file_path: Path) -> ExtractionResult:
     numbering = etree.fromstring(numbering_part.blob, parser=etree.XMLParser(
         resolve_entities=False, no_network=True
     )) if numbering_part is not None else None
-    extractor = DocxExtractor(numbering)
+    extractor = DocxExtractor(numbering, document.styles.element)
     for tag in ("ins", "del", "moveFrom", "moveTo", "pPrChange", "rPrChange", "tblPrChange", "tcPrChange"):
         if list(document.element.iter(qn(f"w:{tag}"))):
             extractor.warn("Body", "Tracked content or formatting changes require review.")
     if list(document.element.iter(qn("w:vanish"))):
         extractor.warn("Body", "Hidden text requires review of what should be published.")
-    blocks = [extractor.blocks(document.element.body, "Body")]
+    structured: list[DocumentBlock] = []
+    blocks = [extractor.blocks(document.element.body, "Body", structured)]
     note_ids: dict[str, set[str]] = {"footnotes.xml": set(), "endnotes.xml": set()}
     # Read only existing parts, avoiding creation of empty header/footer definitions.
     for part in sorted(document.part.package.parts, key=lambda item: str(item.partname)):
@@ -237,7 +297,9 @@ def extract_docx(file_path: Path) -> ExtractionResult:
             root = etree.fromstring(part.blob, parser=etree.XMLParser(resolve_entities=False, no_network=True))
             content = extractor.blocks(root, name)
             if content:
-                blocks.append(f"Supplementary content ({name}):\n{content}")
+                text = f"Supplementary content ({name}):\n{content}"
+                blocks.append(text)
+                structured.append(DocumentBlock(kind="paragraph", text=text, source_location=name, keep_together=True))
         elif name in {"/word/footnotes.xml", "/word/endnotes.xml"}:
             root = etree.fromstring(part.blob, parser=etree.XMLParser(resolve_entities=False, no_network=True))
             kind = "Footnote" if "footnotes" in name else "Endnote"
@@ -248,7 +310,11 @@ def extract_docx(file_path: Path) -> ExtractionResult:
                 note_ids[name.rsplit("/", 1)[-1]].add(note_id)
                 content = extractor.blocks(note, f"{kind} {note_id}")
                 if content:
-                    blocks.append(f"{kind} {note_id}:\n{content}")
+                    text = f"{kind} {note_id}:\n{content}"
+                    blocks.append(text)
+                    structured.append(DocumentBlock(
+                        kind="paragraph", text=text, source_location=f"{kind} {note_id}", keep_together=True,
+                    ))
     for reference_tag, part_name in (("footnoteReference", "footnotes.xml"), ("endnoteReference", "endnotes.xml")):
         for reference in document.element.iter(qn(f"w:{reference_tag}")):
             if reference.get(qn("w:id"), "?") not in note_ids[part_name]:
@@ -259,4 +325,4 @@ def extract_docx(file_path: Path) -> ExtractionResult:
         if style.style_id in used_styles and list(style.element.iter(qn("w:numPr"))):
             extractor.warn("Body", "Style-based automatic list labels require review.")
     text = "\n\n".join(block for block in blocks if block.strip()) if extractor.has_text else ""
-    return ExtractionResult(text=text, warnings=extractor.warnings)
+    return ExtractionResult(text=text, warnings=extractor.warnings, blocks=structured)

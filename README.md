@@ -63,6 +63,8 @@ The knowledge base accepts DOCX documents containing editable text and tables. E
 
 Unsupported or ambiguous content produces review warnings. Flagged documents retain their extracted text in the ingestion report but are excluded from chatbot chunks until the extraction limitation or source issue is resolved and the document reprocessed. Empty, unreadable, and image-only documents fail explicitly; unsupported file formats are reported and skipped.
 
+Chunking uses configurable character targets (`RAG_CHUNK_SIZE`, `RAG_CHUNK_OVERLAP`), not hard limits. Table rows stay intact with repeated declared headers or explicitly labelled opening-row context; merged/nested tables stay together. Chunks carry stable document IDs, content-fingerprint versions, source locations, and explicit headings where available; DOCX page numbers are not guessed.
+
 ## System workflow
 
 ```text
@@ -162,7 +164,7 @@ Application settings are loaded from the local environment file. The copy comman
 | `FIREBASE_CREDENTIALS_PATH` | Service-account JSON path; empty selects Application Default Credentials |
 | `RAW_DATA_DIR`, `PROCESSED_DATA_DIR` | Input documents and exported chunk locations |
 | `CHROMA_PERSIST_DIR` | Vector storage directory |
-| `RAG_CHUNK_SIZE`, `RAG_CHUNK_OVERLAP` | Character-based chunk size and overlap; defaults are 1000 and 150 |
+| `RAG_CHUNK_SIZE`, `RAG_CHUNK_OVERLAP` | Character target and maximum overlap; corpus-tested defaults are 1600 and 250, pending retrieval evaluation |
 | `EMBEDDING_MODEL_NAME`, `DEFAULT_GENERATION_MODEL_ID` | Embedding and generation model selection |
 
 Relative filesystem settings are resolved from the backend directory. Model selection is not required for backend startup or document extraction.
