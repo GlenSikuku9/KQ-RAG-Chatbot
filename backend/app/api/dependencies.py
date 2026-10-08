@@ -7,20 +7,19 @@ from app.models.user import AuthenticatedUser, UserRole
 from app.services.firebase_auth import verify_firebase_id_token
 
 
-# HTTPBearer reads the "Authorization: Bearer <token>" header.
-# auto_error=False lets us return a clear, project-specific error message.
+# Keep authentication errors consistent instead of using HTTPBearer's default responses.
 bearer_scheme = HTTPBearer(auto_error=False)
 
 
-async def get_current_user(
+def get_current_user(
     credentials: HTTPAuthorizationCredentials | None = Depends(bearer_scheme),
 ) -> AuthenticatedUser:
-    """Verify the Firebase ID token and return the authenticated user."""
+    """Run blocking SDK verification in FastAPI's worker thread pool."""
 
     if credentials is None or not credentials.credentials:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Authentication is required. Send a Firebase ID token as a Bearer token.",
+            detail="Authentication is required. Send a Firebase ID token using Bearer authentication.",
             headers={"WWW-Authenticate": "Bearer"},
         )
 
