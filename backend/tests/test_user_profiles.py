@@ -179,7 +179,7 @@ class ProfileServiceTests(unittest.TestCase):
 
     def test_exhausted_conflicts_are_explicit_503(self):
         self.transaction._commit.side_effect = Aborted("PRIVATE-DATA")
-        with self.assertLogs("app.services.user_profiles", level="WARNING"):
+        with self.assertLogs("app.services.firestore_client", level="WARNING"):
             with self.assertRaises(HTTPException) as caught:
                 sync_user_profile(self.user)
         self.assertEqual(caught.exception.status_code, 503)

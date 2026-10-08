@@ -1,5 +1,6 @@
-from pydantic import AwareDatetime, BaseModel, ConfigDict, EmailStr, Field
+from pydantic import BaseModel, ConfigDict, EmailStr, Field, field_serializer
 
+from app.models.database import UTCDateTime
 from app.models.user import UserRole
 
 
@@ -15,5 +16,9 @@ class UserProfile(BaseModel):
     email: EmailStr | None = None
     role: UserRole
     email_verified: bool
-    created_at: AwareDatetime
-    last_login: AwareDatetime
+    created_at: UTCDateTime
+    last_login: UTCDateTime
+
+    @field_serializer("role")
+    def serialize_role(self, role: UserRole) -> str:
+        return role.value

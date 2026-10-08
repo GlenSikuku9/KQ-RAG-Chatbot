@@ -180,6 +180,8 @@ After login, call profile sync with no body (or `{}`). Profiles are stored in th
 
 Firestore uses the existing backend credentials. Production-mode rules should deny direct client access; the Admin SDK bypasses those rules, so these backend endpoints enforce ownership. Missing profiles return 404 and unavailable storage returns 503. Stored roles are informational snapshots; authorization uses verified Firebase claims.
 
+The client-access policy is provided in [firestore.rules](firestore.rules); it must be published separately in Firebase.
+
 **Assign an administrator** from the backend directory:
 
 ```powershell
