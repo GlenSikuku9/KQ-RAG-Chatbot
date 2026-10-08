@@ -46,6 +46,9 @@ class Settings(BaseModel):
     rag_chunk_overlap: int = Field(default=DEFAULT_CHUNK_OVERLAP, strict=True)
 
     embedding_model_name: str | None = None
+    embedding_model_revision: str | None = None
+    embedding_batch_size: int = Field(default=4, gt=0, le=64, strict=True)
+    embedding_cache_dir: Path = BASE_DIR.parent / "model_cache"
     default_generation_model_id: str | None = None
 
     @model_validator(mode="after")
@@ -108,5 +111,8 @@ def get_settings() -> Settings:
         rag_chunk_size=_get_int("RAG_CHUNK_SIZE", DEFAULT_CHUNK_SIZE),
         rag_chunk_overlap=_get_int("RAG_CHUNK_OVERLAP", DEFAULT_CHUNK_OVERLAP),
         embedding_model_name=_get_optional("EMBEDDING_MODEL_NAME"),
+        embedding_model_revision=_get_optional("EMBEDDING_MODEL_REVISION"),
+        embedding_batch_size=_get_int("EMBEDDING_BATCH_SIZE", 4),
+        embedding_cache_dir=_get_path("EMBEDDING_CACHE_DIR", BASE_DIR.parent / "model_cache"),
         default_generation_model_id=_get_optional("DEFAULT_GENERATION_MODEL_ID"),
     )

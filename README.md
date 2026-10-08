@@ -67,6 +67,8 @@ Chunking uses configurable character targets (`RAG_CHUNK_SIZE`, `RAG_CHUNK_OVERL
 
 From the repository root, `.\backend\venv\Scripts\python.exe .\backend\scripts\ingest_documents.py` creates an offline review export. Add `--publish` to persist document records and chunks in Firestore, or `--remove "KQ Data\Example.docx"` to remove one stored source without deleting its file. Publication is idempotent and replaces old chunks atomically per document; missing files are never automatically deleted. Failed or review-required attempts return a nonzero exit code. Publishing again can restore a removed source still present in the input folder.
 
+Local embeddings use the E5 model and immutable revision configured in the environment. Run `.\backend\venv\Scripts\python.exe .\backend\scripts\index_documents.py` after publication to synchronize persistent ChromaDB storage; unchanged vectors are reused. Add `--query "What is my baggage allowance?"` to search, or `--rebuild` after changing the embedding configuration. Oversized chunks use token-safe search segments but return their complete original text. Model downloads require internet initially; cached inference is local. Re-run indexing after document changes/removals. Keep one backend worker/model instance on memory-constrained laptops.
+
 ## System workflow
 
 ```text
@@ -168,6 +170,8 @@ Application settings are loaded from the local environment file. The copy comman
 | `CHROMA_PERSIST_DIR` | Vector storage directory |
 | `RAG_CHUNK_SIZE`, `RAG_CHUNK_OVERLAP` | Character target and maximum overlap; corpus-tested defaults are 1600 and 250, pending retrieval evaluation |
 | `EMBEDDING_MODEL_NAME`, `DEFAULT_GENERATION_MODEL_ID` | Embedding and generation model selection |
+| `EMBEDDING_MODEL_REVISION` | Immutable 40-character model commit; example configuration pins multilingual E5-small |
+| `EMBEDDING_BATCH_SIZE`, `EMBEDDING_CACHE_DIR` | CPU embedding batch size (default 4) and local model cache; use batch size 1 on low-memory machines |
 
 Relative filesystem settings are resolved from the backend directory. Model selection is not required for backend startup or document extraction.
 
