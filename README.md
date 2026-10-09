@@ -23,38 +23,38 @@ The overview below presents the intended final system.
 
 ## Customer-support coverage
 
-| Area | Information covered |
-|---|---|
-| Booking | Booking guidance and related policies |
-| Baggage | Allowances, restrictions, and delayed, lost, or damaged baggage |
-| Check-in | Procedures and requirements |
-| Refunds and payments | Refund guidance and payment information |
-| Upgrades | Upgrade information and applicable conditions |
-| Travel requirements | Travel documentation and policy guidance |
-| General support | Frequently asked questions, contact information, and customer-care policies |
+| Area                 | Information covered                                                         |
+| -------------------- | --------------------------------------------------------------------------- |
+| Booking              | Booking guidance and related policies                                       |
+| Baggage              | Allowances, restrictions, and delayed, lost, or damaged baggage             |
+| Check-in             | Procedures and requirements                                                 |
+| Refunds and payments | Refund guidance and payment information                                     |
+| Upgrades             | Upgrade information and applicable conditions                               |
+| Travel requirements  | Travel documentation and policy guidance                                    |
+| General support      | Frequently asked questions, contact information, and customer-care policies |
 
 The application is an informational customer-support system rather than a transaction-processing or live reservation platform.
 
 ## Users
 
-| User | Capabilities |
-|---|---|
-| Passenger | Register and log in, ask support questions, view and end conversations, and provide feedback. |
+| User          | Capabilities                                                                                                              |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| Passenger     | Register and log in, ask support questions, view and end conversations, and provide feedback.                             |
 | Administrator | Log in, manage and process documents, manage users, inspect conversations, view analytics, and manage/evaluate AI models. |
 
 ## Technology stack
 
-| Layer | Technologies | Purpose |
-|---|---|---|
-| Frontend | React | Passenger chat interface and administrator dashboard |
-| Backend | Python, FastAPI, Uvicorn | API endpoints and application services |
-| Validation and configuration | Pydantic, python-dotenv | Validated data models and environment-based settings |
-| Authentication | Firebase Authentication, Firebase Admin SDK | User identity and role-based authorization |
-| Application database | Firestore | Users, conversations, messages, feedback, and administrative records |
-| Vector database | ChromaDB | Document embeddings and semantic retrieval |
-| RAG orchestration | LangChain | Retrieval, context preparation, and generation workflow |
-| Document processing | python-docx | Editable DOCX paragraphs and tables |
-| Embeddings | Multilingual embedding model | Semantic representations of documents and questions |
-| Answer generation | Generative AI APIs | Evidence-based responses and comparative model evaluation |
+| Layer                        | Technologies                                             | Purpose                                                              |
+| ---------------------------- | -------------------------------------------------------- | -------------------------------------------------------------------- |
+| Frontend                     | React                                                    | Passenger chat interface and administrator dashboard                 |
+| Backend                      | Python, FastAPI, Uvicorn                                 | API endpoints and application services                               |
+| Validation and configuration | Pydantic, python-dotenv                                  | Validated data models and environment-based settings                 |
+| Authentication               | Firebase Authentication, Firebase Admin SDK              | User identity and role-based authorization                           |
+| Application database         | Firestore                                                | Users, conversations, messages, feedback, and administrative records |
+| Vector database              | ChromaDB                                                 | Document embeddings and semantic retrieval                           |
+| RAG orchestration            | LangChain                                                | Retrieval, context preparation, and generation workflow              |
+| Document processing          | python-docx                                              | Editable DOCX paragraphs and tables                                  |
+| Embeddings                   | Multilingual E5-small (`intfloat/multilingual-e5-small`) | Local semantic representations of documents and questions            |
+| Answer generation            | Generative AI APIs                                       | Evidence-based responses and comparative model evaluation            |
 
 Backend package versions are listed in [requirements.txt](backend/requirements.txt).

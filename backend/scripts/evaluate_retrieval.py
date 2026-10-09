@@ -11,9 +11,11 @@ sys.path.append(str(BACKEND_DIR))
 
 from fastapi import HTTPException
 from pydantic import BaseModel, ConfigDict, Field, TypeAdapter, model_validator
+from app.config import Settings, get_settings
 from app.models.document_chunk import DocumentChunk
 from app.models.retrieval import LanguagePreference, RetrievalRequest
 from app.rag.ingestion import write_json_atomic
+from app.rag.context import build_context
 from app.rag.retrieval import RetrievalService, get_retrieval_service
 from app.services.firestore_client import get_firestore_client
 from app.services.knowledge_base import KnowledgeBaseStore
@@ -44,7 +46,10 @@ def normalize_text(text: str) -> str:
     return re.sub(r"\s+", " ", text).strip()
 
 
-def evaluate(service: RetrievalService, chunks: list[DocumentChunk], cases: list[dict], top_k: int) -> dict:
+def evaluate(
+    service: RetrievalService, chunks: list[DocumentChunk], cases: list[dict], top_k: int,
+    context_settings: Settings | None = None,
+) -> dict:
     questions = TypeAdapter(list[DevelopmentQuestion]).validate_python(cases)
     if not questions or len({case.id for case in questions}) != len(questions):
         logger.error("Development set must contain unique question IDs.")
@@ -76,12 +81,21 @@ def evaluate(service: RetrievalService, chunks: list[DocumentChunk], cases: list
             "candidates": [{"rank": result.rank, "source": result.chunk.source, "score": result.score}
                            for result in response.results],
         })
+        if context_settings is not None:
+            prepared = build_context(response, context_settings)
+            selected = {source.chunk.chunk_id for source in prepared.sources}
+            outcomes[-1].update({
+                "context_decision": prepared.decision, "context_reason": prepared.reason,
+                "context_chars": prepared.context_chars,
+                "selected_chunk_ids": [source.chunk.chunk_id for source in prepared.sources],
+                "context_contains_labelled_evidence": bool(relevant.intersection(selected)),
+            })
     groups = defaultdict(list)
     for outcome in outcomes:
         if outcome["answerable_in_fixture"]:
             groups[outcome["language"]].append(outcome)
             groups["all"].append(outcome)
-    return {
+    report = {
         "purpose": "development_passage_retrieval_not_held_out_evaluation",
         "top_k": top_k,
         "score_type": "cosine_similarity",
@@ -93,23 +107,49 @@ def evaluate(service: RetrievalService, chunks: list[DocumentChunk], cases: list
             }
             for language, items in groups.items()
         },
-        "unanswerable_note": "Negative queries still retrieve neighbours. Sufficiency/fallback is not implemented until I12.",
+        "unanswerable_note": "Retrieval alone still returns neighbours. Optional context decisions use a conservative heuristic, not verified answerability.",
         "outcomes": outcomes,
     }
+    if context_settings is not None:
+        report["context_settings"] = {
+            "min_similarity": context_settings.context_min_similarity,
+            "max_chars": context_settings.context_max_chars,
+            "evidence_status": "heuristic_only",
+        }
+        report["context_metrics"] = {}
+        for language in ("all", "en", "sw", "mixed"):
+            items = [item for item in outcomes if language == "all" or item["language"] == language]
+            accepted = [item for item in items if item["context_decision"] == "context_available"]
+            rejected = [item for item in items if item["context_decision"] != "context_available"]
+            report["context_metrics"][language] = {
+                "questions": len(items),
+                "context_available": len(accepted),
+                "accepted_with_labelled_evidence": sum(item["context_contains_labelled_evidence"] for item in accepted),
+                "accepted_without_labelled_evidence": sum(not item["context_contains_labelled_evidence"] for item in accepted),
+                "answerable_questions_rejected": sum(item["answerable_in_fixture"] for item in rejected),
+                "unanswerable_questions_rejected": sum(not item["answerable_in_fixture"] for item in rejected),
+            }
+    return report
 
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Measure development retrieval against predeclared policy excerpts.")
     parser.add_argument("--top-k", type=int, choices=range(1, 21), default=5)
     parser.add_argument("--questions", type=Path, default=DEFAULT_QUESTIONS)
+    parser.add_argument("--prepare-context", action="store_true", help="Also measure conservative context decisions.")
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args(argv)
     try:
         cases = json.loads(args.questions.read_text(encoding="utf-8"))["cases"]
         chunks = KnowledgeBaseStore(get_firestore_client()).read_index_snapshot()
-        report = evaluate(get_retrieval_service(), chunks, cases, args.top_k)
+        report = evaluate(
+            get_retrieval_service(), chunks, cases, args.top_k,
+            get_settings() if args.prepare_context else None,
+        )
         write_json_atomic(args.output, report)
         print(json.dumps(report["metrics"], indent=2))
+        if args.prepare_context:
+            print(json.dumps(report["context_metrics"], indent=2))
         print(f"Development results saved to {args.output}")
         return 0
     except HTTPException as exc:
