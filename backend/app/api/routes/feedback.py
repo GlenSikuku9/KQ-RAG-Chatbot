@@ -1,4 +1,4 @@
-"""Passenger feedback routes; ratings apply only to the caller's chatbot messages."""
+"""Passenger feedback routes; ratings apply only after the caller ends a conversation."""
 
 from fastapi import APIRouter, Depends
 
@@ -11,11 +11,11 @@ from app.services.feedback import get_feedback_service
 router = APIRouter()
 
 
-@router.put("/messages/{message_id}", response_model=Feedback)
+@router.put("/conversations/{conversation_id}", response_model=Feedback)
 def submit_feedback(
-    message_id: str,
+    conversation_id: str,
     payload: FeedbackRequest,
     current_user: AuthenticatedUser = Depends(require_passenger_or_admin),
 ) -> Feedback:
-    """Create or replace the caller's sole star rating for an eligible response."""
-    return get_feedback_service().submit(current_user, message_id, payload)
+    """Create or replace the caller's sole rating after their conversation ends."""
+    return get_feedback_service().submit(current_user, conversation_id, payload)

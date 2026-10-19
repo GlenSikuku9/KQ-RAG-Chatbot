@@ -8,7 +8,7 @@ from app.models.database import UTCDateTime
 
 
 class FeedbackRequest(BaseModel):
-    """A passenger may replace their single 1–5 star rating and optional comment."""
+    """A passenger may replace their single 1–5 star conversation rating and optional comment."""
 
     model_config = ConfigDict(extra="forbid")
     rating: int = Field(strict=True, ge=1, le=5)
@@ -25,7 +25,7 @@ class FeedbackRequest(BaseModel):
 class Feedback(BaseModel):
     feedback_id: str = Field(min_length=1, max_length=512)
     user_id: str = Field(min_length=1, max_length=128)
-    message_id: str = Field(min_length=1, max_length=128)
+    conversation_id: str = Field(min_length=1, max_length=128)
     rating: int = Field(ge=1, le=5)
     comment: str | None = Field(default=None, max_length=1000)
     created_at: UTCDateTime

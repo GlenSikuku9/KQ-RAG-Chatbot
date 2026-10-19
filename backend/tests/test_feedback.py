@@ -8,7 +8,7 @@ from fastapi.testclient import TestClient
 from app.api.dependencies import get_current_user
 from app.api.routes import feedback
 from app.main import create_app
-from app.models.conversation import Conversation, ConversationMessage, ConversationStatus, SenderType
+from app.models.conversation import Conversation, ConversationStatus
 from app.models.feedback import FeedbackRequest
 from app.models.user import AuthenticatedUser
 from app.services.feedback import FeedbackService
@@ -26,38 +26,29 @@ class FeedbackServiceTests(unittest.TestCase):
         self.client.records = {
             "conversations": {"conversation-1": Conversation(
                 conversation_id="conversation-1", user_id=self.user.uid, language="en",
-                status=ConversationStatus.ACTIVE, started_at=self.now,
+                status=ConversationStatus.ENDED, started_at=self.now, ended_at=self.now,
             ).model_dump()},
-            "messages": {
-                "bot-1": ConversationMessage(
-                    message_id="bot-1", conversation_id="conversation-1", sequence=2, sender_type=SenderType.CHATBOT,
-                    message_text="Answer", language="en", timestamp=self.now,
-                ).model_dump(),
-                "customer-1": ConversationMessage(
-                    message_id="customer-1", conversation_id="conversation-1", sequence=1, sender_type=SenderType.CUSTOMER,
-                    message_text="Question", language="en", timestamp=self.now,
-                ).model_dump(),
-            },
         }
         self.tx = patch("app.services.feedback.run_transaction", side_effect=run_locally).start()
         self.addCleanup(patch.stopall)
 
     def test_star_rating_creates_then_updates_one_deterministic_record(self):
-        first = self.service.submit(self.user, "bot-1", FeedbackRequest(rating=5, comment="Useful"))
-        second = self.service.submit(self.user, "bot-1", FeedbackRequest(rating=3))
+        first = self.service.submit(self.user, "conversation-1", FeedbackRequest(rating=5, comment="Useful"))
+        second = self.service.submit(self.user, "conversation-1", FeedbackRequest(rating=3))
         self.assertEqual(first.feedback_id, second.feedback_id)
         self.assertEqual(second.rating, 3)
         self.assertEqual(second.created_at, first.created_at)
         self.assertEqual(len(self.client.records["feedback"]), 1)
         self.assertNotIn("Useful", str(self.client.records.get("operational_events", {})))
 
-    def test_only_owner_can_rate_chatbot_message_and_customer_messages_are_ineligible(self):
+    def test_only_owner_can_rate_an_ended_conversation(self):
         with self.assertRaises(HTTPException) as caught:
-            self.service.submit(self.other, "bot-1", FeedbackRequest(rating=4))
+            self.service.submit(self.other, "conversation-1", FeedbackRequest(rating=4))
         self.assertEqual(caught.exception.status_code, 404)
+        self.client.records["conversations"]["conversation-1"]["status"] = "active"
         with self.assertRaises(HTTPException) as caught:
-            self.service.submit(self.user, "customer-1", FeedbackRequest(rating=4))
-        self.assertEqual(caught.exception.status_code, 422)
+            self.service.submit(self.user, "conversation-1", FeedbackRequest(rating=4))
+        self.assertEqual(caught.exception.status_code, 409)
         self.assertFalse(self.client.records.get("feedback"))
 
     def test_rating_validation_rejects_non_star_values_before_storage(self):
@@ -110,13 +101,14 @@ class FeedbackEndpointTests(unittest.TestCase):
 
     def test_endpoint_uses_verified_owner_and_rejects_invalid_stars(self):
         self.service.submit.return_value = {
-            "feedback_id": "passenger-1:bot", "user_id": self.user.uid, "message_id": "bot", "rating": 5,
+            "feedback_id": "passenger-1:conversation", "user_id": self.user.uid,
+            "conversation_id": "conversation", "rating": 5,
             "comment": None, "created_at": datetime.now(timezone.utc), "updated_at": datetime.now(timezone.utc),
         }
-        response = self.client.put("/api/v1/feedback/messages/bot?user_id=other", json={"rating": 5})
+        response = self.client.put("/api/v1/feedback/conversations/conversation?user_id=other", json={"rating": 5})
         self.assertEqual(response.status_code, 200)
         self.assertEqual(self.service.submit.call_args.args[0], self.user)
-        response = self.client.put("/api/v1/feedback/messages/bot", json={"rating": 6})
+        response = self.client.put("/api/v1/feedback/conversations/conversation", json={"rating": 6})
         self.assertEqual(response.status_code, 422)
 
 
