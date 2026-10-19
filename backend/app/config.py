@@ -2,7 +2,7 @@ from functools import lru_cache
 import logging
 import os
 from pathlib import Path
-from typing import Self
+from typing import Literal, Self
 
 from dotenv import load_dotenv
 from pydantic import BaseModel, Field, model_validator
@@ -13,6 +13,17 @@ load_dotenv(BASE_DIR / ".env")
 logger = logging.getLogger(__name__)
 DEFAULT_CHUNK_SIZE = 1600
 DEFAULT_CHUNK_OVERLAP = 250
+ProviderName = Literal["openrouter", "google_ai_studio"]
+
+
+class GenerationModelSettings(BaseModel):
+    """A selectable model. The credential is hidden from representations."""
+    model_id: str
+    provider: ProviderName
+    upstream_model: str
+    api_key: str | None = Field(default=None, repr=False)
+    timeout_seconds: float = Field(default=45.0, gt=0, le=300)
+    max_output_tokens: int = Field(default=1024, ge=1, le=8192)
 
 
 def validate_chunk_settings(chunk_size: int, chunk_overlap: int) -> None:
@@ -53,10 +64,16 @@ class Settings(BaseModel):
     context_max_chars: int = Field(default=8000, ge=1, le=100000, strict=True)
     context_min_similarity: float = Field(default=0.87, ge=-1, le=1, strict=True, allow_inf_nan=False)
     default_generation_model_id: str | None = None
+    generation_models: tuple[GenerationModelSettings, ...] = ()
 
     @model_validator(mode="after")
     def validate_chunking(self) -> Self:
         validate_chunk_settings(self.rag_chunk_size, self.rag_chunk_overlap)
+        model_ids = [model.model_id for model in self.generation_models]
+        if len(model_ids) != len(set(model_ids)):
+            raise ValueError("Generation model IDs must be unique.")
+        if self.default_generation_model_id and self.default_generation_model_id not in model_ids:
+            raise ValueError("DEFAULT_GENERATION_MODEL_ID must name a configured generation model.")
         return self
 
 
@@ -97,6 +114,34 @@ def _get_int(name: str, default: int) -> int:
     return int(value)
 
 
+def _get_float(name: str, default: float) -> float:
+    value = os.getenv(name)
+    return default if value is None else float(value)
+
+
+def _get_generation_models() -> tuple[GenerationModelSettings, ...]:
+    """Load three environment-configured slots; skip an unset slot."""
+    models: list[GenerationModelSettings] = []
+    for slot in range(1, 4):
+        prefix = f"GENERATION_MODEL_{slot}_"
+        upstream_model = _get_optional(prefix + "UPSTREAM_MODEL")
+        if upstream_model is None:
+            continue
+        provider = os.getenv(prefix + "PROVIDER", "").strip().lower()
+        model_id = _get_optional(prefix + "ID")
+        if provider not in {"openrouter", "google_ai_studio"}:
+            raise ValueError(f"{prefix}PROVIDER must be openrouter or google_ai_studio.")
+        if model_id is None:
+            raise ValueError(f"{prefix}ID is required when {prefix}UPSTREAM_MODEL is set.")
+        key_name = "OPENROUTER_API_KEY" if provider == "openrouter" else "GOOGLE_AI_STUDIO_API_KEY"
+        models.append(GenerationModelSettings(
+            model_id=model_id, provider=provider, upstream_model=upstream_model,
+            api_key=_get_optional(key_name), timeout_seconds=_get_float(prefix + "TIMEOUT_SECONDS", 45.0),
+            max_output_tokens=_get_int(prefix + "MAX_OUTPUT_TOKENS", 1024),
+        ))
+    return tuple(models)
+
+
 @lru_cache
 def get_settings() -> Settings:
     return Settings(
@@ -121,4 +166,5 @@ def get_settings() -> Settings:
         context_max_chars=_get_int("CONTEXT_MAX_CHARS", 8000),
         context_min_similarity=float(os.getenv("CONTEXT_MIN_SIMILARITY", "0.87")),
         default_generation_model_id=_get_optional("DEFAULT_GENERATION_MODEL_ID"),
+        generation_models=_get_generation_models(),
     )
