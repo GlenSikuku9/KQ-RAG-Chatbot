@@ -1,4 +1,4 @@
-"""Ownership-checked, one-record-per-user/message feedback storage (I16)."""
+"""Ownership-checked, one-record-per-ended-conversation feedback storage (I16)."""
 
 import logging
 
@@ -6,7 +6,7 @@ from fastapi import HTTPException, status
 from google.cloud.firestore_v1 import Client, Transaction
 from pydantic import ValidationError
 
-from app.models.conversation import Conversation, ConversationMessage, SenderType
+from app.models.conversation import Conversation, ConversationStatus
 from app.models.database import encode_document_id, utc_now
 from app.models.feedback import Feedback, FeedbackRequest
 from app.models.user import AuthenticatedUser
@@ -20,29 +20,27 @@ class FeedbackService:
     def __init__(self, client: Client) -> None:
         self.client = client
 
-    def submit(self, user: AuthenticatedUser, message_id: str, request: FeedbackRequest) -> Feedback:
-        """Create or update exactly one feedback document for a caller/message pair."""
-        message_ref = self.client.collection("messages").document(encode_document_id(message_id))
+    def submit(self, user: AuthenticatedUser, conversation_id: str, request: FeedbackRequest) -> Feedback:
+        """Create or update one feedback document for a caller's ended conversation."""
+        conversation_ref = self.client.collection("conversations").document(encode_document_id(conversation_id))
         # A deterministic association key makes concurrent submissions converge on one record.
-        feedback_id = f"{user.uid}:{message_id}"
+        feedback_id = f"{user.uid}:{conversation_id}"
         feedback_ref = self.client.collection("feedback").document(encode_document_id(feedback_id))
 
         def operation(transaction: Transaction) -> Feedback:
-            message = self._read_message(message_ref.get(transaction=transaction, timeout=FIRESTORE_READ_TIMEOUT), message_id)
-            if message.sender_type != SenderType.CHATBOT:
-                raise HTTPException(status.HTTP_422_UNPROCESSABLE_ENTITY, "Feedback is allowed only for chatbot messages.")
-            conversation_ref = self.client.collection("conversations").document(encode_document_id(message.conversation_id))
             conversation = self._read_conversation(
-                conversation_ref.get(transaction=transaction, timeout=FIRESTORE_READ_TIMEOUT), message.conversation_id,
+                conversation_ref.get(transaction=transaction, timeout=FIRESTORE_READ_TIMEOUT), conversation_id,
             )
             if conversation.user_id != user.uid:
-                # Do not disclose another passenger's message or conversation existence.
-                raise HTTPException(status.HTTP_404_NOT_FOUND, "Chatbot message not found.")
+                # Do not disclose another passenger's conversation existence.
+                raise HTTPException(status.HTTP_404_NOT_FOUND, "Conversation not found.")
+            if conversation.status != ConversationStatus.ENDED:
+                raise HTTPException(status.HTTP_409_CONFLICT, "End the conversation before submitting feedback.")
             existing_snapshot = feedback_ref.get(transaction=transaction, timeout=FIRESTORE_READ_TIMEOUT)
             existing = self._read_feedback(existing_snapshot, feedback_id) if existing_snapshot.exists else None
             now = utc_now()
             feedback = Feedback(
-                feedback_id=feedback_id, user_id=user.uid, message_id=message_id,
+                feedback_id=feedback_id, user_id=user.uid, conversation_id=conversation_id,
                 rating=request.rating, comment=request.comment,
                 created_at=existing.created_at if existing else now, updated_at=now,
             )
@@ -52,22 +50,9 @@ class FeedbackService:
         return run_transaction(self.client, operation)
 
     @staticmethod
-    def _read_message(snapshot, message_id: str) -> ConversationMessage:
-        if not snapshot.exists:
-            raise HTTPException(status.HTTP_404_NOT_FOUND, "Chatbot message not found.")
-        try:
-            message = ConversationMessage.model_validate(snapshot.to_dict())
-            if message.message_id != message_id:
-                raise ValueError("Message identity mismatch.")
-            return message
-        except (ValidationError, ValueError) as error:
-            logger.error("Stored message failed validation during feedback submission.")
-            raise HTTPException(500, "Stored message is invalid; contact the administrator.") from error
-
-    @staticmethod
     def _read_conversation(snapshot, conversation_id: str) -> Conversation:
         if not snapshot.exists:
-            raise HTTPException(status.HTTP_404_NOT_FOUND, "Chatbot message not found.")
+            raise HTTPException(status.HTTP_404_NOT_FOUND, "Conversation not found.")
         try:
             conversation = Conversation.model_validate(snapshot.to_dict())
             if conversation.conversation_id != conversation_id:
