@@ -30,6 +30,8 @@ class MemoryReference:
         self.client, self.collection, self.identifier = client, collection, identifier
     def get(self, **kwargs):
         return Snapshot(self.client.records.setdefault(self.collection, {}).get(self.identifier))
+    def set(self, payload):
+        self.client.records.setdefault(self.collection, {})[self.identifier] = payload.copy()
 
 
 class MemoryQuery:
@@ -140,7 +142,7 @@ class ConversationStoreTests(unittest.TestCase):
         conversation = self.create()
         answers = Mock()
         answers.answer.side_effect = GenerationProviderError(503, "Provider unavailable")
-        service = ConversationService(self.store, answers)
+        service = ConversationService(self.store, answers, Mock())
         with self.assertRaises(GenerationProviderError):
             service.send(self.user, conversation.conversation_id, SendMessageRequest(question="Question?"))
         self.assertFalse(self.client.records.get("messages"))

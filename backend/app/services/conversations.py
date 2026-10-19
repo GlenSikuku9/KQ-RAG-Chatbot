@@ -1,6 +1,7 @@
 """Passenger-owned conversation storage and atomic message traceability (I15)."""
 
 import logging
+from time import perf_counter
 from uuid import uuid4
 
 from fastapi import HTTPException, status
@@ -20,6 +21,7 @@ from app.rag.grounded_generation import GroundedAnswerService, get_grounded_answ
 from app.services.firestore_client import (
     FIRESTORE_READ_TIMEOUT, firestore_operation, get_firestore_client, run_transaction,
 )
+from app.services.operational_logging import OperationalLogger, get_operational_logger
 
 
 logger = logging.getLogger(__name__)
@@ -197,15 +199,36 @@ class ConversationStore:
 class ConversationService:
     """Coordinates provider work outside the database transaction and persistence after it."""
 
-    def __init__(self, store: ConversationStore, grounded_answers: GroundedAnswerService) -> None:
+    def __init__(
+        self, store: ConversationStore, grounded_answers: GroundedAnswerService, operational_logger: OperationalLogger,
+    ) -> None:
         self.store = store
         self.grounded_answers = grounded_answers
+        self.operational_logger = operational_logger
 
     def send(self, user: AuthenticatedUser, conversation_id: str, request: SendMessageRequest) -> SendMessageResponse:
-        # Do not write a successful chatbot message until generation succeeds.
-        generated = self.grounded_answers.answer(request)
-        return self.store.save_exchange(user, conversation_id, request, generated)
+        started = perf_counter()
+        try:
+            # Do not write a successful chatbot message until generation succeeds.
+            generated = self.grounded_answers.answer(request)
+            result = self.store.save_exchange(user, conversation_id, request, generated)
+        except Exception as error:
+            # Record only a failure category/timing. The logging failure must not hide
+            # the original chat failure or turn it into a successful response.
+            try:
+                self.operational_logger.failed(error, (perf_counter() - started) * 1000)
+            except HTTPException:
+                logger.warning("Could not persist a privacy-minimised operational failure event.")
+            raise
+        try:
+            self.operational_logger.completed(generated, (perf_counter() - started) * 1000)
+        except HTTPException:
+            # The chat exchange is already safely committed; avoid falsely reporting
+            # it as failed merely because its non-critical analytics event is unavailable.
+            logger.warning("Could not persist a privacy-minimised operational completion event.")
+        return result
 
 
 def get_conversation_service() -> ConversationService:
-    return ConversationService(ConversationStore(get_firestore_client()), get_grounded_answer_service())
+    client = get_firestore_client()
+    return ConversationService(ConversationStore(client), get_grounded_answer_service(), OperationalLogger(client))
