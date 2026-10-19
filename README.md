@@ -55,6 +55,6 @@ The application is an informational customer-support system rather than a transa
 | RAG orchestration            | LangChain                                                | Retrieval, context preparation, and generation workflow              |
 | Document processing          | python-docx                                              | Editable DOCX paragraphs and tables                                  |
 | Embeddings                   | Multilingual E5-small (`intfloat/multilingual-e5-small`) | Local semantic representations of documents and questions            |
-| Answer generation            | Generative AI APIs                                       | Evidence-based responses and comparative model evaluation            |
+| Answer generation            | OpenRouter: Gemma 4 26B A4B, Gemma 4 31B; Google AI Studio: Gemini 3.8 Flash | Evidence-based responses and comparative model evaluation |
 
 Backend package versions are listed in [requirements.txt](backend/requirements.txt).
