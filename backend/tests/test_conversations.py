@@ -6,7 +6,12 @@ from fastapi import HTTPException
 from fastapi.testclient import TestClient
 
 from app.models.context import ContextSource
-from app.models.conversation import ConversationCreateRequest, ConversationStatus, SendMessageRequest
+from app.models.conversation import (
+    ConversationCreateRequest,
+    ConversationStatus,
+    ResponseSource,
+    SendMessageRequest,
+)
 from app.models.document_chunk import DocumentChunk
 from app.models.generation import GenerationResponse, GroundedAnswerResponse
 from app.models.user import AuthenticatedUser
@@ -124,10 +129,51 @@ class ConversationStoreTests(unittest.TestCase):
         self.assertEqual(result.chatbot_message.retrieved_chunks[0].chunk_id, "chunk-1")
         self.assertEqual(result.chatbot_message.retrieved_chunks[0].retrieval_rank, 1)
         self.assertAlmostEqual(result.chatbot_message.retrieved_chunks[0].similarity_score, 0.91)
+        self.assertEqual(result.chatbot_message.retrieved_chunks[0].source_title, "policy")
         detail = self.store.get_detail(self.user, conversation.conversation_id)
         self.assertEqual([message.sequence for message in detail.messages], [1, 2])
         self.assertEqual(detail.messages[1].retrieved_chunks[0].citation_id, "S1")
         self.assertNotIn("retrieved_chunks", next(iter(self.client.records["messages"].values())))
+        self.assertEqual(
+            self.client.records["conversations"][conversation.conversation_id]["next_sequence"],
+            3,
+        )
+
+    def test_later_turns_keep_question_and_answer_order(self):
+        conversation = self.create()
+        request = SendMessageRequest(question="What baggage allowance applies?", language="en")
+        first = self.store.save_exchange(self.user, conversation.conversation_id, request, generated_answer())
+        second = self.store.save_exchange(self.user, conversation.conversation_id, request, generated_answer())
+        self.assertEqual([first.customer_message.sequence, first.chatbot_message.sequence], [1, 2])
+        self.assertEqual([second.customer_message.sequence, second.chatbot_message.sequence], [3, 4])
+        detail = self.store.get_detail(self.user, conversation.conversation_id)
+        self.assertEqual(
+            [(message.sender_type.value, message.sequence) for message in detail.messages],
+            [("customer", 1), ("chatbot", 2), ("customer", 3), ("chatbot", 4)],
+        )
+
+    def test_clarification_response_persists_with_its_message_enum_value(self):
+        conversation = self.create()
+        clarification = GroundedAnswerResponse(
+            answer="Please share your route and travel date.",
+            language="en",
+            decision="clarification_required",
+            generation_called=False,
+            model=None,
+            sources=[],
+        )
+
+        result = self.store.save_exchange(
+            self.user,
+            conversation.conversation_id,
+            SendMessageRequest(question="Baggage?", language="en"),
+            clarification,
+        )
+
+        self.assertEqual(
+            result.chatbot_message.response_source,
+            ResponseSource.CLARIFICATION,
+        )
 
     def test_ended_or_foreign_conversation_cannot_receive_messages(self):
         conversation = self.create()

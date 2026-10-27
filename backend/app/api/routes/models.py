@@ -1,8 +1,8 @@
-"""Admin-only provider configuration inspection and connectivity probe."""
+"""Safe model selection metadata plus administrator-only connectivity probes."""
 
 from fastapi import APIRouter, Depends, HTTPException
 
-from app.api.dependencies import require_admin
+from app.api.dependencies import require_admin, require_passenger_or_admin
 from app.models.generation import ConfiguredModel, GenerationRequest, GenerationResponse
 from app.models.user import AuthenticatedUser
 from app.rag.generation import GenerationProviderError, get_generation_service
@@ -11,8 +11,10 @@ router = APIRouter()
 
 
 @router.get("", response_model=list[ConfiguredModel])
-def list_models(current_user: AuthenticatedUser = Depends(require_admin)) -> list[ConfiguredModel]:
-    """List safe metadata only: API keys are never returned."""
+def list_models(
+    current_user: AuthenticatedUser = Depends(require_passenger_or_admin),
+) -> list[ConfiguredModel]:
+    """List safe selectable-model metadata; API keys are never returned."""
     return get_generation_service().configured_models()
 
 

@@ -69,9 +69,18 @@ class OperationalLoggingTests(unittest.TestCase):
         stored = next(iter(client.records["operational_events"].values()))
         self.assertEqual(stored["duration_ms"], 12.5)
         self.assertEqual(stored["model_id"], "gemma")
+        self.assertEqual(stored["response_source"], "generated")
         self.assertNotIn("prompt", stored)
         self.assertNotIn("api_key", stored)
         self.assertNotIn("user_id", stored)
+
+    def test_clarification_decision_is_logged_with_the_persisted_source_name(self):
+        client = MemoryClient()
+        logger = OperationalLogger(client)
+        result = Mock(generation_called=False, decision="clarification_required", model=None)
+        logger.completed(result, 8.0)
+        stored = next(iter(client.records["operational_events"].values()))
+        self.assertEqual(stored["response_source"], "clarification")
 
     def test_chat_service_records_completion_fallback_and_failure_without_logging_content(self):
         store, answers, events = Mock(), Mock(), Mock()

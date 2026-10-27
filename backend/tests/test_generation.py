@@ -8,14 +8,17 @@ from app.rag.generation import GenerationProviderError, GenerationService
 
 class FakeClient:
     def __init__(self, response=None, error=None, **kwargs):
-        self.response, self.error, self.kwargs = response, error, kwargs
+        self.results = list(response) if isinstance(response, list) else [response]
+        self.error, self.kwargs = error, kwargs
         self.request = None
+        self.calls = 0
     def __enter__(self): return self
     def __exit__(self, *args): return False
     def post(self, url, **kwargs):
         self.request = (url, kwargs)
+        self.calls += 1
         if self.error: raise self.error
-        return self.response
+        return self.results.pop(0)
 
 
 def response(status, body):
@@ -43,6 +46,18 @@ class GenerationServiceTests(unittest.TestCase):
         self.assertEqual(fake.request[1]["headers"]["x-goog-api-key"], "secret")
         self.assertIn("gemini-flash:generateContent", fake.request[0])
 
+    def test_gemini_38_uses_low_thinking_without_thought_summaries(self):
+        model = GenerationModelSettings(
+            model_id="google", provider="google_ai_studio", upstream_model="gemini-3.8-flash", api_key="secret",
+        )
+        service, fake = self.service(
+            [model], default="google",
+            result=response(200, {"candidates": [{"content": {"parts": [{"text": "23 kg"}]}}]}),
+        )
+        service.generate("What is the baggage allowance?")
+        thinking = fake.request[1]["json"]["generationConfig"]["thinkingConfig"]
+        self.assertEqual(thinking, {"thinkingLevel": "low", "includeThoughts": False})
+
     def test_errors_do_not_fallback_to_another_model(self):
         models = [GenerationModelSettings(model_id="router", provider="openrouter", upstream_model="one", api_key="key"),
                   GenerationModelSettings(model_id="other", provider="openrouter", upstream_model="two", api_key="key")]
@@ -68,6 +83,19 @@ class GenerationServiceTests(unittest.TestCase):
         unconfigured, _ = self.service([model.model_copy(update={"api_key": None})])
         with self.assertRaisesRegex(GenerationProviderError, "API key"):
             unconfigured.generate("Hi")
+
+    def test_google_retries_transient_unavailability(self):
+        model = GenerationModelSettings(model_id="google", provider="google_ai_studio", upstream_model="gemini-3.8-flash", api_key="secret")
+        service, fake = self.service(
+            [model], default="google",
+            result=[
+                response(503, {}),
+                response(200, {"candidates": [{"content": {"parts": [{"text": "23 kg"}]}}]}),
+            ],
+        )
+        result = service.generate("Hi")
+        self.assertEqual(result.text, "23 kg")
+        self.assertEqual(fake.calls, 2)
 
     def test_list_metadata_never_contains_secret(self):
         model = GenerationModelSettings(model_id="router", provider="openrouter", upstream_model="one", api_key="secret")

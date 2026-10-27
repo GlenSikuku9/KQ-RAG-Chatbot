@@ -34,16 +34,23 @@ class GenerationService:
         model = self._select_model(model_id)
         if not model.api_key:
             raise GenerationProviderError(503, "The selected model is not configured with an API key.")
-        try:
-            if model.provider == "openrouter":
-                return self._openrouter(model, prompt, system_instruction)
-            return self._google_ai_studio(model, prompt, system_instruction)
-        except httpx.TimeoutException as error:
-            logger.warning("Generation request timed out for %s.", model.model_id)
-            raise GenerationProviderError(504, "The selected AI provider timed out. Please try again later.") from error
-        except httpx.RequestError as error:
-            logger.warning("Generation network failure for %s: %s", model.model_id, type(error).__name__)
-            raise GenerationProviderError(503, "The selected AI provider is unavailable. Please try again later.") from error
+        for attempt in (1, 2):
+            try:
+                if model.provider == "openrouter":
+                    return self._openrouter(model, prompt, system_instruction)
+                return self._google_ai_studio(model, prompt, system_instruction)
+            except httpx.TimeoutException as error:
+                logger.warning("Generation request timed out for %s.", model.model_id)
+                raise GenerationProviderError(504, "The selected AI provider timed out. Please try again later.") from error
+            except GenerationProviderError as error:
+                # Google often returns 503 under load; one retry covers a transient outage.
+                if error.status_code != 503 or attempt == 2:
+                    raise
+                logger.warning("Generation provider unavailable for %s; retrying.", model.model_id)
+            except httpx.RequestError as error:
+                logger.warning("Generation network failure for %s: %s", model.model_id, type(error).__name__)
+                raise GenerationProviderError(503, "The selected AI provider is unavailable. Please try again later.") from error
+        raise GenerationProviderError(503, "The selected AI provider is unavailable. Please try again later.")
 
     def _select_model(self, requested_id: str | None) -> GenerationModelSettings:
         model_id = requested_id or self.settings.default_generation_model_id
@@ -65,8 +72,20 @@ class GenerationService:
         return self._response(model, self._text(text), data.get("id"))
 
     def _google_ai_studio(self, model: GenerationModelSettings, prompt: str, system: str | None) -> GenerationResponse:
-        payload: dict = {"contents": [{"role": "user", "parts": [{"text": prompt}]}],
-                         "generationConfig": {"maxOutputTokens": model.max_output_tokens}}
+        payload: dict = {
+            "contents": [{"role": "user", "parts": [{"text": prompt}]}],
+            "generationConfig": {"maxOutputTokens": model.max_output_tokens},
+        }
+
+        if model.upstream_model.startswith("gemini-3."):
+            # Gemini 3.8 defaults to medium thinking and can sit past a 90s client
+            # deadline before the first response header. Chat uses the supported
+            # low level and skips thought summaries so the answer can return.
+            payload["generationConfig"]["thinkingConfig"] = {
+                "thinkingLevel": "low",
+                "includeThoughts": False,
+            }
+
         if system:
             payload["systemInstruction"] = {"parts": [{"text": system}]}
         data = self._post(f"https://generativelanguage.googleapis.com/v1beta/models/{model.upstream_model}:generateContent",
@@ -92,6 +111,9 @@ class GenerationService:
             raise GenerationProviderError(502, "The selected AI model is unavailable from its provider.")
         if response.status_code == 429:
             raise GenerationProviderError(429, "The selected AI provider rate limit was reached. Please try again later.")
+        if response.status_code in {500, 502, 503, 504}:
+            logger.warning("Generation provider returned status %s for %s.", response.status_code, model.model_id)
+            raise GenerationProviderError(503, "The selected AI provider is unavailable. Please try again later.")
         if response.status_code >= 400:
             logger.warning("Generation provider returned status %s for %s.", response.status_code, model.model_id)
             raise GenerationProviderError(502, "The selected AI provider rejected the request.")
