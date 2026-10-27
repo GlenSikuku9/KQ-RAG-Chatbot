@@ -57,6 +57,8 @@ class MessageChunk(BaseModel):
     citation_id: str = Field(min_length=2, max_length=32)
     similarity_score: float = Field(allow_inf_nan=False)
     retrieval_rank: int = Field(ge=1)
+    source_title: str | None = Field(default=None, max_length=300)
+    source_section: str | None = Field(default=None, max_length=500)
 
 
 class ConversationMessage(BaseModel):

@@ -28,7 +28,7 @@ class OperationalLogger:
             model_id=model.model_id if model else None,
             model_provider=model.provider if model else None,
             model_version=model.upstream_model if model else None,
-            response_source="generated" if result.generation_called else result.decision,
+            response_source=self._response_source(result),
         )
         self._write(event)
 
@@ -43,6 +43,16 @@ class OperationalLogger:
     def _write(self, event: OperationalEvent) -> None:
         with firestore_operation():
             self.client.collection("operational_events").document(encode_document_id(event.event_id)).set(event.model_dump())
+
+    @staticmethod
+    def _response_source(result: GroundedAnswerResponse) -> str:
+        # Retrieval decisions use "clarification_required"; analytics uses the shorter
+        # persisted message enum ("clarification") so events stay queryable.
+        if result.generation_called:
+            return "generated"
+        if result.decision == "clarification_required":
+            return "clarification"
+        return "fallback"
 
     @staticmethod
     def _category(error: Exception) -> str:

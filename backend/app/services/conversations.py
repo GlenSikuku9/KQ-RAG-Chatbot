@@ -27,6 +27,11 @@ from app.services.operational_logging import OperationalLogger, get_operational_
 logger = logging.getLogger(__name__)
 
 
+def _source_title(source: str) -> str:
+    name = source.replace("\\", "/").rsplit("/", 1)[-1]
+    return name[:-5] if name.lower().endswith(".docx") else name
+
+
 class ConversationStore:
     """All conversation reads validate ownership before returning stored data."""
 
@@ -35,6 +40,12 @@ class ConversationStore:
 
     def _conversation_reference(self, conversation_id: str) -> DocumentReference:
         return self.client.collection("conversations").document(encode_document_id(conversation_id))
+
+    @staticmethod
+    def _conversation_payload(conversation: Conversation) -> dict:
+        # next_sequence is hidden from API clients but must be stored so later
+        # turns keep passenger questions and answers in order.
+        return {**conversation.model_dump(), "next_sequence": conversation.next_sequence}
 
     def _message_reference(self, message_id: str) -> DocumentReference:
         return self.client.collection("messages").document(encode_document_id(message_id))
@@ -71,7 +82,10 @@ class ConversationStore:
 
         def operation(transaction: Transaction) -> Conversation:
             # The random ID is generated before retries, so every retry writes one record.
-            transaction.set(self._conversation_reference(conversation.conversation_id), conversation.model_dump())
+            transaction.set(
+                self._conversation_reference(conversation.conversation_id),
+                self._conversation_payload(conversation),
+            )
             return conversation
 
         return run_transaction(self.client, operation)
@@ -107,7 +121,7 @@ class ConversationStore:
             if conversation.status == ConversationStatus.ENDED:
                 return conversation
             ended = conversation.model_copy(update={"status": ConversationStatus.ENDED, "ended_at": utc_now()})
-            transaction.set(reference, ended.model_dump())
+            transaction.set(reference, self._conversation_payload(ended))
             return ended
 
         return run_transaction(self.client, operation)
@@ -135,7 +149,14 @@ class ConversationStore:
                 sender_type=SenderType.CUSTOMER, message_text=request.question, language=language, timestamp=now,
             )
             model = generated.model
-            source = ResponseSource.GENERATED if generated.generation_called else ResponseSource(generated.decision)
+            # Retrieval uses "clarification_required" while persisted messages use the
+            # shorter "clarification" enum value. Keep that boundary explicit.
+            if generated.generation_called:
+                source = ResponseSource.GENERATED
+            elif generated.decision == "clarification_required":
+                source = ResponseSource.CLARIFICATION
+            else:
+                source = ResponseSource.FALLBACK
             chatbot = ConversationMessage(
                 message_id=chatbot_id, conversation_id=conversation_id, sequence=conversation.next_sequence + 1,
                 sender_type=SenderType.CHATBOT, message_text=generated.answer, language=language, timestamp=now,
@@ -147,6 +168,8 @@ class ConversationStore:
                     message_chunk_id=f"{chatbot_id}_{source_item.chunk.chunk_id}", message_id=chatbot_id,
                     chunk_id=source_item.chunk.chunk_id, citation_id=source_item.citation_id,
                     similarity_score=source_item.score, retrieval_rank=source_item.retrieval_rank,
+                    source_title=_source_title(source_item.chunk.source),
+                    source_section=source_item.chunk.section,
                 ) for source_item in generated.sources],
             )
             # First question becomes a helpful title without exposing generated text or changing later titles.
@@ -156,7 +179,7 @@ class ConversationStore:
             updated = conversation.model_copy(update={
                 "title": title, "language": language, "next_sequence": conversation.next_sequence + 2,
             })
-            transaction.set(conversation_reference, updated.model_dump())
+            transaction.set(conversation_reference, self._conversation_payload(updated))
             transaction.set(self._message_reference(customer_id), customer.model_dump(exclude={"retrieved_chunks"}))
             transaction.set(self._message_reference(chatbot_id), chatbot.model_dump(exclude={"retrieved_chunks"}))
             for trace in chatbot.retrieved_chunks:
@@ -222,7 +245,7 @@ class ConversationService:
             raise
         try:
             self.operational_logger.completed(generated, (perf_counter() - started) * 1000)
-        except HTTPException:
+        except Exception:
             # The chat exchange is already safely committed; avoid falsely reporting
             # it as failed merely because its non-critical analytics event is unavailable.
             logger.warning("Could not persist a privacy-minimised operational completion event.")
