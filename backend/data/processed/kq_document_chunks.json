@@ -11715,15 +11715,7 @@
         "Body/block 6/row 7"
       ],
       "table_location": "Body/block 6",
-      "table_rows": [
-        1,
-        2,
-        3,
-        4,
-        5,
-        6,
-        7
-      ]
+      "table_rows": [1, 2, 3, 4, 5, 6, 7]
     },
     {
       "chunk_id": "e59caebaa2e3d4febd4d6409ca9c8c8d2f07a291841d22ea84b0b2fb094b06f9",
@@ -11736,11 +11728,7 @@
       "text": "FREQUENT FLYER MEMBERS\n\n(All Routes) Asante Silver, Gold & Platinum tiers: 1 additional PC as per the cabin of travel i.e 23kgs economy and 32kgs for business class\n\nReference Table",
       "section": null,
       "page": null,
-      "source_locations": [
-        "Body/block 8",
-        "Body/block 9",
-        "Body/block 10"
-      ],
+      "source_locations": ["Body/block 8", "Body/block 9", "Body/block 10"],
       "table_location": null,
       "table_rows": []
     },
@@ -11765,13 +11753,7 @@
         "Body/block 11/row 5"
       ],
       "table_location": "Body/block 11",
-      "table_rows": [
-        1,
-        2,
-        3,
-        4,
-        5
-      ]
+      "table_rows": [1, 2, 3, 4, 5]
     },
     {
       "chunk_id": "6506daa9afd1313e628476a12dcf98169f7734e4c1cd36f9d93df12b0bdcc85c",
@@ -11925,12 +11907,7 @@
         "Body/block 54/row 4"
       ],
       "table_location": "Body/block 54",
-      "table_rows": [
-        1,
-        2,
-        3,
-        4
-      ]
+      "table_rows": [1, 2, 3, 4]
     },
     {
       "chunk_id": "5f9a0e950ff6b995222d5f346e42f887fb180a02372d16f4ac207e514b3b8baa",
@@ -12159,19 +12136,7 @@
         "Body/block 132/row 11"
       ],
       "table_location": "Body/block 132",
-      "table_rows": [
-        1,
-        2,
-        3,
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11
-      ]
+      "table_rows": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
     },
     {
       "chunk_id": "30bceeb0c4a4e4e8b97cd8714c0a22ac00afaaab5c6119e8e2552020c14832d0",
@@ -12348,14 +12313,7 @@
         "Body/block 182/row 6"
       ],
       "table_location": "Body/block 182",
-      "table_rows": [
-        1,
-        2,
-        3,
-        4,
-        5,
-        6
-      ]
+      "table_rows": [1, 2, 3, 4, 5, 6]
     },
     {
       "chunk_id": "6997fead43c0ab0d3f926a636764918237f3876da92cdd114945526fd34cd214",
@@ -12405,11 +12363,7 @@
         "Body/block 196/row 3"
       ],
       "table_location": "Body/block 196",
-      "table_rows": [
-        1,
-        2,
-        3
-      ]
+      "table_rows": [1, 2, 3]
     },
     {
       "chunk_id": "38cd7ec666cb94a76380229b2732475e0e4b8db98408200a8046737e63387074",
@@ -13244,10 +13198,7 @@
       "text": "within the period of validity of the Ticket because at the time you request reservations we are unable to confirm a reservation, the validity of such Ticket will be extended, or you may be entitled to a refund in accordance with Article 10.\n\n3.2.3 If after having commenced your journey, you are prevented from travelling within the period of validity of the Ticket by reason of illness, we may extend the period of validity of your Ticket until the date when you become fit to travel or until our first flight after such date, from the point where the journey is resumed on which space is available in the class of service for which the fare has been paid. Such illness must be attested to by a medical certificate. When the flight coupons remaining in the Ticket, or in the case of an Electronic Ticket, the electronic coupon, involve one or more Stopovers, the validity of such Ticket may be extended for not more than three months from the date shown on such certificate. In such circumstances, we will similarly extend the period of validity of Tickets of other members of your immediate family accompanying you.",
       "section": null,
       "page": null,
-      "source_locations": [
-        "Body/block 59",
-        "Body/block 60"
-      ],
+      "source_locations": ["Body/block 59", "Body/block 60"],
       "table_location": null,
       "table_rows": []
     },
@@ -14271,11 +14222,7 @@
       "text": "- Whilst we will make every attempt to ensure your baggage is handled with care, you should know that Kenya Airways' liability for loss, delay or damage to baggage is limited unless a higher value is declared in advance and additional charges paid.\n\n[List level 1] - The extent of airline liability is not based on the weight of the luggage nor its value. Kenya Airways does not accept liability for fragile, valuable, perishable articles or baggage which is packed in damaged or unsuitable containers.\n\n[List level 1] - Under the Conditions of Carriage(Link: https://www.kenya-airways.com/en-ke/policies/conditions-of-carriage/ ) we accept no liability for the loss of jewellery, other valuables and money contained in checked baggage. You are advised to keep valuables, important documents and money either on your person or in your cabin baggage. We strongly recommend all passengers obtain adequate travel insurance cover prior to their journey.",
       "section": null,
       "page": null,
-      "source_locations": [
-        "Body/block 35",
-        "Body/block 36",
-        "Body/block 37"
-      ],
+      "source_locations": ["Body/block 35", "Body/block 36", "Body/block 37"],
       "table_location": null,
       "table_rows": []
     },
@@ -15093,11 +15040,7 @@
       "text": "Ticket and Will Not be Traveling. Can I Obtain a Refund?:\n\n[List level 1] - You have one year from the ticket's original issue date to reschedule your travel without losing the full value of the ticket (less any applicable change fees).\n\n[List level 1] - In addition should the Passenger not travel on a flight and they are holding a refundable or a non refundable ticket they are equally to benefit from a refund of said applicable taxes, charges and other fees.",
       "section": null,
       "page": null,
-      "source_locations": [
-        "Body/block 30",
-        "Body/block 31",
-        "Body/block 32"
-      ],
+      "source_locations": ["Body/block 30", "Body/block 31", "Body/block 32"],
       "table_location": null,
       "table_rows": []
     },
@@ -15288,10 +15231,7 @@
         "Body/block 58/row 2"
       ],
       "table_location": "Body/block 58",
-      "table_rows": [
-        1,
-        2
-      ]
+      "table_rows": [1, 2]
     },
     {
       "chunk_id": "3f0d7ac43faf2d87798823cb4af8a85149dc2cb54e005f34ee2ee42f65c80623",
@@ -15304,9 +15244,7 @@
       "text": "Name Change",
       "section": null,
       "page": null,
-      "source_locations": [
-        "Body/block 60"
-      ],
+      "source_locations": ["Body/block 60"],
       "table_location": null,
       "table_rows": []
     },
@@ -15328,10 +15266,7 @@
         "Body/block 61/row 2"
       ],
       "table_location": "Body/block 61",
-      "table_rows": [
-        1,
-        2
-      ]
+      "table_rows": [1, 2]
     },
     {
       "chunk_id": "0ce8057dc8260eac8fb14a6ef086b4918327ea8eabbccdae881fb8410ae08ab3",
@@ -15370,10 +15305,7 @@
         "Body/block 67/row 2"
       ],
       "table_location": "Body/block 67",
-      "table_rows": [
-        1,
-        2
-      ]
+      "table_rows": [1, 2]
     },
     {
       "chunk_id": "470c1c11531a5429797cf1eea32aea5aca221c7a7884d53860d25f3f9772abed",
@@ -15386,9 +15318,7 @@
       "text": "Administrative Fees:",
       "section": null,
       "page": null,
-      "source_locations": [
-        "Body/block 69"
-      ],
+      "source_locations": ["Body/block 69"],
       "table_location": null,
       "table_rows": []
     },
@@ -15416,17 +15346,7 @@
         "Body/block 70/row 9"
       ],
       "table_location": "Body/block 70",
-      "table_rows": [
-        1,
-        2,
-        3,
-        4,
-        5,
-        6,
-        7,
-        8,
-        9
-      ]
+      "table_rows": [1, 2, 3, 4, 5, 6, 7, 8, 9]
     },
     {
       "chunk_id": "51e0152b2bc5e6e92b96b35de6adc40ec786ab442aab10105ef46db9f4f32ea6",
@@ -15439,9 +15359,7 @@
       "text": "First Needs Expense (FNE):",
       "section": null,
       "page": null,
-      "source_locations": [
-        "Body/block 72"
-      ],
+      "source_locations": ["Body/block 72"],
       "table_location": null,
       "table_rows": []
     },
@@ -15463,10 +15381,7 @@
         "Body/block 73/row 2"
       ],
       "table_location": "Body/block 73",
-      "table_rows": [
-        1,
-        2
-      ]
+      "table_rows": [1, 2]
     },
     {
       "chunk_id": "3289fa37c6901ab7057b6c9ab27dd7c84944c7aed6196dcff206909522e6b526",
@@ -15479,10 +15394,7 @@
       "text": "Arms and Ammunition:\n\nThe customer Service Agent shall contact security personnel or Station Manager for handling procedures. The local security procedures at the Departure and arrival stations shall be adhered to.",
       "section": null,
       "page": null,
-      "source_locations": [
-        "Body/block 75",
-        "Body/block 76"
-      ],
+      "source_locations": ["Body/block 75", "Body/block 76"],
       "table_location": null,
       "table_rows": []
     },
@@ -15504,11 +15416,7 @@
         "Body/block 77/row 3"
       ],
       "table_location": "Body/block 77",
-      "table_rows": [
-        1,
-        2,
-        3
-      ]
+      "table_rows": [1, 2, 3]
     },
     {
       "chunk_id": "b4d187fd7277e037674ef5d4bd16b128f902f08086cbc2bbe19bfc7f58439384",
@@ -15521,9 +15429,7 @@
       "text": "Heavy Bag Charges:",
       "section": null,
       "page": null,
-      "source_locations": [
-        "Body/block 79"
-      ],
+      "source_locations": ["Body/block 79"],
       "table_location": null,
       "table_rows": []
     },
@@ -15551,16 +15457,7 @@
         "Body/block 80/row 8"
       ],
       "table_location": "Body/block 80",
-      "table_rows": [
-        1,
-        2,
-        3,
-        4,
-        5,
-        6,
-        7,
-        8
-      ]
+      "table_rows": [1, 2, 3, 4, 5, 6, 7, 8]
     },
     {
       "chunk_id": "1acc9e0ba2e58bacd94d8f8312253a1640ad6492370d83c825d415971a0d0a40",
@@ -15919,12 +15816,7 @@
         "Body/block 71/row 4"
       ],
       "table_location": "Body/block 71",
-      "table_rows": [
-        1,
-        2,
-        3,
-        4
-      ]
+      "table_rows": [1, 2, 3, 4]
     },
     {
       "chunk_id": "a0f3e20eb1e4e62312acd729c2fbf42374c4e069242c7ccdb15a46693476e89b",
@@ -16433,16 +16325,7 @@
         "Body/block 220/row 8"
       ],
       "table_location": "Body/block 220",
-      "table_rows": [
-        1,
-        2,
-        3,
-        4,
-        5,
-        6,
-        7,
-        8
-      ]
+      "table_rows": [1, 2, 3, 4, 5, 6, 7, 8]
     },
     {
       "chunk_id": "0e4a8953b904d851dd17897bcccaadb172bb170a6790926d4aa67f08c4f80f55",
