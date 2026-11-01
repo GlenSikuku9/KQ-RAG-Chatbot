@@ -45,7 +45,10 @@ class Settings(BaseModel):
     environment: str = Field(default="development")
     debug: bool = Field(default=True)
     api_prefix: str = "/api/v1"
-    cors_origins: list[str] = Field(default_factory=lambda: ["http://localhost:5173", "http://localhost:3000"])
+    cors_origins: list[str] = Field(default_factory=lambda: [
+        "http://localhost:5173", "http://127.0.0.1:5173",
+        "http://localhost:5174", "http://127.0.0.1:5174", "http://localhost:3000",
+    ])
 
     firestore_project_id: str | None = None
     firebase_credentials_path: Path | None = None
@@ -150,7 +153,10 @@ def get_settings() -> Settings:
         environment=os.getenv("ENVIRONMENT", "development"),
         debug=_get_bool("DEBUG", True),
         api_prefix=os.getenv("API_PREFIX", "/api/v1"),
-        cors_origins=_get_list("CORS_ORIGINS", ["http://localhost:5173", "http://localhost:3000"]),
+        cors_origins=_get_list("CORS_ORIGINS", [
+            "http://localhost:5173", "http://127.0.0.1:5173",
+            "http://localhost:5174", "http://127.0.0.1:5174", "http://localhost:3000",
+        ]),
         firestore_project_id=_get_optional("FIRESTORE_PROJECT_ID"),
         firebase_credentials_path=_get_path("FIREBASE_CREDENTIALS_PATH", None),
         raw_data_dir=_get_path("RAW_DATA_DIR", BASE_DIR / "data" / "raw"),
