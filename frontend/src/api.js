@@ -8,14 +8,14 @@ const baseUrl = configuredApiUrl ? `${configuredApiUrl}/api/v1` : "/api/v1";
 const REQUEST_TIMEOUT_MS = 15000;
 
 /** Send the current Firebase ID token with every protected backend request. */
-export async function authenticatedRequest(user, path, init = {}, forceRefreshToken = false) {
+export async function authenticatedRequest(user, path, init = {}, forceRefreshToken = false, timeoutMs = REQUEST_TIMEOUT_MS) {
   const token = await user.getIdToken(forceRefreshToken);
 
   const request = async () => {
     // Never leave the authentication screen waiting forever when Uvicorn or
     // Firestore is unavailable; the caller can then show a useful retry action.
     const controller = new AbortController();
-    const timeout = window.setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+    const timeout = window.setTimeout(() => controller.abort(), timeoutMs);
     try {
       return await fetch(`${baseUrl}${path}`, {
         ...init,
@@ -130,7 +130,7 @@ export function sendConversationMessage(
       language,
       model_id: modelId,
     }),
-  });
+  }, false, 90000);
 }
 
 // Administrator requests remain behind the same Firebase bearer-token boundary.
