@@ -918,6 +918,45 @@ a {
   }
 }
 
+/* Admin dashboard uses its own neutral workspace while retaining KQ red accents. */
+.admin-shell { display: grid; min-height: calc(100vh - 4.5rem); grid-template-columns: 16rem 1fr; background: #f4f7fa; }
+.admin-dashboard-page { max-width: none; padding: 0; }
+.admin-sidebar { display: flex; flex-direction: column; gap: 0.75rem; padding: 2rem 1.25rem; color: #ffffff; background: #092c68; }
+.admin-mark { margin: 0; font-weight: 900; letter-spacing: 0.08em; }
+.admin-mark span { color: #ef3d43; }
+.admin-caption, .admin-sidebar-note { color: #cbd8ec; font-size: 0.8rem; line-height: 1.5; }
+.admin-sidebar nav { display: grid; gap: 0.35rem; margin-top: 1.5rem; }
+.admin-nav-item { padding: 0.8rem; border: 0; border-radius: 0.45rem; color: #e8effa; background: transparent; text-align: left; font-weight: 700; }
+.admin-nav-item:hover, .admin-nav-item.active { color: #092c68; background: #ffffff; }
+.admin-sidebar-note { margin-top: auto; }
+.admin-content { width: min(100%, 90rem); padding: clamp(1.25rem, 4vw, 3rem); margin: 0 auto; }
+.admin-header { display: flex; align-items: end; justify-content: space-between; gap: 1rem; margin-bottom: 1.5rem; }
+.admin-header h1 { margin: 0.3rem 0 0; color: #092c68; }
+.admin-upload { position: relative; overflow: hidden; }
+.admin-upload input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+.success { color: #17633a; background: #e9f7ef; }
+.admin-table-card { overflow-x: auto; border: 1px solid var(--line); border-radius: 0.8rem; background: #ffffff; box-shadow: var(--shadow); }
+.admin-table { width: 100%; border-collapse: collapse; min-width: 48rem; }
+.admin-table th, .admin-table td { padding: 1rem; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+.admin-table th { color: var(--muted); background: #f8fafc; font-size: 0.75rem; letter-spacing: 0.06em; text-transform: uppercase; }
+.admin-table td small { display: block; margin-top: 0.3rem; color: var(--muted); }
+.admin-version { max-width: 12rem; overflow-wrap: anywhere; font-size: 0.78rem; }
+.status-badge { display: inline-block; padding: 0.3rem 0.55rem; border-radius: 999px; background: #e8edf4; font-size: 0.78rem; font-weight: 700; }
+.status-badge.processed, .status-badge.active { color: #17633a; background: #e9f7ef; }
+.status-badge.failed { color: #8b1117; background: #fff0f0; }
+.admin-empty { padding: 2rem !important; color: var(--muted); text-align: center !important; }
+.admin-modal-backdrop { position: fixed; inset: 0; z-index: 50; display: grid; padding: 1rem; place-items: center; background: rgb(9 44 104 / 45%); }
+.admin-modal { width: min(100%, 54rem); max-height: min(90vh, 50rem); overflow: auto; padding: 1.5rem; border-radius: 0.8rem; background: #ffffff; box-shadow: 0 24px 70px rgb(12 39 84 / 30%); }
+.admin-modal > header { display: flex; align-items: start; justify-content: space-between; gap: 1rem; }
+.admin-modal h2 { margin-top: 0; color: #092c68; }
+.admin-transcript { display: grid; gap: 1rem; }
+.admin-transcript-message { padding: 1rem; border-radius: 0.7rem; background: #f1f5f9; }
+.admin-transcript-message.customer { margin-left: 10%; background: #eef5ff; }
+.admin-transcript-message p { margin: 0.45rem 0; white-space: pre-wrap; line-height: 1.55; }
+.admin-transcript-message .formatted-answer { margin-top: 0.55rem; line-height: 1.6; }
+.admin-source-list { display: grid; gap: 0.25rem; margin-top: 0.75rem; color: var(--muted); font-size: 0.8rem; }
+@media (max-width: 760px) { .admin-shell { grid-template-columns: 1fr; } .admin-sidebar { min-height: auto; } .admin-sidebar-note { margin-top: 1rem; } .admin-header { align-items: start; flex-direction: column; } }
+
 /* Final chat-window layout overrides: the conversation area grows, while the
    composer remains visible as a dedicated footer like the reference design. */
 .chat-window-wrap {

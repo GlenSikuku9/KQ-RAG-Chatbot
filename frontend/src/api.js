@@ -1,19 +1,35 @@
 // IPv4 avoids the common Windows localhost (::1) versus Uvicorn (127.0.0.1)
 // mismatch that makes a healthy local API appear unreachable in the browser.
-const baseUrl = `${import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:8000"}/api/v1`;
+// In Vite development, use the same-origin proxy so changing from port 5173
+// to 5174 (or another free port) cannot create a browser CORS preflight error.
+// A configured absolute URL remains available for deployed environments.
+const configuredApiUrl = import.meta.env.VITE_API_BASE_URL?.trim();
+const baseUrl = configuredApiUrl ? `${configuredApiUrl}/api/v1` : "/api/v1";
+const REQUEST_TIMEOUT_MS = 15000;
 
 /** Send the current Firebase ID token with every protected backend request. */
-export async function authenticatedRequest(user, path, init = {}) {
-  const token = await user.getIdToken();
+export async function authenticatedRequest(user, path, init = {}, forceRefreshToken = false) {
+  const token = await user.getIdToken(forceRefreshToken);
 
-  const request = () => fetch(`${baseUrl}${path}`, {
-    ...init,
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-      ...init.headers,
-    },
-  });
+  const request = async () => {
+    // Never leave the authentication screen waiting forever when Uvicorn or
+    // Firestore is unavailable; the caller can then show a useful retry action.
+    const controller = new AbortController();
+    const timeout = window.setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+    try {
+      return await fetch(`${baseUrl}${path}`, {
+        ...init,
+        signal: controller.signal,
+        headers: {
+          Authorization: `Bearer ${token}`,
+          ...(init.body instanceof FormData ? {} : { "Content-Type": "application/json" }),
+          ...init.headers,
+        },
+      });
+    } finally {
+      window.clearTimeout(timeout);
+    }
+  };
 
   let response;
 
@@ -45,7 +61,7 @@ export function syncProfile(user) {
   return authenticatedRequest(user, "/auth/profile/sync", {
     method: "POST",
     body: "{}",
-  });
+  }, true);
 }
 
 /** Create a passenger-owned conversation using the selected language preference. */
@@ -105,4 +121,20 @@ export function sendConversationMessage(
       model_id: modelId,
     }),
   });
+}
+
+// Administrator requests remain behind the same Firebase bearer-token boundary.
+export const adminDocuments = (user) => authenticatedRequest(user, "/admin/documents");
+export const adminUsers = (user) => authenticatedRequest(user, "/admin/users");
+export const adminConversations = (user) => authenticatedRequest(user, "/admin/conversations");
+export const adminConversation = (user, id) => authenticatedRequest(user, `/admin/conversations/${id}`);
+export const adminUpdateRole = (user, id, role) => authenticatedRequest(user, `/admin/users/${id}/role`, { method: "PATCH", body: JSON.stringify({ role }) });
+export const adminUpdateStatus = (user, id, disabled) => authenticatedRequest(user, `/admin/users/${id}/status`, { method: "PATCH", body: JSON.stringify({ disabled }) });
+export const adminDeleteDocument = (user, id) => authenticatedRequest(user, `/admin/documents/${id}`, { method: "DELETE" });
+export const adminProcessDocument = (user, id) => authenticatedRequest(user, `/admin/documents/${id}/process`, { method: "POST" });
+export const adminUpdateDocument = (user, id, title, category) => authenticatedRequest(user, `/admin/documents/${id}`, { method: "PATCH", body: JSON.stringify({ title, category }) });
+export function adminUploadDocument(user, file) {
+  const form = new FormData();
+  form.append("file", file);
+  return authenticatedRequest(user, "/admin/documents", { method: "POST", body: form, headers: {} });
 }
