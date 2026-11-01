@@ -57,6 +57,16 @@ export async function authenticatedRequest(user, path, init = {}, forceRefreshTo
   return response.json();
 }
 
+export async function publicRequest(path) {
+  const response = await fetch(`${baseUrl}${path}`);
+  if (!response.ok) throw new Error("Public configuration is unavailable.");
+  return response.json();
+}
+
+export const getPassengerTheme = () => publicRequest("/theme");
+export const getPassengerThemeForAdmin = (user) => authenticatedRequest(user, "/admin/settings/passenger-theme");
+export const savePassengerTheme = (user, theme) => authenticatedRequest(user, "/admin/settings/passenger-theme", { method: "PUT", body: JSON.stringify(theme) });
+
 export function syncProfile(user) {
   return authenticatedRequest(user, "/auth/profile/sync", {
     method: "POST",
@@ -125,6 +135,7 @@ export function sendConversationMessage(
 
 // Administrator requests remain behind the same Firebase bearer-token boundary.
 export const adminDocuments = (user) => authenticatedRequest(user, "/admin/documents");
+export const adminAnalytics = (user, days = 30) => authenticatedRequest(user, `/admin/analytics?days=${days}`);
 export const adminUsers = (user) => authenticatedRequest(user, "/admin/users");
 export const adminConversations = (user) => authenticatedRequest(user, "/admin/conversations");
 export const adminConversation = (user, id) => authenticatedRequest(user, `/admin/conversations/${id}`);

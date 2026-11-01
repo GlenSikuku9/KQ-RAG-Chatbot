@@ -3,7 +3,7 @@
 from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile, status
 
 from app.api.dependencies import require_admin
-from app.models.admin import AdminDocument, AdminUser, DocumentUpdate, UserRoleUpdate, UserStatusUpdate
+from app.models.admin import AdminAnalytics, AdminDocument, AdminUser, DocumentUpdate, PassengerTheme, UserRoleUpdate, UserStatusUpdate
 from app.models.conversation import ConversationDetail
 from app.models.user import AuthenticatedUser
 from app.services import admin as service
@@ -11,6 +11,23 @@ from app.services.conversations import ConversationStore
 from app.services.firestore_client import get_firestore_client
 
 router = APIRouter()
+
+
+@router.get("/settings/passenger-theme", response_model=PassengerTheme)
+def read_passenger_theme(_: AuthenticatedUser = Depends(require_admin)):
+    return service.get_passenger_theme()
+
+
+@router.put("/settings/passenger-theme", response_model=PassengerTheme)
+def save_passenger_theme(payload: PassengerTheme, admin: AuthenticatedUser = Depends(require_admin)):
+    return service.save_passenger_theme(admin, payload)
+
+
+@router.get("/analytics", response_model=AdminAnalytics)
+def analytics(days: int = 30, _: AuthenticatedUser = Depends(require_admin)):
+    if days < 1 or days > 365:
+        raise HTTPException(status.HTTP_422_UNPROCESSABLE_ENTITY, "The reporting period must be between 1 and 365 days.")
+    return service.analytics(days)
 
 
 @router.get("/documents", response_model=list[AdminDocument])

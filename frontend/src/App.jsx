@@ -6,7 +6,7 @@ import {
   signOut,
 } from "firebase/auth";
 
-import { syncProfile } from "./api";
+import { getPassengerTheme, syncProfile } from "./api";
 import { PassengerChat } from "./components/PassengerChat";
 import { AdminDashboard } from "./admin/AdminDashboard";
 import { auth, firebaseConfigured } from "./firebase";
@@ -206,6 +206,16 @@ export function App() {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  useEffect(() => {
+    // Passenger colours are published configuration, not admin-dashboard styling.
+    getPassengerTheme().then((theme) => {
+      const root = document.documentElement;
+      Object.entries(theme).forEach(([key, value]) => root.style.setProperty(`--passenger-${key.replaceAll("_", "-")}`, value));
+    }).catch(() => {
+      // Built-in CSS defaults keep the chatbot usable if configuration is unavailable.
+    });
+  }, []);
 
   async function establishProfile(nextUser) {
     setError(null);
