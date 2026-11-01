@@ -26,6 +26,10 @@ def create_app() -> FastAPI:
         app.add_middleware(
             CORSMiddleware,
             allow_origins=settings.cors_origins,
+            # Vite may move from 5173 to another local port when that port is busy.
+            # Restrict the regex to loopback development hosts; production origins
+            # still come from the explicit CORS_ORIGINS setting above.
+            allow_origin_regex=r"https?://(localhost|127\.0\.0\.1):[0-9]+",
             allow_credentials=True,
             allow_methods=["*"],
             allow_headers=["*"],
@@ -68,6 +72,7 @@ _settings = get_settings()
 app = CORSMiddleware(
     _fastapi_app,
     allow_origins=_settings.cors_origins,
+    allow_origin_regex=r"https?://(localhost|127\.0\.0\.1):[0-9]+",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
