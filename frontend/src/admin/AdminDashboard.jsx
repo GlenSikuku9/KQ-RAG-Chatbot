@@ -11,13 +11,18 @@ import {
   adminUpdateRole,
   adminUpdateStatus,
   adminUploadDocument,
+  adminModels,
+  adminEvaluations,
+  adminLogs,
+  adminSetDefaultModel,
+  adminGenerateModelTest,
   adminUsers,
   getPassengerThemeForAdmin,
   savePassengerTheme,
 } from "../api";
 import { FormattedAnswer } from "../components/FormattedAnswer";
 
-const pages = ["Overview", "Documents", "Users", "Conversations", "Analytics", "Settings"];
+const pages = ["Overview", "Documents", "Users", "Conversations", "Analytics", "Models", "Logs", "Settings"];
 
 // Use one unambiguous day/month/year format throughout the administrator UI.
 function formatDate(value) {
@@ -25,6 +30,13 @@ function formatDate(value) {
     day: "2-digit",
     month: "2-digit",
     year: "numeric",
+  }).format(new Date(value));
+}
+
+function formatDateTime(value) {
+  return new Intl.DateTimeFormat("en-GB", {
+    day: "2-digit", month: "2-digit", year: "numeric",
+    hour: "2-digit", minute: "2-digit",
   }).format(new Date(value));
 }
 
@@ -54,6 +66,9 @@ export function AdminDashboard({ user, profile }) {
   const [analytics, setAnalytics] = useState(null);
   const [periodDays, setPeriodDays] = useState(30);
   const [theme, setTheme] = useState(null);
+  const [models, setModels] = useState([]);
+  const [evaluations, setEvaluations] = useState([]);
+  const [logs, setLogs] = useState([]);
 
   async function reload() {
     setLoading(true);
@@ -64,6 +79,8 @@ export function AdminDashboard({ user, profile }) {
       if (page === "Conversations") setConversations(await adminConversations(user));
       if (page === "Overview" || page === "Analytics") setAnalytics(await adminAnalytics(user, periodDays));
       if (page === "Settings") setTheme(await getPassengerThemeForAdmin(user));
+      if (page === "Models") { setModels(await adminModels(user)); setEvaluations(await adminEvaluations(user)); }
+      if (page === "Logs") setLogs(await adminLogs(user));
     } catch (error) {
       setNotice({ type: "error", text: error.message });
     } finally {
@@ -108,6 +125,8 @@ export function AdminDashboard({ user, profile }) {
           {page === "Overview" && <Overview analytics={analytics} />}
           {page === "Analytics" && <Analytics analytics={analytics} />}
           {page === "Settings" && <ThemeSettings user={user} theme={theme} setTheme={setTheme} onSaved={(message) => setNotice({ type: "success", text: message })} />}
+          {page === "Models" && <ModelManagement user={user} models={models} evaluations={evaluations} onChanged={reload} />}
+          {page === "Logs" && <LogsTable logs={logs} />}
           {page === "Documents" && <DocumentTable documents={documents} user={user} onChanged={reload} />}
           {page === "Users" && <UserTable users={users} user={user} onChanged={reload} />}
           {page === "Conversations" && <ConversationTable conversations={conversations} onSelect={async (id) => setSelectedConversation(await adminConversation(user, id))} />}
@@ -116,6 +135,19 @@ export function AdminDashboard({ user, profile }) {
       </section>
     </main>
   );
+}
+
+function ModelManagement({ user, models, evaluations, onChanged }) {
+  const [prompt, setPrompt] = useState("");
+  const [testResult, setTestResult] = useState(null);
+  async function testModel(modelId) { setTestResult({ loading: true }); try { setTestResult(await adminGenerateModelTest(user, modelId, prompt)); } catch (error) { setTestResult({ error: error.message }); } }
+  return <div className="model-management"><section className="admin-analytics-card model-test-panel"><h2>Model testing</h2><p className="admin-metric-note">Test a configured provider without creating a passenger conversation.</p><textarea value={prompt} onChange={(event) => setPrompt(event.target.value)} placeholder="Enter a test prompt…" /><div className="model-test-buttons">{models.map((model) => <button className="button secondary" key={model.model_id} type="button" disabled={!model.configured || !prompt.trim()} onClick={() => testModel(model.model_id)}>Test {model.model_id}</button>)}</div>{testResult?.loading && <p>Testing provider…</p>}{testResult?.error && <p className="notice error">{testResult.error}</p>}{testResult?.text && <div className="model-test-result"><strong>{testResult.model_id}</strong><p>{testResult.text}</p></div>}</section><div className="model-card-grid">{models.map((model) => <article className={`model-card ${model.is_default ? "default" : ""}`} key={model.model_id}><div className="model-card-heading"><h2>{model.model_id}</h2>{model.is_default && <span className="status-badge active">Default</span>}</div><p>{model.provider} · {model.upstream_model}</p><p>Languages: {model.language_support.map(languageLabel).join(", ")}</p><p className="admin-metric-note">{model.configured ? "Credentials configured" : "Not configured"}</p><p>Usage: <strong>{model.usage_count}</strong> ({model.usage_percentage}%)</p><p>Average response: <strong>{model.average_response_ms == null ? "Unavailable" : `${(model.average_response_ms / 1000).toFixed(2)} seconds`}</strong></p><p>Successful: {model.successful_requests} · Failed: {model.failed_requests}</p><button className="button secondary" type="button" disabled={model.is_default || !model.configured} onClick={async () => { await adminSetDefaultModel(user, model.model_id); onChanged(); }}>Set as default</button></article>)}</div><section className="admin-table-card evaluation-card"><h2>Evaluation comparison</h2>{evaluations.length ? <table className="admin-table"><thead><tr><th>Model</th><th>Language</th><th>Faithfulness</th><th>Answer relevance</th><th>Context precision</th><th>Context recall</th><th>Sample</th><th>Run</th></tr></thead><tbody>{evaluations.map((item) => <tr key={`${item.run_id}-${item.model_id}-${item.language}`}><td>{item.model_id}</td><td>{languageLabel(item.language)}</td><td>{metricValue(item.faithfulness)}</td><td>{metricValue(item.answer_relevance)}</td><td>{metricValue(item.context_precision)}</td><td>{metricValue(item.context_recall)}</td><td>{item.sample_size}</td><td><small>{item.dataset_id}<br />{formatDate(item.evaluated_at)}</small></td></tr>)}</tbody></table> : <p className="admin-empty">No persisted evaluation results are available. Complete the evaluation workflow before comparing models.</p>}</section></div>;
+}
+
+function metricValue(value) { return value == null ? "Unavailable" : `${(value * 100).toFixed(1)}%`; }
+
+function LogsTable({ logs }) {
+  return <div className="admin-table-card"><table className="admin-table"><thead><tr><th>Timestamp</th><th>Event</th><th>Description</th><th>Actor</th><th>Severity</th></tr></thead><tbody>{logs.map((item, index) => <tr key={`${item.timestamp}-${index}`}><td>{formatDate(item.timestamp)}</td><td>{item.event_type}</td><td>{item.description}</td><td>{item.actor}</td><td><span className={`status-badge ${item.severity === "error" ? "failed" : "active"}`}>{item.severity}</span></td></tr>)}{!logs.length && <tr><td colSpan="5" className="admin-empty">No recorded activity is available.</td></tr>}</tbody></table></div>;
 }
 
 function ThemeSettings({ user, theme, setTheme, onSaved }) {
@@ -150,7 +182,7 @@ function AnalyticsPanels({ analytics, compact = false }) {
   const labelStride = analytics.period_days <= 7 ? 1 : analytics.period_days <= 30 ? 5 : 14;
   return <div className={`admin-analytics-grid ${compact ? "compact" : ""}`}>
     <section className="admin-analytics-card"><h2>Conversation activity</h2><p className="admin-metric-note">Conversations started during the last {analytics.period_days} days. Hover or focus a bar for the exact date and count.</p><div className="activity-chart">{analytics.conversation_activity.length ? analytics.conversation_activity.map((item, index) => <div className="activity-bar" key={item.date} tabIndex="0" aria-label={`${formatChartTooltip(item.date)}: ${item.count} conversation${item.count === 1 ? "" : "s"}`}><span className="activity-bar-fill" style={{ height: `${(item.count / maxActivity) * 100}%` }} /><span className="activity-tooltip"><strong>{formatChartTooltip(item.date)}</strong><br />{item.count} conversation{item.count === 1 ? "" : "s"}</span><small>{index % labelStride === 0 || index === analytics.conversation_activity.length - 1 ? formatChartLabel(item.date) : ""}</small></div>) : <p className="admin-empty">No conversations in this period.</p>}</div></section>
-    <section className="admin-analytics-card"><h2>Language distribution</h2><MetricList values={labelLanguages(analytics.languages)} empty="No language data." /><h2>AI model usage</h2><MetricList values={analytics.models} empty="No model usage data." /></section>
+    <section className="admin-analytics-card"><h2>Language distribution</h2><LanguagePie values={analytics.languages} /><h2>AI model usage</h2><MetricList values={analytics.models} empty="No model usage data." /></section>
     {!compact && <><section className="admin-analytics-card"><h2>Response quality and timing</h2><p>Completed responses: <strong>{analytics.performance.completed_count}</strong></p><p>Average response time: <strong>{analytics.performance.completed_count ? `${(analytics.performance.average_response_ms / 1000).toFixed(2)} seconds` : "No completed responses"}</strong></p><p>Feedback ratings: <strong>{analytics.feedback.count ? `${analytics.feedback.average_rating}/5` : "No ratings"}</strong></p></section><section className="admin-analytics-card"><h2>Fallbacks and failures</h2><MetricList values={analytics.responses} empty="No response outcomes recorded." /><MetricList values={analytics.failures} empty="No failures recorded." /></section></>}
     {!compact && <section className="admin-analytics-card"><h2>User satisfaction</h2><p>Average rating: <strong>{analytics.feedback.count ? `${analytics.feedback.average_rating}/5` : "No ratings"}</strong></p><p>Submitted ratings: <strong>{analytics.feedback.count}</strong></p><RatingDistribution values={analytics.rating_distribution} /></section>}
     {!compact && <section className="admin-analytics-card"><h2>Data availability</h2><p className="admin-metric-note">Query categories, RAG evaluation scores, and CSV export are not recorded by the current backend, so they are intentionally not estimated here.</p></section>}
@@ -178,6 +210,21 @@ function MetricList({ values, empty }) {
   return entries.length ? <ul className="admin-metric-list">{entries.map(([name, count]) => <li key={name}><span>{name}</span><strong>{count}</strong></li>)}</ul> : <p className="admin-metric-note">{empty}</p>;
 }
 
+function LanguagePie({ values }) {
+  const labels = Object.entries(values || {}).map(([key, value]) => [languageLabel(key), value]);
+  const total = labels.reduce((sum, [, value]) => sum + value, 0);
+  if (!total) return <p className="admin-metric-note">No language data.</p>;
+  const colors = ["#0b2e6f", "#2774ae", "#76b9e8", "#8b9bb2"];
+  let start = 0;
+  const stops = labels.map(([label, value], index) => {
+    const end = start + (value / total) * 360;
+    const stop = `${colors[index % colors.length]} ${start}deg ${end}deg`;
+    start = end;
+    return { label, value, stop, color: colors[index % colors.length] };
+  });
+  return <div className="language-pie-layout"><div className="language-pie" style={{ background: `conic-gradient(${stops.map((item) => item.stop).join(", ")})` }} aria-label="Language distribution chart" /><ul className="language-pie-key">{stops.map((item) => <li key={item.label}><span style={{ background: item.color }} />{item.label}<strong>{item.value} ({Math.round(item.value / total * 100)}%)</strong></li>)}</ul></div>;
+}
+
 function RatingDistribution({ values }) {
   const ratings = [5, 4, 3, 2, 1];
   if (!Object.keys(values || {}).length) return <p className="admin-metric-note">No rating distribution is available.</p>;
@@ -185,9 +232,9 @@ function RatingDistribution({ values }) {
 }
 
 function DocumentTable({ documents, user, onChanged }) {
-  return <div className="admin-table-card"><table className="admin-table"><thead><tr><th>Filename</th><th>Category</th><th>Version</th><th>Uploaded</th><th>Status</th><th>Actions</th></tr></thead><tbody>
-    {documents.map((document) => <tr key={document.document_id}><td><strong>{document.filename}</strong><small>{document.title}</small></td><td>{document.category}</td><td className="admin-version">{document.version || "—"}</td><td>{formatDate(document.uploaded_at)}</td><td><span className={`status-badge ${document.status}`}>{document.status}</span></td><td><button className="text-button" type="button" onClick={async () => { const title = window.prompt("Document title", document.title); if (title) { await adminUpdateDocument(user, document.document_id, title, document.category); onChanged(); } }}>Edit</button> <button className="text-button" type="button" onClick={async () => { await adminProcessDocument(user, document.document_id); onChanged(); }}>Process</button> <button className="text-button" type="button" onClick={async () => { if (window.confirm(`Remove ${document.filename}?`)) { await adminDeleteDocument(user, document.document_id); onChanged(); } }}>Delete</button></td></tr>)}
-    {!documents.length && <tr><td colSpan="6" className="admin-empty">No documents have been published.</td></tr>}
+  return <div className="admin-table-card"><table className="admin-table"><thead><tr><th>Filename</th><th>Category</th><th>Version</th><th>Uploaded</th><th>Uploaded by</th><th>Status</th><th>Actions</th></tr></thead><tbody>
+    {documents.map((document) => <tr key={document.document_id}><td><strong>{document.filename}</strong><small>{document.title}</small></td><td>{document.category}</td><td className="admin-version">{document.version || "—"}</td><td>{formatDateTime(document.uploaded_at)}</td><td>{document.uploaded_by || "Unknown"}</td><td><span className={`status-badge ${document.status}`}>{document.status}</span></td><td><button className="text-button" type="button" onClick={async () => { const title = window.prompt("Document title", document.title); if (title) { await adminUpdateDocument(user, document.document_id, title, document.category); onChanged(); } }}>Edit</button> <button className="text-button" type="button" onClick={async () => { await adminProcessDocument(user, document.document_id); onChanged(); }}>Process</button> <button className="text-button" type="button" onClick={async () => { if (window.confirm(`Remove ${document.filename}?`)) { await adminDeleteDocument(user, document.document_id); onChanged(); } }}>Delete</button></td></tr>)}
+    {!documents.length && <tr><td colSpan="7" className="admin-empty">No documents have been published.</td></tr>}
   </tbody></table></div>;
 }
 
@@ -199,9 +246,9 @@ function UserTable({ users, user, onChanged }) {
 }
 
 function ConversationTable({ conversations, onSelect }) {
-  return <div className="admin-table-card"><table className="admin-table"><thead><tr><th>Conversation</th><th>User</th><th>Language</th><th>Started</th><th>Status</th><th /></tr></thead><tbody>
-    {conversations.map((item) => <tr key={item.conversation_id}><td><strong>{item.title}</strong><small>{item.conversation_id}</small></td><td>{item.user_id}</td><td>{item.language}</td><td>{formatDate(item.started_at)}</td><td><span className={`status-badge ${item.status}`}>{item.status}</span></td><td><button className="text-button" type="button" onClick={() => onSelect(item.conversation_id)}>Inspect</button></td></tr>)}
-    {!conversations.length && <tr><td colSpan="6" className="admin-empty">No conversations found.</td></tr>}
+  return <div className="admin-table-card"><table className="admin-table"><thead><tr><th>Conversation</th><th>User email</th><th>Language</th><th>Started</th><th>Messages</th><th>User messages</th><th>Status</th><th /></tr></thead><tbody>
+    {conversations.map((item) => <tr key={item.conversation_id}><td><strong>{item.title}</strong><small>{item.conversation_id}</small></td><td>{item.user_email || "Unavailable"}</td><td>{languageLabel(item.language)}</td><td>{formatDateTime(item.started_at)}</td><td>{item.message_count}</td><td>{item.customer_message_count}</td><td><span className={`status-badge ${item.status}`}>{item.status}</span></td><td><button className="text-button" type="button" onClick={() => onSelect(item.conversation_id)}>Inspect</button></td></tr>)}
+    {!conversations.length && <tr><td colSpan="8" className="admin-empty">No conversations found.</td></tr>}
   </tbody></table></div>;
 }
 

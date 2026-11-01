@@ -984,6 +984,12 @@ a {
 .activity-bar:focus { border-radius: 0.25rem; box-shadow: 0 0 0 2px #7da5d8; }
 .admin-metric-list { display: grid; gap: 0.45rem; padding: 0; margin: 0.75rem 0; list-style: none; }
 .admin-metric-list li { display: flex; justify-content: space-between; gap: 1rem; padding: 0.45rem 0; border-bottom: 1px solid var(--line); }
+.language-pie-layout { display: grid; grid-template-columns: 10rem 1fr; align-items: center; gap: 1rem; margin-bottom: 1.25rem; }
+.language-pie { width: 9rem; height: 9rem; border-radius: 50%; box-shadow: inset 0 0 0 1px rgb(9 44 104 / 10%); }
+.language-pie-key { display: grid; gap: 0.55rem; padding: 0; margin: 0; list-style: none; }
+.language-pie-key li { display: grid; grid-template-columns: 0.7rem 1fr auto; align-items: center; gap: 0.45rem; color: var(--muted); font-size: 0.78rem; }
+.language-pie-key li > span { width: 0.7rem; height: 0.7rem; border-radius: 50%; }
+.language-pie-key strong { color: var(--ink); }
 .rating-distribution { display: grid; gap: 0.45rem; margin-top: 1rem; }
 .rating-row { display: grid; grid-template-columns: minmax(8rem, 1fr) 3rem 2rem; align-items: center; gap: 0.6rem; padding: 0.4rem 0; border-bottom: 1px solid var(--line); }
 .rating-stars { color: #f5b335; letter-spacing: 0.08em; white-space: nowrap; }
@@ -1003,8 +1009,21 @@ a {
 .admin-transcript-message p { margin: 0.45rem 0; white-space: pre-wrap; line-height: 1.55; }
 .admin-transcript-message .formatted-answer { margin-top: 0.55rem; line-height: 1.6; }
 .admin-source-list { display: grid; gap: 0.25rem; margin-top: 0.75rem; color: var(--muted); font-size: 0.8rem; }
-@media (max-width: 900px) { .admin-metric-grid, .admin-analytics-grid, .admin-overview-lower { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-@media (max-width: 760px) { .admin-shell { grid-template-columns: 1fr; } .admin-sidebar { min-height: auto; } .admin-sidebar-note { margin-top: 1rem; } .admin-header { align-items: start; flex-direction: column; } .admin-metric-grid, .admin-analytics-grid, .admin-overview-lower { grid-template-columns: 1fr; } }
+.model-card-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
+.model-card { display: grid; gap: 0.45rem; padding: 1.25rem; border: 1px solid var(--line); border-radius: 0.8rem; background: #ffffff; box-shadow: var(--shadow); }
+.model-card.default { border-color: #174c91; box-shadow: 0 0 0 2px #dbeafe; }
+.model-card h2 { margin: 0; color: #092c68; font-size: 1rem; overflow-wrap: anywhere; }
+.model-card p { margin: 0; color: var(--muted); line-height: 1.45; }
+.model-card-heading { display: flex; align-items: start; justify-content: space-between; gap: 0.5rem; }
+.evaluation-card { margin-top: 1rem; padding: 1.25rem; }
+.model-test-panel { margin-bottom: 1rem; }
+.model-test-panel textarea { width: 100%; min-height: 5rem; padding: 0.75rem; border: 1px solid var(--line); border-radius: 0.45rem; resize: vertical; }
+.model-test-buttons { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.6rem; }
+.model-test-result { margin-top: 0.75rem; padding: 0.75rem; border-radius: 0.45rem; background: #f1f5f9; line-height: 1.55; }
+.evaluation-card h2 { margin-top: 0; color: #092c68; font-size: 1.05rem; }
+@media (max-width: 900px) { .admin-metric-grid, .admin-analytics-grid, .admin-overview-lower, .model-card-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 760px) { .admin-shell { grid-template-columns: 1fr; } .admin-sidebar { min-height: auto; } .admin-sidebar-note { margin-top: 1rem; } .admin-header { align-items: start; flex-direction: column; } .admin-metric-grid, .admin-analytics-grid, .admin-overview-lower, .model-card-grid { grid-template-columns: 1fr; } }
+@media (max-width: 560px) { .language-pie-layout { grid-template-columns: 1fr; justify-items: center; } .language-pie-key { width: 100%; } }
 
 /* Final chat-window layout overrides: the conversation area grows, while the
    composer remains visible as a dedicated footer like the reference design. */

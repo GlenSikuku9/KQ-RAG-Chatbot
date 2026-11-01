@@ -25,9 +25,10 @@ class GenerationService:
         self.models = {model.model_id: model for model in settings.generation_models}
 
     def configured_models(self) -> list[ConfiguredModel]:
+        default_model_id = self._stored_default_model_id() or self.settings.default_generation_model_id
         return [ConfiguredModel(model_id=model.model_id, provider=model.provider,
             upstream_model=model.upstream_model, configured=bool(model.api_key),
-            is_default=model.model_id == self.settings.default_generation_model_id)
+            is_default=model.model_id == default_model_id)
             for model in self.models.values()]
 
     def generate(self, prompt: str, model_id: str | None = None, system_instruction: str | None = None) -> GenerationResponse:
@@ -53,12 +54,25 @@ class GenerationService:
         raise GenerationProviderError(503, "The selected AI provider is unavailable. Please try again later.")
 
     def _select_model(self, requested_id: str | None) -> GenerationModelSettings:
-        model_id = requested_id or self.settings.default_generation_model_id
+        model_id = requested_id or self._stored_default_model_id() or self.settings.default_generation_model_id
         if not model_id:
             raise GenerationProviderError(503, "No default generation model is configured.")
         if model_id not in self.models:
             raise GenerationProviderError(404, "The requested generation model is not configured.")
         return self.models[model_id]
+
+    @staticmethod
+    def _stored_default_model_id() -> str | None:
+        """Use the administrator-selected default when Firestore has one; env config remains the fallback."""
+        try:
+            from app.services.firestore_client import FIRESTORE_READ_TIMEOUT, firestore_operation, get_firestore_client
+            with firestore_operation():
+                snapshot = get_firestore_client().collection("app_settings").document("generation_config").get(timeout=FIRESTORE_READ_TIMEOUT)
+            value = (snapshot.to_dict() or {}).get("default_model_id") if snapshot.exists else None
+            return value if isinstance(value, str) and value.strip() else None
+        except Exception:
+            # Model generation must continue using the environment default if settings storage is unavailable.
+            return None
 
     def _openrouter(self, model: GenerationModelSettings, prompt: str, system: str | None) -> GenerationResponse:
         messages = ([{"role": "system", "content": system}] if system else []) + [{"role": "user", "content": prompt}]
