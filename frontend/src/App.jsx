@@ -8,6 +8,7 @@ import {
 
 import { syncProfile } from "./api";
 import { PassengerChat } from "./components/PassengerChat";
+import { AdminDashboard } from "./admin/AdminDashboard";
 import { auth, firebaseConfigured } from "./firebase";
 
 function AuthScreen({ onAuthenticated }) {
@@ -160,26 +161,17 @@ function AppShell({ profile, user, onSignOut }) {
         </div>
       </header>
 
-      <main className="dashboard" id="home">
-        <section className="hero">
-          <p className="eyebrow">
-            {isAdmin ? "ADMINISTRATION" : "KENYA AIRWAYS CUSTOMER SUPPORT"}
-          </p>
-          <h1>
-            {isAdmin ? "Manage the support experience" : "How can we help you today?"}
-          </h1>
-          <p>
-            {isAdmin
-              ? "Administrative tools will appear here as their protected features are implemented."
-              : "Ask about Kenya Airways policies in English, Kiswahili, or a mix of both."}
-          </p>
-
-          {!isAdmin && (
+      <main className={`dashboard ${isAdmin ? "admin-dashboard-page" : ""}`} id="home">
+        {!isAdmin && (
+          <section className="hero">
+            <p className="eyebrow">KENYA AIRWAYS CUSTOMER SUPPORT</p>
+            <h1>How can we help you today?</h1>
+            <p>Ask about Kenya Airways policies in English, Kiswahili, or a mix of both.</p>
             <button className="button primary" type="button" onClick={() => setChatOpen(true)}>
               Start a conversation
             </button>
-          )}
-        </section>
+          </section>
+        )}
 
         {!isAdmin ? (
           <>
@@ -202,13 +194,7 @@ function AppShell({ profile, user, onSignOut }) {
             )}
           </>
         ) : (
-          <section className="coming-soon" id="admin">
-            <h2>Administrator dashboard</h2>
-            <p>
-              Document, user, analytics, theme, and model-management screens are
-              delivered in later issues.
-            </p>
-          </section>
+          <AdminDashboard user={user} profile={profile} />
         )}
       </main>
     </div>
