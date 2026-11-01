@@ -2,7 +2,12 @@ import { useEffect, useRef, useState } from "react";
 
 import {
   createConversation,
+  endConversation,
+  getConversation,
+  getConversationFeedback,
   getAvailableModels,
+  listConversations,
+  saveConversationFeedback,
   sendConversationMessage,
 } from "../api";
 import { FormattedAnswer } from "./FormattedAnswer";
@@ -11,6 +16,15 @@ const LANGUAGE_OPTIONS = [
   { value: "en", label: "English" },
   { value: "sw", label: "Kiswahili" },
   { value: "mixed", label: "English and Kiswahili" },
+];
+
+const SUGGESTED_QUESTIONS = [
+  "What is the baggage allowance for international flights?",
+  "How can I check in online?",
+  "What payment methods are available?",
+  "How can I request a ticket refund?",
+  "What travel documents do I need?",
+  "How can I change my booking?",
 ];
 
 function responseLabel(responseSource) {
@@ -122,10 +136,86 @@ function ChatMessage({ message }) {
   );
 }
 
-export function PassengerChat({ user }) {
+function FeedbackRating({ user, conversation, existingFeedback, onSaved }) {
+  const [rating, setRating] = useState(existingFeedback?.rating || 0);
+  const [comment, setComment] = useState(existingFeedback?.comment || "");
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    setRating(existingFeedback?.rating || 0);
+    setComment(existingFeedback?.comment || "");
+  }, [existingFeedback]);
+
+  async function submit(event) {
+    event.preventDefault();
+
+    if (!rating || saving) {
+      return;
+    }
+
+    setSaving(true);
+    setError(null);
+
+    try {
+      const saved = await saveConversationFeedback(
+        user,
+        conversation.conversation_id,
+        rating,
+        comment,
+      );
+      onSaved(saved);
+    } catch (reason) {
+      setError(reason instanceof Error ? reason.message : "Feedback could not be saved.");
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  return (
+    <section className="feedback-card" aria-labelledby="feedback-heading">
+      <p className="eyebrow" id="feedback-heading">CONVERSATION FEEDBACK</p>
+      <p>How helpful was this conversation?</p>
+      <form onSubmit={submit}>
+        <div className="star-row" role="radiogroup" aria-label="Rating from one to five stars">
+          {[1, 2, 3, 4, 5].map((value) => (
+            <button
+              className={value <= rating ? "star selected" : "star"}
+              key={value}
+              type="button"
+              role="radio"
+              aria-checked={value === rating}
+              aria-label={`${value} star${value === 1 ? "" : "s"}`}
+              onClick={() => setRating(value)}
+            >
+              ★
+            </button>
+          ))}
+        </div>
+        <textarea
+          value={comment}
+          onChange={(event) => setComment(event.target.value)}
+          placeholder="Tell us how we can improve (optional)"
+          maxLength="1000"
+          rows="2"
+        />
+        {error && <p className="notice error" role="alert">{error}</p>}
+        <button className="button secondary" type="submit" disabled={!rating || saving}>
+          {saving ? "Saving…" : existingFeedback ? "Update rating" : "Save rating"}
+        </button>
+      </form>
+    </section>
+  );
+}
+
+export function PassengerChat({ user, onClose }) {
   const [language, setLanguage] = useState("en");
   const [conversation, setConversation] = useState(null);
   const [messages, setMessages] = useState([]);
+  const [history, setHistory] = useState([]);
+  const [feedback, setFeedback] = useState(null);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [historyLoading, setHistoryLoading] = useState(true);
   const [question, setQuestion] = useState("");
   const [models, setModels] = useState([]);
   const [selectedModelId, setSelectedModelId] = useState("");
@@ -133,8 +223,36 @@ export function PassengerChat({ user }) {
   const [error, setError] = useState(null);
   const [isStarting, setIsStarting] = useState(false);
   const [isSending, setIsSending] = useState(false);
+  const [expanded, setExpanded] = useState(false);
   const pendingSubmission = useRef(false);
   const messageListRef = useRef(null);
+
+  useEffect(() => {
+    let ignoreResponse = false;
+
+    async function loadHistory() {
+      try {
+        const conversations = await listConversations(user);
+        if (!ignoreResponse) {
+          setHistory(conversations);
+        }
+      } catch (reason) {
+        if (!ignoreResponse) {
+          setError(reason instanceof Error ? reason.message : "Conversation history could not be loaded.");
+        }
+      } finally {
+        if (!ignoreResponse) {
+          setHistoryLoading(false);
+        }
+      }
+    }
+
+    loadHistory();
+
+    return () => {
+      ignoreResponse = true;
+    };
+  }, [user]);
 
   useEffect(() => {
     let ignoreResponse = false;
@@ -198,11 +316,45 @@ export function PassengerChat({ user }) {
       const nextConversation = await createConversation(user, language);
       setConversation(nextConversation);
       setMessages([]);
+      setFeedback(null);
       setQuestion("");
+      setDrawerOpen(false);
+      setHistory((current) => [nextConversation, ...current]);
     } catch (reason) {
       setError(reason instanceof Error ? reason.message : "We could not start a conversation. Please try again.");
     } finally {
       setIsStarting(false);
+    }
+  }
+
+  async function openConversation(conversationId) {
+    setError(null);
+
+    try {
+      const detail = await getConversation(user, conversationId);
+      const savedFeedback = await getConversationFeedback(user, conversationId);
+      setConversation(detail.conversation);
+      setMessages(detail.messages);
+      setFeedback(savedFeedback);
+      setDrawerOpen(false);
+    } catch (reason) {
+      setError(reason instanceof Error ? reason.message : "That conversation could not be reopened.");
+    }
+  }
+
+  async function finishConversation() {
+    if (!conversation || conversation.status !== "active" || isSending) {
+      return;
+    }
+
+    try {
+      const ended = await endConversation(user, conversation.conversation_id);
+      setConversation(ended);
+      setHistory((current) => current.map((item) => (
+        item.conversation_id === ended.conversation_id ? ended : item
+      )));
+    } catch (reason) {
+      setError(reason instanceof Error ? reason.message : "The conversation could not be ended.");
     }
   }
 
@@ -241,6 +393,12 @@ export function PassengerChat({ user }) {
         response.chatbot_message,
       ]);
       setConversation(response.conversation);
+      setHistory((current) => {
+        const withoutCurrent = current.filter(
+          (item) => item.conversation_id !== response.conversation.conversation_id,
+        );
+        return [response.conversation, ...withoutCurrent];
+      });
       setQuestion("");
     } catch (reason) {
       // Retain the text so the passenger can correct or retry the request.
@@ -263,12 +421,49 @@ export function PassengerChat({ user }) {
   }
 
   return (
-    <section className="chat-panel" id="chat" aria-labelledby="chat-heading">
+    <section
+      className={`chat-panel ${expanded ? "chat-panel-expanded" : ""}`}
+      id="chat"
+      aria-labelledby="chat-heading"
+    >
+      {drawerOpen && <button className="drawer-scrim" type="button" aria-label="Close conversation menu" onClick={() => setDrawerOpen(false)} />}
+      {drawerOpen && <aside className="chat-drawer open" aria-label="Conversation history">
+        <div className="drawer-heading">
+          <div>
+            <p className="eyebrow">KQ SUPPORT</p>
+            <h3>Your conversations</h3>
+          </div>
+          <button className="icon-button" type="button" onClick={() => setDrawerOpen(false)} aria-label="Close menu">×</button>
+        </div>
+        <button className="button primary drawer-new" type="button" onClick={startConversation} disabled={modelLoading || !selectedModelId}>+ New conversation</button>
+        {historyLoading ? <p className="muted">Loading history…</p> : !history.length ? <p className="muted">No saved conversations yet.</p> : (
+          <div className="history-list">
+            {history.map((item) => (
+              <button className="history-item" type="button" key={item.conversation_id} onClick={() => openConversation(item.conversation_id)}>
+                <strong>{item.title}</strong>
+                <span>{item.status === "ended" ? "Ended" : "Active"}</span>
+              </button>
+            ))}
+          </div>
+        )}
+        <p className="drawer-note">Your conversation history is tied to your secure passenger account.</p>
+      </aside>}
       <div className="chat-panel-heading">
         <div>
-          <p className="eyebrow">PASSENGER CHAT</p>
-          <h2 id="chat-heading">Talk to KQ Support</h2>
-          <p>Ask about Kenya Airways policies. Answers are grounded in available support information.</p>
+          <button className="menu-button" type="button" onClick={() => setDrawerOpen((current) => !current)} aria-label={drawerOpen ? "Close conversation history" : "Open conversation history"}>☰</button>
+          <p className="chat-brand-name">KQ SUPPORT</p>
+        </div>
+        <div className="chat-window-actions">
+          <button className="icon-button" type="button" onClick={onClose} aria-label="Minimise chat">−</button>
+          <button
+            className="icon-button"
+            type="button"
+            onClick={() => setExpanded((current) => !current)}
+            aria-label={expanded ? "Restore chat size" : "Expand chat"}
+          >
+            {expanded ? "↙" : "↗"}
+          </button>
+          <button className="icon-button" type="button" onClick={onClose} aria-label="Close chat">×</button>
         </div>
         <div className="chat-controls">
           <div className="control-field">
@@ -286,25 +481,6 @@ export function PassengerChat({ user }) {
               ))}
             </select>
           </div>
-          <div className="control-field">
-            <label htmlFor="model-preference">AI model</label>
-            <select
-              id="model-preference"
-              value={selectedModelId}
-              onChange={(event) => setSelectedModelId(event.target.value)}
-              disabled={modelLoading || isStarting || isSending || !models.length}
-            >
-              {modelLoading && <option>Loading models…</option>}
-              {!modelLoading && !models.length && (
-                <option>No configured models available</option>
-              )}
-              {models.map((model) => (
-                <option key={model.model_id} value={model.model_id}>
-                  {modelLabel(model)} — {model.provider === "openrouter" ? "OpenRouter" : "Google AI"}
-                </option>
-              ))}
-            </select>
-          </div>
           <button
             className="button secondary"
             type="button"
@@ -313,20 +489,41 @@ export function PassengerChat({ user }) {
           >
             {isStarting ? "Starting…" : "Start new conversation"}
           </button>
+          {conversation?.status === "active" && messages.length > 0 && (
+            <button className="button text-button" type="button" onClick={finishConversation} disabled={isSending}>
+              End conversation
+            </button>
+          )}
         </div>
       </div>
 
       <div className="conversation-status" aria-live="polite">
         {conversation
-          ? `Conversation active: ${conversation.title}`
-          : "Choose a language, then start a new conversation or send your first question."}
+          ? `Conversation ${conversation.status}: ${conversation.title}`
+          : "Select a suggested question or type your inquiry below."}
       </div>
 
       {error && <p className="notice error chat-error" role="alert">{error}</p>}
 
       <div className="message-list" ref={messageListRef} aria-live="polite" aria-relevant="additions">
         {!messages.length && !isSending && (
-          <p className="empty-chat">Your messages and KQ Support answers will appear here.</p>
+          <div className="welcome-screen">
+            <p className="welcome-mark">KQ</p>
+            <h3>Hello! How can we help you today?</h3>
+            <p className="empty-chat">Choose a common question or enter your inquiry below.</p>
+            <div className="suggested-questions">
+              {SUGGESTED_QUESTIONS.map((suggestion) => (
+                <button
+                  className="suggestion-chip"
+                  type="button"
+                  key={suggestion}
+                  onClick={() => setQuestion(suggestion)}
+                >
+                  {suggestion}
+                </button>
+              ))}
+            </div>
+          </div>
         )}
         {conversationTurns(messages).map((turn) => (
           <div
@@ -354,23 +551,48 @@ export function PassengerChat({ user }) {
           value={question}
           onChange={(event) => setQuestion(event.target.value)}
           onKeyDown={handleComposerKeyDown}
-          placeholder="For example: What is the baggage allowance for my flight?"
+          placeholder="Enter your inquiry..."
           rows="4"
           maxLength="4000"
-          disabled={isSending || isStarting || modelLoading || !selectedModelId}
+          disabled={isSending || isStarting || modelLoading || !selectedModelId || conversation?.status === "ended"}
           required
         />
         <div className="composer-actions">
-          <p>Press Enter to send. Use Shift+Enter for a new line.</p>
+          <div className="composer-meta">
+            <label className="composer-model-label" htmlFor="composer-model">
+              AI model
+              <select
+                id="composer-model"
+                value={selectedModelId}
+                onChange={(event) => setSelectedModelId(event.target.value)}
+                disabled={modelLoading || isSending || !models.length}
+              >
+                {models.map((model) => (
+                  <option key={model.model_id} value={model.model_id}>
+                    {modelLabel(model)}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <p>{question.length}/4000 · Enter to send, Shift+Enter for a new line</p>
+          </div>
           <button
             className="button primary"
             type="submit"
-            disabled={!question.trim() || isSending || isStarting || modelLoading || !selectedModelId}
+            disabled={!question.trim() || isSending || isStarting || modelLoading || !selectedModelId || conversation?.status === "ended"}
           >
             {isSending ? "Sending…" : "Send question"}
           </button>
         </div>
       </form>
+      {conversation?.status === "ended" && (
+        <FeedbackRating
+          user={user}
+          conversation={conversation}
+          existingFeedback={feedback}
+          onSaved={setFeedback}
+        />
+      )}
     </section>
   );
 }

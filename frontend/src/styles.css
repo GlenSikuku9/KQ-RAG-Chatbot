@@ -90,6 +90,63 @@ a {
   justify-self: center;
 }
 
+.auth-card-topline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 2.5rem;
+}
+
+.auth-card-topline .wordmark {
+  color: #0b2e6f;
+}
+
+.secure-badge {
+  padding: 0.35rem 0.65rem;
+  border-radius: 999px;
+  color: #0b2e6f;
+  background: #edf4ff;
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+.brand-emblem {
+  display: grid;
+  width: 4rem;
+  height: 4rem;
+  margin-bottom: 3rem;
+  place-items: center;
+  border: 2px solid rgb(255 255 255 / 80%);
+  border-radius: 50%;
+  color: #ffffff;
+  font-size: 1.25rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+}
+
+.brand-route {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 3rem;
+}
+
+.brand-route span {
+  display: block;
+  width: 3rem;
+  height: 0.2rem;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 65%);
+}
+
+.brand-route span:last-child {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: #f5b335;
+}
+
 .auth-card h2 {
   margin: 0.3rem 0;
   font-size: 2rem;
@@ -137,6 +194,18 @@ a {
 .chat-composer textarea:focus {
   border-color: var(--kq-red);
   outline: 3px solid #ffd7d9;
+}
+
+.auth-submit {
+  width: 100%;
+  min-height: 3rem;
+}
+
+.auth-footnote {
+  margin: 2.5rem 0 0;
+  color: var(--muted);
+  font-size: 0.75rem;
+  line-height: 1.5;
 }
 
 .button {
@@ -351,6 +420,63 @@ a {
     linear-gradient(#f7f9fc, #eef3f8);
 }
 
+.chat-window-wrap .message-list {
+  flex: 1 1 auto;
+  min-height: 8rem;
+  max-height: none;
+}
+
+.chat-window-wrap .chat-composer {
+  flex: 0 0 auto;
+}
+
+.welcome-screen {
+  width: min(100%, 34rem);
+  margin: auto;
+  text-align: center;
+}
+
+.welcome-mark {
+  display: grid;
+  width: 3.3rem;
+  height: 3.3rem;
+  margin: 0 auto 0.8rem;
+  place-items: center;
+  border-radius: 50%;
+  color: #0b2e6f;
+  background: #dcecff;
+  font-weight: 900;
+}
+
+.welcome-screen h3 {
+  margin: 0;
+  color: #0b2e6f;
+  font-size: clamp(1.35rem, 3vw, 2rem);
+}
+
+.suggested-questions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.55rem;
+  margin-top: 1.25rem;
+}
+
+.suggestion-chip {
+  padding: 0.65rem 0.85rem;
+  border: 1px solid #c7d5e8;
+  border-radius: 999px;
+  color: #0b2e6f;
+  background: #ffffff;
+  font-size: 0.82rem;
+  text-align: left;
+}
+
+.suggestion-chip:hover {
+  border-color: #0b2e6f;
+  background: #eef5ff;
+}
+
 .message-turn {
   display: grid;
   gap: 0.75rem;
@@ -511,6 +637,37 @@ a {
   font-size: 0.85rem;
 }
 
+.composer-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+}
+
+.composer-meta p {
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
+.composer-model-label {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.composer-model-label select {
+  max-width: 13rem;
+  padding: 0.45rem 0.6rem;
+  border: 1px solid var(--line);
+  border-radius: 0.45rem;
+  color: #0b2e6f;
+  background: #ffffff;
+  font-size: 0.78rem;
+}
+
 @keyframes message-arrival {
   from {
     opacity: 0;
@@ -562,5 +719,458 @@ a {
 
   .composer-actions .button {
     width: 100%;
+  }
+}
+
+/* Final chat-window layout overrides: the conversation area grows, while the
+   composer remains visible as a dedicated footer like the reference design. */
+.chat-window-wrap {
+  width: min(56rem, calc(100vw - 2rem));
+  bottom: 1rem;
+}
+
+.chat-window-wrap .chat-panel {
+  width: 100%;
+  height: min(52rem, calc(100vh - 2rem));
+  max-height: calc(100vh - 2rem);
+}
+
+/* Keep header, messages, composer, and feedback in one scrollable document.
+   This prevents the feedback form from being hidden below an inner scroller. */
+.chat-window-wrap .chat-panel {
+  display: block;
+  overflow-y: auto;
+}
+
+.chat-window-wrap .message-list {
+  display: grid;
+  min-height: 20rem;
+  max-height: none;
+  overflow: visible;
+}
+
+.chat-window-wrap .chat-composer {
+  display: grid;
+}
+
+.chat-window-wrap .chat-panel-expanded {
+  width: min(78rem, calc(100vw - 2rem));
+  height: calc(100vh - 2rem);
+  max-height: calc(100vh - 2rem);
+}
+
+.chat-panel-heading {
+  display: grid;
+  grid-template-columns: minmax(14rem, 1fr) minmax(18rem, 22rem) auto;
+  align-items: start;
+  gap: 1.5rem;
+  padding: 1.4rem 1.75rem;
+}
+
+.chat-panel-heading > div:first-child {
+  min-width: 0;
+}
+
+.chat-panel-heading h2 {
+  max-width: 16ch;
+  font-size: clamp(1.35rem, 3vw, 2.1rem);
+  line-height: 1.1;
+}
+
+.chat-panel-heading p:not(.eyebrow) {
+  max-width: 28rem;
+}
+
+.chat-window-actions {
+  grid-column: 3;
+  grid-row: 1;
+}
+
+.chat-controls {
+  grid-column: 2;
+  grid-row: 1;
+  min-width: 0;
+}
+
+.chat-drawer {
+  display: none;
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: min(24rem, 86%);
+  height: 100%;
+  max-height: 100%;
+  overflow-y: auto;
+  transform: none;
+}
+
+.chat-drawer.open {
+  display: flex;
+}
+
+.drawer-scrim {
+  display: block;
+}
+
+.message-list {
+  flex: 1 1 auto;
+  min-height: 0;
+  max-height: none;
+  padding: 1.5rem 1.75rem;
+}
+
+.chat-composer {
+  flex: 0 0 auto;
+  padding: 1rem 1.75rem 1.25rem;
+  background: #ffffff;
+}
+
+.chat-composer textarea {
+  min-height: 5.5rem;
+  max-height: 10rem;
+}
+
+.composer-actions {
+  align-items: end;
+}
+
+.composer-meta {
+  min-width: 0;
+}
+
+.composer-actions > .button {
+  min-width: 9rem;
+}
+
+@media (max-width: 760px) {
+  .chat-window-wrap {
+    right: 0.5rem;
+    bottom: 0.5rem;
+    width: calc(100vw - 1rem);
+  }
+
+  .chat-window-wrap .chat-panel,
+  .chat-window-wrap .chat-panel-expanded {
+    height: calc(100vh - 1rem);
+    max-height: calc(100vh - 1rem);
+  }
+
+  .chat-panel-heading {
+    grid-template-columns: 1fr auto;
+    gap: 0.75rem;
+    padding: 1rem;
+  }
+
+  .chat-controls {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+
+  .chat-window-actions {
+    grid-column: 2;
+  }
+
+  .message-list,
+  .chat-composer {
+    padding-right: 1rem;
+    padding-left: 1rem;
+  }
+}
+
+/* The floating assistant keeps the main support page visible, like an airline
+   website assistant, while giving the chat enough room for readable answers. */
+.support-preview {
+  max-width: 42rem;
+  padding: 2rem;
+  margin-top: 1.5rem;
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+  background: #ffffff;
+  box-shadow: var(--shadow);
+}
+
+.support-preview h2 {
+  margin: 0.4rem 0 0.5rem;
+  color: #0b2e6f;
+  font-size: clamp(1.5rem, 3vw, 2.2rem);
+}
+
+.support-preview p:not(.eyebrow) {
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.chat-launcher {
+  position: fixed;
+  right: clamp(1rem, 3vw, 2.5rem);
+  bottom: 1.5rem;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.8rem 1rem;
+  border: 0;
+  border-radius: 999px;
+  color: #ffffff;
+  background: #0b2e6f;
+  box-shadow: 0 12px 30px rgb(11 46 111 / 30%);
+  font-weight: 800;
+}
+
+.chat-launcher:hover {
+  background: #16458f;
+}
+
+.launcher-mark {
+  display: grid;
+  width: 2rem;
+  height: 2rem;
+  place-items: center;
+  border-radius: 50%;
+  color: #0b2e6f;
+  background: #f5b335;
+  font-size: 0.7rem;
+}
+
+.chat-window-wrap {
+  position: fixed;
+  right: clamp(0.75rem, 3vw, 2.5rem);
+  bottom: 1.5rem;
+  z-index: 30;
+  width: min(43rem, calc(100vw - 1.5rem));
+  max-height: calc(100vh - 3rem);
+}
+
+.chat-window-wrap .chat-panel {
+  display: flex;
+  flex-direction: column;
+  height: min(48rem, calc(100vh - 3rem));
+  max-height: calc(100vh - 3rem);
+  margin: 0;
+  box-shadow: 0 24px 70px rgb(12 39 84 / 30%);
+}
+
+.chat-window-wrap .chat-panel-expanded {
+  width: min(68rem, calc(100vw - 3rem));
+  height: min(56rem, calc(100vh - 3rem));
+}
+
+/* Keep the expanded panel centred in the viewport, never clipped to the right. */
+.chat-window-wrap .chat-panel-expanded {
+  position: fixed;
+  top: 1rem;
+  left: 50%;
+  z-index: 40;
+  width: min(78rem, calc(100vw - 2rem));
+  height: calc(100vh - 2rem);
+  max-height: calc(100vh - 2rem);
+  margin: 0;
+  transform: translateX(-50%);
+}
+
+.chat-brand-name {
+  margin: 0.25rem 0 0;
+  color: #0b2e6f;
+  font-size: 1rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+}
+
+@media (max-width: 760px) {
+  .chat-window-wrap .chat-panel-expanded {
+    top: 0.5rem;
+    width: calc(100vw - 1rem);
+    height: calc(100vh - 1rem);
+    max-height: calc(100vh - 1rem);
+  }
+}
+
+/* Final scroll behavior: one document contains the transcript, composer, and
+   feedback form, so passengers can reach every section with one scrollbar. */
+.chat-window-wrap .chat-panel,
+.chat-window-wrap .chat-panel-expanded {
+  display: block;
+  overflow-y: auto;
+}
+
+.chat-window-wrap .message-list {
+  display: grid;
+  min-height: 20rem;
+  max-height: none;
+  overflow: visible;
+}
+
+.chat-window-wrap .chat-composer {
+  display: grid;
+}
+
+.chat-window-actions {
+  display: flex;
+  align-items: start;
+  gap: 0.25rem;
+}
+
+.icon-button,
+.menu-button {
+  border: 0;
+  color: #0b2e6f;
+  background: transparent;
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.icon-button:hover,
+.menu-button:hover {
+  color: var(--kq-red);
+}
+
+.menu-button {
+  display: block;
+  margin-bottom: 0.65rem;
+  font-size: 1.35rem;
+}
+
+.text-button {
+  padding: 0.5rem 0;
+  border: 0;
+  color: var(--kq-red-dark);
+  background: transparent;
+  font-weight: 800;
+}
+
+.chat-drawer {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 4;
+  display: flex;
+  width: min(20rem, 86%);
+  padding: 1.4rem;
+  flex-direction: column;
+  gap: 1rem;
+  background: #ffffff;
+  box-shadow: 18px 0 45px rgb(12 39 84 / 16%);
+  transform: translateX(-105%);
+  transition: transform 180ms ease-out;
+}
+
+.chat-drawer.open {
+  transform: translateX(0);
+}
+
+.drawer-scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  border: 0;
+  background: rgb(6 24 57 / 28%);
+}
+
+.drawer-heading {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+}
+
+.drawer-heading h3 {
+  margin: 0.35rem 0 0;
+  color: #0b2e6f;
+}
+
+.drawer-new {
+  width: 100%;
+}
+
+.history-list {
+  display: grid;
+  gap: 0.45rem;
+  overflow-y: auto;
+}
+
+.history-item {
+  display: grid;
+  gap: 0.3rem;
+  padding: 0.8rem;
+  border: 1px solid var(--line);
+  border-radius: 0.6rem;
+  color: var(--ink);
+  background: #f8fafc;
+  text-align: left;
+}
+
+.history-item:hover {
+  border-color: #8aa4ce;
+  background: #eef5ff;
+}
+
+.history-item span,
+.drawer-note {
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
+.drawer-note {
+  margin-top: auto;
+  line-height: 1.45;
+}
+
+.feedback-card {
+  display: grid;
+  gap: 0.5rem;
+  padding: 1.25rem clamp(1.25rem, 3vw, 2rem);
+  border-top: 1px solid var(--line);
+  background: #f8fbff;
+}
+
+.feedback-card p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.feedback-card form {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.feedback-card textarea {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid var(--line);
+  border-radius: 0.5rem;
+  resize: vertical;
+}
+
+.star-row {
+  display: flex;
+  gap: 0.2rem;
+}
+
+.star {
+  padding: 0.15rem;
+  border: 0;
+  color: #9aa8ba;
+  background: transparent;
+  font-size: 1.8rem;
+}
+
+.star.selected,
+.star:hover {
+  color: var(--kq-gold);
+}
+
+@media (max-width: 760px) {
+  .chat-window-wrap {
+    right: 0.5rem;
+    bottom: 0.5rem;
+    width: calc(100vw - 1rem);
+    max-height: calc(100vh - 1rem);
+  }
+
+  .chat-window-wrap .chat-panel {
+    max-height: calc(100vh - 1rem);
+  }
+
+  .chat-launcher span:last-child {
+    display: none;
   }
 }

@@ -11,6 +11,15 @@ from app.services.feedback import get_feedback_service
 router = APIRouter()
 
 
+@router.get("/conversations/{conversation_id}", response_model=Feedback | None)
+def read_feedback(
+    conversation_id: str,
+    current_user: AuthenticatedUser = Depends(require_passenger_or_admin),
+) -> Feedback | None:
+    """Return only the caller's saved rating for one conversation, if present."""
+    return get_feedback_service().get(current_user, conversation_id)
+
+
 @router.put("/conversations/{conversation_id}", response_model=Feedback)
 def submit_feedback(
     conversation_id: str,

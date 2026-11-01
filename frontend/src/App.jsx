@@ -56,15 +56,24 @@ function AuthScreen({ onAuthenticated }) {
   return (
     <main className="auth-layout">
       <section className="brand-panel">
-        <p className="eyebrow">KENYA AIRWAYS</p>
-        <h1>Support that travels with you.</h1>
+        <div className="brand-emblem">KQ</div>
+        <p className="eyebrow">KENYA AIRWAYS · CUSTOMER CARE</p>
+        <h1>Your journey, supported.</h1>
         <p>
-          Find policy information for bookings, baggage, check-in, refunds, and more.
+          Get clear answers about bookings, baggage, check-in, refunds, and more.
         </p>
+        <div className="brand-route" aria-hidden="true">
+          <span />
+          <span />
+          <span />
+        </div>
       </section>
 
       <section className="auth-card" aria-labelledby="auth-heading">
-        <p className="eyebrow">KQ SUPPORT</p>
+        <div className="auth-card-topline">
+          <p className="wordmark"><span>KQ</span> SUPPORT</p>
+          <span className="secure-badge">Secure access</span>
+        </div>
         <h2 id="auth-heading">
           {screen === "sign-in" ? "Welcome back" : "Create your account"}
         </h2>
@@ -104,7 +113,7 @@ function AuthScreen({ onAuthenticated }) {
             </p>
           )}
 
-          <button className="button primary" disabled={submitting}>
+          <button className="button primary auth-submit" disabled={submitting}>
             {submitting
               ? "Please wait…"
               : screen === "sign-in"
@@ -118,6 +127,7 @@ function AuthScreen({ onAuthenticated }) {
             ? "New here? Create a passenger account"
             : "Already registered? Sign in"}
         </button>
+        <p className="auth-footnote">By continuing, you agree to use KQ Support for travel information and assistance.</p>
       </section>
     </main>
   );
@@ -125,6 +135,7 @@ function AuthScreen({ onAuthenticated }) {
 
 function AppShell({ profile, user, onSignOut }) {
   const isAdmin = profile.role === "admin";
+  const [chatOpen, setChatOpen] = useState(false);
 
   return (
     <div className="app-shell">
@@ -163,14 +174,32 @@ function AppShell({ profile, user, onSignOut }) {
           </p>
 
           {!isAdmin && (
-            <a className="button primary" href="#chat">
+            <button className="button primary" type="button" onClick={() => setChatOpen(true)}>
               Start a conversation
-            </a>
+            </button>
           )}
         </section>
 
         {!isAdmin ? (
-          <PassengerChat user={user} />
+          <>
+            <section className="support-preview" aria-label="Support chat introduction">
+              <p className="eyebrow">KQ DIGITAL SUPPORT</p>
+              <h2>Questions about your journey?</h2>
+              <p>Open the KQ Support assistant for policy answers in English or Kiswahili.</p>
+              <button className="button secondary" type="button" onClick={() => setChatOpen(true)}>
+                Open KQ Support
+              </button>
+            </section>
+            <button className="chat-launcher" type="button" onClick={() => setChatOpen(true)} aria-label="Open KQ Support chat">
+              <span className="launcher-mark">KQ</span>
+              <span>Chat with KQ Support</span>
+            </button>
+            {chatOpen && (
+              <div className="chat-window-wrap">
+                <PassengerChat user={user} onClose={() => setChatOpen(false)} />
+              </div>
+            )}
+          </>
         ) : (
           <section className="coming-soon" id="admin">
             <h2>Administrator dashboard</h2>

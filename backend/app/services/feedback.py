@@ -49,6 +49,16 @@ class FeedbackService:
 
         return run_transaction(self.client, operation)
 
+    def get(self, user: AuthenticatedUser, conversation_id: str) -> Feedback | None:
+        """Read the caller's one feedback record without exposing another user's data."""
+        feedback_id = f"{user.uid}:{conversation_id}"
+        snapshot = self.client.collection("feedback").document(
+            encode_document_id(feedback_id)
+        ).get(timeout=FIRESTORE_READ_TIMEOUT)
+        if not snapshot.exists:
+            return None
+        return self._read_feedback(snapshot, feedback_id)
+
     @staticmethod
     def _read_conversation(snapshot, conversation_id: str) -> Conversation:
         if not snapshot.exists:
