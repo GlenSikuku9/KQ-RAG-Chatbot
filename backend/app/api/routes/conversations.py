@@ -1,5 +1,7 @@
 """Passenger conversation routes; every read/write is scoped to the verified user."""
 
+import logging
+
 from fastapi import APIRouter, Depends, HTTPException, status
 
 from app.api.dependencies import require_passenger_or_admin
@@ -12,6 +14,7 @@ from app.services.conversations import ConversationService, get_conversation_ser
 
 
 router = APIRouter()
+logger = logging.getLogger(__name__)
 
 
 @router.post("", response_model=Conversation, status_code=status.HTTP_201_CREATED)
@@ -28,7 +31,16 @@ def list_conversations(
     current_user: AuthenticatedUser = Depends(require_passenger_or_admin),
 ) -> list[Conversation]:
     """List only the caller's conversations, newest first."""
-    return get_conversation_service().store.list_for_user(current_user)
+    try:
+        return get_conversation_service().store.list_for_user(current_user)
+    except HTTPException:
+        raise
+    except Exception as error:
+        logger.exception("Conversation history failed to load (%s).", type(error).__name__)
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Conversation history is temporarily unavailable. Please try again.",
+        ) from error
 
 
 @router.get("/{conversation_id}", response_model=ConversationDetail)
@@ -37,7 +49,16 @@ def reopen_conversation(
     current_user: AuthenticatedUser = Depends(require_passenger_or_admin),
 ) -> ConversationDetail:
     """Reopen a caller-owned conversation together with source traceability."""
-    return get_conversation_service().store.get_detail(current_user, conversation_id)
+    try:
+        return get_conversation_service().store.get_detail(current_user, conversation_id)
+    except HTTPException:
+        raise
+    except Exception as error:
+        logger.exception("Conversation history failed to reopen (%s).", type(error).__name__)
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="This conversation is temporarily unavailable. Please try again.",
+        ) from error
 
 
 @router.post("/{conversation_id}/messages", response_model=SendMessageResponse)

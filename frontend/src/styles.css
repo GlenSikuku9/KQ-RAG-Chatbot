@@ -316,7 +316,11 @@ a {
   border-radius: 1rem;
   box-shadow: var(--shadow);
   background:
-    radial-gradient(circle at 90% 15%, rgb(245 179 53 / 26%), transparent 18rem),
+    radial-gradient(
+      circle at 90% 15%,
+      rgb(245 179 53 / 26%),
+      transparent 18rem
+    ),
     linear-gradient(120deg, #ffffff 0%, #ffffff 66%, #ffe9ea);
 }
 
@@ -397,11 +401,21 @@ a {
   min-height: 2.8rem;
 }
 
-.conversation-status {
-  padding: 0.75rem clamp(1.25rem, 3vw, 2rem);
-  color: var(--muted);
-  border-bottom: 1px solid var(--line);
-  font-size: 0.9rem;
+.chat-controls .control-field {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.chat-controls .control-field label {
+  margin: 0;
+  font-size: 0.85rem;
+}
+
+.chat-controls select {
+  min-height: 2.5rem;
+  padding: 0.5rem 0.7rem;
+  font-size: 0.85rem;
 }
 
 .chat-error {
@@ -416,7 +430,11 @@ a {
   padding: clamp(1.25rem, 3vw, 2rem);
   overflow-y: auto;
   background:
-    radial-gradient(circle at top right, rgb(215 25 32 / 6%), transparent 18rem),
+    radial-gradient(
+      circle at top right,
+      rgb(215 25 32 / 6%),
+      transparent 18rem
+    ),
     linear-gradient(#f7f9fc, #eef3f8);
 }
 
@@ -431,50 +449,61 @@ a {
 }
 
 .welcome-screen {
-  width: min(100%, 34rem);
+  width: min(100%, 38rem);
   margin: auto;
+  padding: 1.25rem 1.5rem;
   text-align: center;
 }
 
 .welcome-mark {
   display: grid;
-  width: 3.3rem;
-  height: 3.3rem;
-  margin: 0 auto 0.8rem;
+  width: 3rem;
+  height: 3rem;
+  margin: 0 auto 0.75rem;
   place-items: center;
   border-radius: 50%;
-  color: #0b2e6f;
-  background: #dcecff;
+  color: #ffffff;
+  background: #0b2e6f;
+  font-size: 1rem;
   font-weight: 900;
+  letter-spacing: 0.08em;
 }
 
 .welcome-screen h3 {
-  margin: 0;
+  margin: 0 0 0.4rem;
   color: #0b2e6f;
-  font-size: clamp(1.35rem, 3vw, 2rem);
+  font-size: clamp(1.3rem, 3vw, 1.9rem);
+  font-weight: 800;
+}
+
+.empty-chat {
+  margin-bottom: 1rem;
+  color: var(--muted);
+  font-size: 0.9rem;
 }
 
 .suggested-questions {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 0.55rem;
-  margin-top: 1.25rem;
+  display: grid;
+  gap: 0.5rem;
+  margin-top: 1rem;
 }
 
 .suggestion-chip {
-  padding: 0.65rem 0.85rem;
+  padding: 0.7rem 0.9rem;
   border: 1px solid #c7d5e8;
-  border-radius: 999px;
+  border-radius: 0.5rem;
   color: #0b2e6f;
   background: #ffffff;
-  font-size: 0.82rem;
+  font-size: 0.85rem;
   text-align: left;
+  transition: all 150ms ease;
 }
 
 .suggestion-chip:hover {
   border-color: #0b2e6f;
   background: #eef5ff;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgb(11 46 111 / 8%);
 }
 
 .message-turn {
@@ -577,32 +606,108 @@ a {
 }
 
 .message-sources {
-  margin-top: 0.55rem;
+  margin-top: 0.75rem;
   color: var(--muted);
-  font-size: 0.82rem;
+  font-size: 0.85rem;
 }
 
 .message-sources summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.6rem 0.85rem;
+  border: 1px solid var(--line);
+  border-radius: 0.5rem;
+  color: #0b2e6f;
+  background: #f8fafc;
+  font-size: 0.85rem;
+  font-weight: 700;
   cursor: pointer;
+  transition: all 150ms ease;
+  list-style: none;
+}
+
+.message-sources summary::-webkit-details-marker {
+  display: none;
+}
+
+.message-sources summary:hover {
+  border-color: #0b2e6f;
+  background: #eef5ff;
+}
+
+.message-sources summary::after {
+  content: "+";
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.message-sources[open] summary::after {
+  content: "−";
+}
+
+.sources-list {
+  display: grid;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+  padding: 0.85rem;
+  border: 1px solid var(--line);
+  border-radius: 0.5rem;
+  background: #ffffff;
+}
+
+.source-item {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.source-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.source-header strong {
+  color: #0b2e6f;
+  font-size: 0.9rem;
+}
+
+.source-section {
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.3rem;
+  color: var(--muted);
+  background: #f8fafc;
+  font-size: 0.75rem;
   font-weight: 700;
 }
 
-.message-sources ol {
-  display: grid;
-  gap: 0.3rem;
-  padding-left: 1.2rem;
+.source-description {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.82rem;
+  line-height: 1.45;
 }
 
-.message-sources li {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.55rem;
-  align-items: baseline;
+.source-similarity {
+  font-weight: 700;
 }
 
-.message-sources li span:last-child {
-  margin-left: auto;
-  font-variant-numeric: tabular-nums;
+.source-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-top: 0.25rem;
+  color: var(--kq-red);
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.source-link:hover {
+  text-decoration: underline;
 }
 
 .loading-message .message-bubble {
@@ -668,6 +773,87 @@ a {
   font-size: 0.78rem;
 }
 
+.model-selector {
+  position: relative;
+}
+
+.model-selector-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--line);
+  border-radius: 0.4rem;
+  color: #0b2e6f;
+  background: #ffffff;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.model-selector-button:hover {
+  border-color: #0b2e6f;
+  background: #f8fafc;
+}
+
+.model-selector-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.model-icon {
+  font-size: 1rem;
+}
+
+.model-label {
+  flex: 1;
+  max-width: 12rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.model-dropdown-arrow {
+  font-size: 0.7rem;
+  color: var(--muted);
+}
+
+.model-dropdown {
+  position: absolute;
+  bottom: calc(100% + 0.5rem);
+  left: 0;
+  z-index: 10;
+  min-width: 100%;
+  padding: 0.5rem;
+  border: 1px solid var(--line);
+  border-radius: 0.5rem;
+  background: #ffffff;
+  box-shadow: 0 8px 24px rgb(23 32 51 / 12%);
+}
+
+.model-option {
+  display: block;
+  width: 100%;
+  padding: 0.6rem 0.75rem;
+  border: 0;
+  border-radius: 0.35rem;
+  color: var(--ink);
+  background: transparent;
+  font-size: 0.85rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+.model-option:hover {
+  background: #f8fafc;
+}
+
+.model-option.selected {
+  color: #0b2e6f;
+  background: #eef5ff;
+  font-weight: 700;
+}
+
 @keyframes message-arrival {
   from {
     opacity: 0;
@@ -703,18 +889,28 @@ a {
     width: 100%;
   }
 
-  .chat-panel-heading,
-  .composer-actions {
-    align-items: stretch;
-    flex-direction: column;
+  .chat-panel-heading {
+    padding: 1rem;
+    gap: 0.75rem;
   }
 
   .chat-controls {
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .chat-controls .control-field {
     width: 100%;
   }
 
   .chat-message {
     max-width: 94%;
+  }
+
+  .composer-actions {
+    flex-direction: column;
+    align-items: stretch;
   }
 
   .composer-actions .button {
@@ -753,43 +949,67 @@ a {
   display: grid;
 }
 
-.chat-window-wrap .chat-panel-expanded {
-  width: min(78rem, calc(100vw - 2rem));
-  height: calc(100vh - 2rem);
-  max-height: calc(100vh - 2rem);
-}
-
 .chat-panel-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.9rem 1.25rem;
+  border-bottom: 1px solid var(--line);
+  background: linear-gradient(115deg, #ffffff, #fff5f5);
+}
+
+.chat-header-left {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.chat-header-right {
+  display: flex;
+  align-items: center;
+}
+
+.chat-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.chat-brand-logo {
   display: grid;
-  grid-template-columns: minmax(14rem, 1fr) minmax(18rem, 22rem) auto;
-  align-items: start;
-  gap: 1.5rem;
-  padding: 1.4rem 1.75rem;
+  width: 2rem;
+  height: 2rem;
+  place-items: center;
+  border-radius: 50%;
+  color: #ffffff;
+  background: var(--kq-red);
+  font-size: 0.8rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
 }
 
-.chat-panel-heading > div:first-child {
-  min-width: 0;
-}
-
-.chat-panel-heading h2 {
-  max-width: 16ch;
-  font-size: clamp(1.35rem, 3vw, 2.1rem);
-  line-height: 1.1;
-}
-
-.chat-panel-heading p:not(.eyebrow) {
-  max-width: 28rem;
+.chat-brand-name {
+  margin: 0;
+  color: #0b2e6f;
+  font-size: 0.9rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
 }
 
 .chat-window-actions {
-  grid-column: 3;
-  grid-row: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
 }
 
 .chat-controls {
-  grid-column: 2;
-  grid-row: 1;
-  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.6rem 1.25rem;
+  border-bottom: 1px solid var(--line);
+  background: #f8fafc;
+  flex-wrap: wrap;
 }
 
 .chat-drawer {
@@ -815,18 +1035,20 @@ a {
   flex: 1 1 auto;
   min-height: 0;
   max-height: none;
-  padding: 1.5rem 1.75rem;
+  padding: 1rem 1.5rem;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .chat-composer {
   flex: 0 0 auto;
-  padding: 1rem 1.75rem 1.25rem;
+  padding: 0.75rem 1.5rem 1rem;
   background: #ffffff;
 }
 
 .chat-composer textarea {
-  min-height: 5.5rem;
-  max-height: 10rem;
+  min-height: 4.5rem;
+  max-height: 9rem;
 }
 
 .composer-actions {
@@ -855,24 +1077,44 @@ a {
   }
 
   .chat-panel-heading {
-    grid-template-columns: 1fr auto;
-    gap: 0.75rem;
     padding: 1rem;
+    gap: 0.75rem;
+  }
+
+  .chat-header-left {
+    gap: 0.75rem;
+  }
+
+  .chat-brand-name {
+    font-size: 0.85rem;
   }
 
   .chat-controls {
-    grid-column: 1 / -1;
-    grid-row: 2;
+    padding: 0.75rem 1rem;
+    gap: 0.75rem;
   }
 
-  .chat-window-actions {
-    grid-column: 2;
+  .chat-controls .control-field {
+    width: 100%;
+  }
+
+  .chat-controls .button {
+    flex: 1;
   }
 
   .message-list,
   .chat-composer {
     padding-right: 1rem;
     padding-left: 1rem;
+  }
+
+  .composer-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .composer-actions > .button {
+    width: 100%;
   }
 }
 
@@ -938,20 +1180,33 @@ a {
   z-index: 30;
   width: min(43rem, calc(100vw - 1.5rem));
   max-height: calc(100vh - 3rem);
+  overflow: visible;
+  transition: width 180ms ease-out;
+}
+
+.chat-window-wrap.drawer-open {
+  width: min(58rem, calc(100vw - 2rem));
 }
 
 .chat-window-wrap .chat-panel {
+  position: relative;
+  z-index: 1;
   display: flex;
-  flex-direction: column;
-  height: min(48rem, calc(100vh - 3rem));
+  flex-direction: row;
+  height: min(42rem, calc(100vh - 3rem));
   max-height: calc(100vh - 3rem);
   margin: 0;
   box-shadow: 0 24px 70px rgb(12 39 84 / 30%);
+  overflow: visible;
 }
 
-.chat-window-wrap .chat-panel-expanded {
-  width: min(68rem, calc(100vw - 3rem));
-  height: min(56rem, calc(100vh - 3rem));
+.chat-main-content {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
 }
 
 /* Keep the expanded panel centred in the viewport, never clipped to the right. */
@@ -965,14 +1220,6 @@ a {
   max-height: calc(100vh - 2rem);
   margin: 0;
   transform: translateX(-50%);
-}
-
-.chat-brand-name {
-  margin: 0.25rem 0 0;
-  color: #0b2e6f;
-  font-size: 1rem;
-  font-weight: 900;
-  letter-spacing: 0.12em;
 }
 
 @media (max-width: 760px) {
@@ -1038,32 +1285,26 @@ a {
 }
 
 .chat-drawer {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  z-index: 4;
-  display: flex;
-  width: min(20rem, 86%);
+  flex: 0 0 0;
   padding: 1.4rem;
   flex-direction: column;
   gap: 1rem;
   background: #ffffff;
-  box-shadow: 18px 0 45px rgb(12 39 84 / 16%);
-  transform: translateX(-105%);
-  transition: transform 180ms ease-out;
+  border-right: 1px solid var(--line);
+  overflow-y: auto;
+  overflow-x: hidden;
+  opacity: 0;
+  display: none;
+  transition:
+    flex 180ms ease-out,
+    opacity 180ms ease-out;
+  min-height: 0;
 }
 
 .chat-drawer.open {
-  transform: translateX(0);
-}
-
-.drawer-scrim {
-  position: absolute;
-  inset: 0;
-  z-index: 3;
-  border: 0;
-  background: rgb(6 24 57 / 28%);
+  flex: 0 0 min(20rem, 86%);
+  opacity: 1;
+  display: flex;
 }
 
 .drawer-heading {
@@ -1090,6 +1331,7 @@ a {
 .history-item {
   display: grid;
   gap: 0.3rem;
+  width: 100%;
   padding: 0.8rem;
   border: 1px solid var(--line);
   border-radius: 0.6rem;

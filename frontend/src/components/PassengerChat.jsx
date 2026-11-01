@@ -46,7 +46,10 @@ const MODEL_LABELS = {
 };
 
 function modelLabel(model) {
-  return MODEL_LABELS[model.model_id] || model.upstream_model;
+  if (!model) {
+    return "Select model";
+  }
+  return MODEL_LABELS[model.model_id] || model.upstream_model || model.model_id;
 }
 
 function answerModelLabel(modelId) {
@@ -91,19 +94,31 @@ function Sources({ chunks }) {
 
   return (
     <details className="message-sources">
-      <summary>Sources used ({orderedChunks.length})</summary>
-      <ol>
+      <summary>Sources ({orderedChunks.length})</summary>
+      <div className="sources-list">
         {orderedChunks.map((chunk) => (
-          <li key={chunk.message_chunk_id}>
-            <strong>{chunk.citation_id}</strong>
-            <span>
-              {chunk.source_title || `Match ${chunk.retrieval_rank}`}
-              {chunk.source_section ? ` · ${chunk.source_section}` : ""}
-            </span>
-            <span>{similarityPercent(chunk.similarity_score)}</span>
-          </li>
+          <div key={chunk.message_chunk_id} className="source-item">
+            <div className="source-header">
+              <strong>{chunk.source_title || `Source ${chunk.retrieval_rank}`}</strong>
+              {chunk.source_section && <span className="source-section">{chunk.source_section}</span>}
+            </div>
+            <p className="source-description">
+              {chunk.citation_id}
+              {chunk.similarity_score && <span className="source-similarity"> · {similarityPercent(chunk.similarity_score)}</span>}
+            </p>
+            {chunk.source_url && (
+              <a
+                href={chunk.source_url}
+                target="_blank"
+                rel="noreferrer noopener"
+                className="source-link"
+              >
+                View on Kenya Airways website →
+              </a>
+            )}
+          </div>
         ))}
-      </ol>
+      </div>
     </details>
   );
 }
@@ -208,7 +223,7 @@ function FeedbackRating({ user, conversation, existingFeedback, onSaved }) {
   );
 }
 
-export function PassengerChat({ user, onClose }) {
+export function PassengerChat({ user, onClose, onDrawerToggle }) {
   const [language, setLanguage] = useState("en");
   const [conversation, setConversation] = useState(null);
   const [messages, setMessages] = useState([]);
@@ -224,8 +239,16 @@ export function PassengerChat({ user, onClose }) {
   const [isStarting, setIsStarting] = useState(false);
   const [isSending, setIsSending] = useState(false);
   const [expanded, setExpanded] = useState(false);
+  const [modelDropdownOpen, setModelDropdownOpen] = useState(false);
   const pendingSubmission = useRef(false);
   const messageListRef = useRef(null);
+  const modelDropdownRef = useRef(null);
+
+  useEffect(() => {
+    if (onDrawerToggle) {
+      onDrawerToggle(drawerOpen);
+    }
+  }, [drawerOpen, onDrawerToggle]);
 
   useEffect(() => {
     let ignoreResponse = false;
@@ -303,6 +326,22 @@ export function PassengerChat({ user, onClose }) {
     }
   }, [messages, isSending]);
 
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (modelDropdownRef.current && !modelDropdownRef.current.contains(event.target)) {
+        setModelDropdownOpen(false);
+      }
+    }
+
+    if (modelDropdownOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [modelDropdownOpen]);
+
   async function startConversation() {
     if (isStarting || isSending || modelLoading || !selectedModelId) {
       return;
@@ -332,11 +371,18 @@ export function PassengerChat({ user, onClose }) {
 
     try {
       const detail = await getConversation(user, conversationId);
-      const savedFeedback = await getConversationFeedback(user, conversationId);
+      // Render persisted messages immediately. Feedback is supplementary and must
+      // never prevent an ended conversation from reopening with its history.
       setConversation(detail.conversation);
       setMessages(detail.messages);
-      setFeedback(savedFeedback);
       setDrawerOpen(false);
+
+      try {
+        const savedFeedback = await getConversationFeedback(user, conversationId);
+        setFeedback(savedFeedback);
+      } catch {
+        setFeedback(null);
+      }
     } catch (reason) {
       setError(reason instanceof Error ? reason.message : "That conversation could not be reopened.");
     }
@@ -422,16 +468,15 @@ export function PassengerChat({ user, onClose }) {
 
   return (
     <section
-      className={`chat-panel ${expanded ? "chat-panel-expanded" : ""}`}
+      className={`chat-panel ${expanded ? "chat-panel-expanded" : ""} ${drawerOpen ? "drawer-open" : ""}`}
       id="chat"
       aria-labelledby="chat-heading"
     >
-      {drawerOpen && <button className="drawer-scrim" type="button" aria-label="Close conversation menu" onClick={() => setDrawerOpen(false)} />}
       {drawerOpen && <aside className="chat-drawer open" aria-label="Conversation history">
         <div className="drawer-heading">
           <div>
-            <p className="eyebrow">KQ SUPPORT</p>
-            <h3>Your conversations</h3>
+            <p className="eyebrow">KENYA AIRWAYS</p>
+            <h3>Conversations</h3>
           </div>
           <button className="icon-button" type="button" onClick={() => setDrawerOpen(false)} aria-label="Close menu">×</button>
         </div>
@@ -448,64 +493,66 @@ export function PassengerChat({ user, onClose }) {
         )}
         <p className="drawer-note">Your conversation history is tied to your secure passenger account.</p>
       </aside>}
-      <div className="chat-panel-heading">
-        <div>
+      <div className="chat-main-content">
+        <div className="chat-panel-heading">
+        <div className="chat-header-left">
           <button className="menu-button" type="button" onClick={() => setDrawerOpen((current) => !current)} aria-label={drawerOpen ? "Close conversation history" : "Open conversation history"}>☰</button>
-          <p className="chat-brand-name">KQ SUPPORT</p>
-        </div>
-        <div className="chat-window-actions">
-          <button className="icon-button" type="button" onClick={onClose} aria-label="Minimise chat">−</button>
-          <button
-            className="icon-button"
-            type="button"
-            onClick={() => setExpanded((current) => !current)}
-            aria-label={expanded ? "Restore chat size" : "Expand chat"}
-          >
-            {expanded ? "↙" : "↗"}
-          </button>
-          <button className="icon-button" type="button" onClick={onClose} aria-label="Close chat">×</button>
-        </div>
-        <div className="chat-controls">
-          <div className="control-field">
-            <label htmlFor="language-preference">Response language</label>
-            <select
-              id="language-preference"
-              value={language}
-              onChange={(event) => setLanguage(event.target.value)}
-              disabled={isStarting || isSending}
-            >
-              {LANGUAGE_OPTIONS.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
+          <div className="chat-brand">
+            <span className="chat-brand-logo">KQ</span>
+            <p className="chat-brand-name">KENYA AIRWAYS</p>
           </div>
-          <button
-            className="button secondary"
-            type="button"
-            onClick={startConversation}
-            disabled={isStarting || isSending || modelLoading || !selectedModelId}
-          >
-            {isStarting ? "Starting…" : "Start new conversation"}
-          </button>
-          {conversation?.status === "active" && messages.length > 0 && (
-            <button className="button text-button" type="button" onClick={finishConversation} disabled={isSending}>
-              End conversation
+        </div>
+        <div className="chat-header-right">
+          <div className="chat-window-actions">
+            <button className="icon-button" type="button" onClick={() => setExpanded((current) => !current)} aria-label={expanded ? "Restore chat size" : "Expand chat"}>
+              {expanded ? "−" : "□"}
             </button>
-          )}
+            <button className="icon-button" type="button" onClick={onClose} aria-label="Close chat">×</button>
+          </div>
         </div>
       </div>
 
-      <div className="conversation-status" aria-live="polite">
-        {conversation
-          ? `Conversation ${conversation.status}: ${conversation.title}`
-          : "Select a suggested question or type your inquiry below."}
+      <div className="chat-controls">
+        <div className="control-field">
+          <label htmlFor="language-preference">Response language</label>
+          <select
+            id="language-preference"
+            value={language}
+            onChange={(event) => setLanguage(event.target.value)}
+            disabled={isStarting || isSending}
+          >
+            {LANGUAGE_OPTIONS.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+        </div>
+        <button
+          className="button secondary"
+          type="button"
+          onClick={startConversation}
+          disabled={isStarting || isSending || modelLoading || !selectedModelId}
+        >
+          {isStarting ? "Starting…" : "Start new conversation"}
+        </button>
+        {conversation?.status === "active" && messages.length > 0 && (
+          <button className="button text-button" type="button" onClick={finishConversation} disabled={isSending}>
+            End conversation
+          </button>
+        )}
       </div>
 
       {error && <p className="notice error chat-error" role="alert">{error}</p>}
 
       <div className="message-list" ref={messageListRef} aria-live="polite" aria-relevant="additions">
+        {modelLoading && !error && (
+          <div className="welcome-screen">
+            <p className="welcome-mark">KQ</p>
+            <h3>Loading...</h3>
+            <p className="empty-chat">Please wait while we connect to the support system.</p>
+          </div>
+        )}
         {!messages.length && !isSending && (
           <div className="welcome-screen">
             <p className="welcome-mark">KQ</p>
@@ -559,21 +606,36 @@ export function PassengerChat({ user, onClose }) {
         />
         <div className="composer-actions">
           <div className="composer-meta">
-            <label className="composer-model-label" htmlFor="composer-model">
-              AI model
-              <select
-                id="composer-model"
-                value={selectedModelId}
-                onChange={(event) => setSelectedModelId(event.target.value)}
+            <div className="model-selector" ref={modelDropdownRef}>
+              <button
+                className="model-selector-button"
+                type="button"
+                onClick={() => setModelDropdownOpen((current) => !current)}
                 disabled={modelLoading || isSending || !models.length}
+                aria-label="Select AI model"
               >
-                {models.map((model) => (
-                  <option key={model.model_id} value={model.model_id}>
-                    {modelLabel(model)}
-                  </option>
-                ))}
-              </select>
-            </label>
+                <span className="model-icon">🤖</span>
+                <span className="model-label">{modelLabel(models.find((m) => m.model_id === selectedModelId))}</span>
+                <span className="model-dropdown-arrow">{modelDropdownOpen ? "▲" : "▼"}</span>
+              </button>
+              {modelDropdownOpen && (
+                <div className="model-dropdown">
+                  {models.map((model) => (
+                    <button
+                      key={model.model_id}
+                      className={`model-option ${model.model_id === selectedModelId ? "selected" : ""}`}
+                      type="button"
+                      onClick={() => {
+                        setSelectedModelId(model.model_id);
+                        setModelDropdownOpen(false);
+                      }}
+                    >
+                      {modelLabel(model)}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
             <p>{question.length}/4000 · Enter to send, Shift+Enter for a new line</p>
           </div>
           <button
@@ -581,7 +643,7 @@ export function PassengerChat({ user, onClose }) {
             type="submit"
             disabled={!question.trim() || isSending || isStarting || modelLoading || !selectedModelId || conversation?.status === "ended"}
           >
-            {isSending ? "Sending…" : "Send question"}
+            {isSending ? "Sending…" : "Send"}
           </button>
         </div>
       </form>
@@ -593,6 +655,7 @@ export function PassengerChat({ user, onClose }) {
           onSaved={setFeedback}
         />
       )}
+      </div>
     </section>
   );
 }

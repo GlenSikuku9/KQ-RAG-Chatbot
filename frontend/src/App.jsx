@@ -136,6 +136,7 @@ function AuthScreen({ onAuthenticated }) {
 function AppShell({ profile, user, onSignOut }) {
   const isAdmin = profile.role === "admin";
   const [chatOpen, setChatOpen] = useState(false);
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
   return (
     <div className="app-shell">
@@ -195,8 +196,8 @@ function AppShell({ profile, user, onSignOut }) {
               <span>Chat with KQ Support</span>
             </button>
             {chatOpen && (
-              <div className="chat-window-wrap">
-                <PassengerChat user={user} onClose={() => setChatOpen(false)} />
+              <div className={`chat-window-wrap ${drawerOpen ? "drawer-open" : ""}`}>
+                <PassengerChat user={user} onClose={() => setChatOpen(false)} onDrawerToggle={setDrawerOpen} />
               </div>
             )}
           </>

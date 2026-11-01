@@ -94,13 +94,15 @@ class ConversationStore:
         with firestore_operation():
             snapshots = self.client.collection("conversations").where(
                 filter=FieldFilter("user_id", "==", user.uid)
-            ).order_by("started_at", direction="DESCENDING").stream(timeout=FIRESTORE_READ_TIMEOUT)
+            ).stream(timeout=FIRESTORE_READ_TIMEOUT)
         conversations: list[Conversation] = []
         for snapshot in snapshots:
             conversation = self._read_conversation(snapshot, snapshot.to_dict().get("conversation_id", ""))
             self._assert_owner(conversation, user)
             conversations.append(conversation)
-        return conversations
+        # Sorting after the ownership-filtered read avoids requiring a Firestore
+        # composite index for the passenger history screen.
+        return sorted(conversations, key=lambda item: item.started_at, reverse=True)
 
     def get_detail(self, user: AuthenticatedUser, conversation_id: str) -> ConversationDetail:
         with firestore_operation():
@@ -192,7 +194,7 @@ class ConversationStore:
         with firestore_operation():
             snapshots = self.client.collection("messages").where(
                 filter=FieldFilter("conversation_id", "==", conversation_id)
-            ).order_by("sequence").stream(timeout=FIRESTORE_READ_TIMEOUT)
+            ).stream(timeout=FIRESTORE_READ_TIMEOUT)
         messages: list[ConversationMessage] = []
         for snapshot in snapshots:
             try:
@@ -205,15 +207,16 @@ class ConversationStore:
             if message.sender_type == SenderType.CHATBOT:
                 message.retrieved_chunks = self._message_chunks(message.message_id)
             messages.append(message)
-        return messages
+        return sorted(messages, key=lambda item: item.sequence)
 
     def _message_chunks(self, message_id: str) -> list[MessageChunk]:
         with firestore_operation():
             snapshots = self.client.collection("message_chunks").where(
                 filter=FieldFilter("message_id", "==", message_id)
-            ).order_by("retrieval_rank").stream(timeout=FIRESTORE_READ_TIMEOUT)
+            ).stream(timeout=FIRESTORE_READ_TIMEOUT)
         try:
-            return [MessageChunk.model_validate(snapshot.to_dict()) for snapshot in snapshots]
+            chunks = [MessageChunk.model_validate(snapshot.to_dict()) for snapshot in snapshots]
+            return sorted(chunks, key=lambda item: item.retrieval_rank)
         except ValidationError as error:
             logger.error("Stored message traceability failed validation.")
             raise HTTPException(500, "Stored message traceability is invalid; contact the administrator.") from error
