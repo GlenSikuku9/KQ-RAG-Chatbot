@@ -27,6 +27,30 @@ from app.services.operational_logging import OperationalLogger, get_operational_
 logger = logging.getLogger(__name__)
 
 
+def conversation_title_from_question(question: str) -> str:
+    """Create a compact topic title without changing the customer's message."""
+    text = " ".join(question.split()).strip(" ?.!\t\r\n")
+    lowered = text.lower()
+    topics = (
+        (("baggage", "luggage", "mizigo"), "Baggage allowance and checked luggage policy"),
+        (("payment", "pay", "malipo"), "Payment methods and processing options for travel"),
+        (("refund", "marejesho"), "Refund eligibility and payment details for travel"),
+        (("wheelchair", "magurudumu"), "Wheelchair assistance and special care requirements"),
+        (("check in", "check-in", "kuingia"), "Online check-in and airport requirements guide"),
+        (("booking", "reservation", "nafasi"), "Booking changes and reservation support options"),
+        (("document", "passport", "visa", "nyaraka"), "Travel documents and international journey requirements"),
+        (("upgrade", "kuboresha"), "Flight upgrade options and refund information"),
+    )
+    for keywords, title in topics:
+        if any(keyword in lowered for keyword in keywords):
+            return title
+    words = [word.strip(",:;()[]{}") for word in text.split() if word.strip(",:;()[]{}")]
+    # Keep a fallback useful and bounded; CSS also clamps it to two lines.
+    selected = words[:9] or ["New conversation"]
+    title = " ".join(selected)
+    return title[0].upper() + title[1:]
+
+
 def _source_title(source: str) -> str:
     name = source.replace("\\", "/").rsplit("/", 1)[-1]
     return name[:-5] if name.lower().endswith(".docx") else name
@@ -174,10 +198,10 @@ class ConversationStore:
                     source_section=source_item.chunk.section,
                 ) for source_item in generated.sources],
             )
-            # First question becomes a helpful title without exposing generated text or changing later titles.
+            # Store a separate topic title; the original customer question remains unchanged.
             title = conversation.title
             if conversation.next_sequence == 1:
-                title = request.question.strip()[:120]
+                title = conversation_title_from_question(request.question)
             updated = conversation.model_copy(update={
                 "title": title, "language": language, "next_sequence": conversation.next_sequence + 2,
             })

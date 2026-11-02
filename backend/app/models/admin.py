@@ -19,11 +19,36 @@ class AdminDocument(BaseModel):
     status: str
     source: str
     chunk_count: int = 0
+    file_hash: str | None = None
+    version_count: int = 1
+
+
+class AdminDocumentVersion(BaseModel):
+    """Immutable version-history entry; only one version is active at a time."""
+    version_id: str
+    document_id: str
+    version_number: int = Field(ge=1)
+    version: str
+    file_hash: str
+    uploaded_at: UTCDateTime
+    uploaded_by: str | None = None
+    file_reference: str
+    source: str
+    status: str
+    is_current: bool = False
+    title: str | None = None
+    category: str | None = None
 
 
 class DocumentUpdate(BaseModel):
     title: str | None = Field(default=None, min_length=1, max_length=300)
     category: str | None = Field(default=None, min_length=1, max_length=120)
+
+
+class DocumentContent(BaseModel):
+    """Editable text exposed by the administrator DOCX editor."""
+    content: str = Field(min_length=1, max_length=2_000_000)
+    warning: str | None = None
 
 
 class AdminUser(BaseModel):
@@ -144,6 +169,13 @@ class EvaluationResult(BaseModel):
     context_precision: float | None = None
     context_recall: float | None = None
     average_response_ms: float | None = None
+    correctness: float | None = None
+    fallback_accuracy: float | None = None
+    language_quality: float | None = None
+    failure_rate: float | None = None
+    dataset_version: str | None = None
+    knowledge_base_version: str | None = None
+    model_settings: dict[str, str] = Field(default_factory=dict)
 
 
 class AdminLog(BaseModel):
@@ -160,6 +192,7 @@ class AdminConversationSummary(BaseModel):
     user_id: str
     user_email: str | None = None
     title: str
+    first_customer_message: str | None = None
     language: str
     status: str
     started_at: UTCDateTime

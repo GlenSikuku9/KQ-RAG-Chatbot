@@ -1,0 +1,21 @@
+{
+  "dataset_id": "kq-evaluation-v1",
+  "version": "1.0.0",
+  "knowledge_base_version": "published-firestore-active-manifest",
+  "description": "Held-out-style comparison set for English, Kiswahili and mixed English/Kiswahili KQ support questions.",
+  "cases": [
+    {"id": "baggage-en-01", "language": "en", "category": "baggage", "question": "What is the business class checked baggage allowance between Africa and Europe?", "expected_answer": "Two pieces up to 32 kg/70 lb each.", "expected_sources": ["Baggage Allowance Information.docx"], "expected_fallback": false},
+    {"id": "baggage-sw-01", "language": "sw", "category": "baggage", "question": "Ninaruhusiwa kubeba mizigo kiasi gani katika daraja la biashara kati ya Afrika na Ulaya?", "expected_answer": "Vipande viwili vya hadi kilo 32 kila kimoja.", "expected_sources": ["Baggage Allowance Information.docx"], "expected_fallback": false},
+    {"id": "baggage-mixed-01", "language": "mixed", "category": "baggage", "question": "Business class Africa to Europe checked baggage allowance ni kiasi gani?", "expected_answer": "Two pieces up to 32 kg each.", "expected_sources": ["Baggage Allowance Information.docx"], "expected_fallback": false},
+    {"id": "payments-en-01", "language": "en", "category": "payments", "question": "How much does a name correction cost for an international booking?", "expected_answer": "The published name-correction charge is USD 75 for international travel.", "expected_sources": ["Payments.docx"], "expected_fallback": false},
+    {"id": "payments-sw-01", "language": "sw", "category": "payments", "question": "Kusahihisha jina kwenye tiketi ya ndege ya kimataifa kunagharimu kiasi gani?", "expected_answer": "Ada iliyochapishwa ya kusahihisha jina kwa safari ya kimataifa ni USD 75.", "expected_sources": ["Payments.docx"], "expected_fallback": false},
+    {"id": "refund-mixed-01", "language": "mixed", "category": "refunds", "question": "Upgrade refund ikiapproved, pesa zinarudi kwa original credit card?", "expected_answer": "An approved upgrade refund is returned to the credit card used to pay.", "expected_sources": ["Flight upgrade.docx"], "expected_fallback": false},
+    {"id": "care-en-01", "language": "en", "category": "special-care", "question": "How early should I reserve wheelchair assistance?", "expected_answer": "Wheelchair assistance should be requested at least 48 hours before departure.", "expected_sources": ["Special Care.docx"], "expected_fallback": false},
+    {"id": "checkin-en-01", "language": "en", "category": "check-in", "question": "Can I check in online for my Kenya Airways flight?", "expected_answer": "Answer only from the published check-in policy and cite it.", "expected_sources": ["Check-in.docx"], "expected_fallback": false},
+    {"id": "booking-sw-01", "language": "sw", "category": "booking", "question": "Ninawezaje kubadilisha nafasi yangu ya ndege?", "expected_answer": "Answer only from the published booking policy in Kiswahili.", "expected_sources": ["Booking.docx"], "expected_fallback": false},
+    {"id": "travel-mixed-01", "language": "mixed", "category": "travel-requirements", "question": "What travel documents do I need kwa safari ya kimataifa?", "expected_answer": "Answer only from the published travel-requirements policy using the requested mixed language.", "expected_sources": ["Travel Requirements.docx"], "expected_fallback": false},
+    {"id": "fallback-en-01", "language": "en", "category": "unanswerable", "question": "What is the current departure gate for my flight today?", "expected_answer": "The assistant must state that static policy evidence cannot answer this live-flight question.", "expected_sources": [], "expected_fallback": true},
+    {"id": "fallback-sw-01", "language": "sw", "category": "unanswerable", "question": "Salio la akaunti yangu ya benki ni kiasi gani sasa?", "expected_answer": "The assistant must not invent a bank balance and should use the Kiswahili fallback.", "expected_sources": [], "expected_fallback": true},
+    {"id": "fallback-mixed-01", "language": "mixed", "category": "unanswerable", "question": "My booking ABC123 iko seat gani right now?", "expected_answer": "The assistant must explain that live booking data is unavailable and use the mixed-language fallback.", "expected_sources": [], "expected_fallback": true}
+  ]
+}

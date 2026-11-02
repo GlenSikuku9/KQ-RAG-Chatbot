@@ -149,6 +149,10 @@ export const adminUpdateStatus = (user, id, disabled) => authenticatedRequest(us
 export const adminDeleteDocument = (user, id) => authenticatedRequest(user, `/admin/documents/${id}`, { method: "DELETE" });
 export const adminProcessDocument = (user, id) => authenticatedRequest(user, `/admin/documents/${id}/process`, { method: "POST" });
 export const adminUpdateDocument = (user, id, title, category) => authenticatedRequest(user, `/admin/documents/${id}`, { method: "PATCH", body: JSON.stringify({ title, category }) });
+export const adminDocumentContent = (user, id) => authenticatedRequest(user, `/admin/documents/${id}/content`);
+export const adminSaveDocumentContent = (user, id, content) => authenticatedRequest(user, `/admin/documents/${id}/content`, { method: "PUT", body: JSON.stringify({ content }) });
+export const adminDocumentVersions = (user, id) => authenticatedRequest(user, `/admin/documents/${id}/versions`);
+export const adminRestoreDocumentVersion = (user, id, version) => authenticatedRequest(user, `/admin/documents/${id}/versions/${version}/restore`, { method: "POST" });
 export function adminUploadDocument(user, file) {
   const form = new FormData();
   form.append("file", file);

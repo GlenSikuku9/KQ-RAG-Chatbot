@@ -232,7 +232,15 @@ export function App() {
 
   async function establishProfile(nextUser) {
     setError(null);
-    setProfile(await syncProfile(nextUser));
+    try {
+      setProfile(await syncProfile(nextUser));
+    } catch (reason) {
+      setError(
+        reason instanceof Error
+          ? reason.message
+          : "Could not load your profile. The backend may be misconfigured.",
+      );
+    }
   }
 
   useEffect(() => {

@@ -3,7 +3,7 @@
 from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile, status
 
 from app.api.dependencies import require_admin
-from app.models.admin import AdminAnalytics, AdminConversationSummary, AdminDocument, AdminLog, AdminModel, AdminUser, DefaultModelUpdate, DocumentUpdate, EvaluationResult, PassengerTheme, UserRoleUpdate, UserStatusUpdate
+from app.models.admin import AdminAnalytics, AdminConversationSummary, AdminDocument, AdminDocumentVersion, AdminLog, AdminModel, AdminUser, DefaultModelUpdate, DocumentContent, DocumentUpdate, EvaluationResult, PassengerTheme, UserRoleUpdate, UserStatusUpdate
 from app.models.conversation import ConversationDetail
 from app.models.user import AuthenticatedUser
 from app.services import admin as service
@@ -68,6 +68,26 @@ def remove_document(document_id: str, admin: AuthenticatedUser = Depends(require
 @router.patch("/documents/{document_id}", response_model=AdminDocument)
 def update_document(document_id: str, payload: DocumentUpdate, admin: AuthenticatedUser = Depends(require_admin)):
     return service.update_document(admin, document_id, payload.title, payload.category)
+
+
+@router.get("/documents/{document_id}/content", response_model=DocumentContent)
+def document_content(document_id: str, _: AuthenticatedUser = Depends(require_admin)):
+    return service.read_document_content(document_id)
+
+
+@router.put("/documents/{document_id}/content", response_model=AdminDocument)
+def save_document_content(document_id: str, payload: DocumentContent, admin: AuthenticatedUser = Depends(require_admin)):
+    return service.update_document_content(admin, document_id, payload.content)
+
+
+@router.get("/documents/{document_id}/versions", response_model=list[AdminDocumentVersion])
+def document_versions(document_id: str, _: AuthenticatedUser = Depends(require_admin)):
+    return service.list_document_versions(document_id)
+
+
+@router.post("/documents/{document_id}/versions/{version_number}/restore", response_model=AdminDocument)
+def restore_document_version(document_id: str, version_number: int, admin: AuthenticatedUser = Depends(require_admin)):
+    return service.restore_document_version(admin, document_id, version_number)
 
 
 @router.post("/documents/{document_id}/process", response_model=AdminDocument)
