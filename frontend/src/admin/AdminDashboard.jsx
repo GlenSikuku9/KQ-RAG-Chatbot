@@ -8,6 +8,10 @@ import {
   adminDocuments,
   adminProcessDocument,
   adminUpdateDocument,
+  adminDocumentContent,
+  adminSaveDocumentContent,
+  adminDocumentVersions,
+  adminRestoreDocumentVersion,
   adminUpdateRole,
   adminUpdateStatus,
   adminUploadDocument,
@@ -147,7 +151,7 @@ function ModelManagement({ user, models, evaluations, onChanged }) {
 function metricValue(value) { return value == null ? "Unavailable" : `${(value * 100).toFixed(1)}%`; }
 
 function LogsTable({ logs }) {
-  return <div className="admin-table-card"><table className="admin-table"><thead><tr><th>Timestamp</th><th>Event</th><th>Description</th><th>Actor</th><th>Severity</th></tr></thead><tbody>{logs.map((item, index) => <tr key={`${item.timestamp}-${index}`}><td>{formatDate(item.timestamp)}</td><td>{item.event_type}</td><td>{item.description}</td><td>{item.actor}</td><td><span className={`status-badge ${item.severity === "error" ? "failed" : "active"}`}>{item.severity}</span></td></tr>)}{!logs.length && <tr><td colSpan="5" className="admin-empty">No recorded activity is available.</td></tr>}</tbody></table></div>;
+  return <div className="admin-table-card"><table className="admin-table"><thead><tr><th>Timestamp</th><th>Event</th><th>Description</th><th>Actor</th><th>Severity</th></tr></thead><tbody>{logs.map((item, index) => <tr key={`${item.timestamp}-${index}`}><td>{formatDateTime(item.timestamp)}</td><td>{item.event_type}</td><td>{item.description}</td><td>{item.actor}</td><td><span className={`status-badge ${item.severity === "error" ? "failed" : "active"}`}>{item.severity}</span></td></tr>)}{!logs.length && <tr><td colSpan="5" className="admin-empty">No recorded activity is available.</td></tr>}</tbody></table></div>;
 }
 
 function ThemeSettings({ user, theme, setTheme, onSaved }) {
@@ -198,11 +202,11 @@ function languageLabel(value) {
 }
 
 function RecentConversations({ items }) {
-  return <section className="admin-analytics-card"><h2>Recent conversations</h2>{items.length ? <div className="admin-recent-list">{items.map((item) => <div key={item.conversation_id}><strong>{item.first_message || "No customer message recorded"}</strong><small>{languageLabel(item.language)} · {item.message_count} messages · {formatDate(item.started_at)}</small></div>)}</div> : <p className="admin-metric-note">No conversations in this period.</p>}</section>;
+  return <section className="admin-analytics-card"><h2>Recent conversations</h2>{items.length ? <div className="admin-recent-list">{items.map((item) => <div key={item.conversation_id}><strong>{item.first_message || "No customer message recorded"}</strong><small>{languageLabel(item.language)} · {item.message_count} messages · {formatDateTime(item.started_at)}</small></div>)}</div> : <p className="admin-metric-note">No conversations in this period.</p>}</section>;
 }
 
 function RecentActivity({ items }) {
-  return <section className="admin-analytics-card"><h2>Recent system activity</h2>{items.length ? <div className="admin-recent-list">{items.map((item, index) => <div key={`${item.timestamp}-${index}`}><strong>{item.action}</strong><small>{item.target_type} · {formatDate(item.timestamp)}</small></div>)}</div> : <p className="admin-metric-note">No administrator activity recorded in this period.</p>}</section>;
+  return <section className="admin-analytics-card"><h2>Recent system activity</h2>{items.length ? <div className="admin-recent-list">{items.map((item, index) => <div key={`${item.timestamp}-${index}`}><strong>{item.action}</strong><small>{item.target_type} · {formatDateTime(item.timestamp)}</small></div>)}</div> : <p className="admin-metric-note">No administrator activity recorded in this period.</p>}</section>;
 }
 
 function MetricList({ values, empty }) {
@@ -232,10 +236,48 @@ function RatingDistribution({ values }) {
 }
 
 function DocumentTable({ documents, user, onChanged }) {
-  return <div className="admin-table-card"><table className="admin-table"><thead><tr><th>Filename</th><th>Category</th><th>Version</th><th>Uploaded</th><th>Uploaded by</th><th>Status</th><th>Actions</th></tr></thead><tbody>
-    {documents.map((document) => <tr key={document.document_id}><td><strong>{document.filename}</strong><small>{document.title}</small></td><td>{document.category}</td><td className="admin-version">{document.version || "—"}</td><td>{formatDateTime(document.uploaded_at)}</td><td>{document.uploaded_by || "Unknown"}</td><td><span className={`status-badge ${document.status}`}>{document.status}</span></td><td><button className="text-button" type="button" onClick={async () => { const title = window.prompt("Document title", document.title); if (title) { await adminUpdateDocument(user, document.document_id, title, document.category); onChanged(); } }}>Edit</button> <button className="text-button" type="button" onClick={async () => { await adminProcessDocument(user, document.document_id); onChanged(); }}>Process</button> <button className="text-button" type="button" onClick={async () => { if (window.confirm(`Remove ${document.filename}?`)) { await adminDeleteDocument(user, document.document_id); onChanged(); } }}>Delete</button></td></tr>)}
+  const [editor, setEditor] = useState(null);
+  const [versionPanel, setVersionPanel] = useState(null);
+  async function openEditor(document) {
+    try {
+      const content = await adminDocumentContent(user, document.document_id);
+      setEditor({ document, content: content.content, warning: content.warning, saving: false });
+    } catch (error) {
+      window.alert(error.message);
+    }
+  }
+  async function saveEditor() {
+    setEditor((value) => ({ ...value, saving: true }));
+    try {
+      await adminSaveDocumentContent(user, editor.document.document_id, editor.content);
+      setEditor(null);
+      onChanged();
+    } catch (error) {
+      setEditor((value) => ({ ...value, saving: false }));
+      window.alert(error.message);
+    }
+  }
+  async function openVersions(document) {
+    try {
+      setVersionPanel({ document, versions: await adminDocumentVersions(user, document.document_id) });
+    } catch (error) {
+      window.alert(error.message);
+    }
+  }
+  async function restoreVersion(version) {
+    if (!window.confirm(`Restore ${version.version}? This creates a new version.`)) return;
+    try {
+      await adminRestoreDocumentVersion(user, versionPanel.document.document_id, version.version_number);
+      setVersionPanel(null);
+      onChanged();
+    } catch (error) {
+      window.alert(error.message);
+    }
+  }
+  return <><div className="admin-table-card"><table className="admin-table"><thead><tr><th>Filename</th><th>Category</th><th>Version</th><th>Uploaded</th><th>Uploaded by</th><th>Status</th><th>Actions</th></tr></thead><tbody>
+    {documents.map((document) => <tr key={document.document_id}><td><strong>{document.filename}</strong><small>{document.title}</small></td><td>{document.category}</td><td className="admin-version"><strong>{document.version || "v1"}</strong><button className="text-button version-history-button" type="button" onClick={() => openVersions(document)}>History</button></td><td>{formatDateTime(document.uploaded_at)}</td><td>{document.uploaded_by || "Unknown"}</td><td><span className={`status-badge ${document.status}`}>{document.status}</span></td><td><button className="text-button" type="button" onClick={() => openEditor(document)}>Edit content</button> <button className="text-button" type="button" onClick={async () => { const title = window.prompt("Document title", document.title); if (title) { await adminUpdateDocument(user, document.document_id, title, document.category); onChanged(); } }}>Metadata</button> <button className="text-button" type="button" onClick={async () => { await adminProcessDocument(user, document.document_id); onChanged(); }}>Process</button> <button className="text-button" type="button" onClick={async () => { if (window.confirm(`Remove ${document.filename}?`)) { await adminDeleteDocument(user, document.document_id); onChanged(); } }}>Delete</button></td></tr>)}
     {!documents.length && <tr><td colSpan="7" className="admin-empty">No documents have been published.</td></tr>}
-  </tbody></table></div>;
+  </tbody></table></div>{editor && <div className="admin-modal-backdrop" role="presentation"><section className="admin-modal document-editor" role="dialog" aria-modal="true"><header><div><h2>Edit {editor.document.filename}</h2><p className="admin-metric-note">Edit extracted text, then save to republish and re-index this document.</p></div><button className="icon-button" type="button" onClick={() => setEditor(null)}>×</button></header>{editor.warning && <p className="notice warning">{editor.warning}</p>}<textarea className="document-editor-textarea" value={editor.content} onChange={(event) => setEditor({ ...editor, content: event.target.value })} spellCheck="false" /><div className="document-editor-actions"><button className="button secondary" type="button" onClick={() => setEditor(null)}>Cancel</button><button className="button primary" type="button" disabled={editor.saving || !editor.content.trim()} onClick={saveEditor}>{editor.saving ? "Saving and processing…" : "Save and process"}</button></div></section></div>}{versionPanel && <div className="admin-modal-backdrop" role="presentation"><section className="admin-modal version-history-modal" role="dialog" aria-modal="true"><header><div><h2>Version history</h2><p className="admin-metric-note">{versionPanel.document.filename}</p></div><button className="icon-button" type="button" onClick={() => setVersionPanel(null)}>×</button></header><div className="version-history-list">{versionPanel.versions.map((version) => <article className={version.is_current ? "current" : ""} key={version.version_id}><div><strong>{version.version}</strong>{version.is_current && <span className="status-badge active">Current</span>}<small>{formatDateTime(version.uploaded_at)} · {version.uploaded_by || "Unknown"}</small></div><button className="text-button" type="button" disabled={version.is_current} onClick={() => restoreVersion(version)}>Restore</button></article>)}</div></section></div>}</>;
 }
 
 function UserTable({ users, user, onChanged }) {
@@ -247,7 +289,7 @@ function UserTable({ users, user, onChanged }) {
 
 function ConversationTable({ conversations, onSelect }) {
   return <div className="admin-table-card"><table className="admin-table"><thead><tr><th>Conversation</th><th>User email</th><th>Language</th><th>Started</th><th>Messages</th><th>User messages</th><th>Status</th><th /></tr></thead><tbody>
-    {conversations.map((item) => <tr key={item.conversation_id}><td><strong>{item.title}</strong><small>{item.conversation_id}</small></td><td>{item.user_email || "Unavailable"}</td><td>{languageLabel(item.language)}</td><td>{formatDateTime(item.started_at)}</td><td>{item.message_count}</td><td>{item.customer_message_count}</td><td><span className={`status-badge ${item.status}`}>{item.status}</span></td><td><button className="text-button" type="button" onClick={() => onSelect(item.conversation_id)}>Inspect</button></td></tr>)}
+    {conversations.map((item) => <tr key={item.conversation_id}><td><strong className="conversation-title">{item.title || item.first_customer_message || "Untitled conversation"}</strong></td><td>{item.user_email || "Unavailable"}</td><td>{languageLabel(item.language)}</td><td>{formatDateTime(item.started_at)}</td><td>{item.message_count}</td><td>{item.customer_message_count}</td><td><span className={`status-badge ${item.status}`}>{item.status}</span></td><td><button className="text-button" type="button" onClick={() => onSelect(item.conversation_id)}>Inspect</button></td></tr>)}
     {!conversations.length && <tr><td colSpan="8" className="admin-empty">No conversations found.</td></tr>}
   </tbody></table></div>;
 }

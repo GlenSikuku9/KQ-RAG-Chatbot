@@ -2,20 +2,22 @@
 
 from collections import Counter
 from datetime import datetime, timedelta, timezone
+from hashlib import sha256
 from pathlib import Path
+import shutil
 from uuid import uuid4
 
 from fastapi import HTTPException, UploadFile, status
 from firebase_admin import auth
 
 from app.config import get_settings
-from app.models.admin import DEFAULT_PASSENGER_THEME, AdminAnalytics, AdminAuditEvent, AdminConversationSummary, AdminDocument, AdminLog, AdminModel, AdminUser, EvaluationResult, PassengerTheme
+from app.models.admin import DEFAULT_PASSENGER_THEME, AdminAnalytics, AdminAuditEvent, AdminConversationSummary, AdminDocument, AdminDocumentVersion, AdminLog, AdminModel, AdminUser, DocumentContent, EvaluationResult, PassengerTheme
 from app.models.generation import ConfiguredModel
 from app.models.feedback import Feedback, OperationalEvent
 from app.models.database import encode_document_id, utc_now
 from app.models.ingestion import DocumentRecord
 from app.models.user import AuthenticatedUser
-from app.services.conversations import ConversationStore
+from app.services.conversations import ConversationStore, conversation_title_from_question
 from app.services.firestore_client import FIRESTORE_READ_TIMEOUT, firestore_operation, get_firestore_client
 from app.services.knowledge_base import KnowledgeBaseStore
 from app.rag.ingestion import publish_document, remove_document
@@ -135,27 +137,79 @@ def list_documents() -> list[AdminDocument]:
     result: list[AdminDocument] = []
     for snapshot in snapshots:
         record = DocumentRecord.model_validate(snapshot.to_dict())
-        filename = record.source.replace("\\", "/").rsplit("/", 1)[-1]
         extra = metadata.get(record.document_id, {})
+        filename = extra.get("original_filename") or record.source.replace("\\", "/").rsplit("/", 1)[-1]
         uploader_email = extra.get("uploaded_by")
         if uploader_email:
             try:
                 uploader_email = auth.get_user(str(uploader_email)).email or "Administrator"
             except Exception:
                 uploader_email = "Administrator"
+        file_path = settings.raw_data_dir / record.source
+        file_hash = extra.get("file_hash")
+        if not file_hash and file_path.is_file():
+            file_hash = sha256(file_path.read_bytes()).hexdigest()
         result.append(AdminDocument(
             document_id=record.document_id,
             filename=filename,
             title=extra.get("title") or Path(filename).stem,
             category=extra.get("category") or (record.active.category if record.active else "Uncategorised"),
-            version=record.active.version if record.active else record.last_attempt.version,
+            # The UI exposes a human-readable revision; the content fingerprint
+            # remains available as file_hash and in the version-history records.
+            version=f"v{int(extra.get('version_count', 1))}",
             uploaded_at=record.updated_at,
             status=record.last_attempt.status,
             source=record.source,
             chunk_count=record.active.chunk_count if record.active else 0,
             uploaded_by=uploader_email,
+            file_hash=file_hash,
+            version_count=int(extra.get("version_count", 1)),
         ))
     return sorted(result, key=lambda item: item.uploaded_at, reverse=True)
+
+
+def _document_for_filename(filename: str) -> AdminDocument | None:
+    """Find the stable logical document represented by an uploaded filename."""
+    for document in list_documents():
+        existing_name = Path(document.filename).name.lower()
+        if existing_name == filename.lower() or existing_name.endswith(f"_{filename.lower()}"):
+            return document
+    return None
+
+
+def _version_reference(document_id: str, version_number: int) -> str:
+    return f"document_versions/{document_id}/v{version_number}"
+
+
+def _write_version_entry(
+    admin: AuthenticatedUser, document: AdminDocument, version_number: int,
+    file_hash: str, file_reference: str, status: str, uploaded_at: datetime,
+) -> None:
+    """Store immutable history separately from the active ingestion manifest."""
+    client = get_firestore_client()
+    client.collection("document_versions").document(f"{document.document_id}:v{version_number}").set({
+        "version_id": f"{document.document_id}:v{version_number}",
+        "document_id": document.document_id,
+        "version_number": version_number,
+        "version": f"v{version_number}",
+        "file_hash": file_hash,
+        "uploaded_at": uploaded_at,
+        "uploaded_by": admin.uid,
+        "file_reference": file_reference,
+        "source": document.source,
+        "status": status,
+        "is_current": True,
+        "title": document.title,
+        "category": document.category,
+    })
+
+
+def _mark_previous_versions(document_id: str) -> None:
+    client = get_firestore_client()
+    with firestore_operation():
+        snapshots = list(client.collection("document_versions").where("document_id", "==", document_id).stream(timeout=FIRESTORE_READ_TIMEOUT))
+    for snapshot in snapshots:
+        client.collection("document_versions").document(snapshot.id).set({"is_current": False}, merge=True)
 
 
 def process_upload(admin: AuthenticatedUser, file: UploadFile, category: str | None) -> AdminDocument:
@@ -164,26 +218,118 @@ def process_upload(admin: AuthenticatedUser, file: UploadFile, category: str | N
         raise HTTPException(status.HTTP_422_UNPROCESSABLE_ENTITY, "Only .docx documents are supported.")
     settings = get_settings()
     safe_name = Path(file.filename).name
-    destination = settings.raw_data_dir / "admin" / f"{uuid4().hex}_{safe_name}"
+    uploaded_bytes = file.file.read()
+    file_hash = sha256(uploaded_bytes).hexdigest()
+    existing = _document_for_filename(safe_name)
+    destination = settings.raw_data_dir / (existing.source if existing else f"admin/{safe_name}")
     destination.parent.mkdir(parents=True, exist_ok=True)
-    with destination.open("wb") as stream:
-        stream.write(file.file.read())
+    now = utc_now()
+    version_number = existing.version_count + 1 if existing else 1
+    archive_reference = _version_reference(existing.document_id, version_number - 1) if existing else None
+    archive_path = settings.raw_data_dir.parent / archive_reference if archive_reference else None
+    if existing and destination.is_file():
+        # Preserve the previous active bytes outside raw_data_dir so the indexer never
+        # discovers archived versions as independent documents.
+        archive_path.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(destination, archive_path)
     try:
+        with destination.open("wb") as stream:
+            stream.write(uploaded_bytes)
         result = publish_document(destination, settings, KnowledgeBaseStore(get_firestore_client()))
         if not result.persisted or result.status not in {"processed", "unchanged", "needs_review"}:
             raise HTTPException(status.HTTP_422_UNPROCESSABLE_ENTITY, result.error or "Document processing failed.")
         client = get_firestore_client()
-        client.collection("admin_document_metadata").document(result.document_id).set({
+        metadata = {
             "title": Path(safe_name).stem,
             "category": category.strip() if category and category.strip() else "Uncategorised",
             "uploaded_by": admin.uid,
-            "uploaded_at": utc_now(),
-        }, merge=True)
+            "uploaded_at": now,
+            "original_filename": safe_name,
+            "file_hash": file_hash,
+            "version_count": version_number,
+        }
+        client.collection("admin_document_metadata").document(result.document_id).set(metadata, merge=True)
+        if existing and archive_path:
+            _mark_previous_versions(existing.document_id)
+            _write_version_entry(admin, existing, version_number - 1, existing.file_hash or "unknown", str(archive_path), "archived", now)
+        current = next(item for item in list_documents() if item.document_id == result.document_id)
+        _mark_previous_versions(result.document_id)
+        _write_version_entry(admin, current, version_number, file_hash, str(destination), "processed", now)
         audit(admin, "document_processed", "document", result.document_id)
         return next(item for item in list_documents() if item.document_id == result.document_id)
     except Exception:
         # The source is retained for a failed attempt so the admin can diagnose/retry it.
         raise
+
+
+def list_document_versions(document_id: str) -> list[AdminDocumentVersion]:
+    """Return immutable history in newest-first order without exposing credentials."""
+    document = _document_match(document_id)
+    client = get_firestore_client()
+    with firestore_operation():
+        snapshots = list(client.collection("document_versions").where("document_id", "==", document_id).stream(timeout=FIRESTORE_READ_TIMEOUT))
+    versions = []
+    for snapshot in snapshots:
+        raw = snapshot.to_dict() or {}
+        uploader = raw.get("uploaded_by")
+        email = None
+        if uploader:
+            try:
+                email = auth.get_user(str(uploader)).email
+            except Exception:
+                email = "Administrator"
+        raw["uploaded_by"] = email or uploader
+        versions.append(AdminDocumentVersion.model_validate(raw))
+    if not versions:
+        # Backfill a readable v1 entry for documents uploaded before I24 versioning.
+        versions.append(AdminDocumentVersion(
+            version_id=f"{document_id}:v1", document_id=document_id, version_number=1,
+            version="v1", file_hash=document.file_hash or "unknown", uploaded_at=document.uploaded_at,
+            uploaded_by=document.uploaded_by, file_reference=document.source, source=document.source,
+            status=document.status, is_current=True, title=document.title, category=document.category,
+        ))
+    return sorted(versions, key=lambda item: item.version_number, reverse=True)
+
+
+def restore_document_version(admin: AuthenticatedUser, document_id: str, version_number: int) -> AdminDocument:
+    """Restore bytes into the active source, creating a new version number."""
+    document = _document_match(document_id)
+    versions = list_document_versions(document_id)
+    selected = next((item for item in versions if item.version_number == version_number), None)
+    if selected is None:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "Document version not found.")
+    current_number = document.version_count
+    if selected.version_number == current_number:
+        raise HTTPException(status.HTTP_409_CONFLICT, "That version is already current.")
+    selected_path = Path(selected.file_reference)
+    if not selected_path.is_file():
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "The archived document file is unavailable.")
+    settings = get_settings()
+    destination = settings.raw_data_dir / document.source
+    now = utc_now()
+    # Preserve the currently active bytes before replacing them with the selected version.
+    current_archive = settings.raw_data_dir.parent / _version_reference(document_id, current_number)
+    current_archive.parent.mkdir(parents=True, exist_ok=True)
+    if destination.is_file():
+        shutil.copy2(destination, current_archive)
+    _mark_previous_versions(document_id)
+    client = get_firestore_client()
+    client.collection("document_versions").document(f"{document_id}:v{current_number}").set({
+        "file_reference": str(current_archive), "status": "archived", "is_current": False,
+    }, merge=True)
+    shutil.copy2(selected_path, destination)
+    result = publish_document(destination, settings, KnowledgeBaseStore(client))
+    if not result.persisted or result.status not in {"processed", "unchanged"}:
+        raise HTTPException(status.HTTP_422_UNPROCESSABLE_ENTITY, result.error or "Document restoration failed during processing.")
+    file_hash = sha256(destination.read_bytes()).hexdigest()
+    new_number = max(item.version_number for item in versions) + 1
+    client.collection("admin_document_metadata").document(document_id).set({
+        "version_count": new_number, "file_hash": file_hash, "uploaded_at": now, "uploaded_by": admin.uid,
+    }, merge=True)
+    current = _document_match(document_id)
+    _write_version_entry(admin, current, new_number, file_hash, str(destination), "processed", now)
+    audit(admin, "document_version_restored", "document", document_id)
+    return _document_match(document_id)
 
 
 def delete_document(admin: AuthenticatedUser, document_id: str) -> AdminDocument:
@@ -206,6 +352,77 @@ def update_document(admin: AuthenticatedUser, document_id: str, title: str | Non
         get_firestore_client().collection("admin_document_metadata").document(document_id).set(values, merge=True)
     audit(admin, "document_updated", "document", document_id)
     return next(item for item in list_documents() if item.document_id == document_id)
+
+
+def _document_match(document_id: str) -> AdminDocument:
+    match = next((item for item in list_documents() if item.document_id == document_id), None)
+    if match is None:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "Document not found.")
+    return match
+
+
+def read_document_content(document_id: str) -> DocumentContent:
+    """Read editable DOCX text for the protected administrator editor."""
+    match = _document_match(document_id)
+    path = get_settings().raw_data_dir / match.source
+    if not path.is_file():
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "The source DOCX is no longer available.")
+    from app.rag.document_loader import _extract_document
+    try:
+        result = _extract_document(path)
+    except ValueError as error:
+        raise HTTPException(status.HTTP_422_UNPROCESSABLE_ENTITY, str(error)) from error
+    warning = "Some Word layout or tables may require review after saving." if result.warnings else None
+    return DocumentContent(content=result.text, warning=warning)
+
+
+def update_document_content(admin: AuthenticatedUser, document_id: str, content: str) -> AdminDocument:
+    """Replace editable text, then run the normal atomic publication pipeline."""
+    match = _document_match(document_id)
+    path = get_settings().raw_data_dir / match.source
+    if not path.is_file():
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "The source DOCX is no longer available.")
+    if not content.strip():
+        raise HTTPException(status.HTTP_422_UNPROCESSABLE_ENTITY, "Document content cannot be empty.")
+    # python-docx writes editable paragraphs. Existing tables/images are not silently
+    # interpreted as text; the editor warns that complex layout should be reviewed.
+    from docx import Document
+    now = utc_now()
+    current_number = match.version_count
+    current_archive = get_settings().raw_data_dir.parent / _version_reference(document_id, current_number)
+    current_archive.parent.mkdir(parents=True, exist_ok=True)
+    if path.is_file():
+        # Content edits are revisions too: preserve the previous bytes before saving.
+        shutil.copy2(path, current_archive)
+    _mark_previous_versions(document_id)
+    existing_versions = list_document_versions(document_id)
+    if any(item.version_number == current_number for item in existing_versions):
+        get_firestore_client().collection("document_versions").document(f"{document_id}:v{current_number}").set({
+            "file_reference": str(current_archive), "status": "archived", "is_current": False,
+        }, merge=True)
+    else:
+        _write_version_entry(admin, match, current_number, match.file_hash or "unknown", str(current_archive), "archived", now)
+    document = Document(path)
+    body = document._element.body
+    for child in list(body):
+        if child.tag.endswith("}sectPr"):
+            continue
+        body.remove(child)
+    for paragraph in content.replace("\r\n", "\n").split("\n"):
+        document.add_paragraph(paragraph)
+    document.save(path)
+    result = publish_document(path, get_settings(), KnowledgeBaseStore(get_firestore_client()))
+    if not result.persisted or result.status not in {"processed", "unchanged"}:
+        raise HTTPException(status.HTTP_422_UNPROCESSABLE_ENTITY, result.error or "Document processing failed after editing.")
+    file_hash = sha256(path.read_bytes()).hexdigest()
+    new_number = current_number + 1
+    get_firestore_client().collection("admin_document_metadata").document(document_id).set({
+        "version_count": new_number, "file_hash": file_hash, "uploaded_at": now, "uploaded_by": admin.uid,
+    }, merge=True)
+    current = _document_match(document_id)
+    _write_version_entry(admin, current, new_number, file_hash, str(path), "processed", now)
+    audit(admin, "document_content_updated", "document", document_id)
+    return _document_match(document_id)
 
 
 def list_users() -> list[AdminUser]:
@@ -270,6 +487,7 @@ def list_conversation_summaries() -> list[AdminConversationSummary]:
     with firestore_operation():
         message_snapshots = list(client.collection("messages").stream(timeout=FIRESTORE_READ_TIMEOUT))
     counts: dict[str, list[int]] = {}
+    first_messages: dict[str, str] = {}
     for snapshot in message_snapshots:
         raw = snapshot.to_dict() or {}
         key = raw.get("conversation_id")
@@ -277,6 +495,8 @@ def list_conversation_summaries() -> list[AdminConversationSummary]:
             bucket = counts.setdefault(key, [0, 0])
             bucket[0] += 1
             bucket[1] += raw.get("sender_type") == "customer"
+            if raw.get("sender_type") == "customer":
+                first_messages.setdefault(key, str(raw.get("message_text", "")))
     result = []
     for conversation in conversations:
         email = None
@@ -285,11 +505,18 @@ def list_conversation_summaries() -> list[AdminConversationSummary]:
         except Exception:
             pass
         message_count, customer_count = counts.get(conversation.conversation_id, [0, 0])
+        stored_title = conversation.title.strip()
+        # Older records stored the complete first question; derive a display title
+        # without rewriting the original message or exposing its ID in the UI.
+        display_title = conversation_title_from_question(first_messages.get(conversation.conversation_id, stored_title)) if (
+            stored_title == "New conversation" or len(stored_title.split()) > 9
+        ) else stored_title
         result.append(AdminConversationSummary(
             conversation_id=conversation.conversation_id,
             user_id=conversation.user_id,
             user_email=email,
-            title=conversation.title,
+            title=display_title,
+            first_customer_message=first_messages.get(conversation.conversation_id),
             language=conversation.language,
             status=conversation.status,
             started_at=conversation.started_at,
