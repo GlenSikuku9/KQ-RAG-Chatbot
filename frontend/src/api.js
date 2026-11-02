@@ -136,6 +136,11 @@ export function sendConversationMessage(
 // Administrator requests remain behind the same Firebase bearer-token boundary.
 export const adminDocuments = (user) => authenticatedRequest(user, "/admin/documents");
 export const adminAnalytics = (user, days = 30) => authenticatedRequest(user, `/admin/analytics?days=${days}`);
+export const adminModels = (user) => authenticatedRequest(user, "/admin/models");
+export const adminEvaluations = (user) => authenticatedRequest(user, "/admin/evaluations");
+export const adminLogs = (user) => authenticatedRequest(user, "/admin/logs");
+export const adminSetDefaultModel = (user, modelId) => authenticatedRequest(user, "/admin/models/default", { method: "PUT", body: JSON.stringify({ model_id: modelId }) });
+export const adminGenerateModelTest = (user, modelId, prompt) => authenticatedRequest(user, "/models/generate", { method: "POST", body: JSON.stringify({ model_id: modelId, prompt }) });
 export const adminUsers = (user) => authenticatedRequest(user, "/admin/users");
 export const adminConversations = (user) => authenticatedRequest(user, "/admin/conversations");
 export const adminConversation = (user, id) => authenticatedRequest(user, `/admin/conversations/${id}`);

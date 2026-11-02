@@ -4,6 +4,7 @@ import {
   onAuthStateChanged,
   signInWithEmailAndPassword,
   signOut,
+  updateProfile,
 } from "firebase/auth";
 
 import { getPassengerTheme, syncProfile } from "./api";
@@ -14,6 +15,8 @@ import { auth, firebaseConfigured } from "./firebase";
 function AuthScreen({ onAuthenticated }) {
   const [screen, setScreen] = useState("sign-in");
   const [email, setEmail] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [surname, setSurname] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
   const [submitting, setSubmitting] = useState(false);
@@ -30,10 +33,16 @@ function AuthScreen({ onAuthenticated }) {
 
     try {
       // The backend derives roles from verified claims; this form never chooses a role.
-      const credential =
-        screen === "register"
-          ? await createUserWithEmailAndPassword(auth, email, password)
-          : await signInWithEmailAndPassword(auth, email, password);
+      const credential = screen === "register"
+        ? await createUserWithEmailAndPassword(auth, email, password)
+        : await signInWithEmailAndPassword(auth, email, password);
+
+      if (screen === "register") {
+        // Firebase displayName is copied into the trusted backend profile at sync time.
+        await updateProfile(credential.user, {
+          displayName: `${firstName.trim()} ${surname.trim()}`.trim(),
+        });
+      }
 
       await onAuthenticated(credential.user);
     } catch (reason) {
@@ -85,6 +94,10 @@ function AuthScreen({ onAuthenticated }) {
         </p>
 
         <form onSubmit={submit}>
+          {screen === "register" && <>
+            <label>First name<input type="text" value={firstName} onChange={(event) => setFirstName(event.target.value)} autoComplete="given-name" required /></label>
+            <label>Surname<input type="text" value={surname} onChange={(event) => setSurname(event.target.value)} autoComplete="family-name" required /></label>
+          </>}
           <label>
             Email
             <input

@@ -9,7 +9,8 @@ from fastapi import HTTPException, UploadFile, status
 from firebase_admin import auth
 
 from app.config import get_settings
-from app.models.admin import DEFAULT_PASSENGER_THEME, AdminAnalytics, AdminAuditEvent, AdminDocument, AdminUser, PassengerTheme
+from app.models.admin import DEFAULT_PASSENGER_THEME, AdminAnalytics, AdminAuditEvent, AdminConversationSummary, AdminDocument, AdminLog, AdminModel, AdminUser, EvaluationResult, PassengerTheme
+from app.models.generation import ConfiguredModel
 from app.models.feedback import Feedback, OperationalEvent
 from app.models.database import encode_document_id, utc_now
 from app.models.ingestion import DocumentRecord
@@ -53,6 +54,76 @@ def save_passenger_theme(admin: AuthenticatedUser, theme: PassengerTheme) -> Pas
     return theme
 
 
+def list_admin_models() -> list[AdminModel]:
+    """Combine configured model metadata with real operational events; credentials never leave config."""
+    from app.rag.generation import get_generation_service
+    configured = get_generation_service().configured_models()
+    with firestore_operation():
+        snapshots = list(get_firestore_client().collection("operational_events").stream(timeout=FIRESTORE_READ_TIMEOUT))
+    stats = {item.model_id: {"success": 0, "failed": 0, "durations": []} for item in configured}
+    for snapshot in snapshots:
+        raw = snapshot.to_dict() or {}
+        model_id = raw.get("model_id")
+        if model_id not in stats:
+            continue
+        if raw.get("event_type") == "chat_completed":
+            stats[model_id]["success"] += 1
+            stats[model_id]["durations"].append(float(raw.get("duration_ms", 0)))
+        elif raw.get("event_type") == "chat_failed":
+            stats[model_id]["failed"] += 1
+    total = sum(item["success"] for item in stats.values())
+    return [AdminModel(
+        model_id=item.model_id, provider=item.provider, upstream_model=item.upstream_model,
+        language_support=["en", "sw", "mixed"],
+        configured=item.configured, is_default=item.is_default,
+        usage_count=stats[item.model_id]["success"],
+        usage_percentage=round(stats[item.model_id]["success"] / total * 100, 2) if total else 0,
+        average_response_ms=round(sum(stats[item.model_id]["durations"]) / len(stats[item.model_id]["durations"]), 2) if stats[item.model_id]["durations"] else None,
+        successful_requests=stats[item.model_id]["success"], failed_requests=stats[item.model_id]["failed"],
+    ) for item in configured]
+
+
+def set_default_model(admin: AuthenticatedUser, model_id: str) -> AdminModel:
+    if not any(item.model_id == model_id for item in list_admin_models()):
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "The selected model is not configured.")
+    with firestore_operation():
+        get_firestore_client().collection("app_settings").document("generation_config").set({"default_model_id": model_id}, merge=True)
+    audit(admin, "default_model_updated", "model", model_id)
+    return next(item for item in list_admin_models() if item.model_id == model_id)
+
+
+def list_evaluations() -> list[EvaluationResult]:
+    with firestore_operation():
+        snapshots = get_firestore_client().collection("model_evaluations").stream(timeout=FIRESTORE_READ_TIMEOUT)
+    return sorted((EvaluationResult.model_validate(snapshot.to_dict()) for snapshot in snapshots), key=lambda item: item.evaluated_at, reverse=True)
+
+
+def list_logs() -> list[AdminLog]:
+    """Expose safe operational/audit summaries, never raw credentials or customer content."""
+    client = get_firestore_client()
+    with firestore_operation():
+        audit_snapshots = list(client.collection("admin_activity").stream(timeout=FIRESTORE_READ_TIMEOUT))
+        event_snapshots = list(client.collection("operational_events").stream(timeout=FIRESTORE_READ_TIMEOUT))
+    logs: list[AdminLog] = []
+    for snapshot in audit_snapshots:
+        item = snapshot.to_dict() or {}
+        admin_id = str(item.get("admin_id", ""))
+        # Resolve the trusted Firebase identity for display; never expose the UID
+        # when an account has been removed or cannot be read.
+        actor_email = "Administrator"
+        if admin_id:
+            try:
+                actor_email = auth.get_user(admin_id).email or "Administrator"
+            except Exception:
+                actor_email = "Administrator"
+        logs.append(AdminLog(timestamp=item["timestamp"], event_type="administrator", description=str(item.get("action", "Administrator activity")), actor=actor_email, severity="info", details={"target_type": item.get("target_type"), "target_id": item.get("target_id")}))
+    for snapshot in event_snapshots:
+        item = snapshot.to_dict() or {}
+        failed = item.get("event_type") == "chat_failed"
+        logs.append(AdminLog(timestamp=item["occurred_at"], event_type=str(item.get("event_type", "system")), description="Chat request failed" if failed else "Chat request completed", actor="system", severity="error" if failed else "info", details={"model_id": item.get("model_id"), "failure_category": item.get("failure_category"), "duration_ms": item.get("duration_ms")}))
+    return sorted(logs, key=lambda item: item.timestamp, reverse=True)
+
+
 def list_documents() -> list[AdminDocument]:
     settings = get_settings()
     client = get_firestore_client()
@@ -66,6 +137,12 @@ def list_documents() -> list[AdminDocument]:
         record = DocumentRecord.model_validate(snapshot.to_dict())
         filename = record.source.replace("\\", "/").rsplit("/", 1)[-1]
         extra = metadata.get(record.document_id, {})
+        uploader_email = extra.get("uploaded_by")
+        if uploader_email:
+            try:
+                uploader_email = auth.get_user(str(uploader_email)).email or "Administrator"
+            except Exception:
+                uploader_email = "Administrator"
         result.append(AdminDocument(
             document_id=record.document_id,
             filename=filename,
@@ -76,7 +153,7 @@ def list_documents() -> list[AdminDocument]:
             status=record.last_attempt.status,
             source=record.source,
             chunk_count=record.active.chunk_count if record.active else 0,
-            uploaded_by=extra.get("uploaded_by"),
+            uploaded_by=uploader_email,
         ))
     return sorted(result, key=lambda item: item.uploaded_at, reverse=True)
 
@@ -184,6 +261,42 @@ def list_conversations() -> list:
         conversation = store._read_conversation(snapshot, conversation_id)
         details.append(conversation)
     return sorted(details, key=lambda item: item.started_at, reverse=True)
+
+
+def list_conversation_summaries() -> list[AdminConversationSummary]:
+    """Join conversation records with Firebase emails and message counts for admins."""
+    conversations = list_conversations()
+    client = get_firestore_client()
+    with firestore_operation():
+        message_snapshots = list(client.collection("messages").stream(timeout=FIRESTORE_READ_TIMEOUT))
+    counts: dict[str, list[int]] = {}
+    for snapshot in message_snapshots:
+        raw = snapshot.to_dict() or {}
+        key = raw.get("conversation_id")
+        if key:
+            bucket = counts.setdefault(key, [0, 0])
+            bucket[0] += 1
+            bucket[1] += raw.get("sender_type") == "customer"
+    result = []
+    for conversation in conversations:
+        email = None
+        try:
+            email = auth.get_user(conversation.user_id).email
+        except Exception:
+            pass
+        message_count, customer_count = counts.get(conversation.conversation_id, [0, 0])
+        result.append(AdminConversationSummary(
+            conversation_id=conversation.conversation_id,
+            user_id=conversation.user_id,
+            user_email=email,
+            title=conversation.title,
+            language=conversation.language,
+            status=conversation.status,
+            started_at=conversation.started_at,
+            message_count=message_count,
+            customer_message_count=customer_count,
+        ))
+    return result
 
 
 def get_conversation(conversation_id: str):

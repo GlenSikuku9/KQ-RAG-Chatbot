@@ -112,3 +112,56 @@ class PassengerTheme(BaseModel):
         if not re.fullmatch(r"#[0-9a-fA-F]{6}", value):
             raise ValueError("Colours must use six-digit hexadecimal values such as #0b2e6f.")
         return value.lower()
+
+
+class AdminModel(BaseModel):
+    model_id: str
+    provider: str
+    upstream_model: str
+    language_support: list[str] = Field(default_factory=lambda: ["en", "sw", "mixed"])
+    configured: bool
+    is_default: bool
+    usage_count: int = 0
+    usage_percentage: float = 0.0
+    average_response_ms: float | None = None
+    successful_requests: int = 0
+    failed_requests: int = 0
+
+
+class DefaultModelUpdate(BaseModel):
+    model_id: str = Field(min_length=1, max_length=100)
+
+
+class EvaluationResult(BaseModel):
+    run_id: str
+    evaluated_at: UTCDateTime
+    dataset_id: str
+    model_id: str
+    language: str
+    sample_size: int = Field(ge=0)
+    faithfulness: float | None = None
+    answer_relevance: float | None = None
+    context_precision: float | None = None
+    context_recall: float | None = None
+    average_response_ms: float | None = None
+
+
+class AdminLog(BaseModel):
+    timestamp: UTCDateTime
+    event_type: str
+    description: str
+    actor: str
+    severity: Literal["info", "warning", "error"]
+    details: dict[str, str | int | float | None] = {}
+
+
+class AdminConversationSummary(BaseModel):
+    conversation_id: str
+    user_id: str
+    user_email: str | None = None
+    title: str
+    language: str
+    status: str
+    started_at: UTCDateTime
+    message_count: int = 0
+    customer_message_count: int = 0

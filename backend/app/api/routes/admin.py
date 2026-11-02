@@ -3,7 +3,7 @@
 from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile, status
 
 from app.api.dependencies import require_admin
-from app.models.admin import AdminAnalytics, AdminDocument, AdminUser, DocumentUpdate, PassengerTheme, UserRoleUpdate, UserStatusUpdate
+from app.models.admin import AdminAnalytics, AdminConversationSummary, AdminDocument, AdminLog, AdminModel, AdminUser, DefaultModelUpdate, DocumentUpdate, EvaluationResult, PassengerTheme, UserRoleUpdate, UserStatusUpdate
 from app.models.conversation import ConversationDetail
 from app.models.user import AuthenticatedUser
 from app.services import admin as service
@@ -11,6 +11,26 @@ from app.services.conversations import ConversationStore
 from app.services.firestore_client import get_firestore_client
 
 router = APIRouter()
+
+
+@router.get("/models", response_model=list[AdminModel])
+def models(_: AuthenticatedUser = Depends(require_admin)):
+    return service.list_admin_models()
+
+
+@router.put("/models/default", response_model=AdminModel)
+def default_model(payload: DefaultModelUpdate, admin: AuthenticatedUser = Depends(require_admin)):
+    return service.set_default_model(admin, payload.model_id)
+
+
+@router.get("/evaluations", response_model=list[EvaluationResult])
+def evaluations(_: AuthenticatedUser = Depends(require_admin)):
+    return service.list_evaluations()
+
+
+@router.get("/logs", response_model=list[AdminLog])
+def logs(_: AuthenticatedUser = Depends(require_admin)):
+    return service.list_logs()
 
 
 @router.get("/settings/passenger-theme", response_model=PassengerTheme)
@@ -82,7 +102,7 @@ def user_status(user_id: str, payload: UserStatusUpdate, admin: AuthenticatedUse
 
 @router.get("/conversations")
 def conversations(_: AuthenticatedUser = Depends(require_admin)):
-    return service.list_conversations()
+    return service.list_conversation_summaries()
 
 
 @router.get("/conversations/{conversation_id}", response_model=ConversationDetail)
