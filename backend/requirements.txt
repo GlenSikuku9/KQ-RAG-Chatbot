@@ -6,6 +6,9 @@ firebase-admin==7.1.0
 email-validator==2.3.0
 python-docx==1.2.0
 sentence-transformers==6.1.0
+# The vector-index fingerprint records this dependency because transformer
+# changes can alter tokenization and therefore retrieval results.
+transformers==5.20.2
 chromadb==1.5.9
 filelock==3.20.3
 httpx==0.28.1

@@ -1,4 +1,12 @@
 import { useEffect, useRef, useState } from "react";
+import {
+  Menu,
+  Maximize2,
+  Minimize2,
+  Minus,
+  X,
+} from "lucide-react";
+import "./PassengerChat.css";
 
 import {
   createConversation,
@@ -6,11 +14,14 @@ import {
   getConversation,
   getConversationFeedback,
   getAvailableModels,
+  getPublicModels,
   listConversations,
   saveConversationFeedback,
   sendConversationMessage,
+  sendGuestMessage,
 } from "../api";
 import { FormattedAnswer } from "./FormattedAnswer";
+import { KenyaAirwaysLogo } from "./KenyaAirwaysLogo";
 
 const LANGUAGE_OPTIONS = [
   { value: "en", label: "English" },
@@ -57,7 +68,7 @@ function answerModelLabel(modelId) {
 }
 
 function similarityPercent(score) {
-  return `${(Number(score) * 100).toFixed(1)}% similar`;
+  return `${(Number(score) * 100).toFixed(1)}% match`;
 }
 
 function conversationTurns(messages) {
@@ -84,41 +95,47 @@ function conversationTurns(messages) {
 }
 
 function Sources({ chunks }) {
-  if (!chunks?.length) {
-    return null;
-  }
+  if (!chunks?.length) return null;
 
   const orderedChunks = [...chunks].sort(
     (left, right) => left.retrieval_rank - right.retrieval_rank,
   );
-
   return (
     <details className="message-sources">
       <summary>Sources ({orderedChunks.length})</summary>
       <div className="sources-list">
-        {orderedChunks.map((chunk) => (
-          <div key={chunk.message_chunk_id} className="source-item">
-            <div className="source-header">
-              <strong>{chunk.source_title || `Source ${chunk.retrieval_rank}`}</strong>
-              {chunk.source_section && <span className="source-section">{chunk.source_section}</span>}
+        {orderedChunks.map((chunk, index) => {
+          // Keep the persisted citation when available so inline [S1]
+          // references continue to match the source row shown to passengers.
+          const reference = chunk.citation_id || `S${index + 1}`;
+          const title = chunk.source_title || "Kenya Airways support information";
+          const hasScore = chunk.similarity_score !== null &&
+            chunk.similarity_score !== undefined;
+
+          return (
+            <div className="source-item" key={chunk.message_chunk_id || `${reference}-${index}`}>
+              <div className="source-row-main">
+                <span className="source-reference">{reference}</span>
+                <strong>{title}</strong>
+                {hasScore && (
+                  <span
+                    className="source-similarity"
+                    title="Retrieval similarity score; this is not answer accuracy or confidence"
+                  >
+                    {similarityPercent(chunk.similarity_score)}
+                  </span>
+                )}
+              </div>
+              {chunk.source_url && (
+                <a className="source-link" href={chunk.source_url} target="_blank" rel="noreferrer noopener">
+                  View verified Kenya Airways source →
+                </a>
+              )}
             </div>
-            <p className="source-description">
-              {chunk.citation_id}
-              {chunk.similarity_score && <span className="source-similarity"> · {similarityPercent(chunk.similarity_score)}</span>}
-            </p>
-            {chunk.source_url && (
-              <a
-                href={chunk.source_url}
-                target="_blank"
-                rel="noreferrer noopener"
-                className="source-link"
-              >
-                View on Kenya Airways website →
-              </a>
-            )}
-          </div>
-        ))}
+          );
+        })}
       </div>
+      <p className="source-score-note">Percentages are retrieval similarity scores, not answer accuracy.</p>
     </details>
   );
 }
@@ -156,10 +173,21 @@ function FeedbackRating({ user, conversation, existingFeedback, onSaved }) {
   const [comment, setComment] = useState(existingFeedback?.comment || "");
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
+  const [commentVisible, setCommentVisible] = useState(
+    Boolean(existingFeedback?.comment) ||
+      Boolean(existingFeedback?.rating && existingFeedback.rating <= 3),
+  );
+  const [confirmation, setConfirmation] = useState("");
 
   useEffect(() => {
     setRating(existingFeedback?.rating || 0);
     setComment(existingFeedback?.comment || "");
+    // Lower ratings invite a comment immediately; positive ratings keep the
+    // compact form while still offering the optional comment control.
+    setCommentVisible(
+      Boolean(existingFeedback?.comment) ||
+        Boolean(existingFeedback?.rating && existingFeedback.rating <= 3),
+    );
   }, [existingFeedback]);
 
   async function submit(event) {
@@ -171,6 +199,7 @@ function FeedbackRating({ user, conversation, existingFeedback, onSaved }) {
 
     setSaving(true);
     setError(null);
+    setConfirmation("");
 
     try {
       const saved = await saveConversationFeedback(
@@ -180,6 +209,7 @@ function FeedbackRating({ user, conversation, existingFeedback, onSaved }) {
         comment,
       );
       onSaved(saved);
+      setConfirmation(existingFeedback ? "Your rating was updated." : "Thank you. Your feedback was saved.");
     } catch (reason) {
       setError(reason instanceof Error ? reason.message : "Feedback could not be saved.");
     } finally {
@@ -189,33 +219,35 @@ function FeedbackRating({ user, conversation, existingFeedback, onSaved }) {
 
   return (
     <section className="feedback-card" aria-labelledby="feedback-heading">
-      <p className="eyebrow" id="feedback-heading">CONVERSATION FEEDBACK</p>
+      <h4 id="feedback-heading">Conversation feedback</h4>
       <p>How helpful was this conversation?</p>
       <form onSubmit={submit}>
-        <div className="star-row" role="radiogroup" aria-label="Rating from one to five stars">
-          {[1, 2, 3, 4, 5].map((value) => (
-            <button
-              className={value <= rating ? "star selected" : "star"}
-              key={value}
-              type="button"
-              role="radio"
-              aria-checked={value === rating}
-              aria-label={`${value} star${value === 1 ? "" : "s"}`}
-              onClick={() => setRating(value)}
-            >
-              ★
-            </button>
-          ))}
+        <div className="feedback-rating-row">
+          <div className="star-row" role="radiogroup" aria-label="Rating from one to five stars">
+            {[1, 2, 3, 4, 5].map((value) => (
+              <button
+                className={value <= rating ? "star selected" : "star"}
+                key={value}
+                type="button"
+                role="radio"
+                aria-checked={value === rating}
+                aria-label={`${value} star${value === 1 ? "" : "s"}`}
+                onClick={() => {
+                  setRating(value);
+                  setCommentVisible(value <= 3 || Boolean(comment));
+                }}
+              >
+                ★
+              </button>
+            ))}
+          </div>
+          {rating > 0 && <span className="rating-label">{rating} out of 5</span>}
         </div>
-        <textarea
-          value={comment}
-          onChange={(event) => setComment(event.target.value)}
-          placeholder="Tell us how we can improve (optional)"
-          maxLength="1000"
-          rows="2"
-        />
+        {!commentVisible && <button className="feedback-comment-toggle" type="button" onClick={() => setCommentVisible(true)}>Add an optional comment</button>}
+        {commentVisible && <textarea value={comment} onChange={(event) => setComment(event.target.value)} placeholder="Tell us how we can improve (optional)" maxLength="1000" rows="2" />}
         {error && <p className="notice error" role="alert">{error}</p>}
-        <button className="button secondary" type="submit" disabled={!rating || saving}>
+        {confirmation && <p className="feedback-confirmation" role="status">{confirmation}</p>}
+        <button className="button feedback-submit" type="submit" disabled={!rating || saving}>
           {saving ? "Saving…" : existingFeedback ? "Update rating" : "Save rating"}
         </button>
       </form>
@@ -223,14 +255,21 @@ function FeedbackRating({ user, conversation, existingFeedback, onSaved }) {
   );
 }
 
-export function PassengerChat({ user, onClose, onDrawerToggle }) {
+export function PassengerChat({
+  user,
+  onClose,
+  onMinimize,
+  onRequestAuth,
+  onDrawerToggle,
+  initialQuestion = "",
+}) {
   const [language, setLanguage] = useState("en");
   const [conversation, setConversation] = useState(null);
   const [messages, setMessages] = useState([]);
   const [history, setHistory] = useState([]);
   const [feedback, setFeedback] = useState(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [historyLoading, setHistoryLoading] = useState(true);
+  const [historyLoading, setHistoryLoading] = useState(Boolean(user));
   const [question, setQuestion] = useState("");
   const [models, setModels] = useState([]);
   const [selectedModelId, setSelectedModelId] = useState("");
@@ -243,6 +282,31 @@ export function PassengerChat({ user, onClose, onDrawerToggle }) {
   const pendingSubmission = useRef(false);
   const messageListRef = useRef(null);
   const modelDropdownRef = useRef(null);
+  const composerFormRef = useRef(null);
+  const previouslyAuthenticated = useRef(Boolean(user));
+
+  useEffect(() => {
+    // Suggested FAQ questions fill the composer but remain editable before send.
+    if (initialQuestion) {
+      setQuestion(initialQuestion);
+    }
+  }, [initialQuestion]);
+
+  useEffect(() => {
+    const isAuthenticated = Boolean(user);
+
+    if (previouslyAuthenticated.current !== isAuthenticated) {
+      // Guest messages must never be promoted into a saved account. Likewise,
+      // signing out removes protected conversation data from the live screen.
+      setConversation(null);
+      setMessages([]);
+      setFeedback(null);
+      setQuestion("");
+      setDrawerOpen(false);
+    }
+
+    previouslyAuthenticated.current = isAuthenticated;
+  }, [user]);
 
   useEffect(() => {
     if (onDrawerToggle) {
@@ -251,9 +315,29 @@ export function PassengerChat({ user, onClose, onDrawerToggle }) {
   }, [drawerOpen, onDrawerToggle]);
 
   useEffect(() => {
+    function closeDrawerOnEscape(event) {
+      if (event.key === "Escape") {
+        setDrawerOpen(false);
+      }
+    }
+
+    if (drawerOpen) {
+      document.addEventListener("keydown", closeDrawerOnEscape);
+    }
+
+    return () => document.removeEventListener("keydown", closeDrawerOnEscape);
+  }, [drawerOpen]);
+
+  useEffect(() => {
     let ignoreResponse = false;
 
     async function loadHistory() {
+      if (!user) {
+        setHistory([]);
+        setHistoryLoading(false);
+        return;
+      }
+
       try {
         const conversations = await listConversations(user);
         if (!ignoreResponse) {
@@ -282,7 +366,9 @@ export function PassengerChat({ user, onClose, onDrawerToggle }) {
 
     async function loadModels() {
       try {
-        const availableModels = await getAvailableModels(user);
+        const availableModels = user
+          ? await getAvailableModels(user)
+          : await getPublicModels();
         const configuredModels = availableModels.filter((model) => model.configured);
 
         if (ignoreResponse) {
@@ -352,13 +438,26 @@ export function PassengerChat({ user, onClose, onDrawerToggle }) {
 
     try {
       // A new chat clears only this screen; persisted history is delivered in I19.
-      const nextConversation = await createConversation(user, language);
+      // Guest conversation metadata exists only in component memory. Signed-in
+      // passengers continue through the protected persistence endpoint.
+      const nextConversation = user
+        ? await createConversation(user, language)
+        : {
+            conversation_id: crypto.randomUUID(),
+            user_id: "guest",
+            title: "Temporary conversation",
+            language,
+            status: "active",
+            started_at: new Date().toISOString(),
+          };
       setConversation(nextConversation);
       setMessages([]);
       setFeedback(null);
       setQuestion("");
       setDrawerOpen(false);
-      setHistory((current) => [nextConversation, ...current]);
+      if (user) {
+        setHistory((current) => [nextConversation, ...current]);
+      }
     } catch (reason) {
       setError(reason instanceof Error ? reason.message : "We could not start a conversation. Please try again.");
     } finally {
@@ -367,6 +466,11 @@ export function PassengerChat({ user, onClose, onDrawerToggle }) {
   }
 
   async function openConversation(conversationId) {
+    if (!user) {
+      onRequestAuth?.("sign-in");
+      return;
+    }
+
     setError(null);
 
     try {
@@ -394,7 +498,13 @@ export function PassengerChat({ user, onClose, onDrawerToggle }) {
     }
 
     try {
-      const ended = await endConversation(user, conversation.conversation_id);
+      const ended = user
+        ? await endConversation(user, conversation.conversation_id)
+        : {
+            ...conversation,
+            status: "ended",
+            ended_at: new Date().toISOString(),
+          };
       setConversation(ended);
       setHistory((current) => current.map((item) => (
         item.conversation_id === ended.conversation_id ? ended : item
@@ -404,13 +514,19 @@ export function PassengerChat({ user, onClose, onDrawerToggle }) {
     }
   }
 
-  async function submitQuestion(event) {
+  async function submitQuestion(event, submittedQuestion = question) {
     event.preventDefault();
 
-    const trimmedQuestion = question.trim();
+    const trimmedQuestion = submittedQuestion.trim();
 
     // This closes the small timing window before React disables the send button.
-    if (!trimmedQuestion || isSending || pendingSubmission.current) {
+    if (
+      !trimmedQuestion ||
+      !selectedModelId ||
+      modelLoading ||
+      isSending ||
+      pendingSubmission.current
+    ) {
       return;
     }
 
@@ -419,19 +535,85 @@ export function PassengerChat({ user, onClose, onDrawerToggle }) {
     pendingSubmission.current = true;
 
     try {
-      const activeConversation = conversation || (await createConversation(user, language));
+      const activeConversation = conversation || (
+        user
+          ? await createConversation(user, language)
+          : {
+              conversation_id: crypto.randomUUID(),
+              user_id: "guest",
+              title: "Temporary conversation",
+              language,
+              status: "active",
+              started_at: new Date().toISOString(),
+            }
+      );
 
       if (!conversation) {
         setConversation(activeConversation);
       }
 
-      const response = await sendConversationMessage(
-        user,
-        activeConversation.conversation_id,
-        trimmedQuestion,
-        language,
-        selectedModelId,
-      );
+      let response;
+
+      if (user) {
+        response = await sendConversationMessage(
+          user,
+          activeConversation.conversation_id,
+          trimmedQuestion,
+          language,
+          selectedModelId,
+        );
+      } else {
+        const generated = await sendGuestMessage(
+          trimmedQuestion,
+          language,
+          selectedModelId,
+        );
+        const now = new Date().toISOString();
+        const customerId = crypto.randomUUID();
+        const chatbotId = crypto.randomUUID();
+
+        // Adapt the non-persistent RAG response to the same message component
+        // used by saved conversations, keeping the guest UI fully featured.
+        response = {
+          conversation: activeConversation,
+          customer_message: {
+            message_id: customerId,
+            conversation_id: activeConversation.conversation_id,
+            sender_type: "customer",
+            message_text: trimmedQuestion,
+            language: generated.language,
+            timestamp: now,
+          },
+          chatbot_message: {
+            message_id: chatbotId,
+            conversation_id: activeConversation.conversation_id,
+            sender_type: "chatbot",
+            message_text: generated.answer,
+            language: generated.language,
+            timestamp: now,
+            model_id: generated.model?.model_id || selectedModelId,
+            response_source: generated.generation_called
+              ? "generated"
+              : generated.decision === "clarification_required"
+                ? "clarification"
+                : "fallback",
+            retrieved_chunks: generated.sources.map((source) => ({
+              message_chunk_id: `${chatbotId}_${source.chunk.chunk_id}`,
+              message_id: chatbotId,
+              chunk_id: source.chunk.chunk_id,
+              citation_id: source.citation_id,
+              similarity_score: source.score,
+              retrieval_rank: source.retrieval_rank,
+              source_title: source.chunk.source
+                .replaceAll("\\", "/")
+                .split("/")
+                .pop()
+                ?.replace(/\.docx$/i, ""),
+              source_section: source.chunk.section,
+            })),
+          },
+        };
+      }
 
       setMessages((currentMessages) => [
         ...currentMessages,
@@ -439,12 +621,14 @@ export function PassengerChat({ user, onClose, onDrawerToggle }) {
         response.chatbot_message,
       ]);
       setConversation(response.conversation);
-      setHistory((current) => {
-        const withoutCurrent = current.filter(
-          (item) => item.conversation_id !== response.conversation.conversation_id,
-        );
-        return [response.conversation, ...withoutCurrent];
-      });
+      if (user) {
+        setHistory((current) => {
+          const withoutCurrent = current.filter(
+            (item) => item.conversation_id !== response.conversation.conversation_id,
+          );
+          return [response.conversation, ...withoutCurrent];
+        });
+      }
       setQuestion("");
     } catch (reason) {
       // Retain the text so the passenger can correct or retry the request.
@@ -472,42 +656,85 @@ export function PassengerChat({ user, onClose, onDrawerToggle }) {
       id="chat"
       aria-labelledby="chat-heading"
     >
+      {/* Default chat uses an overlay drawer; expanded mode gives history its own column. */}
+      {drawerOpen && <button className="drawer-scrim" type="button" aria-label="Close conversation history" onClick={() => setDrawerOpen(false)} />}
       {drawerOpen && <aside className="chat-drawer open" aria-label="Conversation history">
         <div className="drawer-heading">
           <div>
-            <p className="eyebrow">KENYA AIRWAYS</p>
+            <KenyaAirwaysLogo className="drawer-airline-logo" variant="colour" />
             <h3>Conversations</h3>
           </div>
-          <button className="icon-button" type="button" onClick={() => setDrawerOpen(false)} aria-label="Close menu">×</button>
+          <button className="icon-button" type="button" onClick={() => setDrawerOpen(false)} aria-label="Close menu">
+            <X aria-hidden="true" />
+          </button>
         </div>
         <button className="button primary drawer-new" type="button" onClick={startConversation} disabled={modelLoading || !selectedModelId}>+ New conversation</button>
+        {!user && (
+          <div className="guest-history-card">
+            <strong>Save and revisit your conversations</strong>
+            <p>Log in or create an account to access saved conversations and chat history.</p>
+            <div className="guest-auth-actions">
+              <button className="button secondary" type="button" onClick={() => onRequestAuth?.("sign-in")}>Log in</button>
+              <button className="link-button" type="button" onClick={() => onRequestAuth?.("register")}>Sign up</button>
+            </div>
+          </div>
+        )}
+        <p className="drawer-section-label">Saved conversations</p>
         {historyLoading ? <p className="muted">Loading history…</p> : !history.length ? <p className="muted">No saved conversations yet.</p> : (
           <div className="history-list">
             {history.map((item) => (
-              <button className="history-item" type="button" key={item.conversation_id} onClick={() => openConversation(item.conversation_id)}>
+              <button
+                className={`history-item ${
+                  item.conversation_id === conversation?.conversation_id
+                    ? "selected"
+                    : ""
+                }`}
+                type="button"
+                key={item.conversation_id}
+                onClick={() => openConversation(item.conversation_id)}
+              >
                 <strong>{item.title}</strong>
                 <span>{item.status === "ended" ? "Ended" : "Active"}</span>
               </button>
             ))}
           </div>
         )}
-        <p className="drawer-note">Your conversation history is tied to your secure passenger account.</p>
+        <p className="drawer-note">
+          {user
+            ? "Your conversation history is tied to your secure passenger account."
+            : "Guest messages are temporary and are cleared when this page is refreshed."}
+        </p>
       </aside>}
       <div className="chat-main-content">
         <div className="chat-panel-heading">
         <div className="chat-header-left">
-          <button className="menu-button" type="button" onClick={() => setDrawerOpen((current) => !current)} aria-label={drawerOpen ? "Close conversation history" : "Open conversation history"}>☰</button>
+          <button className="menu-button" type="button" onClick={() => setDrawerOpen((current) => !current)} aria-label={drawerOpen ? "Close conversation history" : "Open conversation history"}>
+            <Menu aria-hidden="true" />
+          </button>
           <div className="chat-brand">
-            <span className="chat-brand-logo">KQ</span>
-            <p className="chat-brand-name">KENYA AIRWAYS</p>
+            <KenyaAirwaysLogo className="chat-airline-logo" variant="colour" />
+            <span className="chat-brand-divider" aria-hidden="true" />
+            <p className="chat-brand-name">KQ Support</p>
           </div>
         </div>
         <div className="chat-header-right">
           <div className="chat-window-actions">
-            <button className="icon-button" type="button" onClick={() => setExpanded((current) => !current)} aria-label={expanded ? "Restore chat size" : "Expand chat"}>
-              {expanded ? "−" : "□"}
+            <button
+              className="icon-button"
+              type="button"
+              onClick={onMinimize}
+              aria-label="Minimize chat"
+            >
+              <Minus aria-hidden="true" />
             </button>
-            <button className="icon-button" type="button" onClick={onClose} aria-label="Close chat">×</button>
+            <button className="icon-button" type="button" onClick={() => setExpanded((current) => !current)} aria-label={expanded ? "Restore chat size" : "Expand chat"}>
+              {expanded
+                ? <Minimize2 aria-hidden="true" />
+                : <Maximize2 aria-hidden="true" />}
+            </button>
+            <button className="icon-button" type="button" onClick={onClose} aria-label="Close chat">
+              <X aria-hidden="true" />
+            </button>
           </div>
         </div>
       </div>
@@ -534,7 +761,7 @@ export function PassengerChat({ user, onClose, onDrawerToggle }) {
           onClick={startConversation}
           disabled={isStarting || isSending || modelLoading || !selectedModelId}
         >
-          {isStarting ? "Starting…" : "Start new conversation"}
+          {isStarting ? "Starting…" : "New conversation"}
         </button>
         {conversation?.status === "active" && messages.length > 0 && (
           <button className="button text-button" type="button" onClick={finishConversation} disabled={isSending}>
@@ -543,28 +770,29 @@ export function PassengerChat({ user, onClose, onDrawerToggle }) {
         )}
       </div>
 
-      {error && <p className="notice error chat-error" role="alert">{error}</p>}
+      {error && <div className="notice error chat-error" role="alert"><span>{error}</span><button type="button" onClick={() => { setError(null); document.getElementById("chat-question")?.focus(); }}>Try again</button></div>}
 
       <div className="message-list" ref={messageListRef} aria-live="polite" aria-relevant="additions">
         {modelLoading && !error && (
           <div className="welcome-screen">
-            <p className="welcome-mark">KQ</p>
             <h3>Loading...</h3>
             <p className="empty-chat">Please wait while we connect to the support system.</p>
           </div>
         )}
         {!messages.length && !isSending && (
           <div className="welcome-screen">
-            <p className="welcome-mark">KQ</p>
-            <h3>Hello! How can we help you today?</h3>
-            <p className="empty-chat">Choose a common question or enter your inquiry below.</p>
+            <KenyaAirwaysLogo className="welcome-airline-logo" variant="colour" />
+            <h3>What can we help you with?</h3>
+            <p className="empty-chat">Ask about your Kenya Airways journey or choose a common topic.</p>
             <div className="suggested-questions">
               {SUGGESTED_QUESTIONS.map((suggestion) => (
                 <button
                   className="suggestion-chip"
                   type="button"
                   key={suggestion}
-                  onClick={() => setQuestion(suggestion)}
+                  onClick={(event) => submitQuestion(event, suggestion)}
+                  title={suggestion}
+                  disabled={modelLoading || isSending || !selectedModelId}
                 >
                   {suggestion}
                 </button>
@@ -585,21 +813,30 @@ export function PassengerChat({ user, onClose, onDrawerToggle }) {
           <div className="chat-message assistant loading-message">
             <p className="message-sender">KQ Support</p>
             <div className="message-bubble">
-              <p>Finding an answer from KQ support information…</p>
+              <span className="typing-indicator" aria-label="KQ Support is preparing a response"><i /><i /><i /></span>
             </div>
           </div>
         )}
+        {user && conversation?.status === "ended" && (
+          <FeedbackRating
+            user={user}
+            conversation={conversation}
+            existingFeedback={feedback}
+            onSaved={setFeedback}
+          />
+        )}
       </div>
 
-      <form className="chat-composer" onSubmit={submitQuestion}>
-        <label htmlFor="chat-question">Your question</label>
+      {/* Keep the composer separate from the scrolling transcript. */}
+      <form className="chat-composer" ref={composerFormRef} onSubmit={submitQuestion}>
+        <label className="sr-only" htmlFor="chat-question">Your question</label>
         <textarea
           id="chat-question"
           value={question}
           onChange={(event) => setQuestion(event.target.value)}
           onKeyDown={handleComposerKeyDown}
           placeholder="Enter your inquiry..."
-          rows="4"
+          rows="3"
           maxLength="4000"
           disabled={isSending || isStarting || modelLoading || !selectedModelId || conversation?.status === "ended"}
           required
@@ -614,7 +851,7 @@ export function PassengerChat({ user, onClose, onDrawerToggle }) {
                 disabled={modelLoading || isSending || !models.length}
                 aria-label="Select AI model"
               >
-                <span className="model-icon">🤖</span>
+                <span className="model-icon" aria-hidden="true">AI</span>
                 <span className="model-label">{modelLabel(models.find((m) => m.model_id === selectedModelId))}</span>
                 <span className="model-dropdown-arrow">{modelDropdownOpen ? "▲" : "▼"}</span>
               </button>
@@ -646,15 +883,8 @@ export function PassengerChat({ user, onClose, onDrawerToggle }) {
             {isSending ? "Sending…" : "Send"}
           </button>
         </div>
+        <p className="chat-disclaimer">AI can make mistakes. Please verify important travel information.</p>
       </form>
-      {conversation?.status === "ended" && (
-        <FeedbackRating
-          user={user}
-          conversation={conversation}
-          existingFeedback={feedback}
-          onSaved={setFeedback}
-        />
-      )}
       </div>
     </section>
   );

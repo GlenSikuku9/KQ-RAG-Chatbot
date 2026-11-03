@@ -103,7 +103,7 @@ class AdminAnalytics(BaseModel):
     recent_activity: list[dict[str, str]]
 
 
-DEFAULT_PASSENGER_THEME = {
+LEGACY_PASSENGER_THEME = {
     "primary": "#0b2e6f",
     "secondary": "#16458f",
     "accent": "#f5b335",
@@ -114,6 +114,21 @@ DEFAULT_PASSENGER_THEME = {
     "text": "#172033",
     "secondary_text": "#5f6b7b",
     "border": "#dbe2ea",
+}
+
+# Kenya Airways-inspired defaults remain configurable through the protected
+# administrator theme settings; no colour is supplied by the passenger client.
+DEFAULT_PASSENGER_THEME = {
+    "primary": "#102f70",
+    "secondary": "#102f70",
+    "accent": "#d71920",
+    "background": "#f7f9fc",
+    "panel": "#ffffff",
+    "user_message": "#d71920",
+    "assistant_message": "#eaf2fc",
+    "text": "#172033",
+    "secondary_text": "#64748b",
+    "border": "#dce4ef",
 }
 
 
@@ -198,3 +213,48 @@ class AdminConversationSummary(BaseModel):
     started_at: UTCDateTime
     message_count: int = 0
     customer_message_count: int = 0
+
+
+class AdminSearchResult(BaseModel):
+    """Small, non-sensitive record returned by the administrator global search."""
+
+    result_type: Literal["user", "conversation", "document"]
+    result_id: str
+    title: str
+    description: str
+
+
+class AdminSearchResponse(BaseModel):
+    """Grouped-search payload kept deliberately small for the navbar dropdown."""
+
+    query: str
+    results: list[AdminSearchResult]
+
+
+class AdminDocumentPage(BaseModel):
+    """One filtered document page plus the full matching-record count."""
+
+    items: list[AdminDocument]
+    total: int = Field(ge=0)
+    page: int = Field(ge=1)
+    page_size: int = Field(ge=1, le=50)
+    categories: list[str] = Field(default_factory=list)
+    statuses: list[str] = Field(default_factory=list)
+
+
+class AdminUserPage(BaseModel):
+    """One filtered Firebase user page."""
+
+    items: list[AdminUser]
+    total: int = Field(ge=0)
+    page: int = Field(ge=1)
+    page_size: int = Field(ge=1, le=50)
+
+
+class AdminConversationPage(BaseModel):
+    """Summary-only conversation page; message bodies are loaded on Inspect."""
+
+    items: list[AdminConversationSummary]
+    total: int = Field(ge=0)
+    page: int = Field(ge=1)
+    page_size: int = Field(ge=1, le=50)

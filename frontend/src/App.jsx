@@ -9,22 +9,45 @@ import {
 
 import { getPassengerTheme, syncProfile } from "./api";
 import { PassengerChat } from "./components/PassengerChat";
+import { PassengerLanding } from "./components/PassengerLanding";
+import { KenyaAirwaysLogo } from "./components/KenyaAirwaysLogo";
 import { AdminDashboard } from "./admin/AdminDashboard";
-import { auth, firebaseConfigured } from "./firebase";
+import { auth } from "./firebase";
+import "./AuthScreen.css";
 
-function AuthScreen({ onAuthenticated }) {
-  const [screen, setScreen] = useState("sign-in");
+function AuthScreen({ initialScreen = "sign-in", onAuthenticated, onCancel }) {
+  const [screen, setScreen] = useState(initialScreen);
   const [email, setEmail] = useState("");
   const [firstName, setFirstName] = useState("");
   const [surname, setSurname] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
   const [submitting, setSubmitting] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [attemptedSubmit, setAttemptedSubmit] = useState(false);
+
+  const passwordChecks = {
+    length: password.length >= 8,
+    lowercase: /[a-z]/.test(password),
+    uppercase: /[A-Z]/.test(password),
+    number: /\d/.test(password),
+  };
+  const passwordValid = screen === "sign-in"
+    ? password.length >= 6
+    : Object.values(passwordChecks).every(Boolean);
+  const nameValid = firstName.trim().length > 0 && surname.trim().length > 0;
+  const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
 
   async function submit(event) {
     event.preventDefault();
+    setAttemptedSubmit(true);
 
     if (!auth) {
+      return;
+    }
+
+    if (!emailValid || !passwordValid || (screen === "register" && !nameValid)) {
+      setError("Please correct the highlighted fields before continuing.");
       return;
     }
 
@@ -46,11 +69,16 @@ function AuthScreen({ onAuthenticated }) {
 
       await onAuthenticated(credential.user);
     } catch (reason) {
-      setError(
-        reason instanceof Error
-          ? reason.message
-          : "Unable to sign in. Please try again.",
-      );
+      const code = reason?.code;
+      const friendlyErrors = {
+        "auth/email-already-in-use": "An account already exists for this email address. Sign in instead.",
+        "auth/invalid-credential": "The email address or password is incorrect.",
+        "auth/invalid-email": "Enter a valid email address.",
+        "auth/network-request-failed": "The registration service could not be reached. Check your connection and try again.",
+        "auth/too-many-requests": "Too many attempts were made. Wait a moment and try again.",
+        "auth/weak-password": "Choose a stronger password that meets every requirement below.",
+      };
+      setError(friendlyErrors[code] || "We could not complete your account request. Please try again.");
     } finally {
       setSubmitting(false);
     }
@@ -61,28 +89,29 @@ function AuthScreen({ onAuthenticated }) {
       currentScreen === "sign-in" ? "register" : "sign-in",
     );
     setError(null);
+    setAttemptedSubmit(false);
+    setShowPassword(false);
   }
 
   return (
     <main className="auth-layout">
       <section className="brand-panel">
-        <div className="brand-emblem">KQ</div>
-        <p className="eyebrow">KENYA AIRWAYS · CUSTOMER CARE</p>
+        <KenyaAirwaysLogo className="auth-airline-logo" />
+        <p className="eyebrow">CUSTOMER CARE</p>
         <h1>Your journey, supported.</h1>
         <p>
           Get clear answers about bookings, baggage, check-in, refunds, and more.
         </p>
-        <div className="brand-route" aria-hidden="true">
-          <span />
-          <span />
-          <span />
-        </div>
       </section>
 
       <section className="auth-card" aria-labelledby="auth-heading">
+        {onCancel && (
+          <button className="auth-close" type="button" onClick={onCancel} aria-label="Close authentication">
+            ×
+          </button>
+        )}
         <div className="auth-card-topline">
           <p className="wordmark"><span>KQ</span> SUPPORT</p>
-          <span className="secure-badge">Secure access</span>
         </div>
         <h2 id="auth-heading">
           {screen === "sign-in" ? "Welcome back" : "Create your account"}
@@ -90,36 +119,47 @@ function AuthScreen({ onAuthenticated }) {
         <p className="muted">
           {screen === "sign-in"
             ? "Sign in to continue your conversations."
-            : "Register as a passenger to use the support assistant."}
+            : "Create an account to save your conversations and access your chat history anytime."}
         </p>
 
         <form onSubmit={submit}>
           {screen === "register" && <>
-            <label>First name<input type="text" value={firstName} onChange={(event) => setFirstName(event.target.value)} autoComplete="given-name" required /></label>
-            <label>Surname<input type="text" value={surname} onChange={(event) => setSurname(event.target.value)} autoComplete="family-name" required /></label>
+            <label>First name<input className={attemptedSubmit && !firstName.trim() ? "invalid" : ""} type="text" value={firstName} onChange={(event) => setFirstName(event.target.value)} autoComplete="given-name" aria-invalid={attemptedSubmit && !firstName.trim()} required />{attemptedSubmit && !firstName.trim() && <small className="field-error">Enter your first name.</small>}</label>
+            <label>Surname<input className={attemptedSubmit && !surname.trim() ? "invalid" : ""} type="text" value={surname} onChange={(event) => setSurname(event.target.value)} autoComplete="family-name" aria-invalid={attemptedSubmit && !surname.trim()} required />{attemptedSubmit && !surname.trim() && <small className="field-error">Enter your surname.</small>}</label>
           </>}
           <label>
             Email
             <input
+              className={attemptedSubmit && !emailValid ? "invalid" : ""}
               type="email"
               value={email}
               onChange={(event) => setEmail(event.target.value)}
               autoComplete="email"
+              aria-invalid={attemptedSubmit && !emailValid}
               required
             />
+            {attemptedSubmit && !emailValid && (
+              <small className="field-error">Enter a valid email address.</small>
+            )}
           </label>
 
           <label>
             Password
-            <input
-              type="password"
-              value={password}
-              onChange={(event) => setPassword(event.target.value)}
-              autoComplete={screen === "sign-in" ? "current-password" : "new-password"}
-              minLength="6"
-              required
-            />
+            <span className="password-field">
+              <input
+                className={attemptedSubmit && !passwordValid ? "invalid" : ""}
+                type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={(event) => setPassword(event.target.value)}
+                autoComplete={screen === "sign-in" ? "current-password" : "new-password"}
+                minLength={screen === "register" ? 8 : 6}
+                aria-invalid={attemptedSubmit && !passwordValid}
+                required
+              />
+              <button type="button" onClick={() => setShowPassword((current) => !current)} aria-label={showPassword ? "Hide password" : "Show password"}>{showPassword ? "Hide" : "Show"}</button>
+            </span>
           </label>
+          {screen === "register" && <div className="password-requirements" aria-live="polite"><p>Your password must include:</p><ul><li className={passwordChecks.length ? "met" : ""}>At least 8 characters</li><li className={passwordChecks.lowercase ? "met" : ""}>A lowercase letter</li><li className={passwordChecks.uppercase ? "met" : ""}>An uppercase letter</li><li className={passwordChecks.number ? "met" : ""}>A number</li></ul></div>}
 
           {error && (
             <p className="notice error" role="alert">
@@ -127,9 +167,15 @@ function AuthScreen({ onAuthenticated }) {
             </p>
           )}
 
-          <button className="button primary auth-submit" disabled={submitting}>
+          <button
+            className="button primary auth-submit"
+            disabled={submitting}
+            aria-busy={submitting}
+          >
             {submitting
-              ? "Please wait…"
+              ? screen === "sign-in"
+                ? "Signing in..."
+                : "Creating account..."
               : screen === "sign-in"
                 ? "Sign in"
                 : "Create account"}
@@ -147,69 +193,83 @@ function AuthScreen({ onAuthenticated }) {
   );
 }
 
-function AppShell({ profile, user, onSignOut }) {
-  const isAdmin = profile.role === "admin";
+function AppShell({ profile, user, onSignOut, onRequestAuth }) {
+  const isAdmin = profile?.role === "admin";
   const [chatOpen, setChatOpen] = useState(false);
+  const [chatMounted, setChatMounted] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [suggestedQuestion, setSuggestedQuestion] = useState("");
+
+  function openChat(question = "") {
+    setSuggestedQuestion(question);
+    setChatMounted(true);
+    setChatOpen(true);
+  }
 
   return (
-    <div className="app-shell">
+    <div className={isAdmin ? "app-shell admin-app" : "app-shell passenger-app"}>
       <header className="topbar">
-        <a className="wordmark" href="#home" aria-label="KQ Support home">
-          <span>KQ</span> SUPPORT
+        <a className="wordmark passenger-airline-brand" href="#support-home" aria-label="Kenya Airways Support home">
+          <KenyaAirwaysLogo variant="colour" />
         </a>
 
         <nav aria-label="Primary navigation">
-          <a href="#home">Home</a>
-          <a href={isAdmin ? "#admin" : "#chat"}>
-            {isAdmin ? "Admin dashboard" : "Support chat"}
-          </a>
+          {!isAdmin && <a href="#support-home">Customer Support</a>}
+          {!isAdmin && <a href="#faq-heading">FAQs</a>}
+          {isAdmin && <a href="#admin">Admin dashboard</a>}
         </nav>
 
         <div className="account">
-          <span>{profile.name || profile.email || "Passenger"}</span>
-          <button className="link-button" type="button" onClick={onSignOut}>
-            Sign out
-          </button>
+          {user ? (
+            <>
+              <span>{profile?.name || profile?.email || "Passenger"}</span>
+              <button className="link-button" type="button" onClick={onSignOut}>Sign out</button>
+            </>
+          ) : (
+            <button className="button account-login" type="button" onClick={() => onRequestAuth("sign-in")}>
+              Log in
+            </button>
+          )}
         </div>
       </header>
 
-      <main className={`dashboard ${isAdmin ? "admin-dashboard-page" : ""}`} id="home">
-        {!isAdmin && (
-          <section className="hero">
-            <p className="eyebrow">KENYA AIRWAYS CUSTOMER SUPPORT</p>
-            <h1>How can we help you today?</h1>
-            <p>Ask about Kenya Airways policies in English, Kiswahili, or a mix of both.</p>
-            <button className="button primary" type="button" onClick={() => setChatOpen(true)}>
-              Start a conversation
-            </button>
-          </section>
-        )}
-
+      <div className={isAdmin ? "dashboard admin-dashboard-page" : "public-support-page"} id="home">
         {!isAdmin ? (
           <>
-            <section className="support-preview" aria-label="Support chat introduction">
-              <p className="eyebrow">KQ DIGITAL SUPPORT</p>
-              <h2>Questions about your journey?</h2>
-              <p>Open the KQ Support assistant for policy answers in English or Kiswahili.</p>
-              <button className="button secondary" type="button" onClick={() => setChatOpen(true)}>
-                Open KQ Support
+            <PassengerLanding
+              onOpenChat={() => openChat()}
+              onAskQuestion={(question) => openChat(question)}
+            />
+            {!chatOpen && (
+              <button className="chat-launcher" type="button" onClick={() => openChat()} aria-label="Open KQ Support chat">
+                {/* Crop the official white artwork to its circular airline mark. */}
+                <span className="launcher-logo-crop" aria-hidden="true">
+                  <KenyaAirwaysLogo className="launcher-airline-logo" />
+                </span>
+                <span>Chat with KQ Support</span>
               </button>
-            </section>
-            <button className="chat-launcher" type="button" onClick={() => setChatOpen(true)} aria-label="Open KQ Support chat">
-              <span className="launcher-mark">KQ</span>
-              <span>Chat with KQ Support</span>
-            </button>
-            {chatOpen && (
-              <div className={`chat-window-wrap ${drawerOpen ? "drawer-open" : ""}`}>
-                <PassengerChat user={user} onClose={() => setChatOpen(false)} onDrawerToggle={setDrawerOpen} />
+            )}
+            {chatMounted && (
+              <div className={`chat-window-wrap ${drawerOpen ? "drawer-open" : ""} ${chatOpen ? "" : "chat-minimized"}`}>
+                <PassengerChat
+                  user={user}
+                  initialQuestion={suggestedQuestion}
+                  onClose={() => setChatOpen(false)}
+                  onMinimize={() => setChatOpen(false)}
+                  onRequestAuth={onRequestAuth}
+                  onDrawerToggle={setDrawerOpen}
+                />
               </div>
             )}
           </>
         ) : (
-          <AdminDashboard user={user} profile={profile} />
+          <AdminDashboard
+            user={user}
+            profile={profile}
+            onSignOut={onSignOut}
+          />
         )}
-      </main>
+      </div>
     </div>
   );
 }
@@ -219,6 +279,7 @@ export function App() {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [authScreen, setAuthScreen] = useState(null);
 
   useEffect(() => {
     // Passenger colours are published configuration, not admin-dashboard styling.
@@ -270,18 +331,6 @@ export function App() {
     });
   }, []);
 
-  if (!firebaseConfigured) {
-    return (
-      <main className="setup-notice">
-        <h1>Configure Firebase to start KQ Support</h1>
-        <p>
-          Copy <code>frontend/.env.example</code> to <code>frontend/.env</code> and
-          add the public Firebase web configuration values.
-        </p>
-      </main>
-    );
-  }
-
   if (loading) {
     return (
       <main className="setup-notice" aria-live="polite">
@@ -290,11 +339,7 @@ export function App() {
     );
   }
 
-  if (!user) {
-    return <AuthScreen onAuthenticated={establishProfile} />;
-  }
-
-  if (error) {
+  if (user && error) {
     return (
       <main className="setup-notice">
         <h1>We could not load your profile</h1>
@@ -309,9 +354,27 @@ export function App() {
     );
   }
 
-  return profile ? (
-    <AppShell profile={profile} user={user} onSignOut={() => signOut(auth)} />
-  ) : (
-    <main className="setup-notice">Loading profile…</main>
+  if (user && !profile) {
+    return <main className="setup-notice">Loading profile...</main>;
+  }
+
+  return (
+    <>
+      <AppShell
+        profile={profile}
+        user={user}
+        onSignOut={() => signOut(auth)}
+        onRequestAuth={setAuthScreen}
+      />
+      {!user && authScreen && (
+        <div className="auth-modal" role="dialog" aria-modal="true" aria-label="Passenger account access">
+          <AuthScreen
+            initialScreen={authScreen}
+            onAuthenticated={establishProfile}
+            onCancel={() => setAuthScreen(null)}
+          />
+        </div>
+      )}
+    </>
   );
 }

@@ -11,7 +11,25 @@ from fastapi import HTTPException, UploadFile, status
 from firebase_admin import auth
 
 from app.config import get_settings
-from app.models.admin import DEFAULT_PASSENGER_THEME, AdminAnalytics, AdminAuditEvent, AdminConversationSummary, AdminDocument, AdminDocumentVersion, AdminLog, AdminModel, AdminUser, DocumentContent, EvaluationResult, PassengerTheme
+from app.models.admin import (
+    DEFAULT_PASSENGER_THEME,
+    AdminAnalytics,
+    AdminAuditEvent,
+    AdminConversationSummary,
+    AdminConversationPage,
+    AdminDocument,
+    AdminDocumentPage,
+    AdminDocumentVersion,
+    AdminLog,
+    AdminModel,
+    AdminSearchResponse,
+    AdminSearchResult,
+    AdminUser,
+    AdminUserPage,
+    DocumentContent,
+    EvaluationResult,
+    PassengerTheme,
+)
 from app.models.generation import ConfiguredModel
 from app.models.feedback import Feedback, OperationalEvent
 from app.models.database import encode_document_id, utc_now
@@ -166,6 +184,44 @@ def list_documents() -> list[AdminDocument]:
             version_count=int(extra.get("version_count", 1)),
         ))
     return sorted(result, key=lambda item: item.uploaded_at, reverse=True)
+
+
+def query_documents(
+    page: int,
+    page_size: int,
+    search: str = "",
+    category: str | None = None,
+    processing_status: str | None = None,
+    sort_order: str = "newest",
+) -> AdminDocumentPage:
+    """Filter on the server so only the selected document page is serialized."""
+    documents = list_documents()
+    term = search.strip().lower()
+    categories = sorted({item.category for item in documents})
+    statuses = sorted({item.status for item in documents})
+    filtered = [
+        item for item in documents
+        if (
+            not term
+            or term in item.filename.lower()
+            or term in item.category.lower()
+        )
+        and (not category or item.category == category)
+        and (not processing_status or item.status == processing_status)
+    ]
+    filtered.sort(
+        key=lambda item: item.uploaded_at,
+        reverse=sort_order != "oldest",
+    )
+    start = (page - 1) * page_size
+    return AdminDocumentPage(
+        items=filtered[start:start + page_size],
+        total=len(filtered),
+        page=page,
+        page_size=page_size,
+        categories=categories,
+        statuses=statuses,
+    )
 
 
 def _document_for_filename(filename: str) -> AdminDocument | None:
@@ -447,6 +503,203 @@ def list_users() -> list[AdminUser]:
     return sorted(users, key=lambda item: (item.email or "").lower())
 
 
+def query_users(
+    page: int,
+    page_size: int,
+    search: str = "",
+    role: str | None = None,
+    account_status: str | None = None,
+    verification: str | None = None,
+) -> AdminUserPage:
+    """Return only the filtered Firebase account page required by the table."""
+    term = search.strip().lower()
+    filtered = [
+        item for item in list_users()
+        if (
+            not term
+            or term in (item.name or "").lower()
+            or term in (item.email or "").lower()
+        )
+        and (not role or item.role == role)
+        and (
+            not account_status
+            or (account_status == "disabled") == item.disabled
+        )
+        and (
+            not verification
+            or (verification == "verified") == item.email_verified
+        )
+    ]
+    start = (page - 1) * page_size
+    return AdminUserPage(
+        items=filtered[start:start + page_size],
+        total=len(filtered),
+        page=page,
+        page_size=page_size,
+    )
+
+
+def query_conversation_summaries(
+    page: int,
+    page_size: int,
+    search: str = "",
+    language: str | None = None,
+    conversation_status: str | None = None,
+    started_from: datetime | None = None,
+    started_to: datetime | None = None,
+    sort_order: str = "newest",
+) -> AdminConversationPage:
+    """Read conversation summaries without scanning messages or making N+1 auth calls.
+
+    `next_sequence` is updated transactionally with every two-message exchange,
+    so existing records already contain the counts needed by the table. Complete
+    messages and retrieval evidence remain deferred to the Inspect endpoint.
+    """
+    client = get_firestore_client()
+    with firestore_operation():
+        conversation_snapshots = list(
+            client.collection("conversations")
+            .stream(timeout=FIRESTORE_READ_TIMEOUT)
+        )
+        profile_snapshots = list(
+            client.collection("users")
+            .stream(timeout=FIRESTORE_READ_TIMEOUT)
+        )
+    emails = {
+        str((snapshot.to_dict() or {}).get("user_id") or snapshot.id):
+        (snapshot.to_dict() or {}).get("email")
+        for snapshot in profile_snapshots
+    }
+    term = search.strip().lower()
+    summaries: list[AdminConversationSummary] = []
+    for snapshot in conversation_snapshots:
+        raw = snapshot.to_dict() or {}
+        conversation_id = str(raw.get("conversation_id") or snapshot.id)
+        conversation = ConversationStore._read_conversation(
+            snapshot,
+            conversation_id,
+        )
+        email = emails.get(conversation.user_id)
+        if term and term not in conversation.title.lower() and term not in (email or "").lower():
+            continue
+        if language and conversation.language != language:
+            continue
+        status_value = getattr(conversation.status, "value", conversation.status)
+        if conversation_status and status_value != conversation_status:
+            continue
+        if started_from and conversation.started_at < started_from:
+            continue
+        if started_to and conversation.started_at > started_to:
+            continue
+        message_count = max(conversation.next_sequence - 1, 0)
+        title = conversation.title.strip()
+        if title == "New conversation" or len(title.split()) > 9:
+            title = conversation_title_from_question(title)
+        summaries.append(AdminConversationSummary(
+            conversation_id=conversation_id,
+            user_id=conversation.user_id,
+            user_email=email,
+            title=title,
+            language=conversation.language,
+            status=status_value,
+            started_at=conversation.started_at,
+            message_count=message_count,
+            customer_message_count=message_count // 2,
+        ))
+    summaries.sort(
+        key=lambda item: item.started_at,
+        reverse=sort_order != "oldest",
+    )
+    start = (page - 1) * page_size
+    return AdminConversationPage(
+        items=summaries[start:start + page_size],
+        total=len(summaries),
+        page=page,
+        page_size=page_size,
+    )
+
+
+def search_admin_records(query: str, limit: int = 6) -> AdminSearchResponse:
+    """Search bounded data windows without sending whole collections to the browser.
+
+    Firestore does not provide general substring search. This navbar search reads a
+    capped window from each source (rather than streaming an unbounded collection)
+    and returns only safe summaries. The cap keeps request cost predictable while
+    preserving the existing database architecture and authorization boundary.
+    """
+    normalized = query.strip().lower()
+    scan_limit = min(max(limit * 12, 48), 120)
+    results: list[AdminSearchResult] = []
+
+    # Firebase Auth is the trusted source for account email and display name.
+    for item in auth.list_users(max_results=scan_limit).users:
+        searchable = " ".join(filter(None, [item.display_name, item.email])).lower()
+        if normalized in searchable:
+            results.append(AdminSearchResult(
+                result_type="user",
+                result_id=item.uid,
+                title=item.display_name or item.email or "Passenger account",
+                description=item.email or "No email address available",
+            ))
+            if sum(result.result_type == "user" for result in results) >= limit:
+                break
+
+    client = get_firestore_client()
+    with firestore_operation():
+        conversation_snapshots = list(
+            client.collection("conversations")
+            .limit(scan_limit)
+            .stream(timeout=FIRESTORE_READ_TIMEOUT)
+        )
+        metadata_snapshots = list(
+            client.collection("admin_document_metadata")
+            .limit(scan_limit)
+            .stream(timeout=FIRESTORE_READ_TIMEOUT)
+        )
+
+    conversation_count = 0
+    for snapshot in conversation_snapshots:
+        raw = snapshot.to_dict() or {}
+        title = str(raw.get("title") or "Conversation")
+        if normalized not in title.lower():
+            continue
+        results.append(AdminSearchResult(
+            result_type="conversation",
+            result_id=str(raw.get("conversation_id") or snapshot.id),
+            title=title,
+            description=(
+                f"{str(raw.get('language') or 'Unknown language')} · "
+                f"{str(raw.get('status') or 'Unknown status')}"
+            ),
+        ))
+        conversation_count += 1
+        if conversation_count >= limit:
+            break
+
+    document_count = 0
+    for snapshot in metadata_snapshots:
+        raw = snapshot.to_dict() or {}
+        title = str(raw.get("title") or raw.get("original_filename") or "Support document")
+        searchable = " ".join([
+            title,
+            str(raw.get("original_filename") or ""),
+            str(raw.get("category") or ""),
+        ]).lower()
+        if normalized not in searchable:
+            continue
+        results.append(AdminSearchResult(
+            result_type="document",
+            result_id=snapshot.id,
+            title=title,
+            description=str(raw.get("category") or "Uncategorised document"),
+        ))
+        document_count += 1
+        if document_count >= limit:
+            break
+
+    return AdminSearchResponse(query=query.strip(), results=results)
+
+
 def update_user_role(admin: AuthenticatedUser, user_id: str, role: str) -> AdminUser:
     if user_id == admin.uid:
         raise HTTPException(status.HTTP_409_CONFLICT, "Use a separate administrator account to change your own role.")
@@ -589,7 +842,14 @@ def analytics(period_days: int = 30) -> AdminAnalytics:
 
     recent_activity: list[dict[str, str]] = []
     with firestore_operation():
-        activity_snapshots = list(client.collection("admin_activity").stream(timeout=FIRESTORE_READ_TIMEOUT))
+        # Overview needs only the newest activity rows; the dedicated Logs page
+        # keeps its own paginated query and is not affected by this limit.
+        activity_snapshots = list(
+            client.collection("admin_activity")
+            .order_by("timestamp", direction="DESCENDING")
+            .limit(6)
+            .stream(timeout=FIRESTORE_READ_TIMEOUT)
+        )
     for snapshot in activity_snapshots:
         raw = snapshot.to_dict() or {}
         timestamp = raw.get("timestamp")
@@ -604,12 +864,13 @@ def analytics(period_days: int = 30) -> AdminAnalytics:
         {
             "conversation_id": item.conversation_id,
             "user_id": item.user_id,
+            "title": item.title,
             "first_message": first_messages.get(item.conversation_id),
             "language": item.language,
             "started_at": item.started_at.isoformat(),
             "message_count": message_counts[item.conversation_id],
         }
-        for item in sorted(conversations, key=lambda value: value.started_at, reverse=True)[:5]
+        for item in sorted(conversations, key=lambda value: value.started_at, reverse=True)[:6]
     ]
 
     return AdminAnalytics(
@@ -632,5 +893,5 @@ def analytics(period_days: int = 30) -> AdminAnalytics:
         failures=dict(Counter(item.failure_category for item in events if item.failure_category)),
         rating_distribution=dict(sorted(ratings.items())),
         recent_conversations=recent_conversations,
-        recent_activity=sorted(recent_activity, key=lambda item: item["timestamp"], reverse=True)[:8],
+        recent_activity=sorted(recent_activity, key=lambda item: item["timestamp"], reverse=True)[:6],
     )

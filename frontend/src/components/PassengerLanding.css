@@ -1,0 +1,230 @@
+/* Public landing-page ownership file. Landing-specific additions belong here
+   so they cannot accidentally alter the protected administrator workspace. */
+.passenger-landing {
+  color-scheme: light;
+}
+
+/* The official colour wordmark sits directly on the white navigation surface,
+   matching the airline's visual hierarchy without filters or recolouring. */
+.passenger-app > .topbar .passenger-airline-brand {
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+.passenger-app > .topbar .passenger-airline-brand .kenya-airways-logo {
+  width: clamp(13.75rem, 18vw, 16.25rem);
+  height: auto;
+  margin: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+/* Separate the airline identity from the support navigation, as in the
+   passenger-site reference, while keeping the links in one semantic nav. */
+.passenger-app > .topbar nav {
+  position: relative;
+  padding-left: clamp(1.25rem, 3vw, 2.5rem);
+  border-left: 0;
+}
+
+.passenger-app > .topbar nav::before {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 0.14rem;
+  height: 2.15rem;
+  border-radius: 999px;
+  background: var(--passenger-user-message, #d71920);
+  content: "";
+  transform: translateY(-50%);
+}
+
+.passenger-app > .topbar nav a {
+  font-weight: 750;
+}
+
+/* The revised hero reuses the supplied wing photograph and keeps the copy on
+   a calm white surface; no separate marketing image is downloaded. */
+.support-hero {
+  grid-template-columns: minmax(24rem, 0.92fr) minmax(30rem, 1.08fr);
+  min-height: 27.5rem;
+  background: #ffffff;
+}
+
+.support-hero::before {
+  display: none;
+}
+
+.support-hero-content {
+  padding: clamp(2.25rem, 5vw, 4.5rem);
+}
+
+.support-hero-content .eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.support-hero-content .eyebrow::before {
+  width: 0.24rem;
+  height: 1.65rem;
+  border-radius: 999px;
+  background: var(--passenger-user-message, #d71920);
+  content: "";
+}
+
+.support-hero-content > .button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding-inline: 1.35rem;
+  box-shadow: 0 0.65rem 1.4rem rgb(215 25 32 / 18%);
+}
+
+.support-hero-content > .button svg {
+  width: 1.1rem;
+  height: 1.1rem;
+}
+
+.support-hero-topics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-top: 2.2rem;
+  color: var(--passenger-primary, #102f70);
+}
+
+.support-hero-topics span {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 0 0.65rem;
+  min-width: 0;
+  padding: 0 1rem;
+  border-right: 1px solid var(--passenger-border, #dce4ef);
+  font-size: 0.78rem;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.support-hero-topics span:first-child {
+  padding-left: 0;
+}
+
+.support-hero-topics span:last-child {
+  border-right: 0;
+}
+
+.support-hero-topics svg {
+  grid-row: 1 / span 2;
+  width: 1.45rem;
+  height: 1.45rem;
+  color: var(--passenger-user-message, #d71920);
+}
+
+.support-hero-art {
+  align-content: start;
+  justify-items: end;
+  min-height: 27.5rem;
+  padding: 2.25rem 2.5rem;
+  clip-path: ellipse(88% 105% at 88% 52%);
+  background-image: linear-gradient(rgb(234 242 252 / 5%), rgb(16 47 112 / 5%)), url("/images/kq_overview_wing_clouds.png");
+  background-position: center;
+  background-size: cover;
+}
+
+.support-hero-art::before,
+.support-hero-art::after {
+  display: none;
+}
+
+.support-hero-art .hero-airline-logo {
+  position: absolute;
+  top: 1rem;
+  right: 1.5rem;
+  z-index: 1;
+  width: min(15rem, 70%);
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+.passenger-app .launcher-logo-crop {
+  display: block;
+  width: 2rem;
+  height: 2rem;
+  overflow: hidden;
+  flex: 0 0 2rem;
+  border-radius: 50%;
+  background: transparent;
+}
+
+.passenger-app .launcher-airline-logo {
+  display: block;
+  width: 10.45rem;
+  height: 2rem;
+  padding: 0;
+}
+
+.passenger-app .launcher-airline-logo img {
+  width: auto;
+  height: 2rem;
+  max-width: none;
+  /* The source also contains the airline name. Clip at the end of the
+     official circular mark so no adjacent lettering enters the launcher. */
+  clip-path: inset(0 81% 0 0);
+}
+
+@media (max-width: 760px) {
+  .passenger-app > .topbar .passenger-airline-brand {
+    padding: 0;
+  }
+
+  .passenger-app > .topbar .passenger-airline-brand .kenya-airways-logo {
+    width: 10.5rem;
+  }
+
+  .support-hero {
+    grid-template-columns: 1fr;
+    min-height: 0;
+  }
+
+  .support-hero::before {
+    display: none;
+  }
+
+  .support-hero-art {
+    min-height: 15rem;
+    clip-path: none;
+    background-position: center 58%;
+  }
+
+  .support-hero-art .hero-airline-logo {
+    top: 0.85rem;
+    right: 1rem;
+  }
+
+  .support-hero-topics {
+    gap: 0.75rem;
+  }
+
+  .support-hero-topics span {
+    padding-inline: 0.5rem;
+  }
+}
+
+@media (max-width: 520px) {
+  .support-hero-topics {
+    grid-template-columns: 1fr;
+  }
+
+  .support-hero-topics span {
+    padding: 0.55rem 0;
+    border-right: 0;
+    border-bottom: 1px solid var(--passenger-border, #dce4ef);
+  }
+
+  .support-hero-topics span:last-child {
+    border-bottom: 0;
+  }
+}

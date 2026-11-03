@@ -65,7 +65,9 @@ class Settings(BaseModel):
     embedding_cache_dir: Path = BASE_DIR.parent / "model_cache"
     retrieval_top_k: int = Field(default=5, ge=1, le=20, strict=True)
     context_max_chars: int = Field(default=8000, ge=1, le=100000, strict=True)
-    context_min_similarity: float = Field(default=0.87, ge=-1, le=1, strict=True, allow_inf_nan=False)
+    # Multilingual E5 scores for direct policy matches commonly sit in the low
+    # 0.80s; 0.82 retains a conservative boundary without rejecting core FAQs.
+    context_min_similarity: float = Field(default=0.82, ge=-1, le=1, strict=True, allow_inf_nan=False)
     default_generation_model_id: str | None = None
     generation_models: tuple[GenerationModelSettings, ...] = ()
 
@@ -170,7 +172,7 @@ def get_settings() -> Settings:
         embedding_cache_dir=_get_path("EMBEDDING_CACHE_DIR", BASE_DIR.parent / "model_cache"),
         retrieval_top_k=_get_int("RETRIEVAL_TOP_K", 5),
         context_max_chars=_get_int("CONTEXT_MAX_CHARS", 8000),
-        context_min_similarity=float(os.getenv("CONTEXT_MIN_SIMILARITY", "0.87")),
+        context_min_similarity=float(os.getenv("CONTEXT_MIN_SIMILARITY", "0.82")),
         default_generation_model_id=_get_optional("DEFAULT_GENERATION_MODEL_ID"),
         generation_models=_get_generation_models(),
     )

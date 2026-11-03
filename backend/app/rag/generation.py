@@ -2,6 +2,7 @@
 
 import logging
 from collections.abc import Callable
+from time import sleep
 
 import httpx
 from fastapi import status
@@ -20,8 +21,15 @@ class GenerationProviderError(Exception):
 
 
 class GenerationService:
-    def __init__(self, settings: Settings, client_factory: Callable[..., httpx.Client] = httpx.Client) -> None:
-        self.settings, self.client_factory = settings, client_factory
+    def __init__(
+        self,
+        settings: Settings,
+        client_factory: Callable[..., httpx.Client] = httpx.Client,
+        sleeper: Callable[[float], None] = sleep,
+    ) -> None:
+        self.settings = settings
+        self.client_factory = client_factory
+        self.sleeper = sleeper
         self.models = {model.model_id: model for model in settings.generation_models}
 
     def configured_models(self) -> list[ConfiguredModel]:
@@ -35,7 +43,7 @@ class GenerationService:
         model = self._select_model(model_id)
         if not model.api_key:
             raise GenerationProviderError(503, "The selected model is not configured with an API key.")
-        for attempt in (1, 2):
+        for attempt in (1, 2, 3):
             try:
                 if model.provider == "openrouter":
                     return self._openrouter(model, prompt, system_instruction)
@@ -45,9 +53,17 @@ class GenerationService:
                 raise GenerationProviderError(504, "The selected AI provider timed out. Please try again later.") from error
             except GenerationProviderError as error:
                 # Google often returns 503 under load; one retry covers a transient outage.
-                if error.status_code != 503 or attempt == 2:
+                if error.status_code != 503 or attempt == 3:
                     raise
-                logger.warning("Generation provider unavailable for %s; retrying.", model.model_id)
+                # Provider capacity spikes are usually short. A small backoff is
+                # more useful than immediately repeating the same failed call.
+                delay_seconds = 2 ** attempt
+                logger.warning(
+                    "Generation provider unavailable for %s; retrying in %ss.",
+                    model.model_id,
+                    delay_seconds,
+                )
+                self.sleeper(delay_seconds)
             except httpx.RequestError as error:
                 logger.warning("Generation network failure for %s: %s", model.model_id, type(error).__name__)
                 raise GenerationProviderError(503, "The selected AI provider is unavailable. Please try again later.") from error

@@ -28,7 +28,14 @@ def response(status, body):
 class GenerationServiceTests(unittest.TestCase):
     def service(self, models, default="router", result=None, error=None):
         fake = FakeClient(result, error)
-        return GenerationService(Settings(default_generation_model_id=default, generation_models=tuple(models)), lambda **kw: fake), fake
+        return GenerationService(
+            Settings(
+                default_generation_model_id=default,
+                generation_models=tuple(models),
+            ),
+            lambda **kw: fake,
+            sleeper=lambda _seconds: None,
+        ), fake
 
     def test_openrouter_uses_selected_model_and_bearer_key(self):
         model = GenerationModelSettings(model_id="router", provider="openrouter", upstream_model="vendor/gemma", api_key="secret")

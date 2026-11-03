@@ -18,6 +18,12 @@ def list_models(
     return get_generation_service().configured_models()
 
 
+@router.get("/public", response_model=list[ConfiguredModel])
+def list_public_models() -> list[ConfiguredModel]:
+    """Expose selectable names and availability, never keys or credentials."""
+    return get_generation_service().configured_models()
+
+
 @router.post("/generate", response_model=GenerationResponse)
 def probe_model(payload: GenerationRequest, current_user: AuthenticatedUser = Depends(require_admin)) -> GenerationResponse:
     """Send an explicit admin test request; no automatic model fallback occurs."""
