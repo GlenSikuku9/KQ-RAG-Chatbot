@@ -1,0 +1,137 @@
+/* Authentication-only refinements preserve the existing two-column layout. */
+.auth-layout .brand-panel {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: clamp(3rem, 7vw, 7rem);
+}
+
+.auth-layout .brand-panel h1 {
+  margin-block: 0.65rem 1rem;
+  letter-spacing: -0.045em;
+}
+
+.auth-layout .auth-airline-logo {
+  width: min(18rem, 82%);
+  margin-bottom: 2rem;
+}
+
+.auth-layout .auth-card {
+  width: min(100%, 32rem);
+  padding: 2.5rem 2rem;
+}
+
+.auth-layout .auth-card-topline {
+  margin-bottom: 1.75rem;
+}
+
+.auth-layout .auth-card form {
+  gap: 0.9rem;
+  margin-top: 1.5rem;
+}
+
+.password-field {
+  position: relative;
+  display: block;
+}
+
+.password-field input {
+  padding-right: 4.3rem;
+}
+
+.password-field button {
+  position: absolute;
+  top: 50%;
+  right: 0.65rem;
+  padding: 0.3rem 0.4rem;
+  border: 0;
+  color: #102f70;
+  background: transparent;
+  font-size: 0.78rem;
+  font-weight: 700;
+  transform: translateY(-50%);
+}
+
+.password-field button:focus-visible,
+.auth-layout .link-button:focus-visible,
+.auth-layout .auth-close:focus-visible {
+  outline: 3px solid rgb(16 47 112 / 22%);
+  outline-offset: 2px;
+}
+
+.auth-card input.invalid {
+  border-color: #b91c1c;
+  background: #fffafa;
+}
+
+.field-error {
+  color: #a3151b;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.password-requirements {
+  padding: 0.7rem 0.8rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.55rem;
+  background: #f8fafc;
+}
+
+.password-requirements p {
+  margin: 0 0 0.4rem;
+  color: #475569;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.password-requirements ul {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.3rem 0.75rem;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.password-requirements li {
+  color: #64748b;
+  font-size: 0.74rem;
+}
+
+.password-requirements li::before {
+  margin-right: 0.35rem;
+  content: "○";
+}
+
+.password-requirements li.met {
+  color: #187846;
+}
+
+.password-requirements li.met::before {
+  content: "✓";
+}
+
+.auth-submit[disabled] {
+  cursor: wait;
+}
+
+@media (max-width: 760px) {
+  .auth-layout {
+    display: block;
+    min-height: 100dvh;
+  }
+
+  .auth-layout .brand-panel {
+    display: none;
+  }
+
+  .auth-layout .auth-card {
+    min-height: 100dvh;
+    padding: 4.5rem 1.25rem 2rem;
+  }
+
+  .password-requirements ul {
+    grid-template-columns: 1fr;
+  }
+}

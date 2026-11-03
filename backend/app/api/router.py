@@ -1,6 +1,17 @@
 from fastapi import APIRouter
 
-from app.api.routes import admin, auth, conversations, feedback, generation, health, models, retrieval, theme
+from app.api.routes import (
+    admin,
+    auth,
+    conversations,
+    feedback,
+    generation,
+    guest,
+    health,
+    models,
+    retrieval,
+    theme,
+)
 
 
 api_router = APIRouter()
@@ -13,3 +24,4 @@ api_router.include_router(conversations.router, prefix="/conversations", tags=["
 api_router.include_router(feedback.router, prefix="/feedback", tags=["feedback"])
 api_router.include_router(admin.router, prefix="/admin", tags=["administrator"])
 api_router.include_router(theme.router, tags=["theme"])
+api_router.include_router(guest.router, tags=["guest-chat"])

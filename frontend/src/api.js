@@ -16,10 +16,15 @@ export async function authenticatedRequest(user, path, init = {}, forceRefreshTo
     // Firestore is unavailable; the caller can then show a useful retry action.
     const controller = new AbortController();
     const timeout = window.setTimeout(() => controller.abort(), timeoutMs);
+    // Combine the request timeout with a caller-provided cancellation signal.
+    // This lets debounced search abandon obsolete requests cleanly.
+    const signal = init.signal && typeof AbortSignal.any === "function"
+      ? AbortSignal.any([controller.signal, init.signal])
+      : controller.signal;
     try {
       return await fetch(`${baseUrl}${path}`, {
         ...init,
-        signal: controller.signal,
+        signal,
         headers: {
           Authorization: `Bearer ${token}`,
           ...(init.body instanceof FormData ? {} : { "Content-Type": "application/json" }),
@@ -35,13 +40,15 @@ export async function authenticatedRequest(user, path, init = {}, forceRefreshTo
 
   try {
     response = await request();
-  } catch {
+  } catch (error) {
+    if (init.signal?.aborted) throw error;
     // Uvicorn can briefly drop a connection while --reload replaces the process.
     await new Promise((resolve) => setTimeout(resolve, 350));
 
     try {
       response = await request();
-    } catch {
+    } catch (retryError) {
+      if (init.signal?.aborted) throw retryError;
       throw new Error(
         `Cannot reach the KQ Support API at ${baseUrl}. Start the backend and try again.`,
       );
@@ -57,13 +64,49 @@ export async function authenticatedRequest(user, path, init = {}, forceRefreshTo
   return response.json();
 }
 
-export async function publicRequest(path) {
-  const response = await fetch(`${baseUrl}${path}`);
-  if (!response.ok) throw new Error("Public configuration is unavailable.");
+export async function publicRequest(path, init = {}, timeoutMs = REQUEST_TIMEOUT_MS) {
+  const controller = new AbortController();
+  const timeout = window.setTimeout(() => controller.abort(), timeoutMs);
+  let response;
+
+  try {
+    response = await fetch(`${baseUrl}${path}`, {
+      ...init,
+      signal: controller.signal,
+      headers: {
+        ...(init.body ? { "Content-Type": "application/json" } : {}),
+        ...init.headers,
+      },
+    });
+  } catch {
+    throw new Error(`Cannot reach the KQ Support API at ${baseUrl}.`);
+  } finally {
+    window.clearTimeout(timeout);
+  }
+
+  if (!response.ok) {
+    const body = await response.json().catch(() => null);
+    throw new Error(body?.detail || "The service could not complete that request.");
+  }
   return response.json();
 }
 
 export const getPassengerTheme = () => publicRequest("/theme");
+export const getPublicModels = () => publicRequest("/models/public");
+
+/** Guest requests generate an answer but never create conversation records. */
+export const sendGuestMessage = (question, language, modelId) => publicRequest(
+  "/guest/messages",
+  {
+    method: "POST",
+    body: JSON.stringify({
+      question,
+      language,
+      model_id: modelId,
+    }),
+  },
+  90000,
+);
 export const getPassengerThemeForAdmin = (user) => authenticatedRequest(user, "/admin/settings/passenger-theme");
 export const savePassengerTheme = (user, theme) => authenticatedRequest(user, "/admin/settings/passenger-theme", { method: "PUT", body: JSON.stringify(theme) });
 
@@ -144,6 +187,41 @@ export const adminGenerateModelTest = (user, modelId, prompt) => authenticatedRe
 export const adminUsers = (user) => authenticatedRequest(user, "/admin/users");
 export const adminConversations = (user) => authenticatedRequest(user, "/admin/conversations");
 export const adminConversation = (user, id) => authenticatedRequest(user, `/admin/conversations/${id}`);
+function adminPageRequest(user, path, parameters, signal) {
+  const query = new URLSearchParams();
+  Object.entries(parameters).forEach(([key, value]) => {
+    if (value !== "" && value !== null && value !== undefined) {
+      query.set(key, String(value));
+    }
+  });
+  return authenticatedRequest(user, `${path}?${query.toString()}`, { signal });
+}
+
+// Paginated management APIs return only the current table page. Cancellation
+// prevents an older debounced search from replacing newer filter results.
+export const adminDocumentPage = (user, parameters, signal) => adminPageRequest(
+  user,
+  "/admin/document-pages",
+  parameters,
+  signal,
+);
+export const adminUserPage = (user, parameters, signal) => adminPageRequest(
+  user,
+  "/admin/user-pages",
+  parameters,
+  signal,
+);
+export const adminConversationPage = (user, parameters, signal) => adminPageRequest(
+  user,
+  "/admin/conversation-pages",
+  parameters,
+  signal,
+);
+export const adminSearch = (user, query, signal) => authenticatedRequest(
+  user,
+  `/admin/search?query=${encodeURIComponent(query)}&limit=6`,
+  { signal },
+);
 export const adminUpdateRole = (user, id, role) => authenticatedRequest(user, `/admin/users/${id}/role`, { method: "PATCH", body: JSON.stringify({ role }) });
 export const adminUpdateStatus = (user, id, disabled) => authenticatedRequest(user, `/admin/users/${id}/status`, { method: "PATCH", body: JSON.stringify({ disabled }) });
 export const adminDeleteDocument = (user, id) => authenticatedRequest(user, `/admin/documents/${id}`, { method: "DELETE" });
