@@ -1,7 +1,14 @@
 import { useMemo, useState } from "react";
-import { ArrowRight, BriefcaseBusiness, MessageCircle, Plane, ReceiptText, Search } from "lucide-react";
-import "./PassengerLanding.css";
-import { KenyaAirwaysLogo } from "./KenyaAirwaysLogo";
+import {
+  ArrowRight,
+  BriefcaseBusiness,
+  MessageCircle,
+  Plane,
+  ReceiptText,
+  Search,
+} from "lucide-react";
+import "../styles/PassengerLanding.css";
+import { KenyaAirwaysLogo } from "../../components/KenyaAirwaysLogo";
 
 
 const CATEGORIES = [
@@ -15,41 +22,68 @@ const CATEGORIES = [
   "Travel Documents",
 ];
 
+// Keep displayed FAQ content separate from rendering and filtering behavior.
 const FAQS = [
   {
     category: "Check-in",
     question: "How can I check in online?",
-    answer: "Use Manage Booking or the Kenya Airways mobile app when online check-in is available for your flight. Keep your booking reference and travel document ready.",
+    answer: [
+      "Use Manage Booking or the Kenya Airways mobile app when online",
+      "check-in is available for your flight. Keep your booking reference",
+      "and travel document ready.",
+    ].join(" "),
   },
   {
     category: "Baggage",
     question: "What is my baggage allowance?",
-    answer: "Your allowance depends on the route, cabin and fare. Check the baggage details shown on your ticket, then ask KQ Support for the policy that applies to your journey.",
+    answer: [
+      "Your allowance depends on the route, cabin and fare. Check the",
+      "baggage details shown on your ticket, then ask KQ Support for the",
+      "policy that applies to your journey.",
+    ].join(" "),
   },
   {
     category: "Bookings",
     question: "How can I change my booking?",
-    answer: "Eligible bookings can be changed through Manage Booking. Availability, fare conditions and possible price differences apply.",
+    answer: [
+      "Eligible bookings can be changed through Manage Booking.",
+      "Availability, fare conditions and possible price differences apply.",
+    ].join(" "),
   },
   {
     category: "Refunds",
     question: "How can I request a ticket refund?",
-    answer: "Refund eligibility depends on the ticket conditions and how it was purchased. Use the official refund request channel or contact the original booking agent.",
+    answer: [
+      "Refund eligibility depends on the ticket conditions and how it was",
+      "purchased. Use the official refund request channel or contact the",
+      "original booking agent.",
+    ].join(" "),
   },
   {
     category: "Payments",
     question: "What payment methods are available?",
-    answer: "Kenya Airways supports common debit and credit cards and selected regional or alternative methods, including M-Pesa and PayPal where available.",
+    answer: [
+      "Kenya Airways supports common debit and credit cards and selected",
+      "regional or alternative methods, including M-Pesa and PayPal where",
+      "available.",
+    ].join(" "),
   },
   {
     category: "Special Assistance",
     question: "How do I request special assistance?",
-    answer: "Contact Kenya Airways before travel with the assistance you require so the airport and onboard teams can prepare appropriately.",
+    answer: [
+      "Contact Kenya Airways before travel with the assistance you require",
+      "so the airport and onboard teams can prepare appropriately.",
+    ].join(" "),
   },
   {
     category: "Travel Documents",
     question: "What travel documents do I need?",
-    answer: "Document requirements depend on your nationality, destination and transit points. Confirm current passport, visa and health requirements before departure.",
+    answer: [
+      "Document requirements depend on your nationality, destination and",
+      "transit points. Confirm current passport, visa and health",
+      "requirements before departure.",
+    ].join(" "),
   },
 ];
 
@@ -139,7 +173,10 @@ export function PassengerLanding({ onAskQuestion, onOpenChat }) {
             <p className="eyebrow">POPULAR SUPPORT TOPICS</p>
             <h2 id="faq-heading">Frequently Asked Questions</h2>
           </div>
-          <p>Choose a question or ask KQ Support for details specific to your journey.</p>
+          <p>
+            Choose a question or ask KQ Support for details specific to your
+            journey.
+          </p>
         </div>
 
         <div className="faq-list">
@@ -161,7 +198,11 @@ export function PassengerLanding({ onAskQuestion, onOpenChat }) {
                 {isOpen && (
                   <div className="faq-answer">
                     <p>{faq.answer}</p>
-                    <button className="link-button" type="button" onClick={() => onAskQuestion(faq.question)}>
+                    <button
+                      className="link-button"
+                      type="button"
+                      onClick={() => onAskQuestion(faq.question)}
+                    >
                       Ask this in KQ Support →
                     </button>
                   </div>
@@ -172,7 +213,10 @@ export function PassengerLanding({ onAskQuestion, onOpenChat }) {
           {!visibleFaqs.length && (
             <div className="faq-empty">
               <h3>No matching FAQ found</h3>
-              <p>Ask KQ Support and we will search the available support information.</p>
+              <p>
+                Ask KQ Support and we will search the available support
+                information.
+              </p>
               <button className="button secondary" type="button" onClick={submitSearch}>
                 Ask KQ Support
               </button>

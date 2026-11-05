@@ -10,6 +10,7 @@ from app.api.routes import (
     health,
     models,
     retrieval,
+    support,
     theme,
 )
 
@@ -22,6 +23,7 @@ api_router.include_router(models.router, prefix="/models", tags=["models"])
 api_router.include_router(generation.router, prefix="/generation", tags=["generation"])
 api_router.include_router(conversations.router, prefix="/conversations", tags=["conversations"])
 api_router.include_router(feedback.router, prefix="/feedback", tags=["feedback"])
+api_router.include_router(support.router, prefix="/support", tags=["human-support"])
 api_router.include_router(admin.router, prefix="/admin", tags=["administrator"])
 api_router.include_router(theme.router, tags=["theme"])
 api_router.include_router(guest.router, tags=["guest-chat"])

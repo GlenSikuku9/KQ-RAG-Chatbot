@@ -4,6 +4,7 @@ from collections import Counter
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timedelta, timezone
 from hashlib import sha256
+import logging
 from pathlib import Path
 import shutil
 from uuid import uuid4
@@ -22,6 +23,7 @@ from app.models.admin import (
     AdminDocumentPage,
     AdminDocumentVersion,
     AdminLog,
+    AdminNotification,
     AdminModel,
     AdminSearchResponse,
     AdminSearchResult,
@@ -42,6 +44,30 @@ from app.services.knowledge_base import KnowledgeBaseStore
 from app.rag.ingestion import publish_document, remove_document
 
 
+logger = logging.getLogger(__name__)
+
+
+def sync_vector_index() -> dict:
+    """Publish the current Firestore snapshot to Chroma before success returns."""
+    from app.rag.embeddings import get_embedder
+    from app.rag.vector_index import VectorIndex, content_hash
+
+    settings = get_settings()
+    store = KnowledgeBaseStore(get_firestore_client())
+    chunks = store.read_index_snapshot()
+    digest = content_hash(chunks)
+    index = VectorIndex(
+        settings.chroma_persist_dir,
+        get_embedder(),
+        settings.embedding_batch_size,
+    )
+    return index.sync(
+        chunks,
+        still_current=lambda: content_hash(store.read_index_snapshot())
+        == digest,
+    )
+
+
 def _to_datetime(value: int | None) -> datetime | None:
     return datetime.fromtimestamp(value, timezone.utc) if value else None
 
@@ -52,6 +78,7 @@ def audit(
     target_type: str,
     target_id: str,
     details: dict[str, str | int | float | bool | None] | None = None,
+    status_value: str = "success",
 ) -> None:
     """Write a minimal audit record without credentials or customer message content."""
     safe_details = {
@@ -65,6 +92,7 @@ def audit(
         target_type=target_type,
         target_id=target_id,
         timestamp=utc_now(),
+        status=status_value,
         details=safe_details,
     )
     with firestore_operation():
@@ -89,7 +117,9 @@ def save_passenger_theme(admin: AuthenticatedUser, theme: PassengerTheme) -> Pas
 def list_admin_models() -> list[AdminModel]:
     """Combine configured model metadata with real operational events; credentials never leave config."""
     from app.rag.generation import get_generation_service
-    configured = get_generation_service().configured_models()
+    generation = get_generation_service()
+    generation.repair_stored_default()
+    configured = generation.configured_models()
     with firestore_operation():
         snapshots = list(get_firestore_client().collection("operational_events").stream(timeout=FIRESTORE_READ_TIMEOUT))
     stats = {item.model_id: {"success": 0, "failed": 0, "durations": []} for item in configured}
@@ -321,7 +351,11 @@ def list_logs() -> list[AdminLog]:
                     or details.get("administrator_email")
                     or "Administrator"
                 ),
-                severity="info",
+                severity=(
+                    "error"
+                    if item.get("status") == "failure"
+                    else "info"
+                ),
                 details=details,
             ),
         )
@@ -362,6 +396,227 @@ def list_logs() -> list[AdminLog]:
             ),
         )
     return sorted(logs, key=lambda item: item.timestamp, reverse=True)
+
+
+def _notification_title(category: str | None) -> str:
+    titles = {
+        "provider": "Provider Failure",
+        "retrieval": "Retrieval Failure",
+        "storage": "Storage Failure",
+        "validation": "Request Validation Failed",
+    }
+    return titles.get(category, "Chat Failed")
+
+
+def list_notifications(
+    admin: AuthenticatedUser,
+    limit: int = 20,
+) -> list[AdminNotification]:
+    """Combine system failures and human handoffs with per-admin read state."""
+    client = get_firestore_client()
+    with firestore_operation():
+        event_snapshots = list(
+            client.collection("operational_events")
+            .order_by("occurred_at", direction="DESCENDING")
+            .limit(100)
+            .stream(timeout=FIRESTORE_READ_TIMEOUT),
+        )
+        audit_snapshots = list(
+            client.collection("admin_activity")
+            .order_by("timestamp", direction="DESCENDING")
+            .limit(100)
+            .stream(timeout=FIRESTORE_READ_TIMEOUT),
+        )
+        support_snapshots = list(
+            client.collection("support_requests")
+            .order_by("created_at", direction="DESCENDING")
+            .limit(100)
+            .stream(timeout=FIRESTORE_READ_TIMEOUT),
+        )
+        error_items = [
+            {
+                "event_id": str(
+                    (snapshot.to_dict() or {}).get("event_id")
+                    or snapshot.id
+                ),
+                "event_type": "chat_failed",
+                "timestamp": (snapshot.to_dict() or {})["occurred_at"],
+                "category": (snapshot.to_dict() or {}).get(
+                    "failure_category",
+                ),
+                "description": _chat_failure_description(
+                    (snapshot.to_dict() or {}).get("failure_category"),
+                ),
+                "notification_category": "system",
+                "resource_id": None,
+            }
+            for snapshot in event_snapshots
+            if (snapshot.to_dict() or {}).get("event_type") == "chat_failed"
+        ]
+        error_items.extend(
+            {
+                "event_id": str(
+                    (snapshot.to_dict() or {}).get("activity_id")
+                    or snapshot.id
+                ),
+                "event_type": str(
+                    (snapshot.to_dict() or {}).get(
+                        "action",
+                        "administrator_failure",
+                    ),
+                ),
+                "timestamp": (snapshot.to_dict() or {})["timestamp"],
+                "category": None,
+                "description": _audit_description(
+                    str(
+                        (snapshot.to_dict() or {}).get(
+                            "action",
+                            "administrator_failure",
+                        ),
+                    ),
+                    dict((snapshot.to_dict() or {}).get("details") or {}),
+                ),
+                "notification_category": "system",
+                "resource_id": None,
+            }
+            for snapshot in audit_snapshots
+            if (snapshot.to_dict() or {}).get("status") == "failure"
+        )
+        error_items.extend(
+            {
+                "event_id": f"support:{(snapshot.to_dict() or {}).get('request_id', snapshot.id)}",
+                "event_type": "human_support_requested",
+                "timestamp": (snapshot.to_dict() or {})["created_at"],
+                "category": None,
+                "description": str(
+                    (snapshot.to_dict() or {}).get(
+                        "issue_summary",
+                        "Passenger requested human assistance.",
+                    ),
+                )[:180],
+                "notification_category": "human_support",
+                "resource_id": str(
+                    (snapshot.to_dict() or {}).get(
+                        "request_id",
+                        snapshot.id,
+                    ),
+                ),
+            }
+            for snapshot in support_snapshots
+            if (snapshot.to_dict() or {}).get("status")
+            in {"pending", "in_progress"}
+        )
+        # One underlying failure should produce one notification even if a
+        # future logger writes the same event into both bounded sources.
+        unique_errors = {
+            item["event_id"]: item
+            for item in error_items
+        }
+        error_items = sorted(
+            unique_errors.values(),
+            key=lambda item: item["timestamp"],
+            reverse=True,
+        )[:limit]
+        read_references = [
+            client.collection("admin_notification_reads").document(
+                encode_document_id(f"{admin.uid}:{item['event_id']}"),
+            )
+            for item in error_items
+        ]
+        read_snapshots = (
+            list(
+                client.get_all(
+                    read_references,
+                    timeout=FIRESTORE_READ_TIMEOUT,
+                ),
+            )
+            if read_references
+            else []
+        )
+
+    read_ids = {
+        str((snapshot.to_dict() or {}).get("event_id"))
+        for snapshot in read_snapshots
+        if snapshot.exists
+    }
+    notifications: list[AdminNotification] = []
+    for item in error_items:
+        event_id = item["event_id"]
+        category = item["category"]
+        notifications.append(
+            AdminNotification(
+                notification_id=event_id,
+                event_id=event_id,
+                event_type=item["event_type"],
+                title=(
+                    "Human Support Request"
+                    if item["notification_category"] == "human_support"
+                    else _notification_title(category)
+                    if item["event_type"] == "chat_failed"
+                    else readable_event_title(item["event_type"])
+                ),
+                description=item["description"],
+                timestamp=item["timestamp"],
+                is_read=event_id in read_ids,
+                category=item["notification_category"],
+                resource_id=item["resource_id"],
+            ),
+        )
+    return notifications
+
+
+def readable_event_title(event_type: str) -> str:
+    return event_type.replace("_", " ").title()
+
+
+def mark_notification_read(
+    admin: AuthenticatedUser,
+    event_id: str,
+) -> AdminNotification:
+    notifications = list_notifications(admin, 50)
+    selected = next(
+        (item for item in notifications if item.event_id == event_id),
+        None,
+    )
+    if selected is None:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "Notification not found.")
+    with firestore_operation():
+        get_firestore_client().collection("admin_notification_reads").document(
+            encode_document_id(f"{admin.uid}:{event_id}"),
+        ).set(
+            {
+                "admin_id": admin.uid,
+                "event_id": event_id,
+                "read_at": utc_now(),
+            },
+        )
+    return selected.model_copy(update={"is_read": True})
+
+
+def mark_all_notifications_read(
+    admin: AuthenticatedUser,
+) -> list[AdminNotification]:
+    notifications = list_notifications(admin, 50)
+    unread = [item for item in notifications if not item.is_read]
+    if unread:
+        client = get_firestore_client()
+        batch = client.batch()
+        now = utc_now()
+        for item in unread:
+            reference = client.collection("admin_notification_reads").document(
+                encode_document_id(f"{admin.uid}:{item.event_id}"),
+            )
+            batch.set(
+                reference,
+                {
+                    "admin_id": admin.uid,
+                    "event_id": item.event_id,
+                    "read_at": now,
+                },
+            )
+        with firestore_operation():
+            batch.commit()
+    return [item.model_copy(update={"is_read": True}) for item in notifications]
 
 
 def list_documents() -> list[AdminDocument]:
@@ -514,6 +769,8 @@ def process_upload(admin: AuthenticatedUser, file: UploadFile, category: str | N
         result = publish_document(destination, settings, KnowledgeBaseStore(get_firestore_client()))
         if not result.persisted or result.status not in {"processed", "unchanged", "needs_review"}:
             raise HTTPException(status.HTTP_422_UNPROCESSABLE_ENTITY, result.error or "Document processing failed.")
+        if result.status in {"processed", "unchanged"}:
+            sync_vector_index()
         client = get_firestore_client()
         metadata = {
             "title": Path(safe_name).stem,
@@ -613,6 +870,7 @@ def restore_document_version(admin: AuthenticatedUser, document_id: str, version
     result = publish_document(destination, settings, KnowledgeBaseStore(client))
     if not result.persisted or result.status not in {"processed", "unchanged"}:
         raise HTTPException(status.HTTP_422_UNPROCESSABLE_ENTITY, result.error or "Document restoration failed during processing.")
+    sync_vector_index()
     file_hash = sha256(destination.read_bytes()).hexdigest()
     new_number = max(item.version_number for item in versions) + 1
     client.collection("admin_document_metadata").document(document_id).set({
@@ -631,6 +889,7 @@ def delete_document(admin: AuthenticatedUser, document_id: str) -> AdminDocument
     result = remove_document(match.source, get_settings(), KnowledgeBaseStore(get_firestore_client()))
     if not result.persisted:
         raise HTTPException(status.HTTP_422_UNPROCESSABLE_ENTITY, result.error or "Document removal failed.")
+    sync_vector_index()
     audit(admin, "document_removed", "document", document_id)
     return next(item for item in list_documents() if item.document_id == document_id)
 
@@ -739,6 +998,7 @@ def update_document_content(admin: AuthenticatedUser, document_id: str, content:
             status.HTTP_422_UNPROCESSABLE_ENTITY,
             result.error or "Document processing failed after editing.",
         )
+    sync_vector_index()
     file_hash = sha256(path.read_bytes()).hexdigest()
     new_number = current_number + 1
     get_firestore_client().collection("admin_document_metadata").document(document_id).set({

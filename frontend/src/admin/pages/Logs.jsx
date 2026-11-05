@@ -419,6 +419,14 @@ function LogDetailsDrawer({ log, onClose, returnFocusRef }) {
     return readableEventName(value).replace("Ai", "AI");
   }
 
+  function durationInSeconds(value) {
+    const milliseconds = Number(value);
+    if (!Number.isFinite(milliseconds) || milliseconds < 0) {
+      return "Unavailable";
+    }
+    return `${(milliseconds / 1000).toFixed(2)} seconds`;
+  }
+
   useEffect(() => {
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
@@ -589,7 +597,7 @@ function LogDetailsDrawer({ log, onClose, returnFocusRef }) {
               {detailRow(
                 "Duration",
                 details.duration_ms,
-                (value) => `${Number(value).toFixed(2)} ms`,
+                durationInSeconds,
               )}
             </dl>
           </section>

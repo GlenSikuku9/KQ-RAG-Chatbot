@@ -58,6 +58,8 @@ function modelDisplayName(modelId) {
     {
       openrouter_gemma_26b: "Gemma 4 26B A4B",
       openrouter_gemma_31b: "Gemma 4 31B",
+      groq_gpt_oss_120b: "GPT-OSS 120B",
+      // Retain the old label only for historical records and evaluations.
       google_gemini_flash: "Gemini 3.8 Flash",
     }[modelId] || modelId
   );

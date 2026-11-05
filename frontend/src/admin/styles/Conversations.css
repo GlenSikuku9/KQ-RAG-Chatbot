@@ -51,6 +51,67 @@
   font-size: 0.86rem;
 }
 
+.conversation-feedback {
+  padding: 0.8rem 1.5rem;
+  border-bottom: 1px solid var(--admin-border, #e2e8f0);
+  background: #ffffff;
+}
+
+.conversation-feedback h3 {
+  margin: 0 0 0.45rem;
+  color: #0b2347;
+  font-size: 0.82rem;
+  text-transform: uppercase;
+}
+
+.conversation-feedback-content {
+  display: grid;
+  gap: 0.3rem;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.6rem;
+  background: #f8fafc;
+}
+
+.conversation-feedback-rating,
+.conversation-feedback-comment,
+.conversation-feedback-empty {
+  margin: 0;
+}
+
+.conversation-feedback-rating {
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+
+.conversation-feedback-rating strong {
+  margin-left: 0.45rem;
+  color: #334155;
+  font-size: 0.8rem;
+}
+
+.selected-stars {
+  color: #d69e00;
+}
+
+.unselected-stars {
+  color: #cbd5e1;
+}
+
+.conversation-feedback-comment {
+  overflow-wrap: anywhere;
+  color: #334155;
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
+.conversation-feedback time,
+.conversation-feedback-empty {
+  color: #64748b;
+  font-size: 0.72rem;
+}
+
 .conversation-message-scroll {
   min-height: 15rem;
   padding: 1.5rem;

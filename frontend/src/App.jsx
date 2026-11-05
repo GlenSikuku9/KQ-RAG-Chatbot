@@ -8,12 +8,12 @@ import {
 } from "firebase/auth";
 
 import { getPassengerTheme, syncProfile } from "./api";
-import { PassengerChat } from "./components/PassengerChat";
-import { PassengerLanding } from "./components/PassengerLanding";
 import { KenyaAirwaysLogo } from "./components/KenyaAirwaysLogo";
 import { AdminDashboard } from "./admin/AdminDashboard";
+import { PassengerChat } from "./passenger/pages/PassengerChat";
+import { PassengerLanding } from "./passenger/pages/PassengerLanding";
 import { auth } from "./firebase";
-import "./AuthScreen.css";
+import "./passenger/styles/AuthScreen.css";
 
 function AuthScreen({ initialScreen = "sign-in", onAuthenticated, onCancel }) {
   const [screen, setScreen] = useState(initialScreen);

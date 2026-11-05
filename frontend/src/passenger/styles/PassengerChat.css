@@ -1,7 +1,165 @@
 /* Passenger chat ownership file. The established responsive chat rules remain
    based on published passenger theme tokens, independent of admin styling. */
+/* Passenger conversation layout is isolated from administrator styling. */
 .chat-panel {
   --chat-surface: var(--passenger-panel, #ffffff);
+}
+
+/* Human handoff remains compact inside the existing chat frame. */
+.request-support-action {
+  align-self: end;
+  padding: 0.35rem 0;
+  border: 0;
+  background: transparent;
+  color: #102f70;
+  cursor: pointer;
+  font-size: 0.76rem;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.human-support-card {
+  display: grid;
+  gap: 0.65rem;
+  width: min(100%, 520px);
+  padding: 0.95rem;
+  border: 1px solid #dce4ef;
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: 0 5px 14px rgba(16, 47, 112, 0.06);
+}
+
+.human-support-card h3 {
+  margin: 0;
+  color: #102f70;
+  font-size: 0.98rem;
+}
+
+.human-support-card p,
+.human-support-card label {
+  margin: 0;
+  color: #526176;
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
+.human-support-card label {
+  color: #102f70;
+  font-weight: 700;
+}
+
+.human-support-card textarea {
+  width: 100%;
+  min-height: 70px;
+  padding: 0.65rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  resize: vertical;
+}
+
+.human-support-card-actions,
+.support-auth-required > div,
+.support-banner-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+}
+
+.human-support-card .button.primary {
+  background: #d71920;
+}
+
+.support-auth-required {
+  display: grid;
+  gap: 0.55rem;
+  padding: 0.7rem;
+  border-radius: 8px;
+  background: #f8fafc;
+}
+
+.support-availability-copy {
+  padding: 0.55rem 0.65rem;
+  border-radius: 8px;
+  background: #f1f5f9;
+}
+
+.support-status-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.65rem 0.85rem;
+  border-top: 1px solid #dce4ef;
+  border-bottom: 1px solid #dce4ef;
+  background: #eff6ff;
+  color: #102f70;
+}
+
+.support-status-banner.pending {
+  background: #fffbeb;
+  color: #92400e;
+}
+
+.support-status-banner.in_progress,
+.support-status-banner.resolved {
+  background: #ecfdf5;
+  color: #166534;
+}
+
+.support-status-banner.cancelled {
+  background: #f8fafc;
+  color: #64748b;
+}
+
+.support-status-banner > div:first-child {
+  display: grid;
+  gap: 0.1rem;
+}
+
+.support-status-banner span {
+  font-size: 0.75rem;
+}
+
+.support-banner-actions button {
+  padding: 0.25rem 0.4rem;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  font-size: 0.73rem;
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+.chat-message.human-agent .message-bubble {
+  border: 1px solid #dbe7df;
+  border-left: 4px solid #16834b;
+  background: #ffffff;
+  color: #172033;
+}
+
+.support-message-time {
+  display: block;
+  margin-top: 0.25rem;
+  color: #64748b;
+  font-size: 0.68rem;
+}
+
+.support-history-list .history-item span {
+  text-transform: capitalize;
+}
+
+@media (max-width: 620px) {
+  .support-status-banner {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .human-support-card-actions .button,
+  .support-auth-required .button {
+    width: 100%;
+  }
 }
 
 /* The default window follows the compact airline-assistant proportion. These
@@ -168,10 +326,32 @@
   font-size: 0.8rem;
 }
 
-.chat-controls .text-button {
+.end-conversation-button {
   margin-left: auto;
-  padding: 0.35rem 0.2rem;
+  min-height: 2.15rem;
+  padding: 0.4rem 0.75rem;
+  border: 1px solid #d71920;
+  border-radius: 0.5rem;
+  color: #d71920;
+  background: #ffffff;
   font-size: 0.76rem;
+  font-weight: 750;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.end-conversation-button:hover {
+  background: #fff1f2;
+}
+
+.end-conversation-button:focus-visible {
+  outline: 3px solid rgb(215 25 32 / 22%);
+  outline-offset: 2px;
+}
+
+.end-conversation-button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
 }
 
 /* New conversation already exists in the history drawer, avoiding a
@@ -328,12 +508,6 @@
   font-size: 0.72rem;
 }
 
-.source-score-note {
-  margin: 0.4rem 0 0;
-  color: var(--passenger-secondary-text, #64748b);
-  font-size: 0.68rem;
-}
-
 .chat-window-wrap .chat-composer {
   padding: 0.6rem 0.75rem 0.4rem;
 }
@@ -439,6 +613,44 @@
   font-weight: 700;
 }
 
+.chat-confirm-backdrop {
+  position: absolute;
+  z-index: 30;
+  inset: 0;
+  display: grid;
+  padding: 1rem;
+  place-items: center;
+  background: rgb(15 23 42 / 36%);
+}
+
+.chat-confirm-dialog {
+  width: min(100%, 25rem);
+  padding: 1.1rem;
+  border: 1px solid var(--passenger-border, #dce4ef);
+  border-radius: 0.8rem;
+  background: #ffffff;
+  box-shadow: 0 18px 45px rgb(15 23 42 / 20%);
+}
+
+.chat-confirm-dialog h3 {
+  margin: 0;
+  color: var(--passenger-primary, #102f70);
+  font-size: 1rem;
+}
+
+.chat-confirm-dialog p {
+  margin: 0.55rem 0 1rem;
+  color: var(--passenger-secondary-text, #64748b);
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+
+.chat-confirm-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.6rem;
+}
+
 @media (max-width: 1100px) and (min-width: 701px) {
   .chat-window-wrap,
   .chat-window-wrap.drawer-open {
@@ -481,14 +693,24 @@
   .chat-controls {
     align-items: center;
     flex-direction: row;
-    overflow-x: auto;
+    flex-wrap: wrap;
+    overflow: visible;
+  }
+
+  .chat-controls .control-field {
+    min-width: 9rem;
+    flex: 1 1 10rem;
+  }
+
+  .chat-controls select {
+    width: 100%;
   }
 
   .chat-controls .control-field label {
     display: none;
   }
 
-  .chat-controls .text-button {
+  .end-conversation-button {
     flex: 0 0 auto;
   }
 
@@ -498,10 +720,6 @@
 
   .source-row-main {
     grid-template-columns: auto minmax(0, 1fr);
-  }
-
-  .source-similarity {
-    grid-column: 2;
   }
 
   .composer-meta > p {

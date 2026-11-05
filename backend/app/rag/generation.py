@@ -33,11 +33,17 @@ class GenerationService:
         self.models = {model.model_id: model for model in settings.generation_models}
 
     def configured_models(self) -> list[ConfiguredModel]:
-        default_model_id = self._stored_default_model_id() or self.settings.default_generation_model_id
-        return [ConfiguredModel(model_id=model.model_id, provider=model.provider,
-            upstream_model=model.upstream_model, configured=bool(model.api_key),
-            is_default=model.model_id == default_model_id)
-            for model in self.models.values()]
+        default_model_id = self._effective_default_model_id()
+        return [
+            ConfiguredModel(
+                model_id=model.model_id,
+                provider=model.provider,
+                upstream_model=model.upstream_model,
+                configured=bool(model.api_key),
+                is_default=model.model_id == default_model_id,
+            )
+            for model in self.models.values()
+        ]
 
     def selected_model(self, model_id: str | None = None) -> ConfiguredModel:
         """Return safe metadata for the model selected by the normal rules."""
@@ -57,8 +63,21 @@ class GenerationService:
         for attempt in (1, 2, 3):
             try:
                 if model.provider == "openrouter":
-                    return self._openrouter(model, prompt, system_instruction)
-                return self._google_ai_studio(model, prompt, system_instruction)
+                    return self._openrouter(
+                        model,
+                        prompt,
+                        system_instruction,
+                    )
+                if model.provider == "groq":
+                    return self._groq(
+                        model,
+                        prompt,
+                        system_instruction,
+                    )
+                raise GenerationProviderError(
+                    503,
+                    "The selected AI provider is not supported.",
+                )
             except httpx.TimeoutException as error:
                 logger.warning("Generation request timed out for %s.", model.model_id)
                 raise GenerationProviderError(504, "The selected AI provider timed out. Please try again later.") from error
@@ -81,12 +100,48 @@ class GenerationService:
         raise GenerationProviderError(503, "The selected AI provider is unavailable. Please try again later.")
 
     def _select_model(self, requested_id: str | None) -> GenerationModelSettings:
-        model_id = requested_id or self._stored_default_model_id() or self.settings.default_generation_model_id
+        model_id = requested_id or self._effective_default_model_id()
         if not model_id:
             raise GenerationProviderError(503, "No default generation model is configured.")
         if model_id not in self.models:
             raise GenerationProviderError(404, "The requested generation model is not configured.")
         return self.models[model_id]
+
+    def _effective_default_model_id(self) -> str | None:
+        """Ignore a persisted default that is no longer in the active registry."""
+        stored = self._stored_default_model_id()
+        if stored in self.models:
+            return stored
+        configured_default = self.settings.default_generation_model_id
+        if configured_default in self.models:
+            return configured_default
+        configured = next(
+            (
+                model.model_id
+                for model in self.models.values()
+                if model.api_key
+            ),
+            None,
+        )
+        return configured or next(iter(self.models), None)
+
+    def repair_stored_default(self) -> None:
+        """Persist a valid fallback when an obsolete model was the default."""
+        stored = self._stored_default_model_id()
+        replacement = self._effective_default_model_id()
+        if not stored or stored in self.models or not replacement:
+            return
+        from app.services.firestore_client import (
+            firestore_operation,
+            get_firestore_client,
+        )
+        with firestore_operation():
+            get_firestore_client().collection("app_settings").document(
+                "generation_config",
+            ).set(
+                {"default_model_id": replacement},
+                merge=True,
+            )
 
     @staticmethod
     def _stored_default_model_id() -> str | None:
@@ -101,41 +156,62 @@ class GenerationService:
             # Model generation must continue using the environment default if settings storage is unavailable.
             return None
 
-    def _openrouter(self, model: GenerationModelSettings, prompt: str, system: str | None) -> GenerationResponse:
-        messages = ([{"role": "system", "content": system}] if system else []) + [{"role": "user", "content": prompt}]
-        data = self._post("https://openrouter.ai/api/v1/chat/completions", model,
-            {"model": model.upstream_model, "messages": messages, "max_tokens": model.max_output_tokens},
-            {"Authorization": f"Bearer {model.api_key}"})
+    def _openrouter(
+        self,
+        model: GenerationModelSettings,
+        prompt: str,
+        system: str | None,
+    ) -> GenerationResponse:
+        return self._openai_compatible(
+            "https://openrouter.ai/api/v1/chat/completions",
+            model,
+            prompt,
+            system,
+            "max_tokens",
+        )
+
+    def _groq(
+        self,
+        model: GenerationModelSettings,
+        prompt: str,
+        system: str | None,
+    ) -> GenerationResponse:
+        # Groq exposes an OpenAI-compatible chat-completions contract.
+        return self._openai_compatible(
+            "https://api.groq.com/openai/v1/chat/completions",
+            model,
+            prompt,
+            system,
+            "max_completion_tokens",
+        )
+
+    def _openai_compatible(
+        self,
+        url: str,
+        model: GenerationModelSettings,
+        prompt: str,
+        system: str | None,
+        token_field: str,
+    ) -> GenerationResponse:
+        messages = (
+            ([{"role": "system", "content": system}] if system else [])
+            + [{"role": "user", "content": prompt}]
+        )
+        data = self._post(
+            url,
+            model,
+            {
+                "model": model.upstream_model,
+                "messages": messages,
+                token_field: model.max_output_tokens,
+            },
+            {"Authorization": f"Bearer {model.api_key}"},
+        )
         try:
             text = data["choices"][0]["message"]["content"]
         except (KeyError, IndexError, TypeError) as error:
             raise GenerationProviderError(502, "The selected AI provider returned an invalid response.") from error
         return self._response(model, self._text(text), data.get("id"))
-
-    def _google_ai_studio(self, model: GenerationModelSettings, prompt: str, system: str | None) -> GenerationResponse:
-        payload: dict = {
-            "contents": [{"role": "user", "parts": [{"text": prompt}]}],
-            "generationConfig": {"maxOutputTokens": model.max_output_tokens},
-        }
-
-        if model.upstream_model.startswith("gemini-3."):
-            # Gemini 3.8 defaults to medium thinking and can sit past a 90s client
-            # deadline before the first response header. Chat uses the supported
-            # low level and skips thought summaries so the answer can return.
-            payload["generationConfig"]["thinkingConfig"] = {
-                "thinkingLevel": "low",
-                "includeThoughts": False,
-            }
-
-        if system:
-            payload["systemInstruction"] = {"parts": [{"text": system}]}
-        data = self._post(f"https://generativelanguage.googleapis.com/v1beta/models/{model.upstream_model}:generateContent",
-            model, payload, {"x-goog-api-key": model.api_key or ""})
-        try:
-            text = "".join(part["text"] for part in data["candidates"][0]["content"]["parts"] if "text" in part)
-        except (KeyError, IndexError, TypeError) as error:
-            raise GenerationProviderError(502, "The selected AI provider returned an invalid response.") from error
-        return self._response(model, self._text(text), data.get("responseId"))
 
     def _post(self, url: str, model: GenerationModelSettings, payload: dict, headers: dict[str, str]) -> dict:
         with self.client_factory(timeout=model.timeout_seconds) as client:

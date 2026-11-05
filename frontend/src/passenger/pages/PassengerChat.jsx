@@ -6,22 +6,31 @@ import {
   Minus,
   X,
 } from "lucide-react";
-import "./PassengerChat.css";
+import "../styles/PassengerChat.css";
 
 import {
+  cancelSupportRequest,
+  convertSupportRequest,
+  createSupportRequest,
   endConversation,
   getConversation,
   getConversationFeedback,
   getAvailableModels,
   getPublicModels,
+  getSupportAvailability,
+  getSupportRequest,
   listConversations,
+  listSupportRequests,
   saveConversationFeedback,
+  saveSupportFeedback,
   sendConversationMessage,
   sendGuestMessage,
+  sendSupportMessage,
   startConversationWithMessage,
-} from "../api";
-import { FormattedAnswer } from "./FormattedAnswer";
-import { KenyaAirwaysLogo } from "./KenyaAirwaysLogo";
+} from "../../api";
+import { FormattedAnswer } from "../../components/FormattedAnswer";
+import { KenyaAirwaysLogo } from "../../components/KenyaAirwaysLogo";
+import { subscribeToSupportRequest } from "../../supportRealtime";
 
 const LANGUAGE_OPTIONS = [
   { value: "en", label: "English" },
@@ -38,6 +47,44 @@ const SUGGESTED_QUESTIONS = [
   "How can I change my booking?",
 ];
 
+// These phrases intentionally cover clear English, Kiswahili and mixed
+// requests. Ambiguous questions continue through normal RAG assistance.
+const HUMAN_SUPPORT_PHRASES = [
+  "human",
+  "live agent",
+  "support agent",
+  "customer support",
+  "speak",
+  "talk",
+  "connect me",
+  "representative",
+  "kuongea",
+  "ongea",
+  "wakala",
+  "msaada wa mtu",
+];
+const UNRESOLVED_PHRASES = [
+  "not resolved",
+  "did not help",
+  "didn't help",
+  "still need help",
+  "haijatatuliwa",
+  "bado nahitaji msaada",
+];
+
+
+function requestsHumanSupport(text) {
+  const normalized = text.toLowerCase();
+  const explicitRequest = HUMAN_SUPPORT_PHRASES.some((phrase) => (
+    normalized.includes(phrase)
+  )) && /\b(agent|support|human|mtu|wakala|customer|kuongea|ongea)\b/i.test(
+    normalized,
+  );
+  return explicitRequest || UNRESOLVED_PHRASES.some((phrase) => (
+    normalized.includes(phrase)
+  ));
+}
+
 function responseLabel(responseSource) {
   if (responseSource === "clarification") {
     return "More information needed";
@@ -53,7 +100,7 @@ function responseLabel(responseSource) {
 const MODEL_LABELS = {
   openrouter_gemma_26b: "Gemma 4 26B A4B",
   openrouter_gemma_31b: "Gemma 4 31B",
-  google_gemini_flash: "Gemini 3.8 Flash",
+  groq_gpt_oss_120b: "GPT-OSS 120B",
 };
 
 function modelLabel(model) {
@@ -61,10 +108,6 @@ function modelLabel(model) {
     return "Select model";
   }
   return MODEL_LABELS[model.model_id] || model.upstream_model || model.model_id;
-}
-
-function similarityPercent(score) {
-  return `${(Number(score) * 100).toFixed(1)}% match`;
 }
 
 function conversationTurns(messages) {
@@ -105,22 +148,17 @@ function Sources({ chunks }) {
           // references continue to match the source row shown to passengers.
           const reference = chunk.citation_id || `S${index + 1}`;
           const title = chunk.source_title || "Kenya Airways support information";
-          const hasScore = chunk.similarity_score !== null &&
-            chunk.similarity_score !== undefined;
-
           return (
-            <div className="source-item" key={chunk.message_chunk_id || `${reference}-${index}`}>
+            <div
+              className="source-item"
+              key={
+                chunk.message_chunk_id
+                || `${reference}-${index}`
+              }
+            >
               <div className="source-row-main">
                 <span className="source-reference">{reference}</span>
                 <strong>{title}</strong>
-                {hasScore && (
-                  <span
-                    className="source-similarity"
-                    title="Retrieval similarity score; this is not answer accuracy or confidence"
-                  >
-                    {similarityPercent(chunk.similarity_score)}
-                  </span>
-                )}
               </div>
               {chunk.source_url && (
                 <a
@@ -160,6 +198,82 @@ function ChatMessage({ message }) {
       </div>
       {!isPassenger && <Sources chunks={message.retrieved_chunks} />}
     </article>
+  );
+}
+
+
+function AgentMessage({ message }) {
+  return (
+    <article className="chat-message human-agent">
+      <p className="message-sender">
+        Support agent{message.sender_name ? ` · ${message.sender_name}` : ""}
+      </p>
+      <div className="message-bubble">
+        <p>{message.message_text}</p>
+      </div>
+      <time className="support-message-time" dateTime={message.timestamp}>
+        {new Date(message.timestamp).toLocaleString()}
+      </time>
+    </article>
+  );
+}
+
+
+function SupportFeedbackRating({ user, request, existing, onSaved }) {
+  const [rating, setRating] = useState(existing?.rating || 0);
+  const [comment, setComment] = useState(existing?.comment || "");
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState(null);
+
+  async function submit(event) {
+    event.preventDefault();
+    setSaving(true);
+    setError(null);
+    try {
+      onSaved(await saveSupportFeedback(user, request.request_id, {
+        rating,
+        comment: comment.trim() || null,
+      }));
+    } catch (reason) {
+      setError(reason.message);
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  return (
+    <section className="feedback-rating support-feedback-rating">
+      <h3>How was your human support experience?</h3>
+      <form onSubmit={submit}>
+        <div className="rating-stars" aria-label="Human support rating">
+          {[1, 2, 3, 4, 5].map((value) => (
+            <button
+              className={value <= rating ? "selected" : ""}
+              type="button"
+              key={value}
+              onClick={() => setRating(value)}
+              aria-label={`${value} star${value === 1 ? "" : "s"}`}
+            >
+              ★
+            </button>
+          ))}
+        </div>
+        <textarea
+          value={comment}
+          onChange={(event) => setComment(event.target.value)}
+          placeholder="Optional comment"
+          rows="2"
+          maxLength="1000"
+        />
+        {error && <p className="notice error">{error}</p>}
+        <button
+          className="button feedback-submit"
+          disabled={!rating || saving}
+        >
+          {saving ? "Saving…" : existing ? "Update rating" : "Save rating"}
+        </button>
+      </form>
+    </section>
   );
 }
 
@@ -238,8 +352,24 @@ function FeedbackRating({ user, conversation, existingFeedback, onSaved }) {
           </div>
           {rating > 0 && <span className="rating-label">{rating} out of 5</span>}
         </div>
-        {!commentVisible && <button className="feedback-comment-toggle" type="button" onClick={() => setCommentVisible(true)}>Add an optional comment</button>}
-        {commentVisible && <textarea value={comment} onChange={(event) => setComment(event.target.value)} placeholder="Tell us how we can improve (optional)" maxLength="1000" rows="2" />}
+        {!commentVisible && (
+          <button
+            className="feedback-comment-toggle"
+            type="button"
+            onClick={() => setCommentVisible(true)}
+          >
+            Add an optional comment
+          </button>
+        )}
+        {commentVisible && (
+          <textarea
+            value={comment}
+            onChange={(event) => setComment(event.target.value)}
+            placeholder="Tell us how we can improve (optional)"
+            maxLength="1000"
+            rows="2"
+          />
+        )}
         {error && <p className="notice error" role="alert">{error}</p>}
         {confirmation && <p className="feedback-confirmation" role="status">{confirmation}</p>}
         <button className="button feedback-submit" type="submit" disabled={!rating || saving}>
@@ -272,6 +402,18 @@ export function PassengerChat({
   const [error, setError] = useState(null);
   const [isStarting, setIsStarting] = useState(false);
   const [isSending, setIsSending] = useState(false);
+  const [isEnding, setIsEnding] = useState(false);
+  const [confirmEndOpen, setConfirmEndOpen] = useState(false);
+  const [supportOffer, setSupportOffer] = useState(false);
+  const [supportReason, setSupportReason] = useState("passenger_request");
+  const [supportSummary, setSupportSummary] = useState("");
+  const [supportAvailability, setSupportAvailability] = useState(null);
+  const [supportRequests, setSupportRequests] = useState([]);
+  const [activeSupport, setActiveSupport] = useState(null);
+  const [supportDetail, setSupportDetail] = useState(null);
+  const [supportState, setSupportState] = useState("idle");
+  const [pendingEscalation, setPendingEscalation] = useState(null);
+  const [unsuccessfulTurns, setUnsuccessfulTurns] = useState(0);
   const [expanded, setExpanded] = useState(false);
   const [modelDropdownOpen, setModelDropdownOpen] = useState(false);
   const pendingSubmission = useRef(false);
@@ -288,6 +430,13 @@ export function PassengerChat({
   }, [initialQuestion]);
 
   useEffect(() => {
+    // Escalation timing and repeat-attempt limits remain backend-configurable.
+    getSupportAvailability()
+      .then(setSupportAvailability)
+      .catch(() => {});
+  }, []);
+
+  useEffect(() => {
     const isAuthenticated = Boolean(user);
 
     if (previouslyAuthenticated.current !== isAuthenticated) {
@@ -302,6 +451,80 @@ export function PassengerChat({
 
     previouslyAuthenticated.current = isAuthenticated;
   }, [user]);
+
+  useEffect(() => {
+    let cancelled = false;
+    if (!user) {
+      setSupportRequests([]);
+      setActiveSupport(null);
+      setSupportDetail(null);
+      return undefined;
+    }
+
+    async function loadSupportHistory() {
+      try {
+        const items = await listSupportRequests(user);
+        if (cancelled) return;
+        setSupportRequests(items);
+        const current = items.find((item) => (
+          item.conversation_id === conversation?.conversation_id
+          && ["pending", "in_progress"].includes(item.status)
+        ));
+        if (current) setActiveSupport(current);
+        if (pendingEscalation) {
+          setSupportSummary(pendingEscalation.issue_summary);
+          setSupportReason(pendingEscalation.reason);
+          setSupportOffer(true);
+        }
+      } catch (reason) {
+        if (!cancelled) setError(reason.message);
+      }
+    }
+
+    loadSupportHistory();
+    return () => {
+      cancelled = true;
+    };
+  }, [conversation?.conversation_id, pendingEscalation, user]);
+
+  useEffect(() => {
+    if (!user || !activeSupport?.request_id) return undefined;
+    let cancelled = false;
+
+    async function refreshActiveSupport() {
+      try {
+        const detail = await getSupportRequest(
+          user,
+          activeSupport.request_id,
+        );
+        if (!cancelled) {
+          setSupportDetail(detail);
+          setActiveSupport(detail.request);
+        }
+      } catch (reason) {
+        if (!cancelled) setError(reason.message);
+      }
+    }
+
+    refreshActiveSupport();
+    const stopRealtime = subscribeToSupportRequest(
+      activeSupport.request_id,
+      (request) => setActiveSupport(request),
+      (nextMessages) => setSupportDetail((current) => ({
+        ...(current || {}),
+        request: current?.request || activeSupport,
+        messages: nextMessages,
+      })),
+      () => {},
+    );
+    // A low-frequency scoped refresh repairs state after offline reconnects.
+    const timer = window.setInterval(refreshActiveSupport, 15000);
+    return () => {
+      cancelled = true;
+      stopRealtime();
+      window.clearInterval(timer);
+    };
+  }, [activeSupport?.request_id, user]);
 
   useEffect(() => {
     if (onDrawerToggle) {
@@ -423,6 +646,17 @@ export function PassengerChat({
     };
   }, [modelDropdownOpen]);
 
+  useEffect(() => {
+    if (!confirmEndOpen) return undefined;
+    const closeOnEscape = (event) => {
+      if (event.key === "Escape" && !isEnding) {
+        setConfirmEndOpen(false);
+      }
+    };
+    document.addEventListener("keydown", closeOnEscape);
+    return () => document.removeEventListener("keydown", closeOnEscape);
+  }, [confirmEndOpen, isEnding]);
+
   async function startConversation() {
     if (isStarting || isSending || modelLoading || !selectedModelId) {
       return;
@@ -449,7 +683,11 @@ export function PassengerChat({
       setQuestion("");
       setDrawerOpen(false);
     } catch (reason) {
-      setError(reason instanceof Error ? reason.message : "We could not start a conversation. Please try again.");
+      setError(
+        reason instanceof Error
+          ? reason.message
+          : "We could not start a conversation. Please try again.",
+      );
     } finally {
       setIsStarting(false);
     }
@@ -482,11 +720,35 @@ export function PassengerChat({
     }
   }
 
+  async function openSupportHistory(item) {
+    if (!user) return;
+    setError(null);
+    try {
+      const conversationDetail = await getConversation(
+        user,
+        item.conversation_id,
+      );
+      setConversation(conversationDetail.conversation);
+      setMessages(conversationDetail.messages);
+      setActiveSupport(item);
+      setDrawerOpen(false);
+    } catch (reason) {
+      setError(reason.message);
+    }
+  }
+
   async function finishConversation() {
-    if (!conversation || conversation.status !== "active" || isSending) {
+    if (
+      !conversation
+      || conversation.status !== "active"
+      || isSending
+      || isEnding
+    ) {
       return;
     }
 
+    setIsEnding(true);
+    setError(null);
     try {
       const ended = user
         ? await endConversation(user, conversation.conversation_id)
@@ -499,8 +761,120 @@ export function PassengerChat({
       setHistory((current) => current.map((item) => (
         item.conversation_id === ended.conversation_id ? ended : item
       )));
+      setConfirmEndOpen(false);
     } catch (reason) {
       setError(reason instanceof Error ? reason.message : "The conversation could not be ended.");
+    } finally {
+      setIsEnding(false);
+    }
+  }
+
+  async function openSupportOffer(
+    reason = "passenger_request",
+    requestedSummary = "",
+  ) {
+    const recentPassengerMessage = [...messages]
+      .reverse()
+      .find((item) => item.sender_type === "customer");
+    setSupportReason(reason);
+    setSupportSummary(
+      requestedSummary
+      || recentPassengerMessage?.message_text
+      || question.trim()
+      || "I need assistance with my Kenya Airways enquiry.",
+    );
+    setSupportOffer(true);
+    setSupportState("checking");
+    try {
+      setSupportAvailability(await getSupportAvailability());
+      setSupportState("idle");
+    } catch (reasonCaught) {
+      setError(reasonCaught.message);
+      setSupportState("error");
+    }
+  }
+
+  async function submitSupportRequest() {
+    const issueSummary = supportSummary.trim();
+    if (!issueSummary) return;
+    if (!user) {
+      setPendingEscalation({
+        issue_summary: issueSummary,
+        reason: supportReason,
+      });
+      return;
+    }
+
+    const conversationId = conversation?.conversation_id
+      || crypto.randomUUID();
+    setSupportState("submitting");
+    setError(null);
+    try {
+      const availability = supportAvailability
+        || await getSupportAvailability();
+      const created = await createSupportRequest(user, {
+        conversation_id: conversationId,
+        request_type: availability.available ? "live" : "ticket",
+        reason: supportReason,
+        issue_summary: issueSummary,
+      });
+      if (!conversation) {
+        setConversation({
+          conversation_id: conversationId,
+          user_id: user.uid,
+          title: issueSummary.slice(0, 120),
+          language,
+          status: "active",
+          started_at: created.created_at,
+          persisted: true,
+        });
+      }
+      setActiveSupport(created);
+      setSupportRequests((current) => [created, ...current]);
+      setSupportOffer(false);
+      setPendingEscalation(null);
+      setSupportState("idle");
+    } catch (reasonCaught) {
+      setError(reasonCaught.message);
+      setSupportState("error");
+    }
+  }
+
+  async function cancelActiveSupport() {
+    if (!user || !activeSupport) return;
+    setSupportState("submitting");
+    try {
+      const cancelled = await cancelSupportRequest(
+        user,
+        activeSupport.request_id,
+      );
+      setActiveSupport(cancelled);
+      setSupportDetail((current) => current
+        ? { ...current, request: cancelled }
+        : current);
+    } catch (reasonCaught) {
+      setError(reasonCaught.message);
+    } finally {
+      setSupportState("idle");
+    }
+  }
+
+  async function convertActiveSupport() {
+    if (!user || !activeSupport) return;
+    setSupportState("submitting");
+    try {
+      const ticket = await convertSupportRequest(
+        user,
+        activeSupport.request_id,
+      );
+      setActiveSupport(ticket);
+      setSupportDetail((current) => current
+        ? { ...current, request: ticket }
+        : current);
+    } catch (reasonCaught) {
+      setError(reasonCaught.message);
+    } finally {
+      setSupportState("idle");
     }
   }
 
@@ -509,12 +883,52 @@ export function PassengerChat({
 
     const trimmedQuestion = submittedQuestion.trim();
 
+    if (activeSupport?.status === "in_progress") {
+      event.preventDefault();
+      if (!trimmedQuestion || !user || isSending) return;
+      setIsSending(true);
+      try {
+        await sendSupportMessage(
+          user,
+          activeSupport.request_id,
+          trimmedQuestion,
+          crypto.randomUUID(),
+        );
+        setQuestion("");
+        setSupportDetail(await getSupportRequest(
+          user,
+          activeSupport.request_id,
+        ));
+      } catch (reasonCaught) {
+        setError(reasonCaught.message);
+      } finally {
+        setIsSending(false);
+      }
+      return;
+    }
+
+    if (requestsHumanSupport(trimmedQuestion)) {
+      event.preventDefault();
+      setQuestion("");
+      setSupportSummary(trimmedQuestion);
+      const unresolved = UNRESOLVED_PHRASES.some((phrase) => (
+        trimmedQuestion.toLowerCase().includes(phrase)
+      ));
+      const reason = unresolved
+        ? "passenger_issue_unresolved"
+        : "explicit_request";
+      setSupportReason(reason);
+      await openSupportOffer(reason, trimmedQuestion);
+      return;
+    }
+
     // This closes the small timing window before React disables the send button.
     if (
       !trimmedQuestion ||
       !selectedModelId ||
       modelLoading ||
       isSending ||
+      conversation?.status === "ended" ||
       pendingSubmission.current
     ) {
       return;
@@ -616,6 +1030,26 @@ export function PassengerChat({
         response.chatbot_message,
       ]);
       setConversation(response.conversation);
+      if (["fallback", "clarification"].includes(
+        response.chatbot_message.response_source,
+      )) {
+        const nextCount = unsuccessfulTurns + 1;
+        setUnsuccessfulTurns(nextCount);
+        if (
+          response.chatbot_message.response_source === "fallback"
+          || nextCount >= (supportAvailability?.clarification_attempts || 2)
+        ) {
+          setSupportSummary(trimmedQuestion);
+          setSupportReason(
+            nextCount >= (supportAvailability?.clarification_attempts || 2)
+              ? "repeated_unsuccessful_assistance"
+              : "low_retrieval_confidence",
+          );
+          setSupportOffer(true);
+        }
+      } else {
+        setUnsuccessfulTurns(0);
+      }
       if (user) {
         setHistory((current) => {
           const withoutCurrent = current.filter(
@@ -627,7 +1061,11 @@ export function PassengerChat({
       setQuestion("");
     } catch (reason) {
       // Retain the text so the passenger can correct or retry the request.
-      setError(reason instanceof Error ? reason.message : "We could not send your question. Please try again.");
+      setError(
+        reason instanceof Error
+          ? reason.message
+          : "We could not send your question. Please try again.",
+      );
     } finally {
       pendingSubmission.current = false;
       setIsSending(false);
@@ -647,35 +1085,72 @@ export function PassengerChat({
 
   return (
     <section
-      className={`chat-panel ${expanded ? "chat-panel-expanded" : ""} ${drawerOpen ? "drawer-open" : ""}`}
+      className={`chat-panel ${
+        expanded ? "chat-panel-expanded" : ""
+      } ${drawerOpen ? "drawer-open" : ""}`}
       id="chat"
       aria-labelledby="chat-heading"
     >
       {/* Default chat uses an overlay drawer; expanded mode gives history its own column. */}
-      {drawerOpen && <button className="drawer-scrim" type="button" aria-label="Close conversation history" onClick={() => setDrawerOpen(false)} />}
+      {drawerOpen && (
+        <button
+          className="drawer-scrim"
+          type="button"
+          aria-label="Close conversation history"
+          onClick={() => setDrawerOpen(false)}
+        />
+      )}
       {drawerOpen && <aside className="chat-drawer open" aria-label="Conversation history">
         <div className="drawer-heading">
           <div>
             <KenyaAirwaysLogo className="drawer-airline-logo" variant="colour" />
             <h3>Conversations</h3>
           </div>
-          <button className="icon-button" type="button" onClick={() => setDrawerOpen(false)} aria-label="Close menu">
+          <button
+            className="icon-button"
+            type="button"
+            onClick={() => setDrawerOpen(false)}
+            aria-label="Close menu"
+          >
             <X aria-hidden="true" />
           </button>
         </div>
-        <button className="button primary drawer-new" type="button" onClick={startConversation} disabled={modelLoading || !selectedModelId}>+ New conversation</button>
+        <button
+          className="button primary drawer-new"
+          type="button"
+          onClick={startConversation}
+          disabled={modelLoading || !selectedModelId}
+        >
+          + New conversation
+        </button>
         {!user && (
           <div className="guest-history-card">
             <strong>Save and revisit your conversations</strong>
             <p>Log in or create an account to access saved conversations and chat history.</p>
             <div className="guest-auth-actions">
-              <button className="button secondary" type="button" onClick={() => onRequestAuth?.("sign-in")}>Log in</button>
-              <button className="link-button" type="button" onClick={() => onRequestAuth?.("register")}>Sign up</button>
+              <button
+                className="button secondary"
+                type="button"
+                onClick={() => onRequestAuth?.("sign-in")}
+              >
+                Log in
+              </button>
+              <button
+                className="link-button"
+                type="button"
+                onClick={() => onRequestAuth?.("register")}
+              >
+                Sign up
+              </button>
             </div>
           </div>
         )}
         <p className="drawer-section-label">Saved conversations</p>
-        {historyLoading ? <p className="muted">Loading history…</p> : !history.length ? <p className="muted">No saved conversations yet.</p> : (
+        {historyLoading ? (
+          <p className="muted">Loading history…</p>
+        ) : !history.length ? (
+          <p className="muted">No saved conversations yet.</p>
+        ) : (
           <div className="history-list">
             {history.map((item) => (
               <button
@@ -694,6 +1169,24 @@ export function PassengerChat({
             ))}
           </div>
         )}
+        {user && supportRequests.length > 0 && (
+          <>
+            <p className="drawer-section-label">Human support</p>
+            <div className="history-list support-history-list">
+              {supportRequests.map((item) => (
+                <button
+                  className="history-item"
+                  type="button"
+                  key={item.request_id}
+                  onClick={() => openSupportHistory(item)}
+                >
+                  <strong>{item.reference}</strong>
+                  <span>{item.status.replaceAll("_", " ")}</span>
+                </button>
+              ))}
+            </div>
+          </>
+        )}
         <p className="drawer-note">
           {user
             ? "Your conversation history is tied to your secure passenger account."
@@ -703,7 +1196,16 @@ export function PassengerChat({
       <div className="chat-main-content">
         <div className="chat-panel-heading">
         <div className="chat-header-left">
-          <button className="menu-button" type="button" onClick={() => setDrawerOpen((current) => !current)} aria-label={drawerOpen ? "Close conversation history" : "Open conversation history"}>
+          <button
+            className="menu-button"
+            type="button"
+            onClick={() => setDrawerOpen((current) => !current)}
+            aria-label={
+              drawerOpen
+                ? "Close conversation history"
+                : "Open conversation history"
+            }
+          >
             <Menu aria-hidden="true" />
           </button>
           <div className="chat-brand">
@@ -722,7 +1224,12 @@ export function PassengerChat({
             >
               <Minus aria-hidden="true" />
             </button>
-            <button className="icon-button" type="button" onClick={() => setExpanded((current) => !current)} aria-label={expanded ? "Restore chat size" : "Expand chat"}>
+            <button
+              className="icon-button"
+              type="button"
+              onClick={() => setExpanded((current) => !current)}
+              aria-label={expanded ? "Restore chat size" : "Expand chat"}
+            >
               {expanded
                 ? <Minimize2 aria-hidden="true" />
                 : <Maximize2 aria-hidden="true" />}
@@ -759,15 +1266,130 @@ export function PassengerChat({
           {isStarting ? "Starting…" : "New conversation"}
         </button>
         {conversation?.status === "active" && messages.length > 0 && (
-          <button className="button text-button" type="button" onClick={finishConversation} disabled={isSending}>
+          <button
+            className="end-conversation-button"
+            type="button"
+            onClick={() => setConfirmEndOpen(true)}
+            disabled={isSending || isEnding}
+          >
             End conversation
           </button>
         )}
+        {!activeSupport || ["resolved", "cancelled"].includes(
+          activeSupport.status,
+        ) ? (
+          <button
+            className="request-support-action"
+            type="button"
+            onClick={() => openSupportOffer("passenger_request")}
+          >
+            Request human support
+          </button>
+        ) : null}
       </div>
 
-      {error && <div className="notice error chat-error" role="alert"><span>{error}</span><button type="button" onClick={() => { setError(null); document.getElementById("chat-question")?.focus(); }}>Try again</button></div>}
+      {confirmEndOpen && (
+        <div
+          className="chat-confirm-backdrop"
+          role="presentation"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget && !isEnding) {
+              setConfirmEndOpen(false);
+            }
+          }}
+        >
+          <section
+            aria-labelledby="end-conversation-title"
+            aria-modal="true"
+            className="chat-confirm-dialog"
+            role="dialog"
+          >
+            <h3 id="end-conversation-title">End conversation?</h3>
+            <p>
+              You can still view this conversation in your saved history,
+              but you will not be able to send more messages to it.
+            </p>
+            <div className="chat-confirm-actions">
+              <button
+                className="button secondary"
+                type="button"
+                disabled={isEnding}
+                onClick={() => setConfirmEndOpen(false)}
+              >
+                Cancel
+              </button>
+              <button
+                className="button primary"
+                type="button"
+                disabled={isEnding}
+                onClick={finishConversation}
+              >
+                {isEnding ? "Ending…" : "End conversation"}
+              </button>
+            </div>
+          </section>
+        </div>
+      )}
 
-      <div className="message-list" ref={messageListRef} aria-live="polite" aria-relevant="additions">
+      {error && (
+        <div className="notice error chat-error" role="alert">
+          <span>{error}</span>
+          <button
+            type="button"
+            onClick={() => {
+              setError(null);
+              document.getElementById("chat-question")?.focus();
+            }}
+          >
+            Try again
+          </button>
+        </div>
+      )}
+
+      {activeSupport && (
+        <section className={`support-status-banner ${activeSupport.status}`}>
+          <div>
+            <strong>
+              {activeSupport.status === "pending"
+                ? activeSupport.request_type === "live"
+                  ? "Waiting for agent"
+                  : "Ticket pending"
+                : activeSupport.status === "in_progress"
+                  ? "Connected to a support agent"
+                  : activeSupport.status === "resolved"
+                    ? "Support case resolved"
+                    : "Support request cancelled"}
+            </strong>
+            <span>
+              {activeSupport.assigned_agent_name
+                ? `Agent: ${activeSupport.assigned_agent_name}`
+                : activeSupport.reference}
+            </span>
+          </div>
+          {activeSupport.status === "pending" && (
+            <div className="support-banner-actions">
+              {activeSupport.request_type === "live"
+                && supportAvailability
+                && Date.now() - new Date(activeSupport.created_at).getTime()
+                  >= supportAvailability.wait_seconds * 1000 && (
+                <button type="button" onClick={convertActiveSupport}>
+                  Convert to ticket
+                </button>
+              )}
+              <button type="button" onClick={cancelActiveSupport}>
+                Cancel request
+              </button>
+            </div>
+          )}
+        </section>
+      )}
+
+      <div
+        className="message-list"
+        ref={messageListRef}
+        aria-live="polite"
+        aria-relevant="additions"
+      >
         {modelLoading && !error && (
           <div className="welcome-screen">
             <h3>Loading...</h3>
@@ -804,11 +1426,126 @@ export function PassengerChat({
             {turn.answer && <ChatMessage message={turn.answer} />}
           </div>
         ))}
+        {supportDetail?.messages.map((message) => (
+          message.sender_role === "agent" ? (
+            <AgentMessage message={message} key={message.message_id} />
+          ) : (
+            <ChatMessage
+              key={message.message_id}
+              message={{
+                ...message,
+                sender_type: "customer",
+              }}
+            />
+          )
+        ))}
+        {user && activeSupport?.status === "resolved" && (
+          <SupportFeedbackRating
+            user={user}
+            request={activeSupport}
+            existing={supportDetail?.feedback}
+            onSaved={(saved) => setSupportDetail((current) => ({
+              ...current,
+              feedback: saved,
+            }))}
+          />
+        )}
+        {supportOffer && (
+          <section className="human-support-card">
+            <h3>Need additional assistance?</h3>
+            <p>
+              I couldn&apos;t fully resolve your question using the available
+              Kenya Airways information. Would you like assistance from a
+              support agent?
+            </p>
+            <label htmlFor="support-issue-summary">Issue summary</label>
+            <textarea
+              id="support-issue-summary"
+              value={supportSummary}
+              onChange={(event) => setSupportSummary(event.target.value)}
+              maxLength="1000"
+              rows="3"
+            />
+            {!user && (
+              <div className="support-auth-required">
+                <p>
+                  Sign in to track this support request and receive replies.
+                </p>
+                <div>
+                  <button
+                    className="button primary"
+                    type="button"
+                    onClick={() => {
+                      setPendingEscalation({
+                        issue_summary: supportSummary,
+                        reason: supportReason,
+                      });
+                      onRequestAuth?.("sign-in");
+                    }}
+                  >
+                    Log in
+                  </button>
+                  <button
+                    className="button secondary"
+                    type="button"
+                    onClick={() => {
+                      setPendingEscalation({
+                        issue_summary: supportSummary,
+                        reason: supportReason,
+                      });
+                      onRequestAuth?.("register");
+                    }}
+                  >
+                    Sign up
+                  </button>
+                </div>
+              </div>
+            )}
+            {user && supportAvailability && (
+              <p className="support-availability-copy">
+                {supportAvailability.available
+                  ? "An agent is currently available for live support."
+                  : "No agent is online. This will be saved as a support ticket."}
+              </p>
+            )}
+            <div className="human-support-card-actions">
+              {user && (
+                <button
+                  className="button primary"
+                  type="button"
+                  disabled={
+                    supportState === "submitting"
+                    || !supportSummary.trim()
+                  }
+                  onClick={submitSupportRequest}
+                >
+                  {supportState === "submitting"
+                    ? "Submitting…"
+                    : "Request human support"}
+                </button>
+              )}
+              <button
+                className="button secondary"
+                type="button"
+                onClick={() => setSupportOffer(false)}
+              >
+                Continue with AI
+              </button>
+            </div>
+          </section>
+        )}
         {isSending && (
           <div className="chat-message assistant loading-message">
             <p className="message-sender">KQ Support</p>
             <div className="message-bubble">
-              <span className="typing-indicator" aria-label="KQ Support is preparing a response"><i /><i /><i /></span>
+              <span
+                className="typing-indicator"
+                aria-label="KQ Support is preparing a response"
+              >
+                <i />
+                <i />
+                <i />
+              </span>
             </div>
           </div>
         )}
@@ -830,10 +1567,22 @@ export function PassengerChat({
           value={question}
           onChange={(event) => setQuestion(event.target.value)}
           onKeyDown={handleComposerKeyDown}
-          placeholder="Enter your inquiry..."
+          placeholder={
+            activeSupport?.status === "in_progress"
+              ? "Message your support agent..."
+              : "Enter your inquiry..."
+          }
           rows="3"
           maxLength="4000"
-          disabled={isSending || isStarting || modelLoading || !selectedModelId || conversation?.status === "ended"}
+          disabled={
+            isSending
+            || isStarting
+            || conversation?.status === "ended"
+            || (
+              activeSupport?.status !== "in_progress"
+              && (modelLoading || !selectedModelId)
+            )
+          }
           required
         />
         <div className="composer-actions">
@@ -847,7 +1596,11 @@ export function PassengerChat({
                 aria-label="Select AI model"
               >
                 <span className="model-icon" aria-hidden="true">AI</span>
-                <span className="model-label">{modelLabel(models.find((m) => m.model_id === selectedModelId))}</span>
+                <span className="model-label">
+                  {modelLabel(models.find((model) => (
+                    model.model_id === selectedModelId
+                  )))}
+                </span>
                 <span className="model-dropdown-arrow">{modelDropdownOpen ? "▲" : "▼"}</span>
               </button>
               {modelDropdownOpen && (
@@ -873,7 +1626,16 @@ export function PassengerChat({
           <button
             className="button primary"
             type="submit"
-            disabled={!question.trim() || isSending || isStarting || modelLoading || !selectedModelId || conversation?.status === "ended"}
+            disabled={
+              !question.trim()
+              || isSending
+              || isStarting
+              || (
+                activeSupport?.status !== "in_progress"
+                && (modelLoading || !selectedModelId)
+              )
+              || conversation?.status === "ended"
+            }
           >
             {isSending ? "Sending…" : "Send"}
           </button>

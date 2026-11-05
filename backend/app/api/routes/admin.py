@@ -14,6 +14,7 @@ from app.models.admin import (
     AdminDocumentPage,
     AdminDocumentVersion,
     AdminLog,
+    AdminNotification,
     AdminModel,
     AdminSearchResponse,
     AdminUser,
@@ -28,11 +29,151 @@ from app.models.admin import (
 )
 from app.models.conversation import ConversationDetail
 from app.models.user import AuthenticatedUser
+from app.models.support import (
+    AgentAvailability,
+    AgentAvailabilityUpdate,
+    SupportMessage,
+    SupportMessageCreate,
+    SupportRequest,
+    SupportRequestDetail,
+    SupportRequestPage,
+    SupportSummary,
+)
 from app.services import admin as service
 from app.services.conversations import ConversationStore
 from app.services.firestore_client import get_firestore_client
+from app.services.support import get_support_service
 
 router = APIRouter()
+
+
+@router.put(
+    "/support/availability",
+    response_model=AgentAvailability,
+)
+def update_support_availability(
+    payload: AgentAvailabilityUpdate,
+    admin: AuthenticatedUser = Depends(require_admin),
+) -> AgentAvailability:
+    return get_support_service().set_availability(
+        admin,
+        payload.available,
+    )
+
+
+@router.get(
+    "/support/availability",
+    response_model=AgentAvailability,
+)
+def read_support_availability(
+    admin: AuthenticatedUser = Depends(require_admin),
+) -> AgentAvailability:
+    return get_support_service().agent_availability(admin)
+
+
+@router.get("/support/summary", response_model=SupportSummary)
+def support_summary(
+    _: AuthenticatedUser = Depends(require_admin),
+) -> SupportSummary:
+    return get_support_service().summary()
+
+
+@router.get("/support/requests", response_model=SupportRequestPage)
+def support_requests(
+    page: int = Query(1, ge=1),
+    page_size: int = Query(10, ge=1, le=50),
+    search: str = "",
+    request_type: str | None = None,
+    case_status: str | None = None,
+    assigned_agent: str | None = None,
+    sort_order: str = "newest",
+    _: AuthenticatedUser = Depends(require_admin),
+) -> SupportRequestPage:
+    return get_support_service().query_admin(
+        page,
+        page_size,
+        search,
+        request_type,
+        case_status,
+        assigned_agent,
+        sort_order,
+    )
+
+
+@router.get(
+    "/support/requests/{request_id}",
+    response_model=SupportRequestDetail,
+)
+def support_request_detail(
+    request_id: str,
+    _: AuthenticatedUser = Depends(require_admin),
+) -> SupportRequestDetail:
+    return get_support_service().admin_detail(request_id)
+
+
+@router.post(
+    "/support/requests/{request_id}/accept",
+    response_model=SupportRequest,
+)
+def accept_support_request(
+    request_id: str,
+    admin: AuthenticatedUser = Depends(require_admin),
+) -> SupportRequest:
+    return get_support_service().accept(admin, request_id)
+
+
+@router.post(
+    "/support/requests/{request_id}/convert-to-ticket",
+    response_model=SupportRequest,
+)
+def convert_support_request_to_ticket(
+    request_id: str,
+    admin: AuthenticatedUser = Depends(require_admin),
+) -> SupportRequest:
+    return get_support_service().convert_to_ticket(
+        admin,
+        request_id,
+        require_owner=False,
+    )
+
+
+@router.post(
+    "/support/requests/{request_id}/resolve",
+    response_model=SupportRequest,
+)
+def resolve_support_request(
+    request_id: str,
+    admin: AuthenticatedUser = Depends(require_admin),
+) -> SupportRequest:
+    return get_support_service().resolve(admin, request_id)
+
+
+@router.post(
+    "/support/requests/{request_id}/reopen",
+    response_model=SupportRequest,
+)
+def reopen_support_request(
+    request_id: str,
+    admin: AuthenticatedUser = Depends(require_admin),
+) -> SupportRequest:
+    return get_support_service().reopen(admin, request_id)
+
+
+@router.post(
+    "/support/requests/{request_id}/messages",
+    response_model=SupportMessage,
+)
+def send_support_message(
+    request_id: str,
+    payload: SupportMessageCreate,
+    admin: AuthenticatedUser = Depends(require_admin),
+) -> SupportMessage:
+    return get_support_service().send_message(
+        admin,
+        request_id,
+        payload,
+        as_agent=True,
+    )
 
 
 @router.get("/search", response_model=AdminSearchResponse)
@@ -73,6 +214,30 @@ def evaluations(_: AuthenticatedUser = Depends(require_admin)):
 @router.get("/logs", response_model=list[AdminLog])
 def logs(_: AuthenticatedUser = Depends(require_admin)):
     return service.list_logs()
+
+
+@router.get("/notifications", response_model=list[AdminNotification])
+def notifications(admin: AuthenticatedUser = Depends(require_admin)):
+    return service.list_notifications(admin)
+
+
+@router.put(
+    "/notifications/read-all",
+    response_model=list[AdminNotification],
+)
+def read_all_notifications(admin: AuthenticatedUser = Depends(require_admin)):
+    return service.mark_all_notifications_read(admin)
+
+
+@router.put(
+    "/notifications/{event_id}/read",
+    response_model=AdminNotification,
+)
+def read_notification(
+    event_id: str,
+    admin: AuthenticatedUser = Depends(require_admin),
+):
+    return service.mark_notification_read(admin, event_id)
 
 
 @router.get("/settings/passenger-theme", response_model=PassengerTheme)
@@ -162,7 +327,19 @@ def process_document(document_id: str, admin: AuthenticatedUser = Depends(requir
     source = settings.raw_data_dir / item.source
     result = service.publish_document(source, settings, service.KnowledgeBaseStore(service.get_firestore_client()))
     if not result.persisted:
+        service.audit(
+            admin,
+            "document_processing_failed",
+            "document",
+            document_id,
+            {
+                "document_name": item.title,
+                "failure_summary": "Document processing did not complete.",
+            },
+            status_value="failure",
+        )
         raise HTTPException(status.HTTP_422_UNPROCESSABLE_ENTITY, result.error or "Document processing failed.")
+    service.sync_vector_index()
     updated = next(
         document
         for document in service.list_documents()
@@ -251,13 +428,31 @@ def conversation_page(
 def conversation(conversation_id: str, _: AuthenticatedUser = Depends(require_admin)):
     client = get_firestore_client()
     store = ConversationStore(client)
-    item = store._read_conversation(store._conversation_reference(conversation_id).get(), conversation_id)
+    item = store._read_conversation(
+        store._conversation_reference(conversation_id).get(
+            timeout=service.FIRESTORE_READ_TIMEOUT,
+        ),
+        conversation_id,
+    )
     try:
         user_email = auth.get_user(item.user_id).email
     except Exception:
         user_email = None
+    feedback_id = service.encode_document_id(
+        f"{item.user_id}:{conversation_id}",
+    )
+    with service.firestore_operation():
+        feedback_snapshot = client.collection("feedback").document(
+            feedback_id,
+        ).get(timeout=service.FIRESTORE_READ_TIMEOUT)
+    feedback = (
+        service.Feedback.model_validate(feedback_snapshot.to_dict())
+        if feedback_snapshot.exists
+        else None
+    )
     return ConversationDetail(
         conversation=item,
         messages=store._messages(conversation_id),
         user_email=user_email,
+        feedback=feedback,
     )

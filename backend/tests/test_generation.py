@@ -45,25 +45,46 @@ class GenerationServiceTests(unittest.TestCase):
         self.assertEqual(fake.request[1]["headers"]["Authorization"], "Bearer secret")
         self.assertEqual(fake.request[1]["json"]["model"], "vendor/gemma")
 
-    def test_google_uses_google_header_and_response_shape(self):
-        model = GenerationModelSettings(model_id="google", provider="google_ai_studio", upstream_model="gemini-flash", api_key="secret")
-        service, fake = self.service([model], default="google", result=response(200, {"responseId": "g1", "candidates": [{"content": {"parts": [{"text": "Habari"}]}}]}))
-        result = service.generate("Jambo")
-        self.assertEqual(result.text, "Habari")
-        self.assertEqual(fake.request[1]["headers"]["x-goog-api-key"], "secret")
-        self.assertIn("gemini-flash:generateContent", fake.request[0])
-
-    def test_gemini_38_uses_low_thinking_without_thought_summaries(self):
+    def test_groq_uses_openai_contract_and_exact_upstream_model(self):
         model = GenerationModelSettings(
-            model_id="google", provider="google_ai_studio", upstream_model="gemini-3.8-flash", api_key="secret",
+            model_id="groq_gpt_oss_120b",
+            provider="groq",
+            upstream_model="openai/gpt-oss-120b",
+            api_key="secret",
         )
         service, fake = self.service(
-            [model], default="google",
-            result=response(200, {"candidates": [{"content": {"parts": [{"text": "23 kg"}]}}]}),
+            [model],
+            default="groq_gpt_oss_120b",
+            result=response(
+                200,
+                {
+                    "id": "groq-request-1",
+                    "choices": [
+                        {"message": {"content": "Habari"}},
+                    ],
+                },
+            ),
         )
-        service.generate("What is the baggage allowance?")
-        thinking = fake.request[1]["json"]["generationConfig"]["thinkingConfig"]
-        self.assertEqual(thinking, {"thinkingLevel": "low", "includeThoughts": False})
+        result = service.generate("Jambo")
+        self.assertEqual(result.text, "Habari")
+        self.assertEqual(result.provider, "groq")
+        self.assertEqual(result.provider_request_id, "groq-request-1")
+        self.assertEqual(
+            fake.request[0],
+            "https://api.groq.com/openai/v1/chat/completions",
+        )
+        self.assertEqual(
+            fake.request[1]["headers"]["Authorization"],
+            "Bearer secret",
+        )
+        self.assertEqual(
+            fake.request[1]["json"]["model"],
+            "openai/gpt-oss-120b",
+        )
+        self.assertIn(
+            "max_completion_tokens",
+            fake.request[1]["json"],
+        )
 
     def test_errors_do_not_fallback_to_another_model(self):
         models = [GenerationModelSettings(model_id="router", provider="openrouter", upstream_model="one", api_key="key"),
@@ -91,13 +112,26 @@ class GenerationServiceTests(unittest.TestCase):
         with self.assertRaisesRegex(GenerationProviderError, "API key"):
             unconfigured.generate("Hi")
 
-    def test_google_retries_transient_unavailability(self):
-        model = GenerationModelSettings(model_id="google", provider="google_ai_studio", upstream_model="gemini-3.8-flash", api_key="secret")
+    def test_groq_retries_transient_unavailability_with_bounded_backoff(self):
+        model = GenerationModelSettings(
+            model_id="groq_gpt_oss_120b",
+            provider="groq",
+            upstream_model="openai/gpt-oss-120b",
+            api_key="secret",
+        )
         service, fake = self.service(
-            [model], default="google",
+            [model],
+            default="groq_gpt_oss_120b",
             result=[
                 response(503, {}),
-                response(200, {"candidates": [{"content": {"parts": [{"text": "23 kg"}]}}]}),
+                response(
+                    200,
+                    {
+                        "choices": [
+                            {"message": {"content": "23 kg"}},
+                        ],
+                    },
+                ),
             ],
         )
         result = service.generate("Hi")

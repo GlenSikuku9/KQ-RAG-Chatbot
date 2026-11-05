@@ -220,12 +220,60 @@ function ConversationModal({ detail, onClose }) {
           </button>
         </header>
         <dl className="conversation-summary">
-          <div><dt>User email</dt><dd>{detail.user_email || "Not available"}</dd></div>
-          <div><dt>Language</dt><dd>{languageLabel(conversation.language)}</dd></div>
-          <div><dt>Started</dt><dd>{formatDateTime(conversation.started_at)}</dd></div>
-          <div><dt>Messages</dt><dd>{messages.length}</dd></div>
-          <div><dt>Status</dt><dd><span className={`status-badge ${conversation.status}`}>{readableEventName(conversation.status)}</span></dd></div>
+          <div>
+            <dt>User email</dt>
+            <dd>{detail.user_email || "Not available"}</dd>
+          </div>
+          <div>
+            <dt>Language</dt>
+            <dd>{languageLabel(conversation.language)}</dd>
+          </div>
+          <div>
+            <dt>Started</dt>
+            <dd>{formatDateTime(conversation.started_at)}</dd>
+          </div>
+          <div>
+            <dt>Messages</dt>
+            <dd>{messages.length}</dd>
+          </div>
+          <div>
+            <dt>Status</dt>
+            <dd>
+              <span className={`status-badge ${conversation.status}`}>
+                {readableEventName(conversation.status)}
+              </span>
+            </dd>
+          </div>
         </dl>
+        <section className="conversation-feedback" aria-labelledby="feedback-title">
+          <h3 id="feedback-title">Passenger feedback</h3>
+          {detail.feedback ? (
+            <div className="conversation-feedback-content">
+              <p
+                aria-label={`${detail.feedback.rating} out of 5 stars`}
+                className="conversation-feedback-rating"
+              >
+                <span className="selected-stars">
+                  {"★".repeat(detail.feedback.rating)}
+                </span>
+                <span className="unselected-stars">
+                  {"★".repeat(5 - detail.feedback.rating)}
+                </span>
+                <strong>{detail.feedback.rating}/5</strong>
+              </p>
+              <p className="conversation-feedback-comment">
+                {detail.feedback.comment || "No written comment."}
+              </p>
+              <time dateTime={detail.feedback.updated_at}>
+                Updated {formatDateTime(detail.feedback.updated_at)}
+              </time>
+            </div>
+          ) : (
+            <p className="conversation-feedback-empty">
+              No feedback submitted.
+            </p>
+          )}
+        </section>
         <div className="admin-transcript conversation-message-scroll">
           {messages.map((message) => (
             <article

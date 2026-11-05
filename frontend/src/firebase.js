@@ -1,5 +1,6 @@
 import { getApp, getApps, initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
+import { getFirestore } from "@firebase/firestore";
 
 const config = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -12,3 +13,4 @@ export const firebaseConfigured = Object.values(config).every(Boolean);
 // Avoid initializing Firebase twice during Vite hot-module reloads.
 const firebaseApp = firebaseConfigured ? (getApps().length ? getApp() : initializeApp(config)) : null;
 export const auth = firebaseApp ? getAuth(firebaseApp) : null;
+export const db = firebaseApp ? getFirestore(firebaseApp) : null;

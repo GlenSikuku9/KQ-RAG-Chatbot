@@ -25,7 +25,7 @@ class GenerationRequest(BaseModel):
 
 class GenerationResponse(BaseModel):
     model_id: str
-    provider: Literal["openrouter", "google_ai_studio"]
+    provider: Literal["openrouter", "groq"]
     upstream_model: str
     text: str
     provider_request_id: str | None = None
@@ -34,7 +34,7 @@ class GenerationResponse(BaseModel):
 class ConfiguredModel(BaseModel):
     """Safe metadata: a credential is never included."""
     model_id: str
-    provider: Literal["openrouter", "google_ai_studio"]
+    provider: Literal["openrouter", "groq"]
     upstream_model: str
     configured: bool
     is_default: bool

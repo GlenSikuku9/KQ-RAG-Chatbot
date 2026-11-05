@@ -271,6 +271,167 @@ export const adminAnalytics = (user, days = 30) => authenticatedRequest(user, `/
 export const adminModels = (user) => authenticatedRequest(user, "/admin/models");
 export const adminEvaluations = (user) => authenticatedRequest(user, "/admin/evaluations");
 export const adminLogs = (user) => authenticatedRequest(user, "/admin/logs");
+
+// Human-support requests use a separate lifecycle while retaining their
+// original passenger conversation ID and transcript.
+export const getSupportAvailability = () => publicRequest(
+  "/support/availability",
+);
+
+export const createSupportRequest = (user, payload) => authenticatedRequest(
+  user,
+  "/support/requests",
+  {
+    method: "POST",
+    body: JSON.stringify(payload),
+  },
+);
+
+export const listSupportRequests = (user) => authenticatedRequest(
+  user,
+  "/support/requests",
+);
+
+export const getSupportRequest = (user, requestId) => authenticatedRequest(
+  user,
+  `/support/requests/${encodeURIComponent(requestId)}`,
+);
+
+export const cancelSupportRequest = (user, requestId) => authenticatedRequest(
+  user,
+  `/support/requests/${encodeURIComponent(requestId)}/cancel`,
+  { method: "POST" },
+);
+
+export const convertSupportRequest = (user, requestId) => authenticatedRequest(
+  user,
+  `/support/requests/${encodeURIComponent(requestId)}/convert-to-ticket`,
+  { method: "POST" },
+);
+
+export const sendSupportMessage = (
+  user,
+  requestId,
+  messageText,
+  clientMessageId,
+) => authenticatedRequest(
+  user,
+  `/support/requests/${encodeURIComponent(requestId)}/messages`,
+  {
+    method: "POST",
+    body: JSON.stringify({
+      message_text: messageText,
+      client_message_id: clientMessageId,
+    }),
+  },
+);
+
+export const saveSupportFeedback = (
+  user,
+  requestId,
+  payload,
+) => authenticatedRequest(
+  user,
+  `/support/requests/${encodeURIComponent(requestId)}/feedback`,
+  {
+    method: "PUT",
+    body: JSON.stringify(payload),
+  },
+);
+
+export const adminSupportSummary = (user) => authenticatedRequest(
+  user,
+  "/admin/support/summary",
+);
+
+export const adminSupportRequests = (user, params) => authenticatedRequest(
+  user,
+  `/admin/support/requests?${params.toString()}`,
+);
+
+export const adminSupportRequest = (user, requestId) => authenticatedRequest(
+  user,
+  `/admin/support/requests/${encodeURIComponent(requestId)}`,
+);
+
+export const adminSetSupportAvailability = (user, available) => (
+  authenticatedRequest(
+    user,
+    "/admin/support/availability",
+    {
+      method: "PUT",
+      body: JSON.stringify({ available }),
+    },
+  )
+);
+
+export const adminGetSupportAvailability = (user) => authenticatedRequest(
+  user,
+  "/admin/support/availability",
+);
+
+export const adminAcceptSupportRequest = (user, requestId) => (
+  authenticatedRequest(
+    user,
+    `/admin/support/requests/${encodeURIComponent(requestId)}/accept`,
+    { method: "POST" },
+  )
+);
+
+export const adminConvertSupportRequest = (user, requestId) => (
+  authenticatedRequest(
+    user,
+    `/admin/support/requests/${encodeURIComponent(requestId)}/convert-to-ticket`,
+    { method: "POST" },
+  )
+);
+
+export const adminResolveSupportRequest = (user, requestId) => (
+  authenticatedRequest(
+    user,
+    `/admin/support/requests/${encodeURIComponent(requestId)}/resolve`,
+    { method: "POST" },
+  )
+);
+
+export const adminReopenSupportRequest = (user, requestId) => (
+  authenticatedRequest(
+    user,
+    `/admin/support/requests/${encodeURIComponent(requestId)}/reopen`,
+    { method: "POST" },
+  )
+);
+
+export const adminSendSupportMessage = (
+  user,
+  requestId,
+  messageText,
+  clientMessageId,
+) => authenticatedRequest(
+  user,
+  `/admin/support/requests/${encodeURIComponent(requestId)}/messages`,
+  {
+    method: "POST",
+    body: JSON.stringify({
+      message_text: messageText,
+      client_message_id: clientMessageId,
+    }),
+  },
+);
+export const adminNotifications = (user) => authenticatedRequest(
+  user,
+  "/admin/notifications",
+);
+export const adminMarkNotificationRead = (user, eventId) => authenticatedRequest(
+  user,
+  `/admin/notifications/${encodeURIComponent(eventId)}/read`,
+  { method: "PUT" },
+);
+export const adminMarkAllNotificationsRead = (user) => authenticatedRequest(
+  user,
+  "/admin/notifications/read-all",
+  { method: "PUT" },
+);
 export const adminSetDefaultModel = (user, modelId) => authenticatedRequest(user, "/admin/models/default", { method: "PUT", body: JSON.stringify({ model_id: modelId }) });
 export const adminGenerateModelTest = (user, modelId, prompt) => authenticatedRequest(user, "/models/generate", { method: "POST", body: JSON.stringify({ model_id: modelId, prompt }) });
 export const adminUsers = (user) => authenticatedRequest(user, "/admin/users");
