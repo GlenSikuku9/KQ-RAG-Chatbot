@@ -6,6 +6,7 @@ const PAGE_DESCRIPTIONS = {
   Documents: "Manage the published knowledge base and document processing.",
   Users: "Review passenger accounts, roles and access status.",
   Conversations: "Inspect saved conversations and their retrieval evidence.",
+  "Human Support": "Manage passenger requests requiring human assistance.",
   Analytics:
     "Explore chatbot usage, response outcomes and service performance.",
   Models:

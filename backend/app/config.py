@@ -13,7 +13,7 @@ load_dotenv(BASE_DIR / ".env")
 logger = logging.getLogger(__name__)
 DEFAULT_CHUNK_SIZE = 1600
 DEFAULT_CHUNK_OVERLAP = 250
-ProviderName = Literal["openrouter", "google_ai_studio"]
+ProviderName = Literal["openrouter", "groq"]
 
 
 class GenerationModelSettings(BaseModel):
@@ -70,6 +70,9 @@ class Settings(BaseModel):
     context_min_similarity: float = Field(default=0.82, ge=-1, le=1, strict=True, allow_inf_nan=False)
     default_generation_model_id: str | None = None
     generation_models: tuple[GenerationModelSettings, ...] = ()
+    support_agent_stale_seconds: int = Field(default=90, ge=30, le=600)
+    support_live_wait_seconds: int = Field(default=180, ge=30, le=3600)
+    support_clarification_attempts: int = Field(default=2, ge=1, le=10)
 
     @model_validator(mode="after")
     def validate_chunking(self) -> Self:
@@ -134,16 +137,34 @@ def _get_generation_models() -> tuple[GenerationModelSettings, ...]:
             continue
         provider = os.getenv(prefix + "PROVIDER", "").strip().lower()
         model_id = _get_optional(prefix + "ID")
-        if provider not in {"openrouter", "google_ai_studio"}:
-            raise ValueError(f"{prefix}PROVIDER must be openrouter or google_ai_studio.")
+        if provider not in {"openrouter", "groq"}:
+            raise ValueError(
+                f"{prefix}PROVIDER must be openrouter or groq.",
+            )
         if model_id is None:
             raise ValueError(f"{prefix}ID is required when {prefix}UPSTREAM_MODEL is set.")
-        key_name = "OPENROUTER_API_KEY" if provider == "openrouter" else "GOOGLE_AI_STUDIO_API_KEY"
-        models.append(GenerationModelSettings(
-            model_id=model_id, provider=provider, upstream_model=upstream_model,
-            api_key=_get_optional(key_name), timeout_seconds=_get_float(prefix + "TIMEOUT_SECONDS", 45.0),
-            max_output_tokens=_get_int(prefix + "MAX_OUTPUT_TOKENS", 1024),
-        ))
+        if provider == "groq":
+            upstream_model = _get_optional("GROQ_MODEL") or upstream_model
+        key_name = {
+            "openrouter": "OPENROUTER_API_KEY",
+            "groq": "GROQ_API_KEY",
+        }[provider]
+        models.append(
+            GenerationModelSettings(
+                model_id=model_id,
+                provider=provider,
+                upstream_model=upstream_model,
+                api_key=_get_optional(key_name),
+                timeout_seconds=_get_float(
+                    prefix + "TIMEOUT_SECONDS",
+                    45.0,
+                ),
+                max_output_tokens=_get_int(
+                    prefix + "MAX_OUTPUT_TOKENS",
+                    1024,
+                ),
+            ),
+        )
     return tuple(models)
 
 
@@ -175,4 +196,16 @@ def get_settings() -> Settings:
         context_min_similarity=float(os.getenv("CONTEXT_MIN_SIMILARITY", "0.82")),
         default_generation_model_id=_get_optional("DEFAULT_GENERATION_MODEL_ID"),
         generation_models=_get_generation_models(),
+        support_agent_stale_seconds=_get_int(
+            "SUPPORT_AGENT_STALE_SECONDS",
+            90,
+        ),
+        support_live_wait_seconds=_get_int(
+            "SUPPORT_LIVE_WAIT_SECONDS",
+            180,
+        ),
+        support_clarification_attempts=_get_int(
+            "SUPPORT_CLARIFICATION_ATTEMPTS",
+            2,
+        ),
     )

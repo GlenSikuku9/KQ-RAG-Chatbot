@@ -16,6 +16,7 @@ import Overview from "./pages/Overview";
 import Documents from "./pages/Documents";
 import Users from "./pages/Users";
 import Conversations, { ConversationModal } from "./pages/Conversations";
+import HumanSupport from "./pages/HumanSupport";
 import Analytics from "./pages/Analytics";
 import Models from "./pages/Models";
 import Logs from "./pages/Logs";
@@ -29,6 +30,7 @@ const PAGE_CACHE_TTL = {
   Documents: 60000,
   Users: 60000,
   Conversations: 15000,
+  "Human Support": 5000,
   Analytics: 30000,
   Models: 60000,
   Logs: 15000,
@@ -39,6 +41,7 @@ export function AdminDashboard({ user, profile, onSignOut }) {
   const [page, setPage] = useState("Overview");
   const [selectedConversation, setSelectedConversation] = useState(null);
   const [selectedLogId, setSelectedLogId] = useState(null);
+  const [selectedSupportRequestId, setSelectedSupportRequestId] = useState(null);
   const [notice, setNotice] = useState(null);
   const [loading, setLoading] = useState(true);
   const [analytics, setAnalytics] = useState(null);
@@ -67,7 +70,12 @@ export function AdminDashboard({ user, profile, onSignOut }) {
   async function fetchPageData(targetPage) {
     // These pages fetch only after mounting so hidden tables never trigger
     // duplicate, unfiltered API requests.
-    if (["Documents", "Users", "Conversations"].includes(targetPage))
+    if ([
+      "Documents",
+      "Users",
+      "Conversations",
+      "Human Support",
+    ].includes(targetPage))
       return null;
     if (targetPage === "Overview" || targetPage === "Analytics")
       return adminAnalytics(user, periodDays);
@@ -150,6 +158,11 @@ export function AdminDashboard({ user, profile, onSignOut }) {
     setPage("Logs");
   }
 
+  function openSupportRequest(requestId) {
+    setSelectedSupportRequestId(requestId);
+    setPage("Human Support");
+  }
+
   // Each page receives only the data and callbacks it owns.
   const pageProps = {
     Overview: {
@@ -181,6 +194,11 @@ export function AdminDashboard({ user, profile, onSignOut }) {
       revision: tableRevision,
       onSelect: openConversation,
     },
+    "Human Support": {
+      user,
+      initialRequestId: selectedSupportRequestId,
+      onOpened: () => setSelectedSupportRequestId(null),
+    },
   };
   // Render only the active page to preserve lazy fetching and local state.
   const Page = {
@@ -188,6 +206,7 @@ export function AdminDashboard({ user, profile, onSignOut }) {
     Documents,
     Users,
     Conversations,
+    "Human Support": HumanSupport,
     Analytics,
     Models,
     Logs,
@@ -202,6 +221,8 @@ export function AdminDashboard({ user, profile, onSignOut }) {
           profile={profile}
           onNavigate={setPage}
           onOpenConversation={openConversation}
+          onOpenLog={openLog}
+          onOpenSupportRequest={openSupportRequest}
           onSignOut={onSignOut}
         />
         <section className="admin-content">

@@ -4,10 +4,22 @@ from unittest.mock import Mock, patch
 from app.models.admin import AdminModel
 from app.models.generation import ConfiguredModel
 from app.models.user import AuthenticatedUser, UserRole
+from app.main import create_app
 from app.services import admin as admin_service
 
 
 class AdminAuditLoggingTests(unittest.TestCase):
+    def test_notification_routes_are_published_under_the_api_prefix(self):
+        paths = create_app().openapi()["paths"]
+
+        self.assertIn("/api/v1/admin/notifications", paths)
+        self.assertIn("get", paths["/api/v1/admin/notifications"])
+        self.assertIn("/api/v1/admin/notifications/read-all", paths)
+        self.assertIn(
+            "/api/v1/admin/notifications/{event_id}/read",
+            paths,
+        )
+
     def test_default_model_audit_records_previous_and_new_model_details(self):
         previous = ConfiguredModel(
             model_id="openrouter_gemma_26b",

@@ -208,6 +208,20 @@ class AdminLog(BaseModel):
     )
 
 
+class AdminNotification(BaseModel):
+    """Safe persistent notification with read state scoped to one admin."""
+
+    notification_id: str
+    event_id: str
+    event_type: str
+    title: str
+    description: str
+    timestamp: UTCDateTime
+    is_read: bool = False
+    category: Literal["system", "human_support"] = "system"
+    resource_id: str | None = None
+
+
 class AdminConversationSummary(BaseModel):
     conversation_id: str
     user_id: str

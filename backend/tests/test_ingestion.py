@@ -144,6 +144,25 @@ class IngestionTests(unittest.TestCase):
         self.transactions[-1].set.assert_not_called()
         self.transactions[-1].delete.assert_not_called()
 
+    def test_republish_backfills_chunk_url_without_creating_a_new_version(self):
+        url = "https://www.kenya-airways.com/en-ke/plan/special-care/"
+        self.write_document(f"Special Care Link: {url}\n\nPolicy conditions.")
+        first = self.publish()
+        original_chunk_keys = set(self.chunks())
+
+        # Reproduce legacy chunks created before source URLs were persisted.
+        for payload in self.chunks().values():
+            payload["source_url"] = None
+
+        second = self.publish()
+        self.assertEqual(second.status, "processed")
+        self.assertEqual(second.active_version, first.active_version)
+        self.assertEqual(set(self.chunks()), original_chunk_keys)
+        self.assertTrue(self.chunks())
+        self.assertTrue(
+            all(payload["source_url"] == url for payload in self.chunks().values())
+        )
+
     def test_replacement_atomically_removes_old_chunks_and_preserves_creation_time(self):
         first = self.publish()
         before = self.store.read("policy.docx")

@@ -121,7 +121,8 @@
 }
 
 @media (max-width: 760px) {
-  .auth-layout {
+/* Passenger authentication stays visually separate from admin pages. */
+.auth-layout {
     display: block;
     min-height: 100dvh;
   }

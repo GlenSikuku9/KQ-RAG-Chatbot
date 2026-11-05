@@ -6,6 +6,7 @@ from typing import Literal
 from pydantic import BaseModel, ConfigDict, Field, field_serializer, field_validator
 
 from app.models.database import UTCDateTime
+from app.models.feedback import Feedback
 from app.models.generation import GroundedAnswerRequest, GenerationResponse
 
 
@@ -17,6 +18,7 @@ class ConversationStatus(str, Enum):
 class SenderType(str, Enum):
     CUSTOMER = "customer"
     CHATBOT = "chatbot"
+    AGENT = "agent"
 
 
 class ResponseSource(str, Enum):
@@ -40,6 +42,8 @@ class Conversation(BaseModel):
     status: ConversationStatus
     started_at: UTCDateTime
     ended_at: UTCDateTime | None = None
+    support_mode: Literal["ai", "human"] = "ai"
+    active_support_request_id: str | None = None
     # The counter is updated in the same transaction as messages, preserving order.
     next_sequence: int = Field(default=1, ge=1, exclude=True)
 
@@ -90,6 +94,7 @@ class ConversationDetail(BaseModel):
     conversation: Conversation
     messages: list[ConversationMessage]
     user_email: str | None = None
+    feedback: Feedback | None = None
 
 
 class SendMessageResponse(BaseModel):

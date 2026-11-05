@@ -135,10 +135,16 @@ class KnowledgeBaseStore:
                 and active.version == attempt.version and active.chunk_ids == ids
                 and active.chunking == attempt.chunking
             )
+            stored_chunks: list[DocumentChunk] = []
             if same_active and existing is not None:
-                self._read_active_chunks(existing, transaction)
+                stored_chunks = self._read_active_chunks(existing, transaction)
+            metadata_unchanged = same_active and stored_chunks == chunks
             # Concurrent identical publishes are idempotent, but stale different work cannot win.
-            if same_active and existing is not None and existing.last_attempt.status == "processed":
+            if (
+                metadata_unchanged
+                and existing is not None
+                and existing.last_attempt.status == "processed"
+            ):
                 return _result(existing, "unchanged")
             if (existing.revision if existing else None) != expected_revision:
                 logger.warning("Document changed during ingestion: %s.", source)
@@ -167,7 +173,7 @@ class KnowledgeBaseStore:
                 updated_at=now, revision=revision, active=active, last_attempt=attempt,
             )
             writes = [(self._reference(source), record.model_dump())]
-            if not same_active:
+            if not metadata_unchanged:
                 writes.extend((
                     self.client.collection("document_chunks").document(encode_document_id(chunk.chunk_id)),
                     chunk.model_dump(),

@@ -189,6 +189,11 @@ class ConversationStore:
             self._assert_owner(conversation, user)
             if conversation.status != ConversationStatus.ACTIVE:
                 raise HTTPException(status.HTTP_409_CONFLICT, "This conversation has ended. Start a new conversation.")
+            if conversation.support_mode == "human":
+                raise HTTPException(
+                    status.HTTP_409_CONFLICT,
+                    "A support agent is handling this conversation. Send the message through the active support case.",
+                )
 
             language = generated.language
             customer = ConversationMessage(

@@ -1,5 +1,6 @@
 /* Public landing-page ownership file. Landing-specific additions belong here
    so they cannot accidentally alter the protected administrator workspace. */
+/* Passenger landing-page rules live separately from dashboard styles. */
 .passenger-landing {
   width: min(84rem, calc(100% - 3.5rem));
   padding-top: clamp(1rem, 2vw, 1.75rem);

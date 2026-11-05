@@ -7,13 +7,22 @@ import {
   Search,
   UsersRound,
 } from "lucide-react";
-import { adminSearch } from "../../api";
+import {
+  adminMarkAllNotificationsRead,
+  adminMarkNotificationRead,
+  adminNotifications,
+  adminSearch,
+} from "../../api";
+import { formatDateTime } from "../utils";
+import { subscribeToSupportEvents } from "../../supportRealtime";
 
 function AdminNavbar({
   user,
   profile,
   onNavigate,
   onOpenConversation,
+  onOpenLog,
+  onOpenSupportRequest,
   onSignOut,
 }) {
   const [query, setQuery] = useState("");
@@ -22,6 +31,8 @@ function AdminNavbar({
   const [searchOpen, setSearchOpen] = useState(false);
   const [activeResult, setActiveResult] = useState(-1);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
+  const [notifications, setNotifications] = useState([]);
+  const [notificationsState, setNotificationsState] = useState("loading");
   const [accountOpen, setAccountOpen] = useState(false);
   const searchRef = useRef(null);
   const notificationsRef = useRef(null);
@@ -70,6 +81,38 @@ function AdminNavbar({
       controller.abort();
     };
   }, [normalizedQuery, user]);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadNotifications() {
+      try {
+        const items = await adminNotifications(user);
+        if (!cancelled) {
+          setNotifications(items);
+          setNotificationsState("ready");
+        }
+      } catch {
+        if (!cancelled) {
+          setNotificationsState("error");
+        }
+      }
+    }
+
+    loadNotifications();
+    const stopSupportEvents = subscribeToSupportEvents(
+      loadNotifications,
+      () => {},
+    );
+    // A small bounded query keeps the badge current without repeatedly
+    // loading the complete Logs collection.
+    const interval = window.setInterval(loadNotifications, 30000);
+    return () => {
+      cancelled = true;
+      stopSupportEvents();
+      window.clearInterval(interval);
+    };
+  }, [user]);
 
   useEffect(() => {
     // Both navbar popovers share one outside-click and Escape lifecycle so
@@ -122,11 +165,51 @@ function AdminNavbar({
     }
   }
 
+  async function markRead(notification) {
+    if (notification.is_read) return;
+    try {
+      await adminMarkNotificationRead(user, notification.event_id);
+      setNotifications((current) => current.map((item) => (
+        item.event_id === notification.event_id
+          ? { ...item, is_read: true }
+          : item
+      )));
+    } catch {
+      setNotificationsState("error");
+    }
+  }
+
+  async function markAllRead() {
+    try {
+      const items = await adminMarkAllNotificationsRead(user);
+      setNotifications(items);
+      setNotificationsState("ready");
+    } catch {
+      setNotificationsState("error");
+    }
+  }
+
+  async function openNotification(notification) {
+    await markRead(notification);
+    setNotificationsOpen(false);
+    if (notification.category === "human_support") {
+      onOpenSupportRequest(notification.resource_id);
+      return;
+    }
+    onOpenLog(notification.event_id);
+  }
+
   const groups = [
     { type: "user", label: "Users", icon: UsersRound },
     { type: "conversation", label: "Conversations", icon: MessageSquare },
     { type: "document", label: "Documents", icon: FileText },
   ];
+  const unreadCount = notifications.filter((item) => !item.is_read).length;
+  const [notificationFilter, setNotificationFilter] = useState("all");
+  const visibleNotifications = notifications.filter((item) => (
+    notificationFilter === "all"
+    || item.category === notificationFilter
+  ));
 
   return (
     <header className="admin-topbar">
@@ -217,12 +300,100 @@ function AdminNavbar({
             type="button"
           >
             <Bell size={20} aria-hidden="true" />
+            {unreadCount > 0 && (
+              <span className="notification-count" aria-hidden="true">
+                {unreadCount > 99 ? "99+" : unreadCount}
+              </span>
+            )}
           </button>
           {notificationsOpen && (
-            <div className="admin-popover notification-popover" role="status">
-              <strong>Notifications</strong>
-              <Bell size={24} aria-hidden="true" />
-              <p>No notifications available</p>
+            <div
+              aria-label="Administrator notifications"
+              className="admin-popover notification-popover"
+              role="dialog"
+            >
+              <header>
+                <div>
+                  <strong>Notifications</strong>
+                  <small>{unreadCount} unread</small>
+                </div>
+                {unreadCount > 0 && (
+                  <button
+                    className="text-button"
+                    type="button"
+                    onClick={markAllRead}
+                  >
+                    Mark all as read
+                  </button>
+                )}
+              </header>
+              <div className="notification-filters" aria-label="Notification category">
+                {[
+                  ["all", "All"],
+                  ["system", "System errors"],
+                  ["human_support", "Human support"],
+                ].map(([value, label]) => (
+                  <button
+                    className={notificationFilter === value ? "active" : ""}
+                    type="button"
+                    key={value}
+                    onClick={() => setNotificationFilter(value)}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
+              {notificationsState === "loading" && (
+                <p className="notification-empty">Loading notifications…</p>
+              )}
+              {notificationsState === "error" && (
+                <p className="notification-error">
+                  Notifications could not be refreshed.
+                </p>
+              )}
+              {notificationsState === "ready"
+                && !visibleNotifications.length && (
+                <div className="notification-empty">
+                  <Bell size={22} aria-hidden="true" />
+                  <p>No notifications in this category.</p>
+                </div>
+              )}
+              {visibleNotifications.length > 0 && (
+                <div className="notification-list">
+                  {visibleNotifications.map((notification) => (
+                    <article
+                      className={notification.is_read ? "read" : "unread"}
+                      key={notification.notification_id}
+                    >
+                      <button
+                        className="notification-open"
+                        type="button"
+                        onClick={() => openNotification(notification)}
+                      >
+                        <span className="notification-title-line">
+                          <strong>{notification.title}</strong>
+                          {!notification.is_read && (
+                            <i aria-label="Unread notification" />
+                          )}
+                        </span>
+                        <span>{notification.description}</span>
+                        <time dateTime={notification.timestamp}>
+                          {formatDateTime(notification.timestamp)}
+                        </time>
+                      </button>
+                      {!notification.is_read && (
+                        <button
+                          className="notification-read"
+                          type="button"
+                          onClick={() => markRead(notification)}
+                        >
+                          Mark as read
+                        </button>
+                      )}
+                    </article>
+                  ))}
+                </div>
+              )}
             </div>
           )}
         </div>
