@@ -43,6 +43,21 @@ def list_conversations(
         ) from error
 
 
+@router.post("/messages", response_model=SendMessageResponse)
+def start_with_message(
+    payload: SendMessageRequest,
+    current_user: AuthenticatedUser = Depends(require_passenger_or_admin),
+) -> SendMessageResponse:
+    """Create a conversation only when its first exchange can be persisted."""
+    try:
+        return get_conversation_service().start(current_user, payload)
+    except GenerationProviderError as error:
+        raise HTTPException(
+            status_code=error.status_code,
+            detail=error.detail,
+        ) from error
+
+
 @router.get("/{conversation_id}", response_model=ConversationDetail)
 def reopen_conversation(
     conversation_id: str,

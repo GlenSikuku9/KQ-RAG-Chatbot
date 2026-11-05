@@ -12,6 +12,10 @@ class DocumentChunk(BaseModel):
     source: str = Field(..., description="Source path relative to the raw-data directory.")
     file_type: Literal["docx"] = Field(..., description="Supported source format: docx.")
     category: str = Field(..., description="Knowledge-base category for filtering and citations.")
+    source_url: str | None = Field(
+        default=None,
+        description="Official Kenya Airways URL extracted from the parent document.",
+    )
     chunk_index: int = Field(..., description="Position of this chunk inside the source document.")
     text: str = Field(..., description="Chunk text that will later be embedded and searched.")
     section: str | None = Field(default=None, description="Explicit source heading path, when available.")

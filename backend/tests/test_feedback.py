@@ -14,6 +14,7 @@ from app.models.user import AuthenticatedUser
 from app.services.feedback import FeedbackService
 from app.services.operational_logging import OperationalLogger
 from app.services.conversations import ConversationService
+from app.models.generation import ConfiguredModel
 from test_conversations import MemoryClient, MemoryTransaction, run_locally
 
 
@@ -94,6 +95,65 @@ class OperationalLoggingTests(unittest.TestCase):
         with self.assertRaises(RuntimeError):
             service.send(AuthenticatedUser(uid="passenger"), "conversation", Mock())
         events.failed.assert_called_once()
+
+    def test_failed_event_records_model_stage_and_sanitized_diagnostics(self):
+        client = MemoryClient()
+        logger = OperationalLogger(client)
+        model = ConfiguredModel(
+            model_id="openrouter_gemma_31b",
+            provider="openrouter",
+            upstream_model="google/gemma-4-31b-it",
+            configured=True,
+            is_default=True,
+        )
+
+        logger.failed(
+            RuntimeError("raw secret must never be stored"),
+            31.2,
+            model=model,
+            failed_operation="store_chat_exchange",
+            request_id="request-123",
+            failure_category="storage",
+        )
+
+        stored = next(iter(client.records["operational_events"].values()))
+        self.assertEqual(stored["model_id"], model.model_id)
+        self.assertEqual(stored["failure_category"], "storage")
+        self.assertEqual(stored["failed_operation"], "store_chat_exchange")
+        self.assertEqual(stored["request_id"], "request-123")
+        self.assertEqual(stored["model_selection_status"], "selected")
+        self.assertNotIn("raw secret", str(stored))
+
+    def test_storage_failure_is_distinct_from_generation_failure(self):
+        store, answers, events = Mock(), Mock(), Mock()
+        selected = ConfiguredModel(
+            model_id="model-id",
+            provider="openrouter",
+            upstream_model="provider/model",
+            configured=True,
+            is_default=True,
+        )
+        answers.generation_service.selected_model.return_value = selected
+        answers.answer.return_value = Mock(model=None)
+        store.save_exchange.side_effect = RuntimeError("database detail")
+        service = ConversationService(store, answers, events)
+
+        with self.assertRaises(RuntimeError):
+            service.send(
+                AuthenticatedUser(uid="passenger"),
+                "conversation",
+                Mock(model_id=None),
+            )
+
+        self.assertEqual(
+            events.failed.call_args.kwargs["failure_category"],
+            "storage",
+        )
+        self.assertEqual(
+            events.failed.call_args.kwargs["failed_operation"],
+            "store_chat_exchange",
+        )
+        self.assertEqual(events.failed.call_args.kwargs["model"], selected)
 
 
 class FeedbackEndpointTests(unittest.TestCase):

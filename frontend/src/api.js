@@ -6,89 +6,155 @@
 const configuredApiUrl = import.meta.env.VITE_API_BASE_URL?.trim();
 const baseUrl = configuredApiUrl ? `${configuredApiUrl}/api/v1` : "/api/v1";
 const REQUEST_TIMEOUT_MS = 15000;
+const inFlightGetRequests = new Map();
+
+function requestKey(scope, path) {
+  return `${scope}:${path}`;
+}
+
+function shareInFlightGet(key, operation) {
+  const existingRequest = inFlightGetRequests.get(key);
+
+  if (existingRequest) {
+    return existingRequest;
+  }
+
+  // Coalesce identical GETs only while they are running. Results are not kept,
+  // so subsequent navigation still follows each page's normal freshness rules.
+  const request = operation().finally(() => {
+    inFlightGetRequests.delete(key);
+  });
+
+  inFlightGetRequests.set(key, request);
+  return request;
+}
 
 /** Send the current Firebase ID token with every protected backend request. */
-export async function authenticatedRequest(user, path, init = {}, forceRefreshToken = false, timeoutMs = REQUEST_TIMEOUT_MS) {
-  const token = await user.getIdToken(forceRefreshToken);
+export function authenticatedRequest(
+  user,
+  path,
+  init = {},
+  forceRefreshToken = false,
+  timeoutMs = REQUEST_TIMEOUT_MS,
+) {
+  const method = (init.method || "GET").toUpperCase();
+  const canShareRequest =
+    method === "GET"
+    && !init.signal
+    && !forceRefreshToken;
+  const key = requestKey(user?.uid || "authenticated", path);
 
-  const request = async () => {
-    // Never leave the authentication screen waiting forever when Uvicorn or
-    // Firestore is unavailable; the caller can then show a useful retry action.
-    const controller = new AbortController();
-    const timeout = window.setTimeout(() => controller.abort(), timeoutMs);
-    // Combine the request timeout with a caller-provided cancellation signal.
-    // This lets debounced search abandon obsolete requests cleanly.
-    const signal = init.signal && typeof AbortSignal.any === "function"
-      ? AbortSignal.any([controller.signal, init.signal])
-      : controller.signal;
-    try {
-      return await fetch(`${baseUrl}${path}`, {
-        ...init,
-        signal,
-        headers: {
-          Authorization: `Bearer ${token}`,
-          ...(init.body instanceof FormData ? {} : { "Content-Type": "application/json" }),
-          ...init.headers,
-        },
-      });
-    } finally {
-      window.clearTimeout(timeout);
-    }
-  };
+  const performRequest = async () => {
+    const token = await user.getIdToken(forceRefreshToken);
 
-  let response;
+    const request = async () => {
+      // Never leave the authentication screen waiting forever when Uvicorn or
+      // Firestore is unavailable; callers can then show a useful retry action.
+      const controller = new AbortController();
+      const timeout = window.setTimeout(
+        () => controller.abort(),
+        timeoutMs,
+      );
+      // Combine the timeout with caller cancellation so obsolete searches stop.
+      const signal = init.signal && typeof AbortSignal.any === "function"
+        ? AbortSignal.any([
+            controller.signal,
+            init.signal,
+          ])
+        : controller.signal;
 
-  try {
-    response = await request();
-  } catch (error) {
-    if (init.signal?.aborted) throw error;
-    // Uvicorn can briefly drop a connection while --reload replaces the process.
-    await new Promise((resolve) => setTimeout(resolve, 350));
+      try {
+        return await fetch(`${baseUrl}${path}`, {
+          ...init,
+          signal,
+          headers: {
+            Authorization: `Bearer ${token}`,
+            ...(init.body instanceof FormData
+              ? {}
+              : { "Content-Type": "application/json" }),
+            ...init.headers,
+          },
+        });
+      } finally {
+        window.clearTimeout(timeout);
+      }
+    };
+
+    let response;
 
     try {
       response = await request();
-    } catch (retryError) {
-      if (init.signal?.aborted) throw retryError;
+    } catch (error) {
+      if (init.signal?.aborted) throw error;
+      // Uvicorn can briefly drop a connection while --reload replaces the process.
+      await new Promise((resolve) => setTimeout(resolve, 350));
+
+      try {
+        response = await request();
+      } catch (retryError) {
+        if (init.signal?.aborted) throw retryError;
+        throw new Error(
+          `Cannot reach the KQ Support API at ${baseUrl}. Start the backend and try again.`,
+        );
+      }
+    }
+
+    if (!response.ok) {
+      const body = await response.json().catch(() => null);
+
       throw new Error(
-        `Cannot reach the KQ Support API at ${baseUrl}. Start the backend and try again.`,
+        body?.detail || "The service could not complete that request.",
       );
     }
-  }
 
-  if (!response.ok) {
-    const body = await response.json().catch(() => null);
+    return response.json();
+  };
 
-    throw new Error(body?.detail || "The service could not complete that request.");
-  }
-
-  return response.json();
+  return canShareRequest
+    ? shareInFlightGet(key, performRequest)
+    : performRequest();
 }
 
-export async function publicRequest(path, init = {}, timeoutMs = REQUEST_TIMEOUT_MS) {
-  const controller = new AbortController();
-  const timeout = window.setTimeout(() => controller.abort(), timeoutMs);
-  let response;
+export function publicRequest(
+  path,
+  init = {},
+  timeoutMs = REQUEST_TIMEOUT_MS,
+) {
+  const method = (init.method || "GET").toUpperCase();
 
-  try {
-    response = await fetch(`${baseUrl}${path}`, {
-      ...init,
-      signal: controller.signal,
-      headers: {
-        ...(init.body ? { "Content-Type": "application/json" } : {}),
-        ...init.headers,
-      },
-    });
-  } catch {
-    throw new Error(`Cannot reach the KQ Support API at ${baseUrl}.`);
-  } finally {
-    window.clearTimeout(timeout);
-  }
+  const performRequest = async () => {
+    const controller = new AbortController();
+    const timeout = window.setTimeout(() => controller.abort(), timeoutMs);
+    let response;
 
-  if (!response.ok) {
-    const body = await response.json().catch(() => null);
-    throw new Error(body?.detail || "The service could not complete that request.");
-  }
-  return response.json();
+    try {
+      response = await fetch(`${baseUrl}${path}`, {
+        ...init,
+        signal: controller.signal,
+        headers: {
+          ...(init.body ? { "Content-Type": "application/json" } : {}),
+          ...init.headers,
+        },
+      });
+    } catch {
+      throw new Error(`Cannot reach the KQ Support API at ${baseUrl}.`);
+    } finally {
+      window.clearTimeout(timeout);
+    }
+
+    if (!response.ok) {
+      const body = await response.json().catch(() => null);
+      throw new Error(
+        body?.detail || "The service could not complete that request.",
+      );
+    }
+
+    return response.json();
+  };
+
+  return method === "GET"
+    ? shareInFlightGet(requestKey("public", path), performRequest)
+    : performRequest();
 }
 
 export const getPassengerTheme = () => publicRequest("/theme");
@@ -123,6 +189,29 @@ export function createConversation(user, language) {
     method: "POST",
     body: JSON.stringify({ language }),
   });
+}
+
+/** Persist a conversation only when its first message can be saved with it. */
+export function startConversationWithMessage(
+  user,
+  question,
+  language,
+  modelId,
+) {
+  return authenticatedRequest(
+    user,
+    "/conversations/messages",
+    {
+      method: "POST",
+      body: JSON.stringify({
+        question,
+        language,
+        model_id: modelId,
+      }),
+    },
+    false,
+    90000,
+  );
 }
 
 /** List safe model metadata for the signed-in passenger's model picker. */

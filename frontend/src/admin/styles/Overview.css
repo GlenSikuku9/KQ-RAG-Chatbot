@@ -1,0 +1,66 @@
+/* Overview page-specific styles. Shared dashboard rules live in AdminDashboard.css. */
+
+.overview-recent-button {
+  width: 100%;
+  border: 0;
+  color: inherit;
+  background: transparent;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.overview-recent-button:focus-visible {
+  position: relative;
+  z-index: 1;
+  outline: 2px solid var(--admin-red);
+  outline-offset: -2px;
+}
+
+.recent-title-line {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.recent-title-line > strong {
+  min-width: 0;
+  flex: 1;
+}
+
+.overview-status-badge {
+  display: inline-flex;
+  min-height: 1.25rem;
+  flex: 0 0 auto;
+  align-items: center;
+  padding: 0.12rem 0.38rem;
+  border-radius: 999px;
+  font-size: 0.62rem;
+  font-weight: 750;
+  line-height: 1;
+}
+
+.overview-status-badge.active {
+  color: #147a4d;
+  background: #e7f6ee;
+}
+
+.overview-status-badge.ended {
+  color: #526176;
+  background: #edf1f6;
+}
+
+.overview-recent-button .recent-row-copy small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.recent-activity-row.severity-warning {
+  box-shadow: inset 2px 0 #d38a00;
+}
+
+.recent-activity-row.severity-error {
+  box-shadow: inset 2px 0 var(--admin-red);
+}

@@ -1,5 +1,6 @@
 from pathlib import Path
 from tempfile import TemporaryDirectory
+from threading import Event, Thread
 import unittest
 from unittest.mock import patch
 
@@ -84,6 +85,42 @@ class VectorIndexTests(unittest.TestCase):
             with self.assertRaises(RuntimeError):
                 self.index.sync([chunk("new")])
         self.assertEqual(self.index.search("bag", 1)[0].chunk.chunk_id, "one")
+
+    def test_search_uses_published_generation_while_next_generation_embeds(self):
+        self.index.sync([chunk()])
+        embedding_started = Event()
+        finish_embedding = Event()
+        original_embed = self.embedder.embed_passages
+
+        def slow_embed(chunks):
+            embedding_started.set()
+            self.assertTrue(finish_embedding.wait(timeout=5))
+            return original_embed(chunks)
+
+        errors = []
+        with patch.object(self.embedder, "embed_passages", side_effect=slow_embed):
+            worker = Thread(
+                target=lambda: self._sync_in_thread(errors),
+                daemon=True,
+            )
+            worker.start()
+            self.assertTrue(embedding_started.wait(timeout=5))
+            # The writer lock must not block reads of the immutable active index.
+            self.assertEqual(
+                self.index.search("bag", 1)[0].chunk.chunk_id,
+                "one",
+            )
+            finish_embedding.set()
+            worker.join(timeout=5)
+
+        self.assertFalse(worker.is_alive())
+        self.assertEqual(errors, [])
+
+    def _sync_in_thread(self, errors):
+        try:
+            self.index.sync([chunk("new", "new bag", "v2")])
+        except Exception as error:
+            errors.append(error)
 
     def test_source_changed_during_build_does_not_activate(self):
         self.index.sync([chunk()])

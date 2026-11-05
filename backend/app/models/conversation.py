@@ -59,6 +59,7 @@ class MessageChunk(BaseModel):
     retrieval_rank: int = Field(ge=1)
     source_title: str | None = Field(default=None, max_length=300)
     source_section: str | None = Field(default=None, max_length=500)
+    source_url: str | None = Field(default=None, max_length=2048)
 
 
 class ConversationMessage(BaseModel):
@@ -88,6 +89,7 @@ class SendMessageRequest(GroundedAnswerRequest):
 class ConversationDetail(BaseModel):
     conversation: Conversation
     messages: list[ConversationMessage]
+    user_email: str | None = None
 
 
 class SendMessageResponse(BaseModel):

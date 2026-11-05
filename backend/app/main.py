@@ -4,6 +4,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from starlette.requests import Request
+from starlette.middleware.gzip import GZipMiddleware
 
 from app.api.router import api_router
 from app.config import get_settings
@@ -20,6 +21,13 @@ def create_app() -> FastAPI:
         description="Backend API for the airline multilingual RAG customer support chatbot.",
         version=settings.app_version,
         debug=settings.debug,
+    )
+
+    # Compress larger API payloads in deployment. Tables, conversations and
+    # analytics transfer fewer bytes without changing their response shapes.
+    app.add_middleware(
+        GZipMiddleware,
+        minimum_size=1000,
     )
 
     if settings.cors_origins:

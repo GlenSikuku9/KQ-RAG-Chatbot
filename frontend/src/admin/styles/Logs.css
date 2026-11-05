@@ -1,0 +1,386 @@
+/* Logs page-specific styles. Shared dashboard rules live in AdminDashboard.css. */
+
+.logs-panel {
+  padding: 0;
+  overflow: hidden;
+}
+
+.logs-toolbar {
+  position: relative;
+  margin: 0;
+  padding: 1rem;
+  border-bottom: 1px solid var(--admin-border);
+}
+
+.logs-toolbar label {
+  gap: 0.38rem;
+  font-size: 0.74rem;
+}
+
+.logs-toolbar input,
+.logs-toolbar select {
+  min-height: 2.5rem;
+  border-radius: 0.55rem;
+  font-size: 0.875rem;
+}
+
+.logs-search-control {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.logs-search-control > svg {
+  position: absolute;
+  left: 0.72rem;
+  z-index: 1;
+  color: var(--admin-muted);
+  pointer-events: none;
+}
+
+.logs-search-control input {
+  padding-left: 2.25rem;
+}
+
+.logs-clear-filters {
+  grid-column: 1 / -1;
+  justify-self: end;
+  min-height: 1.8rem;
+  padding: 0.2rem 0.45rem;
+  border: 0;
+  border-radius: 0.35rem;
+  color: var(--admin-red);
+  background: transparent;
+  font-size: 0.78rem;
+  font-weight: 750;
+  cursor: pointer;
+}
+
+.logs-clear-filters:hover,
+.logs-clear-filters:focus-visible {
+  background: rgb(215 25 32 / 7%);
+  outline: none;
+}
+
+.logs-table {
+  width: 100%;
+  min-width: 64rem;
+  table-layout: fixed;
+}
+
+.logs-time-column {
+  width: 10.2rem;
+}
+
+.logs-event-column {
+  width: 16rem;
+}
+
+.logs-description-column {
+  width: auto;
+}
+
+.logs-actor-column {
+  width: 13rem;
+}
+
+.logs-severity-column {
+  width: 8rem;
+}
+
+.logs-action-column {
+  width: 7rem;
+}
+
+.logs-table th {
+  padding: 0.68rem 0.8rem;
+}
+
+.logs-table td {
+  min-width: 0;
+  padding: 0.66rem 0.8rem;
+  vertical-align: middle;
+  font-size: 0.86rem;
+  line-height: 1.35;
+}
+
+.logs-table tbody tr {
+  transition: background-color 120ms ease;
+}
+
+.logs-table tbody tr:hover {
+  background: #f7f9fd;
+}
+
+.log-event-cell {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.log-event-icon {
+  display: inline-flex;
+  width: 2rem;
+  height: 2rem;
+  flex: 0 0 2rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.55rem;
+}
+
+.log-event-icon.error {
+  color: #b5161d;
+  background: #fdebed;
+}
+
+.log-event-icon.success {
+  color: #147a4d;
+  background: #e7f6ee;
+}
+
+.log-event-icon.document {
+  color: #2468aa;
+  background: #eaf2fc;
+}
+
+.log-event-icon.navy {
+  color: var(--admin-navy);
+  background: #edf2f9;
+}
+
+.log-event-copy {
+  min-width: 0;
+}
+
+.log-event-copy strong,
+.log-event-copy small {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.log-event-copy strong {
+  color: var(--admin-navy);
+  font-size: 0.88rem;
+  font-weight: 750;
+}
+
+.log-event-copy small {
+  margin-top: 0.16rem;
+  color: var(--admin-muted);
+  font-size: 0.71rem;
+}
+
+.log-description {
+  overflow-wrap: anywhere;
+}
+
+.log-description span {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.log-actor {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.log-details-button {
+  display: inline-flex;
+  min-height: 2rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.58rem;
+  border: 1px solid #cbd7e6;
+  border-radius: 0.5rem;
+  color: var(--admin-navy);
+  background: #ffffff;
+  font-size: 0.76rem;
+  font-weight: 750;
+  cursor: pointer;
+}
+
+.log-details-button:hover,
+.log-details-button:focus-visible {
+  border-color: var(--admin-red);
+  outline: none;
+  color: var(--admin-red);
+  background: rgb(215 25 32 / 4%);
+}
+
+.logs-panel .admin-pagination {
+  margin: 0;
+  padding: 0.85rem 1rem;
+  border-top: 1px solid var(--admin-border);
+}
+
+.log-drawer-backdrop {
+  background: rgb(11 35 71 / 32%);
+}
+
+.log-details-drawer {
+  width: min(32rem, 100%);
+  padding: 0;
+}
+
+.log-details-drawer > .log-drawer-header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.75rem 1rem;
+  padding: 1.35rem 1.4rem 1.15rem;
+  background: #ffffff;
+}
+
+.log-drawer-heading {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.log-drawer-heading > div {
+  min-width: 0;
+}
+
+.log-drawer-heading .eyebrow {
+  margin: 0 0 0.2rem;
+  color: var(--admin-red);
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+}
+
+.log-drawer-heading h2 {
+  overflow-wrap: anywhere;
+  font-size: 1.25rem;
+  line-height: 1.3;
+}
+
+.log-drawer-description {
+  grid-column: 1 / -1;
+  max-width: 24rem;
+  margin: 0;
+  color: var(--admin-muted);
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+
+.log-drawer-header > .severity-badge {
+  grid-column: 1 / -1;
+  justify-self: start;
+}
+
+.log-overview-section {
+  padding-top: 1rem;
+}
+
+.log-details-drawer .log-metadata {
+  padding: 1rem 1.4rem;
+  border-bottom: 1px solid var(--admin-border);
+}
+
+.log-details-drawer .log-metadata h3 {
+  margin-bottom: 0.65rem;
+  font-size: 0.9rem;
+}
+
+.log-details-drawer .log-detail-list > div,
+.log-details-drawer .log-metadata dl div {
+  grid-template-columns: minmax(7.5rem, 0.7fr) minmax(0, 1.3fr);
+  gap: 0.8rem;
+  align-items: start;
+  padding: 0.58rem 0;
+}
+
+.log-details-drawer dd {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  text-align: right;
+}
+
+.log-detail-list code,
+.log-model-comparison code {
+  overflow-wrap: anywhere;
+  color: var(--admin-muted);
+  font-size: 0.76rem;
+}
+
+.log-model-comparison {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 0.7rem;
+}
+
+.log-model-comparison article {
+  display: grid;
+  gap: 0.35rem;
+  min-width: 0;
+  padding: 0.9rem;
+  border: 1px solid var(--admin-border);
+  border-radius: 0.75rem;
+  background: #f8fafc;
+}
+
+/* Red marks the model being replaced; green marks the successful new default. */
+.log-model-comparison article:first-child {
+  border-color: rgb(215 25 32 / 38%);
+  background: rgb(215 25 32 / 5%);
+}
+
+.log-model-comparison article:first-child span,
+.log-model-comparison article:first-child small {
+  color: #a51218;
+}
+
+.log-model-comparison article.current {
+  border-color: rgb(20 122 77 / 38%);
+  background: rgb(20 122 77 / 6%);
+}
+
+.log-model-comparison article.current span,
+.log-model-comparison article.current small {
+  color: #147a4d;
+}
+
+.log-model-comparison span,
+.log-model-comparison small {
+  color: var(--admin-muted);
+  font-size: 0.76rem;
+}
+
+.log-model-comparison strong {
+  color: var(--admin-navy);
+  line-height: 1.35;
+}
+
+@media (max-width: 34rem) {
+  .logs-panel {
+    border-radius: 0.7rem;
+  }
+
+  .log-details-drawer .log-detail-list > div,
+  .log-details-drawer .log-metadata dl div {
+    grid-template-columns: 1fr;
+    gap: 0.2rem;
+  }
+
+  .log-details-drawer dd {
+    text-align: left;
+  }
+
+  .log-model-comparison {
+    grid-template-columns: 1fr;
+  }
+
+  .log-model-comparison > svg {
+    transform: rotate(90deg);
+    justify-self: center;
+  }
+}

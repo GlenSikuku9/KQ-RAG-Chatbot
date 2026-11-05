@@ -1,6 +1,7 @@
 """Administrator services. Routes authorize first; this module never trusts client roles."""
 
 from collections import Counter
+from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timedelta, timezone
 from hashlib import sha256
 from pathlib import Path
@@ -45,8 +46,18 @@ def _to_datetime(value: int | None) -> datetime | None:
     return datetime.fromtimestamp(value, timezone.utc) if value else None
 
 
-def audit(admin: AuthenticatedUser, action: str, target_type: str, target_id: str) -> None:
+def audit(
+    admin: AuthenticatedUser,
+    action: str,
+    target_type: str,
+    target_id: str,
+    details: dict[str, str | int | float | bool | None] | None = None,
+) -> None:
     """Write a minimal audit record without credentials or customer message content."""
+    safe_details = {
+        **(details or {}),
+        "administrator_email": str(admin.email) if admin.email else None,
+    }
     event = AdminAuditEvent(
         activity_id=uuid4().hex,
         admin_id=admin.uid,
@@ -54,6 +65,7 @@ def audit(admin: AuthenticatedUser, action: str, target_type: str, target_id: st
         target_type=target_type,
         target_id=target_id,
         timestamp=utc_now(),
+        details=safe_details,
     )
     with firestore_operation():
         get_firestore_client().collection("admin_activity").document(event.activity_id).set(event.model_dump())
@@ -104,12 +116,52 @@ def list_admin_models() -> list[AdminModel]:
 
 
 def set_default_model(admin: AuthenticatedUser, model_id: str) -> AdminModel:
-    if not any(item.model_id == model_id for item in list_admin_models()):
+    from app.rag.generation import get_generation_service
+
+    configured_models = get_generation_service().configured_models()
+    selected = next(
+        (item for item in configured_models if item.model_id == model_id),
+        None,
+    )
+    previous = next(
+        (item for item in configured_models if item.is_default),
+        None,
+    )
+    if selected is None:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "The selected model is not configured.")
     with firestore_operation():
         get_firestore_client().collection("app_settings").document("generation_config").set({"default_model_id": model_id}, merge=True)
-    audit(admin, "default_model_updated", "model", model_id)
+    audit(
+        admin,
+        "default_model_updated",
+        "model",
+        model_id,
+        {
+            "previous_model_id": previous.model_id if previous else None,
+            "previous_model_name": (
+                _model_display_name(previous.upstream_model)
+                if previous
+                else None
+            ),
+            "previous_model_provider": previous.provider if previous else None,
+            "new_model_id": selected.model_id,
+            "new_model_name": _model_display_name(selected.upstream_model),
+            "new_model_provider": selected.provider,
+        },
+    )
     return next(item for item in list_admin_models() if item.model_id == model_id)
+
+
+def _model_display_name(upstream_model: str) -> str:
+    """Derive a readable name while retaining the exact ID separately."""
+    value = upstream_model.rsplit("/", 1)[-1]
+    parts = [part for part in value.split("-") if part.lower() != "it"]
+    return " ".join(
+        part.upper()
+        if any(character.isdigit() for character in part)
+        else part.capitalize()
+        for part in parts
+    )
 
 
 def list_evaluations() -> list[EvaluationResult]:
@@ -118,29 +170,197 @@ def list_evaluations() -> list[EvaluationResult]:
     return sorted((EvaluationResult.model_validate(snapshot.to_dict()) for snapshot in snapshots), key=lambda item: item.evaluated_at, reverse=True)
 
 
+def _audit_description(action: str, details: dict) -> str:
+    """Create readable copy while gracefully handling historical records."""
+    if action == "default_model_updated":
+        previous = details.get("previous_model_name")
+        current = details.get("new_model_name")
+        if previous and current:
+            return f"Default model changed from {previous} to {current}."
+        return "Default model updated."
+    if action in {"document_processed", "document_reprocessed"}:
+        name = details.get("document_name")
+        return (
+            f"Document {name} was processed successfully."
+            if name
+            else "Document reprocessed."
+        )
+    if action in {"document_updated", "document_content_updated"}:
+        name = details.get("document_name")
+        return f"Document {name} was updated." if name else "Document updated."
+    if action == "user_role_changed":
+        user = details.get("affected_user")
+        role = details.get("new_role")
+        if user and role:
+            return f"{user} was assigned the {role} role."
+        return "User role changed."
+    if action == "user_status_changed":
+        user = details.get("affected_user")
+        account_status = details.get("account_status")
+        if user and account_status:
+            return f"{user} was {account_status}."
+        return "User account status changed."
+    return action.replace("_", " ").capitalize() + "."
+
+
+def _chat_failure_description(category: str | None) -> str:
+    descriptions = {
+        "provider": "AI model generation failed.",
+        "storage": "The response was generated but could not be stored.",
+        "retrieval": "Knowledge retrieval failed before generation.",
+        "validation": "The chat request failed validation.",
+        "unknown": "The chat request failed during processing.",
+    }
+    return descriptions.get(category, descriptions["unknown"])
+
+
+def _activity_summary(action: str, details: dict) -> str:
+    """Build a compact Overview subtitle from metadata that actually exists."""
+    if action == "user_role_changed":
+        previous = details.get("previous_role")
+        current = details.get("new_role")
+        if previous and current:
+            return f"{str(previous).capitalize()} → {str(current).capitalize()}"
+    if action == "default_model_updated":
+        previous = details.get("previous_model_name")
+        current = details.get("new_model_name")
+        if previous and current:
+            return f"{previous} → {current}"
+    if action in {
+        "document_updated",
+        "document_processed",
+        "document_reprocessed",
+        "document_content_updated",
+    }:
+        name = details.get("document_name")
+        version = details.get("document_version")
+        if name:
+            return f"{name}{f' ({version})' if version else ''}"
+    if action == "user_status_changed":
+        user = details.get("affected_user")
+        account_status = details.get("account_status")
+        if user and account_status:
+            return f"{user} · {str(account_status).capitalize()}"
+    return _audit_description(action, details)
+
+
 def list_logs() -> list[AdminLog]:
     """Expose safe operational/audit summaries, never raw credentials or customer content."""
     client = get_firestore_client()
-    with firestore_operation():
-        audit_snapshots = list(client.collection("admin_activity").stream(timeout=FIRESTORE_READ_TIMEOUT))
-        event_snapshots = list(client.collection("operational_events").stream(timeout=FIRESTORE_READ_TIMEOUT))
+
+    def read_collection(name: str):
+        # Each worker translates its own Firestore failure into the standard
+        # availability response used throughout the API.
+        with firestore_operation():
+            return list(
+                client.collection(name).stream(
+                    timeout=FIRESTORE_READ_TIMEOUT,
+                ),
+            )
+
+    # The audit and operational streams are independent, so waiting for them
+    # concurrently removes one complete network round trip from this endpoint.
+    with ThreadPoolExecutor(max_workers=2) as executor:
+        audit_request = executor.submit(
+            read_collection,
+            "admin_activity",
+        )
+        event_request = executor.submit(
+            read_collection,
+            "operational_events",
+        )
+        audit_snapshots = audit_request.result()
+        event_snapshots = event_request.result()
+
+    audit_items = [snapshot.to_dict() or {} for snapshot in audit_snapshots]
+    admin_ids = sorted(
+        {
+            str(item.get("admin_id", ""))
+            for item in audit_items
+            if item.get("admin_id")
+        },
+    )
+    actor_emails: dict[str, str] = {}
+
+    # Firebase accepts at most 100 identifiers per batch. This replaces an
+    # individual remote identity lookup for every audit row.
+    for offset in range(0, len(admin_ids), 100):
+        identifiers = [
+            auth.UidIdentifier(uid)
+            for uid in admin_ids[offset : offset + 100]
+        ]
+
+        try:
+            users = auth.get_users(identifiers).users
+            actor_emails.update(
+                {
+                    user.uid: user.email or "Administrator"
+                    for user in users
+                },
+            )
+        except Exception:
+            # Deleted accounts and temporary identity lookup failures must not
+            # prevent administrators from viewing operational diagnostics.
+            pass
+
     logs: list[AdminLog] = []
-    for snapshot in audit_snapshots:
-        item = snapshot.to_dict() or {}
+    for item in audit_items:
         admin_id = str(item.get("admin_id", ""))
-        # Resolve the trusted Firebase identity for display; never expose the UID
-        # when an account has been removed or cannot be read.
-        actor_email = "Administrator"
-        if admin_id:
-            try:
-                actor_email = auth.get_user(admin_id).email or "Administrator"
-            except Exception:
-                actor_email = "Administrator"
-        logs.append(AdminLog(timestamp=item["timestamp"], event_type="administrator", description=str(item.get("action", "Administrator activity")), actor=actor_email, severity="info", details={"target_type": item.get("target_type"), "target_id": item.get("target_id")}))
+        action = str(item.get("action", "administrator"))
+        details = dict(item.get("details") or {})
+        details.setdefault("target_type", item.get("target_type"))
+        details.setdefault("target_id", item.get("target_id"))
+        logs.append(
+            AdminLog(
+                event_id=str(item.get("activity_id") or "") or None,
+                timestamp=item["timestamp"],
+                event_type=action,
+                description=_audit_description(action, details),
+                actor=(
+                    actor_emails.get(admin_id)
+                    or details.get("administrator_email")
+                    or "Administrator"
+                ),
+                severity="info",
+                details=details,
+            ),
+        )
     for snapshot in event_snapshots:
         item = snapshot.to_dict() or {}
         failed = item.get("event_type") == "chat_failed"
-        logs.append(AdminLog(timestamp=item["occurred_at"], event_type=str(item.get("event_type", "system")), description="Chat request failed" if failed else "Chat request completed", actor="system", severity="error" if failed else "info", details={"model_id": item.get("model_id"), "failure_category": item.get("failure_category"), "duration_ms": item.get("duration_ms")}))
+        category = item.get("failure_category")
+        details = {
+            "model_name": (
+                _model_display_name(str(item["model_version"]))
+                if item.get("model_version")
+                else None
+            ),
+            "model_id": item.get("model_id"),
+            "provider": item.get("model_provider"),
+            "failure_category": category,
+            "failed_operation": item.get("failed_operation"),
+            "error_code": item.get("error_code"),
+            "error_summary": item.get("error_summary"),
+            "request_id": item.get("request_id"),
+            "model_selection_status": item.get("model_selection_status"),
+            "duration_ms": item.get("duration_ms"),
+            "response_source": item.get("response_source"),
+        }
+        logs.append(
+            AdminLog(
+                event_id=str(item.get("event_id") or "") or None,
+                timestamp=item["occurred_at"],
+                event_type=str(item.get("event_type", "system")),
+                description=(
+                    _chat_failure_description(category)
+                    if failed
+                    else "Chat request completed."
+                ),
+                actor="system",
+                severity="error" if failed else "info",
+                details=details,
+            ),
+        )
     return sorted(logs, key=lambda item: item.timestamp, reverse=True)
 
 
@@ -311,8 +531,24 @@ def process_upload(admin: AuthenticatedUser, file: UploadFile, category: str | N
         current = next(item for item in list_documents() if item.document_id == result.document_id)
         _mark_previous_versions(result.document_id)
         _write_version_entry(admin, current, version_number, file_hash, str(destination), "processed", now)
-        audit(admin, "document_processed", "document", result.document_id)
-        return next(item for item in list_documents() if item.document_id == result.document_id)
+        updated = next(
+            item
+            for item in list_documents()
+            if item.document_id == result.document_id
+        )
+        audit(
+            admin,
+            "document_processed",
+            "document",
+            result.document_id,
+            {
+                "document_name": updated.title,
+                "document_id": updated.document_id,
+                "document_version": updated.version,
+                "processing_result": result.status,
+            },
+        )
+        return updated
     except Exception:
         # The source is retained for a failed attempt so the admin can diagnose/retry it.
         raise
@@ -406,8 +642,23 @@ def update_document(admin: AuthenticatedUser, document_id: str, title: str | Non
     values = {key: value for key, value in {"title": title, "category": category}.items() if value is not None}
     if values:
         get_firestore_client().collection("admin_document_metadata").document(document_id).set(values, merge=True)
-    audit(admin, "document_updated", "document", document_id)
-    return next(item for item in list_documents() if item.document_id == document_id)
+    updated = next(
+        item
+        for item in list_documents()
+        if item.document_id == document_id
+    )
+    audit(
+        admin,
+        "document_updated",
+        "document",
+        document_id,
+        {
+            "document_name": updated.title,
+            "document_id": updated.document_id,
+            "document_version": updated.version,
+        },
+    )
+    return updated
 
 
 def _document_match(document_id: str) -> AdminDocument:
@@ -440,6 +691,10 @@ def update_document_content(admin: AuthenticatedUser, document_id: str, content:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "The source DOCX is no longer available.")
     if not content.strip():
         raise HTTPException(status.HTTP_422_UNPROCESSABLE_ENTITY, "Document content cannot be empty.")
+    # The API also enforces the no-op guard so alternate clients cannot create
+    # an artificial revision by resubmitting identical extracted text.
+    if content.replace("\r\n", "\n") == read_document_content(document_id).content.replace("\r\n", "\n"):
+        return match
     # python-docx writes editable paragraphs. Existing tables/images are not silently
     # interpreted as text; the editor warns that complex layout should be reviewed.
     from docx import Document
@@ -469,7 +724,21 @@ def update_document_content(admin: AuthenticatedUser, document_id: str, content:
     document.save(path)
     result = publish_document(path, get_settings(), KnowledgeBaseStore(get_firestore_client()))
     if not result.persisted or result.status not in {"processed", "unchanged"}:
-        raise HTTPException(status.HTTP_422_UNPROCESSABLE_ENTITY, result.error or "Document processing failed after editing.")
+        # Restore both source bytes and the previously published vector state.
+        # The failed text remains in the browser, while retrieval stays aligned
+        # with the current version recorded by the backend.
+        shutil.copy2(current_archive, path)
+        rollback = publish_document(
+            path,
+            get_settings(),
+            KnowledgeBaseStore(get_firestore_client()),
+        )
+        if not rollback.persisted:
+            logger.error("Failed to restore the prior document index after an edit failure.")
+        raise HTTPException(
+            status.HTTP_422_UNPROCESSABLE_ENTITY,
+            result.error or "Document processing failed after editing.",
+        )
     file_hash = sha256(path.read_bytes()).hexdigest()
     new_number = current_number + 1
     get_firestore_client().collection("admin_document_metadata").document(document_id).set({
@@ -494,7 +763,11 @@ def list_users() -> list[AdminUser]:
         profile = profiles.get(item.uid, {})
         role = (item.custom_claims or {}).get("role", profile.get("role", "passenger"))
         users.append(AdminUser(
-            user_id=item.uid, email=item.email, name=item.display_name,
+            user_id=item.uid,
+            email=item.email,
+            # Firebase is preferred; the synchronized profile is a truthful
+            # fallback when the Authentication display name is absent.
+            name=item.display_name or profile.get("name"),
             role=role if role in {"passenger", "admin"} else "passenger",
             disabled=item.disabled, email_verified=item.email_verified,
             created_at=_to_datetime(item.user_metadata.creation_timestamp // 1000 if item.user_metadata.creation_timestamp else None),
@@ -705,17 +978,37 @@ def update_user_role(admin: AuthenticatedUser, user_id: str, role: str) -> Admin
         raise HTTPException(status.HTTP_409_CONFLICT, "Use a separate administrator account to change your own role.")
     user = auth.get_user(user_id)
     claims = dict(user.custom_claims or {})
+    previous_role = str(claims.get("role", "passenger"))
     claims["role"] = role
     auth.set_custom_user_claims(user_id, claims)
-    audit(admin, "user_role_changed", "user", user_id)
+    audit(
+        admin,
+        "user_role_changed",
+        "user",
+        user_id,
+        {
+            "affected_user": user.email or user.display_name or "User",
+            "previous_role": previous_role,
+            "new_role": role,
+        },
+    )
     return next(item for item in list_users() if item.user_id == user_id)
 
 
 def update_user_status(admin: AuthenticatedUser, user_id: str, disabled: bool) -> AdminUser:
     if user_id == admin.uid:
         raise HTTPException(status.HTTP_409_CONFLICT, "You cannot disable your own administrator account.")
-    auth.update_user(user_id, disabled=disabled)
-    audit(admin, "user_status_changed", "user", user_id)
+    user = auth.update_user(user_id, disabled=disabled)
+    audit(
+        admin,
+        "user_status_changed",
+        "user",
+        user_id,
+        {
+            "affected_user": user.email or user.display_name or "User",
+            "account_status": "disabled" if disabled else "enabled",
+        },
+    )
     return next(item for item in list_users() if item.user_id == user_id)
 
 
@@ -758,6 +1051,10 @@ def list_conversation_summaries() -> list[AdminConversationSummary]:
         except Exception:
             pass
         message_count, customer_count = counts.get(conversation.conversation_id, [0, 0])
+        if customer_count == 0:
+            # Historical empty records remain stored but are not useful in the
+            # administrator conversation-management table.
+            continue
         stored_title = conversation.title.strip()
         # Older records stored the complete first question; derive a display title
         # without rewriting the original message or exposing its ID in the UI.
@@ -830,6 +1127,7 @@ def analytics(period_days: int = 30) -> AdminAnalytics:
     dates = [(started + timedelta(days=offset)).date().isoformat() for offset in range(period_days + 1)]
     message_counts: Counter[str] = Counter()
     first_messages: dict[str, str] = {}
+    conversation_models: dict[str, tuple[int, str]] = {}
     with firestore_operation():
         message_snapshots = list(client.collection("messages").stream(timeout=FIRESTORE_READ_TIMEOUT))
     for snapshot in message_snapshots:
@@ -839,6 +1137,28 @@ def analytics(period_days: int = 30) -> AdminAnalytics:
             message_counts[conversation_id] += 1
             if raw.get("sender_type") == "customer":
                 first_messages.setdefault(conversation_id, raw.get("message_text", ""))
+            model_id = raw.get("model_id")
+            if model_id:
+                sequence = int(raw.get("sequence") or 0)
+                current = conversation_models.get(conversation_id)
+                if current is None or sequence >= current[0]:
+                    conversation_models[conversation_id] = (
+                        sequence,
+                        str(model_id),
+                    )
+
+    # Empty historical records are retained in Firestore but excluded from
+    # Overview counts, charts and recent-conversation summaries.
+    conversations = [
+        item
+        for item in conversations
+        if item.conversation_id in first_messages
+    ]
+    language_counts = Counter(item.language for item in conversations)
+    daily_counts = Counter(
+        item.started_at.date().isoformat()
+        for item in conversations
+    )
 
     recent_activity: list[dict[str, str]] = []
     with firestore_operation():
@@ -854,9 +1174,23 @@ def analytics(period_days: int = 30) -> AdminAnalytics:
         raw = snapshot.to_dict() or {}
         timestamp = raw.get("timestamp")
         if timestamp and timestamp >= started:
+            action = str(raw.get("action", "administrator_activity"))
+            details = dict(raw.get("details") or {})
             recent_activity.append({
-                "action": str(raw.get("action", "Administrator activity")),
+                "event_id": str(raw.get("activity_id") or snapshot.id),
+                "action": action,
                 "target_type": str(raw.get("target_type", "system")),
+                "summary": _activity_summary(action, details),
+                "actor": (
+                    str(details.get("administrator_email"))
+                    if details.get("administrator_email")
+                    else None
+                ),
+                "severity": (
+                    "error"
+                    if raw.get("status") == "failure"
+                    else "info"
+                ),
                 "timestamp": timestamp.isoformat(),
             })
 
@@ -869,9 +1203,20 @@ def analytics(period_days: int = 30) -> AdminAnalytics:
             "language": item.language,
             "started_at": item.started_at.isoformat(),
             "message_count": message_counts[item.conversation_id],
+            "status": item.status,
+            "model_id": (
+                conversation_models[item.conversation_id][1]
+                if item.conversation_id in conversation_models
+                else None
+            ),
         }
-        for item in sorted(conversations, key=lambda value: value.started_at, reverse=True)[:6]
-    ]
+        for item in sorted(
+            conversations,
+            key=lambda value: value.started_at,
+            reverse=True,
+        )
+        if item.conversation_id in first_messages
+    ][:6]
 
     return AdminAnalytics(
         period_days=period_days,

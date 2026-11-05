@@ -3,6 +3,7 @@
 from datetime import datetime
 
 from fastapi import APIRouter, Depends, File, Form, HTTPException, Query, UploadFile, status
+from firebase_admin import auth
 
 from app.api.dependencies import require_admin
 from app.models.admin import (
@@ -162,8 +163,24 @@ def process_document(document_id: str, admin: AuthenticatedUser = Depends(requir
     result = service.publish_document(source, settings, service.KnowledgeBaseStore(service.get_firestore_client()))
     if not result.persisted:
         raise HTTPException(status.HTTP_422_UNPROCESSABLE_ENTITY, result.error or "Document processing failed.")
-    service.audit(admin, "document_reprocessed", "document", document_id)
-    return next(document for document in service.list_documents() if document.document_id == document_id)
+    updated = next(
+        document
+        for document in service.list_documents()
+        if document.document_id == document_id
+    )
+    service.audit(
+        admin,
+        "document_reprocessed",
+        "document",
+        document_id,
+        {
+            "document_name": updated.title,
+            "document_id": updated.document_id,
+            "document_version": updated.version,
+            "processing_result": result.status,
+        },
+    )
+    return updated
 
 
 @router.get("/users", response_model=list[AdminUser])
@@ -235,4 +252,12 @@ def conversation(conversation_id: str, _: AuthenticatedUser = Depends(require_ad
     client = get_firestore_client()
     store = ConversationStore(client)
     item = store._read_conversation(store._conversation_reference(conversation_id).get(), conversation_id)
-    return ConversationDetail(conversation=item, messages=store._messages(conversation_id))
+    try:
+        user_email = auth.get_user(item.user_id).email
+    except Exception:
+        user_email = None
+    return ConversationDetail(
+        conversation=item,
+        messages=store._messages(conversation_id),
+        user_email=user_email,
+    )

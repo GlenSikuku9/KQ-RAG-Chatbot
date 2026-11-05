@@ -253,6 +253,7 @@ def chunk_documents(
                     source=document.source,
                     file_type=document.file_type,
                     category=document.category,
+                    source_url=document.source_url,
                     chunk_index=index,
                     text=content.text,
                     section=content.section,
