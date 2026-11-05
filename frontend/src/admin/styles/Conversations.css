@@ -1,0 +1,113 @@
+.conversation-details-modal {
+  display: flex;
+  width: min(100%, 1000px);
+  max-height: min(92vh, 56rem);
+  flex-direction: column;
+  padding: 0;
+  overflow: hidden;
+}
+
+.conversation-details-header {
+  flex: 0 0 auto;
+  padding: 1.25rem 1.5rem 0.9rem;
+  border-bottom: 1px solid var(--admin-border, #e2e8f0);
+}
+
+.conversation-details-header h2,
+.conversation-details-header p {
+  margin: 0;
+}
+
+.conversation-details-header p {
+  margin-top: 0.3rem;
+  color: var(--admin-muted, #64748b);
+}
+
+.conversation-summary {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0.65rem;
+  padding: 0.9rem 1.5rem;
+  margin: 0;
+  border-bottom: 1px solid var(--admin-border, #e2e8f0);
+  background: #ffffff;
+}
+
+.conversation-summary div {
+  min-width: 0;
+}
+
+.conversation-summary dt {
+  color: #64748b;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.conversation-summary dd {
+  margin: 0.25rem 0 0;
+  overflow-wrap: anywhere;
+  color: #172033;
+  font-size: 0.86rem;
+}
+
+.conversation-message-scroll {
+  min-height: 15rem;
+  padding: 1.5rem;
+  overflow-y: auto;
+  background: #f8fafc;
+}
+
+.conversation-details-modal .admin-transcript-message {
+  width: fit-content;
+  max-width: 84%;
+  padding: 0;
+  background: transparent;
+}
+
+.conversation-details-modal .admin-transcript-message > small:first-child {
+  display: block;
+  margin-bottom: 0.35rem;
+  color: #64748b;
+}
+
+.conversation-details-modal .admin-transcript-message > p,
+.conversation-details-modal .admin-transcript-message > .formatted-answer {
+  padding: 0.85rem 1rem;
+  margin: 0;
+  border-radius: 0.85rem;
+  color: #0b2347;
+  background: #eaf2fc;
+}
+
+.conversation-details-modal .admin-transcript-message.customer {
+  justify-self: end;
+  margin-left: auto;
+  text-align: right;
+}
+
+.conversation-details-modal .admin-transcript-message.customer > p {
+  color: #ffffff;
+  background: #d71920;
+  text-align: left;
+}
+
+.admin-message-model {
+  display: block;
+  margin-top: 0.4rem;
+  color: #64748b;
+}
+
+@media (max-width: 720px) {
+  .conversation-details-modal {
+    max-height: calc(100vh - 1rem);
+  }
+
+  .conversation-summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .conversation-details-modal .admin-transcript-message {
+    max-width: 92%;
+  }
+}

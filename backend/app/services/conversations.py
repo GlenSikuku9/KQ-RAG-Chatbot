@@ -15,7 +15,7 @@ from app.models.conversation import (
     SendMessageResponse,
 )
 from app.models.database import encode_document_id, utc_now
-from app.models.generation import GroundedAnswerResponse
+from app.models.generation import ConfiguredModel, GroundedAnswerResponse
 from app.models.user import AuthenticatedUser
 from app.rag.grounded_generation import GroundedAnswerService, get_grounded_answer_service
 from app.services.firestore_client import (
@@ -155,6 +155,8 @@ class ConversationStore:
     def save_exchange(
         self, user: AuthenticatedUser, conversation_id: str, request: SendMessageRequest,
         generated: GroundedAnswerResponse,
+        *,
+        create_if_missing: bool = False,
     ) -> SendMessageResponse:
         """Persist both messages and all cited chunks in one Firestore transaction."""
         conversation_reference = self._conversation_reference(conversation_id)
@@ -162,9 +164,28 @@ class ConversationStore:
         now = utc_now()
 
         def operation(transaction: Transaction) -> SendMessageResponse:
-            conversation = self._read_conversation(
-                conversation_reference.get(transaction=transaction, timeout=FIRESTORE_READ_TIMEOUT), conversation_id,
+            snapshot = conversation_reference.get(
+                transaction=transaction,
+                timeout=FIRESTORE_READ_TIMEOUT,
             )
+            if create_if_missing:
+                if snapshot.exists:
+                    raise HTTPException(
+                        status.HTTP_409_CONFLICT,
+                        "Conversation already exists.",
+                    )
+                conversation = Conversation(
+                    conversation_id=conversation_id,
+                    user_id=user.uid,
+                    language=request.language or "unknown",
+                    status=ConversationStatus.ACTIVE,
+                    started_at=now,
+                )
+            else:
+                conversation = self._read_conversation(
+                    snapshot,
+                    conversation_id,
+                )
             self._assert_owner(conversation, user)
             if conversation.status != ConversationStatus.ACTIVE:
                 raise HTTPException(status.HTTP_409_CONFLICT, "This conversation has ended. Start a new conversation.")
@@ -196,6 +217,7 @@ class ConversationStore:
                     similarity_score=source_item.score, retrieval_rank=source_item.retrieval_rank,
                     source_title=_source_title(source_item.chunk.source),
                     source_section=source_item.chunk.section,
+                    source_url=source_item.chunk.source_url,
                 ) for source_item in generated.sources],
             )
             # Store a separate topic title; the original customer question remains unchanged.
@@ -213,6 +235,21 @@ class ConversationStore:
             return SendMessageResponse(conversation=updated, customer_message=customer, chatbot_message=chatbot)
 
         return run_transaction(self.client, operation)
+
+    def create_exchange(
+        self,
+        user: AuthenticatedUser,
+        request: SendMessageRequest,
+        generated: GroundedAnswerResponse,
+    ) -> SendMessageResponse:
+        """Atomically create the conversation together with its first exchange."""
+        return self.save_exchange(
+            user,
+            uuid4().hex,
+            request,
+            generated,
+            create_if_missing=True,
+        )
 
     def _messages(self, conversation_id: str) -> list[ConversationMessage]:
         with firestore_operation():
@@ -256,17 +293,108 @@ class ConversationService:
         self.grounded_answers = grounded_answers
         self.operational_logger = operational_logger
 
+    def start(
+        self,
+        user: AuthenticatedUser,
+        request: SendMessageRequest,
+    ) -> SendMessageResponse:
+        """Generate first, then atomically create a non-empty conversation."""
+        return self._send(
+            user,
+            None,
+            request,
+        )
+
     def send(self, user: AuthenticatedUser, conversation_id: str, request: SendMessageRequest) -> SendMessageResponse:
+        return self._send(
+            user,
+            conversation_id,
+            request,
+        )
+
+    def _send(
+        self,
+        user: AuthenticatedUser,
+        conversation_id: str | None,
+        request: SendMessageRequest,
+    ) -> SendMessageResponse:
         started = perf_counter()
+        request_id = uuid4().hex
+        selected_model = None
+
+        # Resolve safe model metadata before retrieval/generation so a later
+        # provider or storage failure can still identify the selected model.
+        try:
+            selected_model = (
+                self.grounded_answers.generation_service.selected_model(
+                    request.model_id,
+                )
+            )
+        except Exception:
+            # Some deterministic fallback responses never select a model. The
+            # answer pipeline remains authoritative for whether that is an error.
+            pass
+
         try:
             # Do not write a successful chatbot message until generation succeeds.
             generated = self.grounded_answers.answer(request)
-            result = self.store.save_exchange(user, conversation_id, request, generated)
         except Exception as error:
-            # Record only a failure category/timing. The logging failure must not hide
-            # the original chat failure or turn it into a successful response.
+            failure_category = self.operational_logger.category(error)
+            failed_operation = {
+                "provider": "generate_model_response",
+                "retrieval": "retrieve_knowledge",
+                "validation": "validate_chat_request",
+                "storage": "access_chat_dependencies",
+            }.get(failure_category, "prepare_chat_answer")
             try:
-                self.operational_logger.failed(error, (perf_counter() - started) * 1000)
+                self.operational_logger.failed(
+                    error,
+                    (perf_counter() - started) * 1000,
+                    model=selected_model,
+                    failed_operation=failed_operation,
+                    request_id=request_id,
+                    failure_category=failure_category,
+                )
+            except HTTPException:
+                logger.warning("Could not persist a privacy-minimised operational failure event.")
+            raise
+
+        try:
+            result = (
+                self.store.create_exchange(
+                    user,
+                    request,
+                    generated,
+                )
+                if conversation_id is None
+                else self.store.save_exchange(
+                    user,
+                    conversation_id,
+                    request,
+                    generated,
+                )
+            )
+        except Exception as error:
+            # Generation succeeded, so this is explicitly a persistence failure.
+            generated_model = generated.model
+            model = selected_model
+            if generated_model is not None:
+                model = ConfiguredModel(
+                    model_id=generated_model.model_id,
+                    provider=generated_model.provider,
+                    upstream_model=generated_model.upstream_model,
+                    configured=True,
+                    is_default=request.model_id is None,
+                )
+            try:
+                self.operational_logger.failed(
+                    error,
+                    (perf_counter() - started) * 1000,
+                    model=model,
+                    failed_operation="store_chat_exchange",
+                    request_id=request_id,
+                    failure_category="storage",
+                )
             except HTTPException:
                 logger.warning("Could not persist a privacy-minimised operational failure event.")
             raise

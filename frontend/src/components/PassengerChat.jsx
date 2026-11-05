@@ -9,7 +9,6 @@ import {
 import "./PassengerChat.css";
 
 import {
-  createConversation,
   endConversation,
   getConversation,
   getConversationFeedback,
@@ -19,6 +18,7 @@ import {
   saveConversationFeedback,
   sendConversationMessage,
   sendGuestMessage,
+  startConversationWithMessage,
 } from "../api";
 import { FormattedAnswer } from "./FormattedAnswer";
 import { KenyaAirwaysLogo } from "./KenyaAirwaysLogo";
@@ -61,10 +61,6 @@ function modelLabel(model) {
     return "Select model";
   }
   return MODEL_LABELS[model.model_id] || model.upstream_model || model.model_id;
-}
-
-function answerModelLabel(modelId) {
-  return MODEL_LABELS[modelId] || modelId;
 }
 
 function similarityPercent(score) {
@@ -127,15 +123,19 @@ function Sources({ chunks }) {
                 )}
               </div>
               {chunk.source_url && (
-                <a className="source-link" href={chunk.source_url} target="_blank" rel="noreferrer noopener">
-                  View verified Kenya Airways source →
+                <a
+                  className="source-link"
+                  href={chunk.source_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  View on Kenya Airways ↗
                 </a>
               )}
             </div>
           );
         })}
       </div>
-      <p className="source-score-note">Percentages are retrieval similarity scores, not answer accuracy.</p>
     </details>
   );
 }
@@ -158,11 +158,6 @@ function ChatMessage({ message }) {
           <FormattedAnswer text={message.message_text} />
         )}
       </div>
-      {!isPassenger && message.model_id && (
-        <p className="message-model">
-          Answered by {answerModelLabel(message.model_id)}
-        </p>
-      )}
       {!isPassenger && <Sources chunks={message.retrieved_chunks} />}
     </article>
   );
@@ -437,27 +432,22 @@ export function PassengerChat({
     setIsStarting(true);
 
     try {
-      // A new chat clears only this screen; persisted history is delivered in I19.
-      // Guest conversation metadata exists only in component memory. Signed-in
-      // passengers continue through the protected persistence endpoint.
-      const nextConversation = user
-        ? await createConversation(user, language)
-        : {
-            conversation_id: crypto.randomUUID(),
-            user_id: "guest",
-            title: "Temporary conversation",
-            language,
-            status: "active",
-            started_at: new Date().toISOString(),
-          };
+      // New chats remain local until the first successful message exchange, so
+      // opening or closing the panel cannot create an empty database record.
+      const nextConversation = {
+        conversation_id: crypto.randomUUID(),
+        user_id: user?.uid || "guest",
+        title: "Temporary conversation",
+        language,
+        status: "active",
+        started_at: new Date().toISOString(),
+        persisted: false,
+      };
       setConversation(nextConversation);
       setMessages([]);
       setFeedback(null);
       setQuestion("");
       setDrawerOpen(false);
-      if (user) {
-        setHistory((current) => [nextConversation, ...current]);
-      }
     } catch (reason) {
       setError(reason instanceof Error ? reason.message : "We could not start a conversation. Please try again.");
     } finally {
@@ -535,18 +525,15 @@ export function PassengerChat({
     pendingSubmission.current = true;
 
     try {
-      const activeConversation = conversation || (
-        user
-          ? await createConversation(user, language)
-          : {
-              conversation_id: crypto.randomUUID(),
-              user_id: "guest",
-              title: "Temporary conversation",
-              language,
-              status: "active",
-              started_at: new Date().toISOString(),
-            }
-      );
+      const activeConversation = conversation || {
+        conversation_id: crypto.randomUUID(),
+        user_id: user?.uid || "guest",
+        title: "Temporary conversation",
+        language,
+        status: "active",
+        started_at: new Date().toISOString(),
+        persisted: false,
+      };
 
       if (!conversation) {
         setConversation(activeConversation);
@@ -555,13 +542,20 @@ export function PassengerChat({
       let response;
 
       if (user) {
-        response = await sendConversationMessage(
-          user,
-          activeConversation.conversation_id,
-          trimmedQuestion,
-          language,
-          selectedModelId,
-        );
+        response = activeConversation.persisted === false
+          ? await startConversationWithMessage(
+              user,
+              trimmedQuestion,
+              language,
+              selectedModelId,
+            )
+          : await sendConversationMessage(
+              user,
+              activeConversation.conversation_id,
+              trimmedQuestion,
+              language,
+              selectedModelId,
+            );
       } else {
         const generated = await sendGuestMessage(
           trimmedQuestion,
@@ -610,6 +604,7 @@ export function PassengerChat({
                 .pop()
                 ?.replace(/\.docx$/i, ""),
               source_section: source.chunk.section,
+              source_url: source.chunk.source_url,
             })),
           },
         };

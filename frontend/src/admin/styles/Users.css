@@ -1,0 +1,279 @@
+/* Users page-specific styles. Shared dashboard rules live in AdminDashboard.css. */
+
+.table-management > .table-filter-toolbar {
+  gap: 0.7rem;
+}
+
+.table-management > .table-filter-toolbar label {
+  gap: 0.38rem;
+  font-size: 0.74rem;
+}
+
+.table-management > .table-filter-toolbar input,
+.table-management > .table-filter-toolbar select {
+  min-height: 2.5rem;
+  border-radius: 0.55rem;
+  font-size: 0.875rem;
+}
+
+.users-clear-filters {
+  grid-column: 1 / -1;
+  justify-self: end;
+  min-height: 1.8rem;
+  padding: 0.2rem 0.45rem;
+  border: 0;
+  border-radius: 0.35rem;
+  color: var(--admin-red);
+  background: transparent;
+  font-size: 0.78rem;
+  font-weight: 750;
+  cursor: pointer;
+}
+
+.users-clear-filters:hover,
+.users-clear-filters:focus-visible {
+  outline: none;
+  background: rgb(215 25 32 / 7%);
+}
+
+.table-management > .notice {
+  margin: 0.8rem 1rem;
+}
+
+.users-table {
+  min-width: 52rem;
+}
+
+.users-table th,
+.users-table td {
+  vertical-align: middle;
+}
+
+.users-table td {
+  padding-block: 0.72rem;
+  font-size: 0.88rem;
+}
+
+.users-table tbody tr {
+  transition: background-color 120ms ease;
+}
+
+.users-table tbody tr:hover {
+  background: #f7f9fd;
+}
+
+.users-table td:first-child {
+  max-width: 18rem;
+}
+
+.users-table td:first-child strong,
+.users-table td:first-child small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.users-table td:first-child strong {
+  display: block;
+  color: var(--admin-navy);
+  font-weight: 750;
+}
+
+.user-role-select {
+  width: 9.5rem;
+  min-height: 2.25rem !important;
+  padding: 0.4rem 2rem 0.4rem 0.6rem;
+  border-radius: 0.5rem !important;
+  font-size: 0.82rem;
+}
+
+.user-role-select:disabled,
+.user-status-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.user-badge {
+  display: inline-flex;
+  min-height: 1.65rem;
+  align-items: center;
+  padding: 0.24rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 750;
+  white-space: nowrap;
+}
+
+.user-badge.verified,
+.user-badge.active {
+  color: #147a4d;
+  background: #e7f6ee;
+}
+
+.user-badge.unverified {
+  color: #77590b;
+  background: #fff5d9;
+}
+
+.user-badge.disabled {
+  color: #a51218;
+  background: #fdebed;
+}
+
+.user-status-button {
+  min-width: 4.9rem;
+  min-height: 2.1rem;
+  padding: 0.35rem 0.65rem;
+  border: 1px solid #cbd7e6;
+  border-radius: 0.5rem;
+  color: var(--admin-navy);
+  background: #ffffff;
+  font-size: 0.78rem;
+  font-weight: 750;
+  cursor: pointer;
+}
+
+.user-status-button.disable:hover:not(:disabled),
+.user-status-button.disable:focus-visible {
+  border-color: var(--admin-red);
+  outline: none;
+  color: var(--admin-red);
+  background: rgb(215 25 32 / 4%);
+}
+
+.user-status-button.enable:hover:not(:disabled),
+.user-status-button.enable:focus-visible {
+  border-color: #147a4d;
+  outline: none;
+  color: #147a4d;
+  background: rgb(20 122 77 / 5%);
+}
+
+.user-confirm-backdrop {
+  position: fixed;
+  z-index: 120;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  background: rgb(11 35 71 / 34%);
+}
+
+.user-confirm-dialog {
+  width: min(27rem, 100%);
+  padding: 1.35rem;
+  border: 1px solid var(--admin-border);
+  border-radius: 0.85rem;
+  outline: none;
+  background: #ffffff;
+  box-shadow: 0 20px 55px rgb(11 35 71 / 22%);
+}
+
+.user-confirm-dialog .eyebrow {
+  margin: 0 0 0.35rem;
+  color: var(--admin-red);
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+}
+
+.user-confirm-dialog h2 {
+  margin: 0;
+  color: var(--admin-navy);
+  font-size: 1.3rem;
+}
+
+.user-confirm-intro {
+  margin: 0.45rem 0 1rem;
+  color: var(--admin-muted);
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+
+.user-confirm-dialog dl {
+  margin: 0;
+  border-block: 1px solid var(--admin-border);
+}
+
+.user-confirm-dialog dl > div {
+  display: grid;
+  grid-template-columns: minmax(7rem, 0.8fr) minmax(0, 1.2fr);
+  gap: 0.75rem;
+  padding: 0.68rem 0;
+  border-bottom: 1px solid var(--admin-border);
+}
+
+.user-confirm-dialog dl > div:last-child {
+  border-bottom: 0;
+}
+
+.user-confirm-dialog dt {
+  color: var(--admin-muted);
+  font-size: 0.72rem;
+  font-weight: 750;
+  text-transform: uppercase;
+}
+
+.user-confirm-dialog dd {
+  min-width: 0;
+  margin: 0;
+  overflow-wrap: anywhere;
+  color: var(--admin-navy);
+  font-weight: 700;
+  text-align: right;
+}
+
+.user-confirm-dialog dl > div:not(:first-child) dd {
+  text-transform: capitalize;
+}
+
+.user-confirm-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.65rem;
+  padding-top: 1rem;
+}
+
+.user-dialog-button {
+  min-height: 2.35rem;
+  padding: 0.45rem 0.8rem;
+  border: 1px solid var(--admin-border);
+  border-radius: 0.5rem;
+  font-size: 0.82rem;
+  font-weight: 750;
+  cursor: pointer;
+}
+
+.user-dialog-button.secondary {
+  color: var(--admin-navy);
+  background: #ffffff;
+}
+
+.user-dialog-button.primary {
+  border-color: var(--admin-red);
+  color: #ffffff;
+  background: var(--admin-red);
+}
+
+.user-dialog-button:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
+@media (max-width: 34rem) {
+  .user-confirm-dialog dl > div {
+    grid-template-columns: 1fr;
+    gap: 0.2rem;
+  }
+
+  .user-confirm-dialog dd {
+    text-align: left;
+  }
+
+  .user-confirm-actions {
+    flex-direction: column-reverse;
+  }
+
+  .user-dialog-button {
+    width: 100%;
+  }
+}

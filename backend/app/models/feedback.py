@@ -44,3 +44,8 @@ class OperationalEvent(BaseModel):
     model_version: str | None = Field(default=None, max_length=300)
     response_source: Literal["generated", "clarification", "fallback"] | None = None
     failure_category: Literal["provider", "storage", "retrieval", "validation", "unknown"] | None = None
+    failed_operation: str | None = Field(default=None, max_length=100)
+    error_code: str | None = Field(default=None, max_length=100)
+    error_summary: str | None = Field(default=None, max_length=500)
+    request_id: str | None = Field(default=None, max_length=128)
+    model_selection_status: Literal["selected", "not_selected"] | None = None

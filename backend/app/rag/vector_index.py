@@ -53,7 +53,10 @@ class VectorIndex:
         self.client = chromadb.PersistentClient(
             path=str(path), settings=ChromaSettings(anonymized_telemetry=False),
         )
-        self.lock = FileLock(str(path / "index.lock"), timeout=60)
+        # Writers serialize full rebuilds separately. Passenger searches keep
+        # reading the current immutable generation while the next one embeds.
+        self.write_lock = FileLock(str(path / "index-write.lock"), timeout=60)
+        self.active_lock = FileLock(str(path / "index.lock"), timeout=60)
 
     def _manifest(self) -> IndexManifest | None:
         path = self.path / "active_index.json"
@@ -94,7 +97,7 @@ class VectorIndex:
                 parents[identifier] = chunk
         self.embedder.validate_passages(segments)
         digest = content_hash(chunks)
-        with self.lock:
+        with self.write_lock:
             previous = self._manifest()
             compatible = previous is not None and self._compatible(previous)
             if previous is not None and not compatible and not rebuild:
@@ -149,16 +152,33 @@ class VectorIndex:
                 manifest = IndexManifest(
                     collection=name, fingerprint=self.embedder.fingerprint, content_hash=digest, count=len(segments),
                 )
-                # Atomic pointer replacement makes a restart see either the old or new snapshot.
-                write_json_atomic(self.path / "active_index.json", manifest.model_dump())
-                activated = True
+                # Block searches only for the short atomic publication step.
+                # A search that started earlier finishes against the old
+                # immutable collection before that collection is removed.
+                with self.active_lock:
+                    current = self._manifest()
+                    if current != previous:
+                        raise ValueError("Active index changed during indexing; retry publication.")
+                    write_json_atomic(
+                        self.path / "active_index.json",
+                        manifest.model_dump(),
+                    )
+                    activated = True
+                    if previous is not None:
+                        try:
+                            self.client.delete_collection(previous.collection)
+                        except Exception:
+                            # Publication already succeeded. Retaining an
+                            # unreferenced old collection is safer than rolling
+                            # back or deleting the newly active generation.
+                            logger.exception(
+                                "Could not remove the superseded index collection."
+                            )
             finally:
                 if not activated:
                     logger.warning("Discarding unfinished vector generation; prior index remains active.")
                     self.client.delete_collection(name)
             old_ids = set(saved["ids"]) if saved else set()
-            if previous is not None:
-                self.client.delete_collection(previous.collection)
             return {
                 "status": "indexed", "count": len(segments), "chunks": len(chunks),
                 "embedded": embedded, "reused": reused,
@@ -169,7 +189,7 @@ class VectorIndex:
         if not query.strip() or type(limit) is not int or limit < 1:
             logger.error("Search requires a nonempty question and positive integer result limit.")
             raise ValueError("Invalid search input.")
-        with self.lock:
+        with self.active_lock:
             manifest = self._manifest()
             if manifest is None:
                 logger.error("No published vector index exists.")

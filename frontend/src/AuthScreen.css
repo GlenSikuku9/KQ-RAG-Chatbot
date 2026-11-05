@@ -1,10 +1,14 @@
 /* Authentication-only refinements preserve the existing two-column layout. */
 .auth-layout .brand-panel {
+  position: sticky;
+  top: 0;
   display: flex;
+  height: 100dvh;
   justify-content: center;
   flex-direction: column;
   gap: 0.35rem;
   padding: clamp(3rem, 7vw, 7rem);
+  align-self: start;
 }
 
 .auth-layout .brand-panel h1 {
@@ -124,6 +128,8 @@
 
   .auth-layout .brand-panel {
     display: none;
+    position: static;
+    height: auto;
   }
 
   .auth-layout .auth-card {

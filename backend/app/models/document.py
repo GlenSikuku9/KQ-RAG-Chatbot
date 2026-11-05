@@ -1,5 +1,6 @@
 from hashlib import sha256
 import json
+import re
 from typing import Literal
 
 from pydantic import BaseModel, Field, computed_field
@@ -33,6 +34,19 @@ class KnowledgeBaseDocument(BaseModel):
     text: str = Field(..., description="Clean text extracted from the document.")
     extraction_warnings: list[str] = Field(default_factory=list)
     blocks: list[DocumentBlock] = Field(default_factory=list)
+
+    @computed_field
+    @property
+    def source_url(self) -> str | None:
+        """Return only an official Kenya Airways URL present in the document."""
+        matches = re.findall(
+            r"https?://(?:www\.)?kenya-airways\.com/[^\s<>\]\[\)\(\"']+",
+            self.text,
+            flags=re.IGNORECASE,
+        )
+        if not matches:
+            return None
+        return matches[0].rstrip(".,;:")
 
     @computed_field
     @property

@@ -39,6 +39,17 @@ class GenerationService:
             is_default=model.model_id == default_model_id)
             for model in self.models.values()]
 
+    def selected_model(self, model_id: str | None = None) -> ConfiguredModel:
+        """Return safe metadata for the model selected by the normal rules."""
+        model = self._select_model(model_id)
+        return ConfiguredModel(
+            model_id=model.model_id,
+            provider=model.provider,
+            upstream_model=model.upstream_model,
+            configured=bool(model.api_key),
+            is_default=model_id is None,
+        )
+
     def generate(self, prompt: str, model_id: str | None = None, system_instruction: str | None = None) -> GenerationResponse:
         model = self._select_model(model_id)
         if not model.api_key:

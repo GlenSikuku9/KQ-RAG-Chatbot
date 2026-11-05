@@ -83,6 +83,9 @@ class AdminAuditEvent(BaseModel):
     target_id: str
     timestamp: UTCDateTime
     status: Literal["success", "failure"] = "success"
+    details: dict[str, str | int | float | bool | None] = Field(
+        default_factory=dict,
+    )
 
 
 class AdminAnalytics(BaseModel):
@@ -100,7 +103,7 @@ class AdminAnalytics(BaseModel):
     failures: dict[str, int]
     rating_distribution: dict[str, int]
     recent_conversations: list[dict[str, str | int | None]]
-    recent_activity: list[dict[str, str]]
+    recent_activity: list[dict[str, str | None]]
 
 
 LEGACY_PASSENGER_THEME = {
@@ -194,12 +197,15 @@ class EvaluationResult(BaseModel):
 
 
 class AdminLog(BaseModel):
+    event_id: str | None = None
     timestamp: UTCDateTime
     event_type: str
     description: str
     actor: str
     severity: Literal["info", "warning", "error"]
-    details: dict[str, str | int | float | None] = {}
+    details: dict[str, str | int | float | bool | None] = Field(
+        default_factory=dict,
+    )
 
 
 class AdminConversationSummary(BaseModel):
