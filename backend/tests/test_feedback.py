@@ -89,7 +89,12 @@ class OperationalLoggingTests(unittest.TestCase):
         answers.answer.return_value = generated
         service = ConversationService(store, answers, events)
         service.send(AuthenticatedUser(uid="passenger"), "conversation", Mock())
-        events.completed.assert_called_once_with(generated, ANY)
+        events.completed.assert_called_once_with(
+            generated,
+            ANY,
+            request_id=ANY,
+            conversation_id=ANY,
+        )
 
         answers.answer.side_effect = RuntimeError("customer question and API key must not be logged")
         with self.assertRaises(RuntimeError):

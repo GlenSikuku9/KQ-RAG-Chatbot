@@ -1,4 +1,9 @@
-import { useEffect, useRef, useState } from "react";
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import {
   ArrowLeft,
   Menu,
@@ -112,15 +117,15 @@ function modelLabel(model) {
 }
 
 function supportStatusLabel(request) {
-  if (request.status === "pending") {
-    return request.request_type === "live"
-      ? "Waiting for agent"
-      : "Pending";
-  }
-  if (request.status === "in_progress") {
-    return request.request_type === "live" ? "Live" : "In progress";
-  }
-  return request.status === "resolved" ? "Resolved" : "Cancelled";
+  const labels = {
+    pending: "Pending",
+    in_progress: "In progress",
+    resolved: "Resolved",
+    cancelled: "Closed",
+    closed: "Closed",
+  };
+
+  return labels[request.status] || request.status;
 }
 
 function conversationTurns(messages) {
@@ -353,7 +358,13 @@ function SupportFeedbackRating({ user, request, existing, onSaved }) {
   );
 }
 
-function FeedbackRating({ user, conversation, existingFeedback, onSaved }) {
+function FeedbackRating({
+  user,
+  conversation,
+  existingFeedback,
+  onSaved,
+  sectionRef,
+}) {
   const [rating, setRating] = useState(existingFeedback?.rating || 0);
   const [comment, setComment] = useState(existingFeedback?.comment || "");
   const [saving, setSaving] = useState(false);
@@ -394,7 +405,11 @@ function FeedbackRating({ user, conversation, existingFeedback, onSaved }) {
         comment,
       );
       onSaved(saved);
-      setConfirmation(existingFeedback ? "Your rating was updated." : "Thank you. Your feedback was saved.");
+      setConfirmation(
+        existingFeedback
+          ? "Your rating was updated."
+          : "Thank you. Your feedback was saved.",
+      );
     } catch (reason) {
       setError(reason instanceof Error ? reason.message : "Feedback could not be saved.");
     } finally {
@@ -403,9 +418,12 @@ function FeedbackRating({ user, conversation, existingFeedback, onSaved }) {
   }
 
   return (
-    <section className="feedback-card" aria-labelledby="feedback-heading">
-      <h4 id="feedback-heading">Conversation feedback</h4>
-      <p>How helpful was this conversation?</p>
+    <section
+      className="feedback-card"
+      aria-labelledby="feedback-heading"
+      ref={sectionRef}
+    >
+      <h4 id="feedback-heading">How helpful was this conversation?</h4>
       <form onSubmit={submit}>
         <div className="feedback-rating-row">
           <div className="star-row" role="radiogroup" aria-label="Rating from one to five stars">
@@ -449,7 +467,11 @@ function FeedbackRating({ user, conversation, existingFeedback, onSaved }) {
         {error && <p className="notice error" role="alert">{error}</p>}
         {confirmation && <p className="feedback-confirmation" role="status">{confirmation}</p>}
         <button className="button feedback-submit" type="submit" disabled={!rating || saving}>
-          {saving ? "Saving…" : existingFeedback ? "Update rating" : "Save rating"}
+          {saving
+            ? "Saving..."
+            : existingFeedback
+              ? "Update feedback"
+              : "Submit feedback"}
         </button>
       </form>
     </section>
@@ -495,9 +517,40 @@ export function PassengerChat({
   const [modelDropdownOpen, setModelDropdownOpen] = useState(false);
   const pendingSubmission = useRef(false);
   const messageListRef = useRef(null);
+  const feedbackSectionRef = useRef(null);
+  const pendingFeedbackScroll = useRef(false);
   const modelDropdownRef = useRef(null);
   const composerFormRef = useRef(null);
   const previouslyAuthenticated = useRef(Boolean(user));
+  const combinedHistory = useMemo(() => {
+    // The records keep their original open behavior. This small view model
+    // only combines and orders them for the shared history drawer.
+    const aiItems = history.map((item) => ({
+      activityAt: item.ended_at || item.started_at,
+      id: `ai:${item.conversation_id}`,
+      kind: "ai",
+      record: item,
+      statusKey: item.status,
+      statusLabel: item.status === "ended" ? "Ended" : "Active",
+      title: item.title,
+    }));
+    const supportItems = supportRequests.map((item) => ({
+      activityAt: item.resolved_at
+        || item.cancelled_at
+        || item.accepted_at
+        || item.created_at,
+      id: `support:${item.request_id}`,
+      kind: "support",
+      record: item,
+      statusKey: item.status,
+      statusLabel: supportStatusLabel(item),
+      title: item.issue_summary,
+    }));
+
+    return [...aiItems, ...supportItems].sort((left, right) => (
+      new Date(right.activityAt || 0) - new Date(left.activityAt || 0)
+    ));
+  }, [history, supportRequests]);
 
   useEffect(() => {
     // Suggested FAQ questions fill the composer but remain editable before send.
@@ -586,7 +639,14 @@ export function PassengerChat({
     refreshActiveSupport();
     const stopRealtime = subscribeToSupportRequest(
       activeSupport.request_id,
-      (request) => setActiveSupport(request),
+      (request) => {
+        setActiveSupport(request);
+        // Reflect live status changes in the unified history item as well as
+        // the open Human Support header.
+        setSupportRequests((current) => current.map((item) => (
+          item.request_id === request.request_id ? request : item
+        )));
+      },
       (nextMessages) => setSupportDetail((current) => ({
         ...(current || {}),
         request: current?.request || activeSupport,
@@ -706,6 +766,34 @@ export function PassengerChat({
       list.scrollTop = list.scrollHeight;
     }
   }, [activeView, messages, supportDetail?.messages, isSending]);
+
+  useEffect(() => {
+    if (
+      conversation?.status !== "ended"
+      || !pendingFeedbackScroll.current
+      || !feedbackSectionRef.current
+    ) {
+      return;
+    }
+
+    // Run once after a successful end, when the feedback controls exist.
+    pendingFeedbackScroll.current = false;
+    const reduceMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+    const list = messageListRef.current;
+    const feedbackElement = feedbackSectionRef.current;
+
+    if (list) {
+      list.scrollTo({
+        top: Math.max(
+          0,
+          feedbackElement.offsetTop - list.offsetTop - 16,
+        ),
+        behavior: reduceMotion ? "auto" : "smooth",
+      });
+    }
+  }, [conversation?.status]);
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -837,6 +925,7 @@ export function PassengerChat({
             ended_at: new Date().toISOString(),
           };
       setConversation(ended);
+      pendingFeedbackScroll.current = true;
       setHistory((current) => current.map((item) => (
         item.conversation_id === ended.conversation_id ? ended : item
       )));
@@ -1234,53 +1323,57 @@ export function PassengerChat({
             </div>
           </div>
         )}
-        <p className="drawer-section-label">AI Conversations</p>
-        {historyLoading ? (
-          <p className="muted">Loading history…</p>
-        ) : !history.length ? (
-          <p className="muted">No saved conversations yet.</p>
-        ) : (
-          <div className="history-list">
-            {history.map((item) => (
-              <button
-                className={`history-item ${
-                  item.conversation_id === conversation?.conversation_id
-                    ? "selected"
-                    : ""
-                }`}
-                type="button"
-                key={item.conversation_id}
-                onClick={() => openConversation(item.conversation_id)}
-              >
-                <strong>{item.title}</strong>
-                <span>{item.status === "ended" ? "Ended" : "Active"}</span>
-              </button>
-            ))}
-          </div>
-        )}
-        {user && supportRequests.length > 0 && (
-          <>
-            <p className="drawer-section-label">Human support</p>
-            <div className="history-list support-history-list">
-              {supportRequests.map((item) => (
+        <div className="conversation-history-scroll">
+          {historyLoading ? (
+            <p className="muted">Loading conversations...</p>
+          ) : !combinedHistory.length ? (
+            <p className="muted">No saved conversations yet.</p>
+          ) : (
+            <div className="history-list unified-history-list">
+              {combinedHistory.map((item) => (
                 <button
                   className={`history-item ${
-                    activeView === "support"
-                    && item.request_id === activeSupport?.request_id
+                    item.kind === "ai"
+                    && item.record.conversation_id
+                      === conversation?.conversation_id
                       ? "selected"
-                      : ""
+                      : item.kind === "support"
+                        && activeView === "support"
+                        && item.record.request_id
+                          === activeSupport?.request_id
+                        ? "selected"
+                        : ""
                   }`}
                   type="button"
-                  key={item.request_id}
-                  onClick={() => openSupportHistory(item)}
+                  key={item.id}
+                  onClick={() => (
+                    item.kind === "support"
+                      ? openSupportHistory(item.record)
+                      : openConversation(item.record.conversation_id)
+                  )}
                 >
-                  <strong>{item.issue_summary}</strong>
-                  <span>{supportStatusLabel(item)}</span>
+                  <strong className="history-item-title">
+                    {item.title}
+                  </strong>
+                  <span className="history-item-meta">
+                    {item.kind === "support" && (
+                      <span className="history-kind-label">
+                        Human Support
+                      </span>
+                    )}
+                    <span
+                      className={`history-status-badge ${
+                        item.kind
+                      } ${item.statusKey}`}
+                    >
+                      {item.statusLabel}
+                    </span>
+                  </span>
                 </button>
               ))}
             </div>
-          </>
-        )}
+          )}
+        </div>
         <p className="drawer-note">
           {user
             ? "Your conversation history is tied to your secure passenger account."
@@ -1336,7 +1429,15 @@ export function PassengerChat({
       </div>
 
       {activeView === "ai" && (
-      <div className="chat-controls">
+      <div className="chat-controls ai-conversation-header">
+        <button
+          className="support-back-button"
+          type="button"
+          onClick={() => setDrawerOpen(true)}
+          aria-label="Back to conversations"
+        >
+          <ArrowLeft aria-hidden="true" />
+        </button>
         <div className="control-field">
           <label htmlFor="language-preference">Response language</label>
           <select
@@ -1519,7 +1620,10 @@ export function PassengerChat({
             <p className="empty-chat">Please wait while we connect to the support system.</p>
           </div>
         )}
-        {activeView === "ai" && !messages.length && !isSending && (
+        {activeView === "ai"
+          && !messages.length
+          && !isSending
+          && !supportOffer && (
           <div className="welcome-screen">
             <KenyaAirwaysLogo className="welcome-airline-logo" variant="colour" />
             <h3>What can we help you with?</h3>
@@ -1679,6 +1783,7 @@ export function PassengerChat({
             conversation={conversation}
             existingFeedback={feedback}
             onSaved={setFeedback}
+            sectionRef={feedbackSectionRef}
           />
         )}
       </div>

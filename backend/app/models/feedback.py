@@ -36,9 +36,19 @@ class OperationalEvent(BaseModel):
     """Analytics data excludes questions, answers, UIDs, tokens, and credentials."""
 
     event_id: str = Field(min_length=1, max_length=128)
-    event_type: Literal["chat_completed", "chat_failed"]
+    event_type: Literal[
+        "chat_completed",
+        "chat_failed",
+        "conversation_ended",
+        "feedback_submitted",
+        "feedback_updated",
+    ]
     occurred_at: UTCDateTime
-    duration_ms: float = Field(ge=0, allow_inf_nan=False)
+    duration_ms: float | None = Field(
+        default=None,
+        ge=0,
+        allow_inf_nan=False,
+    )
     model_id: str | None = Field(default=None, max_length=100)
     model_provider: str | None = Field(default=None, max_length=100)
     model_version: str | None = Field(default=None, max_length=300)
@@ -48,4 +58,6 @@ class OperationalEvent(BaseModel):
     error_code: str | None = Field(default=None, max_length=100)
     error_summary: str | None = Field(default=None, max_length=500)
     request_id: str | None = Field(default=None, max_length=128)
+    conversation_id: str | None = Field(default=None, max_length=128)
+    actor: str | None = Field(default=None, max_length=40)
     model_selection_status: Literal["selected", "not_selected"] | None = None

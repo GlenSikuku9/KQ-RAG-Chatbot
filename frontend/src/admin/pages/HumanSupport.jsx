@@ -37,16 +37,53 @@ function statusLabel(value) {
 
 
 function supportMessages(detail) {
-  return (detail?.messages || []).map((message) => ({
+  const aiMessages = (detail?.ai_messages || []).map((message) => ({
+    ...message,
+    kind: message.sender_type === "chatbot" ? "ai" : "passenger",
+  }));
+  const liveMessages = (detail?.messages || []).map((message) => ({
     ...message,
     kind: message.sender_role,
-  })).sort((left, right) => (
+  }));
+  const requestEvent = detail?.request ? [{
+    kind: "system",
+    message_id: `support-request:${detail.request.request_id}`,
+    message_text: "Human support requested.",
+    timestamp: detail.request.created_at,
+  }] : [];
+  const unique = new Map();
+
+  // Collections remain separate in Firestore. This display-only merge removes
+  // an exact duplicate if legacy data contains the same recorded message.
+  [...aiMessages, ...requestEvent, ...liveMessages].forEach((message) => {
+    const key = [
+      message.kind,
+      message.message_text,
+      message.timestamp,
+    ].join(":");
+    if (!unique.has(key)) unique.set(key, message);
+  });
+
+  const order = {
+    passenger: 0,
+    ai: 1,
+    system: 2,
+    agent: 3,
+  };
+  return [...unique.values()].sort((left, right) => (
     new Date(left.timestamp) - new Date(right.timestamp)
+    || (order[left.kind] || 0) - (order[right.kind] || 0)
   ));
 }
 
 
-function SupportWorkspace({ user, requestId, onClose, onChanged }) {
+function SupportWorkspace({
+  user,
+  requestId,
+  onClose,
+  onChanged,
+  onOpenOriginal,
+}) {
   const [detail, setDetail] = useState(null);
   const [message, setMessage] = useState("");
   const [state, setState] = useState("loading");
@@ -79,8 +116,9 @@ function SupportWorkspace({ user, requestId, onClose, onChanged }) {
       })),
       () => {},
     );
-    // A scoped fallback repairs missed snapshots after a disconnection.
-    const timer = window.setInterval(load, 15000);
+    // Firestore supplies live changes. This low-frequency fallback only
+    // repairs state after an extended disconnection without exhausting reads.
+    const timer = window.setInterval(load, 60000);
     return () => {
       stopRealtime();
       window.clearInterval(timer);
@@ -160,20 +198,29 @@ function SupportWorkspace({ user, requestId, onClose, onChanged }) {
         <section className="support-conversation-panel">
           <div className="support-message-list" aria-live="polite">
             {messages.map((item) => (
-              <article className={`support-message ${item.kind}`} key={item.message_id}>
+              <article
+                className={`support-message ${item.kind}`}
+                key={item.message_id}
+              >
                 <p className="support-message-meta">
                   <strong>
                     {item.kind === "agent"
-                      ? item.sender_name || "Support agent"
-                      : item.kind === "customer" || item.kind === "passenger"
-                        ? "Passenger"
-                        : "KQ Support AI"}
+                      ? `${item.sender_name || "Agent"} · Support Agent`
+                      : item.kind === "passenger"
+                        ? request.passenger_name
+                          ? `Passenger · ${request.passenger_name}`
+                          : "Passenger"
+                        : item.kind === "ai"
+                          ? "AI Assistant"
+                          : "Support update"}
                   </strong>
                   <time dateTime={item.timestamp}>
                     {formatDateTime(item.timestamp)}
                   </time>
                 </p>
-                <div>{item.message_text}</div>
+                <div className="support-message-bubble">
+                  {item.message_text}
+                </div>
                 {item.retrieved_chunks?.length > 0 && (
                   <div className="support-case-sources">
                     {item.retrieved_chunks.map((source) => (
@@ -302,21 +349,13 @@ function SupportWorkspace({ user, requestId, onClose, onChanged }) {
             </section>
           )}
 
-          <details className="support-ai-context">
-            <summary>Originating AI conversation</summary>
-            <div className="support-ai-context-list">
-              {(detail.ai_messages || []).map((item) => (
-                <article key={item.message_id}>
-                  <strong>
-                    {item.sender_type === "customer"
-                      ? "Passenger"
-                      : "KQ Support AI"}
-                  </strong>
-                  <p>{item.message_text}</p>
-                </article>
-              ))}
-            </div>
-          </details>
+          <button
+            className="support-original-conversation-link"
+            type="button"
+            onClick={() => onOpenOriginal(request.conversation_id)}
+          >
+            View original AI conversation
+          </button>
         </aside>
       </div>
     </section>
@@ -328,6 +367,7 @@ export default function HumanSupport({
   user,
   initialRequestId,
   onOpened,
+  onOpenConversation,
   revision = 0,
 }) {
   const [filters, setFilters] = useState({
@@ -357,14 +397,12 @@ export default function HumanSupport({
       if (value !== "") params.set(key, value);
     });
     try {
-      const [page, metrics, presence] = await Promise.all([
+      const [page, metrics] = await Promise.all([
         adminSupportRequests(user, params),
         adminSupportSummary(user),
-        adminGetSupportAvailability(user),
       ]);
       setData(page);
       setSummary(metrics);
-      setAvailable(presence.available);
       setError(null);
       loaded.current = true;
     } catch (reason) {
@@ -379,6 +417,14 @@ export default function HumanSupport({
     const timer = window.setTimeout(load, filters.search ? 300 : 0);
     return () => window.clearTimeout(timer);
   }, [filters.search, load]);
+
+  useEffect(() => {
+    // Availability changes on its own heartbeat cadence, so table refreshes
+    // should not spend an additional Firestore read fetching it each time.
+    adminGetSupportAvailability(user)
+      .then((presence) => setAvailable(presence.available))
+      .catch((reason) => setError(reason.message));
+  }, [user]);
 
   useEffect(() => {
     let refreshTimer;
@@ -433,6 +479,7 @@ export default function HumanSupport({
         requestId={selected}
         onClose={() => setSelected(null)}
         onChanged={load}
+        onOpenOriginal={onOpenConversation}
       />
     );
   }

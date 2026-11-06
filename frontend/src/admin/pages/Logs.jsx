@@ -54,6 +54,18 @@ function eventPresentation(eventType, severity) {
       icon: CircleCheck,
       tone: "success",
     },
+    conversation_ended: {
+      icon: CircleCheck,
+      tone: "navy",
+    },
+    feedback_submitted: {
+      icon: ListChecks,
+      tone: "success",
+    },
+    feedback_updated: {
+      icon: ListChecks,
+      tone: "navy",
+    },
   };
 
   if (presentations[eventType]) {
@@ -362,6 +374,11 @@ function LogDetailsDrawer({ log, onClose, returnFocusRef }) {
   const isModelChange = log.event_type === "default_model_updated";
   const isChatFailure = log.event_type === "chat_failed";
   const isChatEvent = log.event_type.startsWith("chat_");
+  const isConversationLifecycle = [
+    "conversation_ended",
+    "feedback_submitted",
+    "feedback_updated",
+  ].includes(log.event_type);
   const modelName = details.model_name
     || (details.model_id ? modelDisplayName(details.model_id) : null);
   const presentation = eventPresentation(
@@ -385,6 +402,8 @@ function LogDetailsDrawer({ log, onClose, returnFocusRef }) {
     "error_code",
     "error_summary",
     "request_id",
+    "conversation_id",
+    "actor",
     "duration_ms",
     "response_source",
     "administrator_email",
@@ -589,6 +608,9 @@ function LogDetailsDrawer({ log, onClose, returnFocusRef }) {
               {isChatFailure
                 && detailRow("Request ID", details.request_id)}
               {!isChatFailure
+                && detailRow("Request ID", details.request_id)}
+              {detailRow("Conversation ID", details.conversation_id)}
+              {!isChatFailure
                 && detailRow(
                   "Response Source",
                   details.response_source,
@@ -598,6 +620,20 @@ function LogDetailsDrawer({ log, onClose, returnFocusRef }) {
                 "Duration",
                 details.duration_ms,
                 durationInSeconds,
+              )}
+            </dl>
+          </section>
+        )}
+
+        {isConversationLifecycle && (
+          <section className="log-metadata">
+            <h3>Conversation lifecycle</h3>
+            <dl>
+              {detailRow("Conversation ID", details.conversation_id)}
+              {detailRow(
+                "Operation actor",
+                details.actor,
+                readableEventName,
               )}
             </dl>
           </section>

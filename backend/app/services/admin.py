@@ -408,9 +408,17 @@ def list_logs() -> list[AdminLog]:
             "error_code": item.get("error_code"),
             "error_summary": item.get("error_summary"),
             "request_id": item.get("request_id"),
+            "conversation_id": item.get("conversation_id"),
+            "actor": item.get("actor"),
             "model_selection_status": item.get("model_selection_status"),
             "duration_ms": item.get("duration_ms"),
             "response_source": item.get("response_source"),
+        }
+        descriptions = {
+            "chat_completed": "Chat request completed.",
+            "conversation_ended": "Passenger ended the conversation.",
+            "feedback_submitted": "Passenger submitted conversation feedback.",
+            "feedback_updated": "Passenger updated conversation feedback.",
         }
         logs.append(
             AdminLog(
@@ -420,7 +428,10 @@ def list_logs() -> list[AdminLog]:
                 description=(
                     _chat_failure_description(category)
                     if failed
-                    else "Chat request completed."
+                    else descriptions.get(
+                        str(item.get("event_type")),
+                        "Conversation activity completed.",
+                    )
                 ),
                 actor="system",
                 severity="error" if failed else "info",

@@ -11,6 +11,7 @@ from app.models.database import encode_document_id, utc_now
 from app.models.feedback import Feedback, FeedbackRequest
 from app.models.user import AuthenticatedUser
 from app.services.firestore_client import FIRESTORE_READ_TIMEOUT, get_firestore_client, run_transaction
+from app.services.operational_logging import OperationalLogger
 
 
 logger = logging.getLogger(__name__)
@@ -27,7 +28,9 @@ class FeedbackService:
         feedback_id = f"{user.uid}:{conversation_id}"
         feedback_ref = self.client.collection("feedback").document(encode_document_id(feedback_id))
 
-        def operation(transaction: Transaction) -> Feedback:
+        def operation(
+            transaction: Transaction,
+        ) -> tuple[Feedback, str | None]:
             conversation = self._read_conversation(
                 conversation_ref.get(transaction=transaction, timeout=FIRESTORE_READ_TIMEOUT), conversation_id,
             )
@@ -38,16 +41,41 @@ class FeedbackService:
                 raise HTTPException(status.HTTP_409_CONFLICT, "End the conversation before submitting feedback.")
             existing_snapshot = feedback_ref.get(transaction=transaction, timeout=FIRESTORE_READ_TIMEOUT)
             existing = self._read_feedback(existing_snapshot, feedback_id) if existing_snapshot.exists else None
+            normalized_comment = request.comment.strip() if request.comment else None
+            if (
+                existing
+                and existing.rating == request.rating
+                and existing.comment == normalized_comment
+            ):
+                # Identical retries are true no-ops: no duplicate record, write,
+                # lifecycle event, or analytics change is produced.
+                return existing, None
             now = utc_now()
             feedback = Feedback(
                 feedback_id=feedback_id, user_id=user.uid, conversation_id=conversation_id,
-                rating=request.rating, comment=request.comment,
+                rating=request.rating, comment=normalized_comment,
                 created_at=existing.created_at if existing else now, updated_at=now,
             )
             transaction.set(feedback_ref, feedback.model_dump())
-            return feedback
+            event_type = (
+                "feedback_updated"
+                if existing
+                else "feedback_submitted"
+            )
+            return feedback, event_type
 
-        return run_transaction(self.client, operation)
+        feedback, event_type = run_transaction(self.client, operation)
+        if event_type:
+            try:
+                OperationalLogger(self.client).lifecycle(
+                    event_type,
+                    conversation_id,
+                )
+            except Exception:
+                logger.warning(
+                    "Could not persist the feedback lifecycle audit event.",
+                )
+        return feedback
 
     def get(self, user: AuthenticatedUser, conversation_id: str) -> Feedback | None:
         """Read the caller's one feedback record without exposing another user's data."""

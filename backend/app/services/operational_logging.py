@@ -23,14 +23,44 @@ class OperationalLogger:
     def __init__(self, client: Client) -> None:
         self.client = client
 
-    def completed(self, result: GroundedAnswerResponse, duration_ms: float) -> None:
+    def completed(
+        self,
+        result: GroundedAnswerResponse,
+        duration_ms: float,
+        *,
+        request_id: str | None = None,
+        conversation_id: str | None = None,
+    ) -> None:
+        """Record one successful generation request with trace identifiers."""
         model = result.model
         event = OperationalEvent(
-            event_id=uuid4().hex, event_type="chat_completed", occurred_at=utc_now(), duration_ms=duration_ms,
+            event_id=uuid4().hex,
+            event_type="chat_completed",
+            occurred_at=utc_now(),
+            duration_ms=duration_ms,
             model_id=model.model_id if model else None,
             model_provider=model.provider if model else None,
             model_version=model.upstream_model if model else None,
             response_source=self._response_source(result),
+            request_id=request_id,
+            conversation_id=conversation_id,
+        )
+        self._write(event)
+
+    def lifecycle(
+        self,
+        event_type: str,
+        conversation_id: str,
+        *,
+        actor: str = "passenger",
+    ) -> None:
+        """Record a conversation operation without generation diagnostics."""
+        event = OperationalEvent(
+            event_id=uuid4().hex,
+            event_type=event_type,
+            occurred_at=utc_now(),
+            conversation_id=conversation_id,
+            actor=actor,
         )
         self._write(event)
 
