@@ -239,6 +239,7 @@ export function AdminDashboard({ user, profile, onSignOut }) {
       revision: pageRevisions["Human Support"] || 0,
       initialRequestId: selectedSupportRequestId,
       onOpened: () => setSelectedSupportRequestId(null),
+      onOpenConversation: openConversation,
     },
   };
   // Render only the active page to preserve lazy fetching and local state.

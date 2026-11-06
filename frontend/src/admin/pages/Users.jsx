@@ -500,7 +500,7 @@ function UserTable({ user, revision, onProfileChanged }) {
                         Edit
                       </button>
                       <button
-                        className="user-more-button"
+                        className="admin-overflow-action user-more-button"
                         type="button"
                         aria-label={`More actions for ${item.email || item.user_id}`}
                         aria-expanded={openMenu === item.user_id}

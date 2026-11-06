@@ -104,7 +104,9 @@ class ConversationStore:
             started_at=now,
         )
 
-        def operation(transaction: Transaction) -> Conversation:
+        def operation(
+            transaction: Transaction,
+        ) -> Conversation:
             # The random ID is generated before retries, so every retry writes one record.
             transaction.set(
                 self._conversation_reference(conversation.conversation_id),
@@ -139,18 +141,36 @@ class ConversationStore:
     def end(self, user: AuthenticatedUser, conversation_id: str) -> Conversation:
         reference = self._conversation_reference(conversation_id)
 
-        def operation(transaction: Transaction) -> Conversation:
+        def operation(
+            transaction: Transaction,
+        ) -> tuple[Conversation, bool]:
             conversation = self._read_conversation(
                 reference.get(transaction=transaction, timeout=FIRESTORE_READ_TIMEOUT), conversation_id,
             )
             self._assert_owner(conversation, user)
             if conversation.status == ConversationStatus.ENDED:
-                return conversation
-            ended = conversation.model_copy(update={"status": ConversationStatus.ENDED, "ended_at": utc_now()})
+                return conversation, False
+            ended = conversation.model_copy(
+                update={
+                    "status": ConversationStatus.ENDED,
+                    "ended_at": utc_now(),
+                },
+            )
             transaction.set(reference, self._conversation_payload(ended))
-            return ended
+            return ended, True
 
-        return run_transaction(self.client, operation)
+        ended, changed = run_transaction(self.client, operation)
+        if changed:
+            try:
+                OperationalLogger(self.client).lifecycle(
+                    "conversation_ended",
+                    conversation_id,
+                )
+            except Exception:
+                logger.warning(
+                    "Could not persist the conversation-ended audit event.",
+                )
+        return ended
 
     def save_exchange(
         self, user: AuthenticatedUser, conversation_id: str, request: SendMessageRequest,
@@ -406,7 +426,12 @@ class ConversationService:
                 logger.warning("Could not persist a privacy-minimised operational failure event.")
             raise
         try:
-            self.operational_logger.completed(generated, (perf_counter() - started) * 1000)
+            self.operational_logger.completed(
+                generated,
+                (perf_counter() - started) * 1000,
+                request_id=request_id,
+                conversation_id=result.conversation.conversation_id,
+            )
         except Exception:
             # The chat exchange is already safely committed; avoid falsely reporting
             # it as failed merely because its non-critical analytics event is unavailable.

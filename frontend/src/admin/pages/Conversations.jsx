@@ -239,7 +239,7 @@ function ConversationTable({ user, revision, onSelect }) {
                         Inspect
                       </button>
                       <button
-                        className="conversation-more-button"
+                        className="admin-overflow-action conversation-more-button"
                         type="button"
                         aria-label={`More actions for ${item.title}`}
                         aria-expanded={openMenu === item.conversation_id}

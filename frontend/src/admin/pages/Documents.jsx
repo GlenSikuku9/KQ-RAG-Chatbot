@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { EllipsisVertical } from "lucide-react";
 import {
   adminDeleteDocument,
   adminDocumentContent,
@@ -379,12 +380,12 @@ function Documents({ user, revision }) {
                       <button
                         aria-haspopup="menu"
                         aria-label={`Actions for ${item.filename}`}
-                        className="document-actions-trigger"
+                        className="admin-overflow-action document-actions-trigger"
                         disabled={processing}
                         type="button"
                         onClick={(event) => openMenu(event, item)}
                       >
-                        ⋯
+                        <EllipsisVertical aria-hidden="true" />
                       </button>
                     </td>
                   </tr>

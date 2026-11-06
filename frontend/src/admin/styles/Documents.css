@@ -29,9 +29,9 @@
   cursor: pointer;
 }
 
-.document-actions-trigger:hover,
-.document-actions-trigger:focus-visible {
-  background: #f3f6fa;
+.document-actions-trigger svg {
+  width: 1rem;
+  height: 1rem;
 }
 
 /* Fixed positioning keeps the menu clear of horizontal table clipping. */

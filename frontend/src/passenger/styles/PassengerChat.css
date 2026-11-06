@@ -146,8 +146,115 @@
   font-size: 0.68rem;
 }
 
-.support-history-list .history-item span {
-  text-transform: capitalize;
+/* The list owns the remaining drawer height so its final rows stay reachable
+   without moving the new-conversation action or account note. */
+.conversation-history-scroll {
+  min-height: 0;
+  flex: 1 1 auto;
+  padding-right: 0.35rem;
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+}
+
+.conversation-history-scroll .history-list {
+  overflow: visible;
+}
+
+/* Compact cards leave more history visible while retaining a two-line title
+   and clear status information for both conversation types. */
+.unified-history-list {
+  gap: 0.4rem;
+}
+
+.unified-history-list .history-item {
+  grid-template-rows: minmax(2.25rem, auto) auto;
+  gap: 0.25rem;
+  min-height: 0;
+  padding: 0.58rem 0.65rem;
+  border: 1px solid var(--passenger-border, #dce4ef);
+  border-radius: 0.6rem;
+  background: #ffffff;
+}
+
+.unified-history-list .history-item:not(.selected):hover {
+  border-color: #c8d5e5;
+  background: #f8fafc;
+}
+
+.unified-history-list .history-item.selected,
+.unified-history-list .history-item.selected:hover {
+  border-color: var(--passenger-border, #dce4ef);
+  border-left: 0.25rem solid #d71920;
+  background: #eaf2fc;
+}
+
+.unified-history-list .history-item:focus-visible {
+  outline: 3px solid rgb(16 47 112 / 28%);
+  outline-offset: 2px;
+}
+
+.unified-history-list .history-item-title {
+  display: -webkit-box;
+  overflow: hidden;
+  color: #172033;
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.unified-history-list .history-item-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  justify-content: space-between;
+  min-width: 0;
+  color: inherit;
+  font-size: 0.68rem;
+}
+
+.history-kind-label {
+  color: #102f70;
+  font-size: 0.68rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.history-status-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 1.25rem;
+  padding: 0.12rem 0.45rem;
+  border-radius: 999px;
+  font-size: 0.66rem;
+  font-weight: 750;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.history-item-meta .history-status-badge {
+  margin-left: auto;
+}
+
+.history-status-badge.ai.active,
+.history-status-badge.support.in_progress,
+.history-status-badge.support.resolved {
+  color: #166534;
+  background: #e6f6ee;
+}
+
+.history-status-badge.support.pending {
+  color: #92400e;
+  background: #fef3c7;
+}
+
+.history-status-badge.ai.ended,
+.history-status-badge.support.cancelled,
+.history-status-badge.support.closed {
+  color: #102f70;
+  background: #e9eef5;
 }
 
 /* Human support is a dedicated view inside the existing widget. Its header
@@ -156,6 +263,7 @@
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
+  min-height: 3.45rem;
   gap: 0.7rem;
   padding: 0.65rem 0.8rem;
   border-bottom: 1px solid #dce4ef;
@@ -177,6 +285,16 @@
 
 .support-back-button svg {
   width: 1.15rem;
+}
+
+.support-back-button:hover:not(:disabled) {
+  color: #102f70;
+  background: #e1eaf6;
+}
+
+.support-back-button:focus-visible {
+  outline: 3px solid rgb(215 25 32 / 20%);
+  outline-offset: 2px;
 }
 
 .human-support-header h2,
@@ -219,7 +337,8 @@
   color: #166534;
 }
 
-.human-support-status.cancelled {
+.human-support-status.cancelled,
+.human-support-status.closed {
   background: #f1f5f9;
   color: #64748b;
 }
@@ -490,6 +609,12 @@
   padding: 0.45rem 0.8rem;
 }
 
+/* Both conversation types now use the same secondary-header navigation size
+   in compact, expanded, and mobile modes. */
+.ai-conversation-header {
+  min-height: 3.45rem;
+}
+
 .chat-controls .control-field label {
   font-size: 0.72rem;
 }
@@ -752,6 +877,27 @@
   border: 1px solid var(--passenger-border, #e2e8f0);
   border-radius: 0.8rem;
   background: #f8fbff;
+}
+
+/* Escalation remains a compact item in the message flow, including expanded
+   mode, instead of stretching over the welcome content. */
+.human-support-card {
+  width: min(100%, 34rem);
+  max-width: 34rem;
+  margin-inline: auto;
+  border: 1px solid var(--passenger-border, #e2e8f0);
+  background: #ffffff;
+}
+
+.human-support-card textarea {
+  min-height: 4.5rem;
+}
+
+.human-support-card .button.secondary:hover:not(:disabled),
+.human-support-card .button.secondary:focus-visible {
+  border-color: #d71920;
+  color: #102f70;
+  background: #fff1f2;
 }
 
 .feedback-card h4 {

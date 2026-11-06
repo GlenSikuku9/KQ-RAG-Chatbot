@@ -6,6 +6,7 @@ from uuid import uuid4
 
 from fastapi import HTTPException, status
 from google.cloud.firestore_v1 import Client, DocumentSnapshot, Transaction
+from google.cloud.firestore_v1.base_query import FieldFilter
 from pydantic import ValidationError
 
 from app.config import get_settings
@@ -93,8 +94,10 @@ class SupportService:
             seconds=settings.support_agent_stale_seconds,
         )
         with firestore_operation():
-            snapshots = self.client.collection("agent_availability").stream(
-                timeout=FIRESTORE_READ_TIMEOUT,
+            snapshots = list(
+                self.client.collection("agent_availability").stream(
+                    timeout=FIRESTORE_READ_TIMEOUT,
+                ),
             )
         live_agents = 0
         for snapshot in snapshots:
@@ -265,7 +268,19 @@ class SupportService:
         self,
         user: AuthenticatedUser,
     ) -> list[SupportRequest]:
-        requests = self._all_requests()
+        # Query only this passenger's cases instead of reading every support
+        # request and filtering it in application memory.
+        with firestore_operation():
+            snapshots = list(
+                self.client.collection("support_requests").where(
+                    filter=FieldFilter(
+                        "passenger_id",
+                        "==",
+                        user.uid,
+                    ),
+                ).stream(timeout=FIRESTORE_READ_TIMEOUT),
+            )
+        requests = self._validated_requests(snapshots)
         return sorted(
             [item for item in requests if item.passenger_id == user.uid],
             key=lambda item: item.created_at,
@@ -290,9 +305,16 @@ class SupportService:
 
     def _all_requests(self) -> list[SupportRequest]:
         with firestore_operation():
-            snapshots = self.client.collection("support_requests").stream(
-                timeout=FIRESTORE_READ_TIMEOUT,
+            snapshots = list(
+                self.client.collection("support_requests").stream(
+                    timeout=FIRESTORE_READ_TIMEOUT,
+                ),
             )
+        return self._validated_requests(snapshots)
+
+    @staticmethod
+    def _validated_requests(snapshots) -> list[SupportRequest]:
+        """Ignore malformed legacy rows after the bounded Firestore read."""
         requests = []
         for snapshot in snapshots:
             try:
@@ -304,9 +326,17 @@ class SupportService:
         return requests
 
     def _messages(self, request_id: str) -> list[SupportMessage]:
+        # A case detail must scale with that case's messages, not with the
+        # complete support-message collection.
         with firestore_operation():
-            snapshots = self.client.collection("support_messages").stream(
-                timeout=FIRESTORE_READ_TIMEOUT,
+            snapshots = list(
+                self.client.collection("support_messages").where(
+                    filter=FieldFilter(
+                        "request_id",
+                        "==",
+                        request_id,
+                    ),
+                ).stream(timeout=FIRESTORE_READ_TIMEOUT),
             )
         messages = []
         for snapshot in snapshots:
@@ -314,8 +344,7 @@ class SupportService:
                 message = SupportMessage.model_validate(snapshot.to_dict())
             except ValidationError:
                 continue
-            if message.request_id == request_id:
-                messages.append(message)
+            messages.append(message)
         return sorted(messages, key=lambda item: item.sequence)
 
     def _feedback(self, request_id: str) -> SupportFeedback | None:
