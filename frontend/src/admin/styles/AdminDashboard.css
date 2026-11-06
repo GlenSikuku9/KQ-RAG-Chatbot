@@ -19,6 +19,41 @@
   box-shadow: 0 0 0 3px rgb(16 47 112 / 11%);
 }
 
+/* Shared outlined actions use one interaction treatment across admin pages.
+   Destructive buttons intentionally keep their red presentation. */
+.admin-shell :is(
+  .button.secondary,
+  .conversation-inspect-button,
+  .user-edit-button
+) {
+  border-color: #d7dee8;
+  color: var(--admin-navy, #102f70);
+  background: #ffffff;
+  transition:
+    background-color 170ms ease,
+    border-color 170ms ease;
+}
+
+.admin-shell :is(
+  .button.secondary,
+  .conversation-inspect-button,
+  .user-edit-button
+):hover:not(:disabled) {
+  border-color: #d71920;
+  color: var(--admin-navy, #102f70);
+  background: #fff1f2;
+}
+
+.admin-shell :is(
+  .button.secondary,
+  .conversation-inspect-button,
+  .user-edit-button
+):focus-visible {
+  border-color: #d71920;
+  outline: 3px solid rgb(215 25 32 / 18%);
+  outline-offset: 2px;
+}
+
 .admin-shell label {
   font-size: 0.78rem;
   font-weight: 600;
@@ -774,4 +809,109 @@
     width: 100%;
     min-width: 0;
   }
+}
+.admin-page-refresh {
+  display: flex;
+  align-items: center;
+  width: fit-content;
+  gap: 0.45rem;
+  margin: -0.15rem 0 0.65rem auto;
+  color: #64748b;
+  font-size: 0.76rem;
+  font-weight: 700;
+}
+
+.admin-section-refresh {
+  margin: 0;
+  visibility: hidden;
+}
+
+.admin-section-refresh.visible {
+  visibility: visible;
+}
+
+.admin-refresh-slot {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  height: 1.5rem;
+  margin-bottom: 0.35rem;
+}
+
+.admin-shell .admin-edit-action {
+  border-color: #d71920;
+  color: var(--admin-navy, #102f70);
+  background: #ffffff;
+  transition:
+    background-color 170ms ease,
+    border-color 170ms ease;
+}
+
+.admin-shell .admin-edit-action:hover:not(:disabled) {
+  border-color: #d71920;
+  color: var(--admin-navy, #102f70);
+  background: #fff1f2;
+}
+
+.admin-shell .admin-edit-action:focus-visible {
+  border-color: #d71920;
+  outline: 3px solid rgb(215 25 32 / 18%);
+  outline-offset: 2px;
+}
+
+.admin-page-refresh span {
+  width: 0.8rem;
+  height: 0.8rem;
+  border: 2px solid #d8e0ea;
+  border-top-color: #102f70;
+  border-radius: 50%;
+  animation: admin-refresh-spin 700ms linear infinite;
+}
+
+@keyframes admin-refresh-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .admin-page-refresh span {
+    animation: none;
+  }
+}
+.admin-notice {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.admin-notice > button {
+  display: grid;
+  width: 1.5rem;
+  height: 1.5rem;
+  flex: 0 0 auto;
+  padding: 0;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  color: currentColor;
+  background: transparent;
+  cursor: pointer;
+}
+
+.admin-notice > button:hover,
+.admin-notice > button:focus-visible {
+  outline: none;
+  background: rgb(15 23 42 / 8%);
+}
+
+.admin-notice > button svg {
+  width: 0.95rem;
+  height: 0.95rem;
+}
+
+.admin-notice.info {
+  color: #102f70;
+  background: #eaf2fc;
 }

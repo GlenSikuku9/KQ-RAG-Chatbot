@@ -30,6 +30,13 @@ service cloud.firestore {
       allow write: if false;
     }
 
+    // Administrators receive summary change signals for the Conversations
+    // table. Message bodies still load only through protected FastAPI routes.
+    match /conversations/{conversationId} {
+      allow read: if administrator();
+      allow write: if false;
+    }
+
     match /{document=**} {
       allow read, write: if false;
     }

@@ -56,10 +56,18 @@ class GenerationService:
             is_default=model_id is None,
         )
 
-    def generate(self, prompt: str, model_id: str | None = None, system_instruction: str | None = None) -> GenerationResponse:
+    def generate(
+        self,
+        prompt: str,
+        model_id: str | None = None,
+        system_instruction: str | None = None,
+    ) -> GenerationResponse:
         model = self._select_model(model_id)
         if not model.api_key:
-            raise GenerationProviderError(503, "The selected model is not configured with an API key.")
+            raise GenerationProviderError(
+                503,
+                "The selected model is not configured with an API key.",
+            )
         for attempt in (1, 2, 3):
             try:
                 if model.provider == "openrouter":
@@ -79,10 +87,17 @@ class GenerationService:
                     "The selected AI provider is not supported.",
                 )
             except httpx.TimeoutException as error:
-                logger.warning("Generation request timed out for %s.", model.model_id)
-                raise GenerationProviderError(504, "The selected AI provider timed out. Please try again later.") from error
+                logger.warning(
+                    "Generation request timed out for %s.",
+                    model.model_id,
+                )
+                raise GenerationProviderError(
+                    504,
+                    "The selected AI provider timed out. Please try again later.",
+                ) from error
             except GenerationProviderError as error:
-                # Google often returns 503 under load; one retry covers a transient outage.
+                # Retry only transient provider outages. Client errors such as an
+                # invalid key or rate limit return immediately to avoid request spam.
                 if error.status_code != 503 or attempt == 3:
                     raise
                 # Provider capacity spikes are usually short. A small backoff is
@@ -95,9 +110,19 @@ class GenerationService:
                 )
                 self.sleeper(delay_seconds)
             except httpx.RequestError as error:
-                logger.warning("Generation network failure for %s: %s", model.model_id, type(error).__name__)
-                raise GenerationProviderError(503, "The selected AI provider is unavailable. Please try again later.") from error
-        raise GenerationProviderError(503, "The selected AI provider is unavailable. Please try again later.")
+                logger.warning(
+                    "Generation network failure for %s: %s",
+                    model.model_id,
+                    type(error).__name__,
+                )
+                raise GenerationProviderError(
+                    503,
+                    "The selected AI provider is unavailable. Please try again later.",
+                ) from error
+        raise GenerationProviderError(
+            503,
+            "The selected AI provider is unavailable. Please try again later.",
+        )
 
     def _select_model(self, requested_id: str | None) -> GenerationModelSettings:
         model_id = requested_id or self._effective_default_model_id()
@@ -147,11 +172,29 @@ class GenerationService:
     def _stored_default_model_id() -> str | None:
         """Use the administrator-selected default when Firestore has one; env config remains the fallback."""
         try:
-            from app.services.firestore_client import FIRESTORE_READ_TIMEOUT, firestore_operation, get_firestore_client
+            from app.services.firestore_client import (
+                FIRESTORE_READ_TIMEOUT,
+                firestore_operation,
+                get_firestore_client,
+            )
+
             with firestore_operation():
-                snapshot = get_firestore_client().collection("app_settings").document("generation_config").get(timeout=FIRESTORE_READ_TIMEOUT)
-            value = (snapshot.to_dict() or {}).get("default_model_id") if snapshot.exists else None
-            return value if isinstance(value, str) and value.strip() else None
+                snapshot = (
+                    get_firestore_client()
+                    .collection("app_settings")
+                    .document("generation_config")
+                    .get(timeout=FIRESTORE_READ_TIMEOUT)
+                )
+            value = (
+                (snapshot.to_dict() or {}).get("default_model_id")
+                if snapshot.exists
+                else None
+            )
+            return (
+                value
+                if isinstance(value, str) and value.strip()
+                else None
+            )
         except Exception:
             # Model generation must continue using the environment default if settings storage is unavailable.
             return None
@@ -213,42 +256,94 @@ class GenerationService:
             raise GenerationProviderError(502, "The selected AI provider returned an invalid response.") from error
         return self._response(model, self._text(text), data.get("id"))
 
-    def _post(self, url: str, model: GenerationModelSettings, payload: dict, headers: dict[str, str]) -> dict:
+    def _post(
+        self,
+        url: str,
+        model: GenerationModelSettings,
+        payload: dict,
+        headers: dict[str, str],
+    ) -> dict:
         with self.client_factory(timeout=model.timeout_seconds) as client:
-            response = client.post(url, json=payload, headers={"Content-Type": "application/json", **headers})
+            response = client.post(
+                url,
+                json=payload,
+                headers={
+                    "Content-Type": "application/json",
+                    **headers,
+                },
+            )
         # Keep useful provider categories distinct. Do not return the raw response:
         # it can contain provider internals and must never include secrets in logs/API output.
         if response.status_code == 400:
-            raise GenerationProviderError(400, "The selected AI provider rejected this request as invalid or unsupported.")
+            raise GenerationProviderError(
+                400,
+                "The selected AI provider rejected this request as invalid or unsupported.",
+            )
         if response.status_code in {401, 403}:
-            raise GenerationProviderError(502, "The selected AI provider rejected its configured credentials or access.")
+            raise GenerationProviderError(
+                502,
+                "The selected AI provider rejected its configured credentials or access.",
+            )
         if response.status_code == 402:
             raise GenerationProviderError(502, "The selected AI provider account has insufficient credits.")
         if response.status_code == 404:
             raise GenerationProviderError(502, "The selected AI model is unavailable from its provider.")
         if response.status_code == 429:
-            raise GenerationProviderError(429, "The selected AI provider rate limit was reached. Please try again later.")
+            raise GenerationProviderError(
+                429,
+                "The selected AI provider rate limit was reached. Please try again later.",
+            )
         if response.status_code in {500, 502, 503, 504}:
-            logger.warning("Generation provider returned status %s for %s.", response.status_code, model.model_id)
-            raise GenerationProviderError(503, "The selected AI provider is unavailable. Please try again later.")
+            logger.warning(
+                "Generation provider returned status %s for %s.",
+                response.status_code,
+                model.model_id,
+            )
+            raise GenerationProviderError(
+                503,
+                "The selected AI provider is unavailable. Please try again later.",
+            )
         if response.status_code >= 400:
-            logger.warning("Generation provider returned status %s for %s.", response.status_code, model.model_id)
+            logger.warning(
+                "Generation provider returned status %s for %s.",
+                response.status_code,
+                model.model_id,
+            )
             raise GenerationProviderError(502, "The selected AI provider rejected the request.")
         try:
             return response.json()
         except ValueError as error:
-            raise GenerationProviderError(502, "The selected AI provider returned an invalid response.") from error
+            raise GenerationProviderError(
+                502,
+                "The selected AI provider returned an invalid response.",
+            ) from error
 
     @staticmethod
     def _text(value: object) -> str:
         if not isinstance(value, str) or not value.strip():
-            raise GenerationProviderError(502, "The selected AI provider returned an empty response.")
+            raise GenerationProviderError(
+                502,
+                "The selected AI provider returned an empty response.",
+            )
         return value
 
     @staticmethod
-    def _response(model: GenerationModelSettings, text: str, request_id: object) -> GenerationResponse:
-        return GenerationResponse(model_id=model.model_id, provider=model.provider, upstream_model=model.upstream_model,
-            text=text, provider_request_id=request_id if isinstance(request_id, str) else None)
+    def _response(
+        model: GenerationModelSettings,
+        text: str,
+        request_id: object,
+    ) -> GenerationResponse:
+        return GenerationResponse(
+            model_id=model.model_id,
+            provider=model.provider,
+            upstream_model=model.upstream_model,
+            text=text,
+            provider_request_id=(
+                request_id
+                if isinstance(request_id, str)
+                else None
+            ),
+        )
 
 
 def get_generation_service() -> GenerationService:

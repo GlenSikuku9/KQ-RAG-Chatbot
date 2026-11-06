@@ -24,6 +24,7 @@ from app.models.admin import (
     DocumentUpdate,
     EvaluationResult,
     PassengerTheme,
+    UserDisplayNameUpdate,
     UserRoleUpdate,
     UserStatusUpdate,
 )
@@ -395,6 +396,28 @@ def user_status(user_id: str, payload: UserStatusUpdate, admin: AuthenticatedUse
     return service.update_user_status(admin, user_id, payload.disabled)
 
 
+@router.patch("/users/{user_id}/display-name", response_model=AdminUser)
+def user_display_name(
+    user_id: str,
+    payload: UserDisplayNameUpdate,
+    admin: AuthenticatedUser = Depends(require_admin),
+):
+    return service.update_user_display_name(
+        admin,
+        user_id,
+        payload.display_name,
+    )
+
+
+@router.delete("/users/{user_id}")
+def delete_user(
+    user_id: str,
+    admin: AuthenticatedUser = Depends(require_admin),
+):
+    service.delete_user_account(admin, user_id)
+    return {"deleted": True, "user_id": user_id}
+
+
 @router.get("/conversations")
 def conversations(_: AuthenticatedUser = Depends(require_admin)):
     return service.list_conversation_summaries()
@@ -456,3 +479,12 @@ def conversation(conversation_id: str, _: AuthenticatedUser = Depends(require_ad
         user_email=user_email,
         feedback=feedback,
     )
+
+
+@router.delete("/conversations/{conversation_id}")
+def delete_conversation(
+    conversation_id: str,
+    admin: AuthenticatedUser = Depends(require_admin),
+):
+    service.delete_conversation(admin, conversation_id)
+    return {"deleted": True, "conversation_id": conversation_id}

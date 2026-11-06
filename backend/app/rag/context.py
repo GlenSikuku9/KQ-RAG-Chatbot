@@ -27,6 +27,7 @@ def build_context(retrieval: RetrievalResponse, settings: Settings) -> PreparedC
     sources: list[ContextSource] = []
     excluded: list[ExcludedChunk] = []
     blocks: list[str] = []
+    document_citations: dict[str, str] = {}
     used = 0
     eligible = 0
     for hit in retrieval.results:
@@ -53,7 +54,12 @@ def build_context(retrieval: RetrievalResponse, settings: Settings) -> PreparedC
                 chunk_id=chunk.chunk_id, reason="duplicate_content", duplicate_of=duplicate.citation_id,
             ))
             continue
-        citation = f"S{len(sources) + 1}"
+        # Chunks remain separate evidence records, while each stable document
+        # receives one passenger-facing citation before the prompt is built.
+        citation = document_citations.get(chunk.document_id)
+        if citation is None:
+            citation = f"S{len(document_citations) + 1}"
+            document_citations[chunk.document_id] = citation
         block = f"[{citation}]\n{chunk.text}"
         needed = len(block) + (2 if blocks else 0)
         # The budget includes citation markers and separators, never truncated policy text.

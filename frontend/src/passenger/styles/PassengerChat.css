@@ -150,6 +150,180 @@
   text-transform: capitalize;
 }
 
+/* Human support is a dedicated view inside the existing widget. Its header
+   and composer stay fixed while only the support transcript scrolls. */
+.human-support-header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.65rem 0.8rem;
+  border-bottom: 1px solid #dce4ef;
+  background: #ffffff;
+}
+
+.support-back-button {
+  display: grid;
+  width: 2.15rem;
+  height: 2.15rem;
+  padding: 0;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  color: #102f70;
+  background: #edf3fb;
+  cursor: pointer;
+}
+
+.support-back-button svg {
+  width: 1.15rem;
+}
+
+.human-support-header h2,
+.human-support-header p {
+  margin: 0;
+}
+
+.human-support-header h2 {
+  color: #102f70;
+  font-size: 0.95rem;
+}
+
+.human-support-header p {
+  margin-top: 0.12rem;
+  overflow: hidden;
+  color: #64748b;
+  font-size: 0.72rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.human-support-status {
+  padding: 0.28rem 0.55rem;
+  border-radius: 999px;
+  background: #eaf2fc;
+  color: #102f70;
+  font-size: 0.68rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.human-support-status.pending {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.human-support-status.in_progress,
+.human-support-status.resolved {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.human-support-status.cancelled {
+  background: #f1f5f9;
+  color: #64748b;
+}
+
+.human-support-messages {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.support-case-summary {
+  display: grid;
+  gap: 0.2rem;
+  padding: 0.75rem;
+  border: 1px solid #dce4ef;
+  border-radius: 0.75rem;
+  background: #ffffff;
+}
+
+.support-case-summary span {
+  color: #64748b;
+  font-size: 0.7rem;
+  font-weight: 800;
+}
+
+.support-case-summary strong {
+  color: #102f70;
+  font-size: 0.82rem;
+  overflow-wrap: anywhere;
+}
+
+.support-system-message {
+  align-self: center;
+  max-width: 90%;
+  margin: 0;
+  padding: 0.35rem 0.6rem;
+  border-radius: 999px;
+  color: #64748b;
+  background: #e9eef5;
+  font-size: 0.7rem;
+  text-align: center;
+}
+
+.support-passenger-message {
+  align-self: flex-end;
+}
+
+.support-feedback-rating {
+  width: min(100%, 32rem);
+  margin: 0 auto;
+  padding: 0.85rem;
+  border: 1px solid #dce4ef;
+  border-radius: 0.8rem;
+  background: #ffffff;
+}
+
+.support-feedback-rating h3 {
+  margin: 0 0 0.6rem;
+  color: #102f70;
+  font-size: 0.9rem;
+}
+
+.support-feedback-rating form {
+  display: grid;
+  gap: 0.6rem;
+}
+
+.support-feedback-rating .rating-stars {
+  display: flex;
+  gap: 0.15rem;
+}
+
+.support-feedback-rating .rating-stars button {
+  padding: 0;
+  border: 0;
+  color: #94a3b8;
+  background: transparent;
+  font-size: 1.35rem;
+  cursor: pointer;
+}
+
+.support-feedback-rating .rating-stars button.selected {
+  color: #d4a017;
+}
+
+.support-feedback-rating textarea {
+  width: 100%;
+  min-height: 4rem;
+  padding: 0.55rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 0.55rem;
+  resize: vertical;
+}
+
+.support-composer-actions {
+  justify-content: space-between;
+}
+
+.support-composer-actions > p {
+  margin: 0;
+  color: #64748b;
+  font-size: 0.7rem;
+}
+
 @media (max-width: 620px) {
   .support-status-banner {
     align-items: flex-start;
@@ -449,7 +623,10 @@
 
 .sources-list {
   max-height: 11rem;
+  gap: 0.35rem;
+  padding: 0.45rem;
   overflow-y: auto;
+  background: #ffffff;
 }
 
 .message-sources {
@@ -457,14 +634,22 @@
 }
 
 .source-item {
-  padding: 0.5rem 0.6rem;
-  border: 1px solid var(--passenger-border, #e2e8f0);
+  padding: 0.45rem 0.55rem;
+  border: 1px solid #dbe5f1;
   border-radius: 0.65rem;
-  background: var(--passenger-panel, #ffffff);
+  background: #f6f9fd;
+  transition:
+    background-color 170ms ease,
+    border-color 170ms ease;
 }
 
 .source-item + .source-item {
-  margin-top: 0.3rem;
+  margin-top: 0;
+}
+
+.source-item:hover {
+  border-color: #c5d7ec;
+  background: #edf5ff;
 }
 
 .source-row-main {
@@ -481,18 +666,20 @@
   min-height: 1.5rem;
   place-items: center;
   border-radius: 0.4rem;
-  color: var(--passenger-primary, #102f70);
+  color: #41658f;
   background: #eaf2fc;
   font-size: 0.7rem;
   font-weight: 800;
 }
 
 .source-row-main strong {
+  display: -webkit-box;
   overflow: hidden;
-  color: var(--passenger-primary, #102f70);
+  color: #102f70;
   font-size: 0.78rem;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  line-height: 1.3;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
 }
 
 .source-similarity {
@@ -505,7 +692,16 @@
 .source-item .source-link {
   display: inline-block;
   margin: 0.35rem 0 0 2.3rem;
+  color: #2563eb;
   font-size: 0.72rem;
+  text-decoration: none;
+}
+
+.source-item .source-link:hover,
+.source-item .source-link:focus-visible {
+  color: #1d4ed8;
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }
 
 .chat-window-wrap .chat-composer {

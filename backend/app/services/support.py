@@ -410,6 +410,18 @@ class SupportService:
             request = self._read_request(snapshot, request_id)
             if owner:
                 self._assert_owner(request, actor)
+            # Transition endpoints are idempotent so a retried request cannot
+            # turn a successful action into a misleading 409 response.
+            if request.status == target:
+                if (
+                    target == SupportStatus.IN_PROGRESS
+                    and request.assigned_agent_id != actor.uid
+                ):
+                    raise HTTPException(
+                        status.HTTP_409_CONFLICT,
+                        "This request has already been assigned.",
+                    )
+                return request
             if request.status not in allowed:
                 raise HTTPException(
                     status.HTTP_409_CONFLICT,

@@ -355,6 +355,46 @@
   border-top: 1px solid #e2e8f0;
 }
 
+.support-ai-context {
+  margin-top: 1.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e2e8f0;
+}
+
+.support-ai-context summary {
+  color: #102f70;
+  cursor: pointer;
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.support-ai-context-list {
+  display: grid;
+  gap: 0.65rem;
+  max-height: 18rem;
+  margin-top: 0.75rem;
+  overflow-y: auto;
+}
+
+.support-ai-context-list article {
+  padding: 0.65rem;
+  border-radius: 0.6rem;
+  background: #f8fafc;
+}
+
+.support-ai-context-list strong,
+.support-ai-context-list p {
+  margin: 0;
+  font-size: 0.76rem;
+}
+
+.support-ai-context-list p {
+  margin-top: 0.25rem;
+  color: #526176;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
 .support-workspace-loading {
   padding: 3rem;
   text-align: center;

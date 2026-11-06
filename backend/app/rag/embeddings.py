@@ -36,9 +36,28 @@ def load_model(name: str, revision: str, cache: str):
     # Download public weights only; inference stays local and telemetry is disabled.
     os.environ["HF_HUB_DISABLE_TELEMETRY"] = "1"
     from sentence_transformers import SentenceTransformer
-    return SentenceTransformer(
-        name, revision=revision, cache_folder=cache, device="cpu", trust_remote_code=False,
-    )
+
+    arguments = {
+        "revision": revision,
+        "cache_folder": cache,
+        "device": "cpu",
+        "trust_remote_code": False,
+    }
+    try:
+        # Prefer the pinned local cache. This avoids a slow Hub metadata request
+        # on every backend restart when the complete model is already present.
+        return SentenceTransformer(
+            name,
+            local_files_only=True,
+            **arguments,
+        )
+    except OSError:
+        # A fresh deployment still needs one authenticated or public download.
+        return SentenceTransformer(
+            name,
+            local_files_only=False,
+            **arguments,
+        )
 
 
 class E5Embedder:

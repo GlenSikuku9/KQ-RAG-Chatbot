@@ -218,7 +218,9 @@ class ConversationStore:
                 response_source=source,
                 retrieved_chunks=[MessageChunk(
                     message_chunk_id=f"{chatbot_id}_{source_item.chunk.chunk_id}", message_id=chatbot_id,
-                    chunk_id=source_item.chunk.chunk_id, citation_id=source_item.citation_id,
+                    chunk_id=source_item.chunk.chunk_id,
+                    document_id=source_item.chunk.document_id,
+                    citation_id=source_item.citation_id,
                     similarity_score=source_item.score, retrieval_rank=source_item.retrieval_rank,
                     source_title=_source_title(source_item.chunk.source),
                     source_section=source_item.chunk.section,

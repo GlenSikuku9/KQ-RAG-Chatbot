@@ -58,6 +58,7 @@ class MessageChunk(BaseModel):
     message_chunk_id: str = Field(min_length=1, max_length=512)
     message_id: str = Field(min_length=1, max_length=128)
     chunk_id: str = Field(min_length=1, max_length=512)
+    document_id: str | None = Field(default=None, max_length=512)
     citation_id: str = Field(min_length=2, max_length=32)
     similarity_score: float = Field(allow_inf_nan=False)
     retrieval_rank: int = Field(ge=1)

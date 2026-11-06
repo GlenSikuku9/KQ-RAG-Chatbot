@@ -1,14 +1,17 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { savePassengerTheme } from "../../api";
 import { KenyaAirwaysLogo } from "../../components/KenyaAirwaysLogo";
 import "../styles/Settings.css";
 
 function ThemeSettings({ user, theme, setTheme, onSaved }) {
-  if (!theme) {
-    return (
-      <p className="admin-empty">Loading passenger appearance settings...</p>
-    );
-  }
+  const [formTheme, setFormTheme] = useState(theme);
+  const [dirty, setDirty] = useState(false);
+
+  useEffect(() => {
+    // Refresh untouched settings from the server without replacing unsaved
+    // colour edits currently being reviewed by the administrator.
+    if (!dirty && theme) setFormTheme(theme);
+  }, [dirty, theme]);
 
   // Group the existing persisted tokens for usability; storage keys and the
   // passenger-only settings API remain unchanged.
@@ -61,8 +64,25 @@ function ThemeSettings({ user, theme, setTheme, onSaved }) {
     border: "#dce4ef",
   };
 
+  if (!theme || !formTheme) {
+    return (
+      <p className="admin-empty">Loading passenger appearance settings...</p>
+    );
+  }
+
+  function updateColour(key, value) {
+    setFormTheme((current) => ({
+      ...current,
+      [key]: value,
+    }));
+    setDirty(true);
+  }
+
   async function save() {
-    await savePassengerTheme(user, theme);
+    const saved = await savePassengerTheme(user, formTheme);
+    setTheme(saved);
+    setFormTheme(saved);
+    setDirty(false);
     onSaved("Passenger theme saved and published.");
   }
 
@@ -89,18 +109,20 @@ function ThemeSettings({ user, theme, setTheme, onSaved }) {
                   <span>
                     <input
                       type="color"
-                      value={theme[key]}
-                      onChange={(event) =>
-                        setTheme({ ...theme, [key]: event.target.value })
-                      }
+                      value={formTheme[key]}
+                      onChange={(event) => updateColour(
+                        key,
+                        event.target.value,
+                      )}
                       aria-label={`${label} colour picker`}
                     />
                     <input
-                      value={theme[key]}
+                      value={formTheme[key]}
                       pattern="#[0-9a-fA-F]{6}"
-                      onChange={(event) =>
-                        setTheme({ ...theme, [key]: event.target.value })
-                      }
+                      onChange={(event) => updateColour(
+                        key,
+                        event.target.value,
+                      )}
                       aria-label={`${label} hexadecimal value`}
                     />
                   </span>
@@ -126,7 +148,8 @@ function ThemeSettings({ user, theme, setTheme, onSaved }) {
                   "Reset all passenger colours to the Kenya Airways defaults?",
                 )
               )
-                setTheme(defaults);
+                setFormTheme(defaults);
+                setDirty(true);
             }}
           >
             Reset to default
@@ -138,13 +161,13 @@ function ThemeSettings({ user, theme, setTheme, onSaved }) {
         <div
           className="theme-preview"
           style={{
-            "--preview-primary": theme.primary,
-            "--preview-panel": theme.panel,
-            "--preview-user": theme.user_message,
-            "--preview-assistant": theme.assistant_message,
-            "--preview-text": theme.text,
-            "--preview-background": theme.background,
-            "--preview-border": theme.border,
+            "--preview-primary": formTheme.primary,
+            "--preview-panel": formTheme.panel,
+            "--preview-user": formTheme.user_message,
+            "--preview-assistant": formTheme.assistant_message,
+            "--preview-text": formTheme.text,
+            "--preview-background": formTheme.background,
+            "--preview-border": formTheme.border,
           }}
         >
           <header>

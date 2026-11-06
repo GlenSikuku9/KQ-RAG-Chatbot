@@ -88,7 +88,14 @@ class GroundedAnswerService:
         self._validate_model_citations(provider_response.text, prepared)
         # Sources are attached by the trusted backend rather than relying on a model
         # to describe its own evidence. I15 persists these same citation identities.
-        source_footer = "Sources: " + ", ".join(f"[{source.citation_id}]" for source in prepared.sources)
+        unique_citations = dict.fromkeys(
+            source.citation_id
+            for source in prepared.sources
+        )
+        source_footer = "Sources: " + ", ".join(
+            f"[{citation_id}]"
+            for citation_id in unique_citations
+        )
         return GroundedAnswerResponse(
             answer=f"{provider_response.text.rstrip()}\n\n{source_footer}",
             language=prepared.retrieval.language,

@@ -666,7 +666,7 @@ a {
 }
 
 .message-sources[open] summary::after {
-  content: "−";
+  content: "\2212";
 }
 
 .sources-list {

@@ -23,6 +23,7 @@ import {
   modelDisplayName,
   readableEventName,
 } from "../utils";
+import { AdminNotice } from "../components/AdminNotice";
 import "../styles/Models.css";
 
 function ModelManagement({ user, models, evaluations, onChanged }) {
@@ -135,7 +136,11 @@ function ModelManagement({ user, models, evaluations, onChanged }) {
               </div>
             </dl>
             {testResult.error ? (
-              <p className="notice error">{testResult.error}</p>
+              <AdminNotice
+                type="error"
+                message={testResult.error}
+                onDismiss={() => setTestResult(null)}
+              />
             ) : (
               <div>
                 <strong>Generated response</strong>
@@ -146,12 +151,15 @@ function ModelManagement({ user, models, evaluations, onChanged }) {
         )}
       </section>
 
-      {defaultUpdate?.status === "success" && (
-        <p className="notice success">Default model updated successfully.</p>
-      )}
-      {defaultUpdate?.status === "error" && (
-        <p className="notice error">{defaultUpdate.message}</p>
-      )}
+      <AdminNotice
+        type={defaultUpdate?.status}
+        message={
+          defaultUpdate?.status === "success"
+            ? "Default model updated successfully."
+            : defaultUpdate?.message
+        }
+        onDismiss={() => setDefaultUpdate(null)}
+      />
       <div className="model-card-grid">
         {models.map((model) => (
           <article

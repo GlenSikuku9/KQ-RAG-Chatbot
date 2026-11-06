@@ -1,0 +1,10 @@
+root = true
+
+# Keep source text consistently encoded across Windows editors and CI.
+[*]
+charset = utf-8
+end_of_line = crlf
+insert_final_newline = true
+
+[*.{js,jsx,css,html,json,py,md}]
+trim_trailing_whitespace = true

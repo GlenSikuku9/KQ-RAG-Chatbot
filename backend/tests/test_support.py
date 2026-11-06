@@ -101,6 +101,14 @@ class SupportLifecycleTests(unittest.TestCase):
 
         resolved = self.service.resolve(self.agent, request.request_id)
         self.assertEqual(resolved.status, SupportStatus.RESOLVED)
+        repeated_resolution = self.service.resolve(
+            self.agent,
+            request.request_id,
+        )
+        self.assertEqual(
+            repeated_resolution.status,
+            SupportStatus.RESOLVED,
+        )
         stored_conversation = self.client.records["conversations"][
             conversation.conversation_id
         ]

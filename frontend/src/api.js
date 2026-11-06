@@ -474,6 +474,24 @@ export const adminSearch = (user, query, signal) => authenticatedRequest(
 );
 export const adminUpdateRole = (user, id, role) => authenticatedRequest(user, `/admin/users/${id}/role`, { method: "PATCH", body: JSON.stringify({ role }) });
 export const adminUpdateStatus = (user, id, disabled) => authenticatedRequest(user, `/admin/users/${id}/status`, { method: "PATCH", body: JSON.stringify({ disabled }) });
+export const adminUpdateDisplayName = (user, id, displayName) => authenticatedRequest(
+  user,
+  `/admin/users/${id}/display-name`,
+  {
+    method: "PATCH",
+    body: JSON.stringify({ display_name: displayName }),
+  },
+);
+export const adminDeleteUser = (user, id) => authenticatedRequest(
+  user,
+  `/admin/users/${id}`,
+  { method: "DELETE" },
+);
+export const adminDeleteConversation = (user, id) => authenticatedRequest(
+  user,
+  `/admin/conversations/${id}`,
+  { method: "DELETE" },
+);
 export const adminDeleteDocument = (user, id) => authenticatedRequest(user, `/admin/documents/${id}`, { method: "DELETE" });
 export const adminProcessDocument = (user, id) => authenticatedRequest(user, `/admin/documents/${id}/process`, { method: "POST" });
 export const adminUpdateDocument = (user, id, title, category) => authenticatedRequest(user, `/admin/documents/${id}`, { method: "PATCH", body: JSON.stringify({ title, category }) });

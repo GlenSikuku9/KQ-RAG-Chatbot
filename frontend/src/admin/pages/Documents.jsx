@@ -10,6 +10,8 @@ import {
   adminUpdateDocument,
 } from "../../api";
 import { Pagination, TableLoadingRows } from "../components/Pagination";
+import { AdminNotice } from "../components/AdminNotice";
+import { AdminRefreshIndicator } from "../components/AdminRefreshIndicator";
 import { useAdminTablePage } from "../hooks/useAdminTablePage";
 import { formatDateTime, readableEventName } from "../utils";
 import "../styles/Documents.css";
@@ -70,7 +72,7 @@ function Documents({ user, revision }) {
     processing_status: status,
     sort_order: sortOrder,
   };
-  const { data, loading, error } = useAdminTablePage(
+  const { data, loading, refreshing, error } = useAdminTablePage(
     user,
     "documents",
     adminDocumentPage,
@@ -279,11 +281,11 @@ function Documents({ user, revision }) {
   const items = data?.items || [];
   return (
     <>
-      {notice && (
-        <p className={`notice ${notice.type}`} role="status">
-          {notice.text}
-        </p>
-      )}
+      <AdminNotice
+        notice={notice}
+        onDismiss={() => setNotice(null)}
+      />
+      <AdminRefreshIndicator active={refreshing} />
       <section className="admin-card table-management">
         <div className="admin-toolbar table-filter-toolbar">
           <label className="admin-search-field">
@@ -332,7 +334,7 @@ function Documents({ user, revision }) {
             </select>
           </label>
         </div>
-        {error && <p className="notice error">{error}</p>}
+        <AdminNotice type="error" message={error} />
         <div className="admin-table-scroll">
           <table className="admin-table documents-table">
             <thead>
@@ -449,13 +451,57 @@ function Documents({ user, revision }) {
         <Modal label="Edit document metadata" onClose={() => !metadata.saving && setMetadata(null)}>
           <header><div><h2>Edit metadata</h2><p>{metadata.document.filename}</p></div></header>
           <div className="document-form">
-            <label>Document title<input autoFocus value={metadata.title} onChange={(event) => setMetadata({ ...metadata, title: event.target.value })} /></label>
-            <label>Document category<input value={metadata.category} onChange={(event) => setMetadata({ ...metadata, category: event.target.value })} /></label>
+            <label>
+              Document title
+              <input
+                autoFocus
+                value={metadata.title}
+                onChange={(event) => setMetadata({
+                  ...metadata,
+                  title: event.target.value,
+                })}
+              />
+            </label>
+            <label>
+              Document category
+              <input
+                value={metadata.category}
+                onChange={(event) => setMetadata({
+                  ...metadata,
+                  category: event.target.value,
+                })}
+              />
+            </label>
           </div>
-          {metadata.error && <p className="notice error">{metadata.error}</p>}
+          <AdminNotice
+            type="error"
+            message={metadata.error}
+            onDismiss={() => setMetadata((current) => ({
+              ...current,
+              error: null,
+            }))}
+          />
           <div className="document-editor-actions">
-            <button className="button secondary" disabled={metadata.saving} type="button" onClick={() => setMetadata(null)}>Cancel</button>
-            <button className="button primary" disabled={metadata.saving || !metadata.title.trim() || !metadata.category.trim()} type="button" onClick={saveMetadata}>{metadata.saving ? "Saving…" : "Save changes"}</button>
+            <button
+              className="button secondary"
+              disabled={metadata.saving}
+              type="button"
+              onClick={() => setMetadata(null)}
+            >
+              Cancel
+            </button>
+            <button
+              className="button primary"
+              disabled={
+                metadata.saving
+                || !metadata.title.trim()
+                || !metadata.category.trim()
+              }
+              type="button"
+              onClick={saveMetadata}
+            >
+              {metadata.saving ? "Saving…" : "Save changes"}
+            </button>
           </div>
         </Modal>
       )}
@@ -463,11 +509,36 @@ function Documents({ user, revision }) {
       {deletion && (
         <Modal label="Delete document" onClose={() => !deletion.deleting && setDeletion(null)}>
           <header><h2>Delete document?</h2></header>
-          <p><strong>{deletion.document.filename}</strong> will be removed from the knowledge base according to the existing backend deletion and index cleanup process.</p>
-          {deletion.error && <p className="notice error">{deletion.error}</p>}
+          <p>
+            <strong>{deletion.document.filename}</strong>
+            {" will be removed from the knowledge base according to the "}
+            existing backend deletion and index cleanup process.
+          </p>
+          <AdminNotice
+            type="error"
+            message={deletion.error}
+            onDismiss={() => setDeletion((current) => ({
+              ...current,
+              error: null,
+            }))}
+          />
           <div className="document-editor-actions">
-            <button className="button secondary" disabled={deletion.deleting} type="button" onClick={() => setDeletion(null)}>Cancel</button>
-            <button className="button danger-button" disabled={deletion.deleting} type="button" onClick={removeDocument}>{deletion.deleting ? "Deleting…" : "Delete"}</button>
+            <button
+              className="button secondary"
+              disabled={deletion.deleting}
+              type="button"
+              onClick={() => setDeletion(null)}
+            >
+              Cancel
+            </button>
+            <button
+              className="button danger-button"
+              disabled={deletion.deleting}
+              type="button"
+              onClick={removeDocument}
+            >
+              {deletion.deleting ? "Deleting…" : "Delete"}
+            </button>
           </div>
         </Modal>
       )}
@@ -476,12 +547,24 @@ function Documents({ user, revision }) {
         <Modal className="document-editor" label="Edit document content" onClose={closeEditor}>
           <header>
             <div>
-              <h2>Edit {editor.document.filename} <span className="editor-version">{editor.document.version || "v1"}</span></h2>
+              <h2>
+                Edit {editor.document.filename}
+                <span className="editor-version">
+                  {editor.document.version || "v1"}
+                </span>
+              </h2>
               <p>Edit extracted document content. Changes will be saved and re-indexed for chatbot retrieval.</p>
             </div>
             <button aria-label="Close editor" className="icon-button" type="button" onClick={closeEditor}>×</button>
           </header>
-          {editor.warning && <p className="notice warning">{editor.warning}</p>}
+          <AdminNotice
+            type="info"
+            message={editor.warning}
+            onDismiss={() => setEditor((current) => ({
+              ...current,
+              warning: null,
+            }))}
+          />
           <div className="document-find">
             <input
               aria-label="Find in document"
@@ -497,7 +580,20 @@ function Documents({ user, revision }) {
             <button className="button secondary compact" disabled={!editor.find.trim()} type="button" onClick={() => find(1)}>Next</button>
           </div>
           <textarea ref={textareaRef} className="document-editor-textarea" value={editor.content} onChange={(event) => setEditor({ ...editor, content: event.target.value, message: "" })} />
-          {editor.message && <p className={editor.message.startsWith("Match") ? "find-status" : "notice error"}>{editor.message}</p>}
+          {editor.message && (
+            editor.message.startsWith("Match") ? (
+              <p className="find-status">{editor.message}</p>
+            ) : (
+              <AdminNotice
+                type="error"
+                message={editor.message}
+                onDismiss={() => setEditor((current) => ({
+                  ...current,
+                  message: "",
+                }))}
+              />
+            )
+          )}
           <div className="document-editor-actions">
             <button className="button secondary" disabled={editor.saving} type="button" onClick={closeEditor}>Cancel</button>
             <button className="button primary" disabled={editor.saving || !editor.content.trim() || editor.content === editor.original} type="button" onClick={saveContent}>{editor.saving ? "Saving and reprocessing…" : "Save changes & reprocess"}</button>

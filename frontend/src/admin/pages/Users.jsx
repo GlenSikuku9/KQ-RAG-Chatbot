@@ -3,7 +3,10 @@ import {
   useRef,
   useState,
 } from "react";
+import { EllipsisVertical } from "lucide-react";
 import {
+  adminDeleteUser,
+  adminUpdateDisplayName,
   adminUpdateRole,
   adminUpdateStatus,
   adminUserPage,
@@ -12,6 +15,8 @@ import {
   Pagination as TablePagination,
   TableLoadingRows,
 } from "../components/Pagination";
+import { AdminNotice } from "../components/AdminNotice";
+import { AdminRefreshIndicator } from "../components/AdminRefreshIndicator";
 import { tablePageCache, useAdminTablePage } from "../hooks/useAdminTablePage";
 import "../styles/Users.css";
 
@@ -21,8 +26,11 @@ function UserActionDialog({ action, loading, onCancel, onConfirm }) {
   const accountName = action.user.name
     || action.user.email
     || "this user";
+  const isDelete = action.type === "delete";
   const title = isRoleChange
     ? "Confirm role change"
+    : isDelete
+      ? "Delete user account?"
     : `Confirm account ${action.nextValue ? "disablement" : "enablement"}`;
 
   useEffect(() => {
@@ -59,7 +67,13 @@ function UserActionDialog({ action, loading, onCancel, onConfirm }) {
         <p className="eyebrow">ACCOUNT MANAGEMENT</p>
         <h2 id="user-confirm-title">{title}</h2>
         <p className="user-confirm-intro">
-          Review this administrative action before applying it.
+          {isDelete
+            ? (
+              "Are you sure you want to permanently delete this account? "
+              + "The user's saved conversations and personal data will also "
+              + "be deleted. This action cannot be undone."
+            )
+            : "Review this administrative action before applying it."}
         </p>
         <dl>
           <div>
@@ -77,6 +91,11 @@ function UserActionDialog({ action, loading, onCancel, onConfirm }) {
                 <dd>{action.nextValue}</dd>
               </div>
             </>
+          ) : isDelete ? (
+            <div>
+              <dt>Email address</dt>
+              <dd>{action.user.email || "Not available"}</dd>
+            </div>
           ) : (
             <div>
               <dt>New account status</dt>
@@ -94,12 +113,16 @@ function UserActionDialog({ action, loading, onCancel, onConfirm }) {
             Cancel
           </button>
           <button
-            className="user-dialog-button primary"
+            className={`user-dialog-button ${
+              isDelete ? "danger" : "primary"
+            }`}
             type="button"
             disabled={loading}
             onClick={onConfirm}
           >
-            {loading ? "Updating..." : "Confirm change"}
+            {loading
+              ? isDelete ? "Deleting..." : "Updating..."
+              : isDelete ? "Delete account" : "Confirm change"}
           </button>
         </div>
       </section>
@@ -107,7 +130,85 @@ function UserActionDialog({ action, loading, onCancel, onConfirm }) {
   );
 }
 
-function UserTable({ user, revision }) {
+function UserEditDialog({ account, loading, onCancel, onSave }) {
+  const [name, setName] = useState(account.name || "");
+  // Collapse repeated whitespace before comparing or saving the name.
+  const normalized = name.trim().split(/\s+/).join(" ");
+  const original = (account.name || "").trim().split(/\s+/).join(" ");
+  const valid = normalized.length >= 2;
+
+  useEffect(() => {
+    function closeOnEscape(event) {
+      if (event.key === "Escape" && !loading) onCancel();
+    }
+    document.addEventListener("keydown", closeOnEscape);
+    return () => document.removeEventListener("keydown", closeOnEscape);
+  }, [loading, onCancel]);
+
+  return (
+    <div
+      className="user-confirm-backdrop"
+      role="presentation"
+      onMouseDown={(event) => {
+        if (event.target === event.currentTarget && !loading) onCancel();
+      }}
+    >
+      <section
+        className="user-confirm-dialog user-edit-dialog"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="edit-user-title"
+      >
+        <p className="eyebrow">ACCOUNT MANAGEMENT</p>
+        <h2 id="edit-user-title">Edit User</h2>
+        <label>
+          Display name
+          <input
+            autoFocus
+            value={name}
+            onChange={(event) => setName(event.target.value)}
+            maxLength="120"
+          />
+        </label>
+        <label>
+          Email address
+          <input value={account.email || "Not available"} readOnly />
+        </label>
+        <label>
+          Role
+          <input value={account.role} readOnly />
+        </label>
+        <label>
+          Account status
+          <input value={account.disabled ? "Disabled" : "Active"} readOnly />
+        </label>
+        {!valid && name.length > 0 && (
+          <p className="notice error">Enter at least two characters.</p>
+        )}
+        <div className="user-confirm-actions">
+          <button
+            className="user-dialog-button secondary"
+            type="button"
+            disabled={loading}
+            onClick={onCancel}
+          >
+            Cancel
+          </button>
+          <button
+            className="user-dialog-button primary"
+            type="button"
+            disabled={loading || !valid || normalized === original}
+            onClick={() => onSave(normalized)}
+          >
+            {loading ? "Saving..." : "Save changes"}
+          </button>
+        </div>
+      </section>
+    </div>
+  );
+}
+
+function UserTable({ user, revision, onProfileChanged }) {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [search, setSearch] = useState("");
@@ -118,6 +219,8 @@ function UserTable({ user, revision }) {
   const [pendingAction, setPendingAction] = useState(null);
   const [mutationLoading, setMutationLoading] = useState(false);
   const [notice, setNotice] = useState(null);
+  const [editingUser, setEditingUser] = useState(null);
+  const [openMenu, setOpenMenu] = useState(null);
   const filters = {
     page,
     page_size: pageSize,
@@ -126,7 +229,13 @@ function UserTable({ user, revision }) {
     account_status: accountStatus,
     verification,
   };
-  const { data, setData, loading, error } = useAdminTablePage(
+  const {
+    data,
+    setData,
+    loading,
+    refreshing,
+    error,
+  } = useAdminTablePage(
     user,
     "users",
     adminUserPage,
@@ -159,6 +268,43 @@ function UserTable({ user, revision }) {
     setRefresh((value) => value + 1);
   }
 
+  useEffect(() => {
+    function closeMenu(event) {
+      if (
+        event.key === "Escape"
+        || !event.target.closest?.(".user-actions")
+      ) {
+        setOpenMenu(null);
+      }
+    }
+    document.addEventListener("mousedown", closeMenu);
+    document.addEventListener("keydown", closeMenu);
+    return () => {
+      document.removeEventListener("mousedown", closeMenu);
+      document.removeEventListener("keydown", closeMenu);
+    };
+  }, []);
+
+  async function saveDisplayName(displayName) {
+    setMutationLoading(true);
+    setNotice(null);
+    try {
+      const updated = await adminUpdateDisplayName(
+        user,
+        editingUser.user_id,
+        displayName,
+      );
+      replace(updated);
+      onProfileChanged?.(updated);
+      setEditingUser(null);
+      setNotice({ type: "success", text: "Display name updated." });
+    } catch (reason) {
+      setNotice({ type: "error", text: reason.message });
+    } finally {
+      setMutationLoading(false);
+    }
+  }
+
   async function confirmAction() {
     if (!pendingAction) {
       return;
@@ -168,6 +314,17 @@ function UserTable({ user, revision }) {
     setNotice(null);
 
     try {
+      if (pendingAction.type === "delete") {
+        await adminDeleteUser(user, pendingAction.user.user_id);
+        tablePageCache.clear();
+        setRefresh((value) => value + 1);
+        setNotice({
+          type: "success",
+          text: "User account deleted permanently.",
+        });
+        setPendingAction(null);
+        return;
+      }
       const updated = pendingAction.type === "role"
         ? await adminUpdateRole(
             user,
@@ -208,7 +365,9 @@ function UserTable({ user, revision }) {
   );
 
   return (
-    <section className="admin-card table-management">
+    <>
+      <AdminRefreshIndicator active={refreshing} />
+      <section className="admin-card table-management">
       <div className="admin-toolbar table-filter-toolbar">
         <label className="admin-search-field">
           <span>Search</span>
@@ -262,12 +421,11 @@ function UserTable({ user, revision }) {
           </button>
         )}
       </div>
-      {error && <p className="notice error">{error}</p>}
-      {notice && (
-        <p className={`notice ${notice.type}`} role="status">
-          {notice.text}
-        </p>
-      )}
+      <AdminNotice type="error" message={error} />
+      <AdminNotice
+        notice={notice}
+        onDismiss={() => setNotice(null)}
+      />
       <div className="admin-table-scroll">
         <table className="admin-table users-table">
           <thead>
@@ -333,29 +491,58 @@ function UserTable({ user, revision }) {
                     </span>
                   </td>
                   <td>
-                    <button
-                      className={`user-status-button ${
-                        item.disabled ? "enable" : "disable"
-                      }`}
-                      type="button"
-                      title={
-                        item.user_id === user.uid
-                          ? "You cannot disable your own account."
-                          : `${item.disabled ? "Enable" : "Disable"} account`
-                      }
-                      disabled={
-                        item.user_id === user.uid
-                        || mutationLoading
-                      }
-                      onClick={() =>
-                        setPendingAction({
-                          type: "status",
-                          user: item,
-                          nextValue: !item.disabled,
-                        })}
-                    >
-                      {item.disabled ? "Enable" : "Disable"}
-                    </button>
+                    <div className="user-actions">
+                      <button
+                        className="user-edit-button admin-edit-action"
+                        type="button"
+                        onClick={() => setEditingUser(item)}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        className="user-more-button"
+                        type="button"
+                        aria-label={`More actions for ${item.email || item.user_id}`}
+                        aria-expanded={openMenu === item.user_id}
+                        onClick={() => setOpenMenu((current) => (
+                          current === item.user_id ? null : item.user_id
+                        ))}
+                      >
+                        <EllipsisVertical aria-hidden="true" />
+                      </button>
+                      {openMenu === item.user_id && (
+                        <div className="user-action-menu">
+                          <button
+                            type="button"
+                            disabled={item.user_id === user.uid}
+                            onClick={() => {
+                              setOpenMenu(null);
+                              setPendingAction({
+                                type: "status",
+                                user: item,
+                                nextValue: !item.disabled,
+                              });
+                            }}
+                          >
+                            {item.disabled ? "Enable" : "Disable"}
+                          </button>
+                          <button
+                            className="danger"
+                            type="button"
+                            disabled={item.user_id === user.uid}
+                            onClick={() => {
+                              setOpenMenu(null);
+                              setPendingAction({
+                                type: "delete",
+                                user: item,
+                              });
+                            }}
+                          >
+                            Delete account
+                          </button>
+                        </div>
+                      )}
+                    </div>
                   </td>
                 </tr>
               ))
@@ -389,7 +576,16 @@ function UserTable({ user, revision }) {
           onConfirm={confirmAction}
         />
       )}
-    </section>
+      {editingUser && (
+        <UserEditDialog
+          account={editingUser}
+          loading={mutationLoading}
+          onCancel={() => setEditingUser(null)}
+          onSave={saveDisplayName}
+        />
+      )}
+      </section>
+    </>
   );
 }
 export default UserTable;

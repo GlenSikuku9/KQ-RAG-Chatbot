@@ -189,12 +189,18 @@ class VectorIndex:
         if not query.strip() or type(limit) is not int or limit < 1:
             logger.error("Search requires a nonempty question and positive integer result limit.")
             raise ValueError("Invalid search input.")
+
+        # Model initialization can take longer than the index lock timeout on
+        # the first request. It does not access Chroma, so complete it before
+        # taking the short lock that protects the published collection.
+        fingerprint = self.embedder.fingerprint
+        vector = self.embedder.embed_query(query)
         with self.active_lock:
             manifest = self._manifest()
             if manifest is None:
                 logger.error("No published vector index exists.")
                 raise FileNotFoundError("Build the vector index before searching.")
-            if not self._compatible(manifest):
+            if manifest.fingerprint != fingerprint:
                 logger.error("Query embedding configuration does not match the stored index.")
                 raise IndexStateError("Embedding configuration mismatch; rebuild the index.")
             collection = self.client.get_collection(manifest.collection, embedding_function=None)
@@ -203,7 +209,6 @@ class VectorIndex:
                 raise IndexStateError("Stored vector index is incomplete.")
             if manifest.count == 0:
                 return []
-            vector = self.embedder.embed_query(query)
             # Oversample progressively so multiple segments of one parent do not crowd out other chunks.
             candidates = min(manifest.count, limit * 2)
             while True:

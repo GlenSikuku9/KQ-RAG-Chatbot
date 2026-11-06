@@ -9,6 +9,7 @@ import {
   getPassengerThemeForAdmin,
 } from "../api";
 import { AdminLoadingSkeleton } from "./components/AdminLoadingSkeleton";
+import { AdminNotice } from "./components/AdminNotice";
 import { AdminNavbar } from "./components/AdminNavbar";
 import { AdminSidebar } from "./components/AdminSidebar";
 import { PageHeader } from "./components/PageHeader";
@@ -38,12 +39,14 @@ const PAGE_CACHE_TTL = {
 };
 
 export function AdminDashboard({ user, profile, onSignOut }) {
+  const [adminProfile, setAdminProfile] = useState(profile);
   const [page, setPage] = useState("Overview");
   const [selectedConversation, setSelectedConversation] = useState(null);
   const [selectedLogId, setSelectedLogId] = useState(null);
   const [selectedSupportRequestId, setSelectedSupportRequestId] = useState(null);
   const [notice, setNotice] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const [analytics, setAnalytics] = useState(null);
   const [periodDays, setPeriodDays] = useState(30);
   const [theme, setTheme] = useState(null);
@@ -51,12 +54,17 @@ export function AdminDashboard({ user, profile, onSignOut }) {
   const [evaluations, setEvaluations] = useState([]);
   const [logs, setLogs] = useState([]);
   const [tableRevision, setTableRevision] = useState(0);
+  const [pageRevisions, setPageRevisions] = useState({});
 
   // The shell coordinates shared page requests. Filtered table pages keep
   // their request state in their own components and hook.
   const pageCache = useRef(new Map());
   const inFlightRequests = useRef(new Map());
   const activeRequestKey = useRef(null);
+  const loadedPages = useRef(new Set());
+  useEffect(() => {
+    setAdminProfile(profile);
+  }, [profile]);
   function applyPageData(targetPage, data) {
     if (targetPage === "Overview" || targetPage === "Analytics")
       setAnalytics(data);
@@ -105,31 +113,49 @@ export function AdminDashboard({ user, profile, onSignOut }) {
       setLoading(false);
       return;
     }
-    setLoading(true);
+    if (loadedPages.current.has(cacheKey)) {
+      setRefreshing(true);
+    } else {
+      setLoading(true);
+    }
     activeRequestKey.current = cacheKey;
     setNotice(null);
     try {
       // Reuse identical in-flight work during rapid navigation and React's
       // development checks instead of issuing a second request.
       let request = inFlightRequests.current.get(cacheKey);
-      if (!request || force) {
+      if (!request) {
         request = fetchPageData(targetPage);
         inFlightRequests.current.set(cacheKey, request);
       }
       const data = await request;
       pageCache.current.set(cacheKey, { data, savedAt: Date.now() });
+      loadedPages.current.add(cacheKey);
       if (activeRequestKey.current === cacheKey)
         applyPageData(targetPage, data);
     } catch (error) {
       setNotice({ type: "error", text: error.message });
     } finally {
       inFlightRequests.current.delete(cacheKey);
-      if (activeRequestKey.current === cacheKey) setLoading(false);
+      if (activeRequestKey.current === cacheKey) {
+        setLoading(false);
+        setRefreshing(false);
+      }
     }
   }
   useEffect(() => {
-    reload();
-  }, [page, periodDays]);
+    // Every navigation selection gets a fresh backend snapshot, including
+    // selecting the already-active page. Identical in-flight work is shared.
+    reload(true);
+  }, [page, periodDays, pageRevisions[page]]);
+
+  function navigate(targetPage) {
+    setPage(targetPage);
+    setPageRevisions((current) => ({
+      ...current,
+      [targetPage]: (current[targetPage] || 0) + 1,
+    }));
+  }
   async function upload(event) {
     const file = event.target.files?.[0];
     if (!file) return;
@@ -167,7 +193,7 @@ export function AdminDashboard({ user, profile, onSignOut }) {
   const pageProps = {
     Overview: {
       analytics,
-      onNavigate: setPage,
+      onNavigate: navigate,
       onOpenConversation: openConversation,
       onOpenLog: openLog,
     },
@@ -187,15 +213,30 @@ export function AdminDashboard({ user, profile, onSignOut }) {
       selectedLogId,
       onSelectedLogOpened: () => setSelectedLogId(null),
     },
-    Documents: { user, revision: tableRevision },
-    Users: { user, revision: tableRevision },
+    Documents: {
+      user,
+      revision: tableRevision + (pageRevisions.Documents || 0),
+    },
+    Users: {
+      user,
+      revision: tableRevision + (pageRevisions.Users || 0),
+      onProfileChanged: (updated) => {
+        if (updated.user_id === user.uid) {
+          setAdminProfile((current) => ({
+            ...current,
+            name: updated.name,
+          }));
+        }
+      },
+    },
     Conversations: {
       user,
-      revision: tableRevision,
+      revision: tableRevision + (pageRevisions.Conversations || 0),
       onSelect: openConversation,
     },
     "Human Support": {
       user,
+      revision: pageRevisions["Human Support"] || 0,
       initialRequestId: selectedSupportRequestId,
       onOpened: () => setSelectedSupportRequestId(null),
     },
@@ -214,12 +255,16 @@ export function AdminDashboard({ user, profile, onSignOut }) {
   }[page];
   return (
     <main className="admin-shell">
-      <AdminSidebar page={page} profile={profile} onNavigate={setPage} />
+      <AdminSidebar
+        page={page}
+        profile={adminProfile}
+        onNavigate={navigate}
+      />
       <section className="admin-workspace">
         <AdminNavbar
           user={user}
-          profile={profile}
-          onNavigate={setPage}
+          profile={adminProfile}
+          onNavigate={navigate}
           onOpenConversation={openConversation}
           onOpenLog={openLog}
           onOpenSupportRequest={openSupportRequest}
@@ -232,23 +277,16 @@ export function AdminDashboard({ user, profile, onSignOut }) {
             onPeriodChange={setPeriodDays}
             onUpload={upload}
           />
-          {notice && (
-            <div
-              className={`notice ${notice.type === "error" ? "error" : "success"}`}
-              role="status"
-            >
-              <span>{notice.text}</span>
-              {notice.type === "error" && (
-                <button
-                  className="text-button"
-                  type="button"
-                  onClick={() => reload(true)}
-                >
-                  Retry
-                </button>
-              )}
-            </div>
+          {refreshing && (
+            <p className="admin-page-refresh" role="status">
+              <span aria-hidden="true" />
+              Refreshing data...
+            </p>
           )}
+          <AdminNotice
+            notice={notice}
+            onDismiss={() => setNotice(null)}
+          />
           {loading ? <AdminLoadingSkeleton /> : <Page {...pageProps[page]} />}
           {selectedConversation && (
             <ConversationModal
