@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import {
+  ArrowLeft,
   Menu,
   Maximize2,
   Minimize2,
@@ -110,6 +111,18 @@ function modelLabel(model) {
   return MODEL_LABELS[model.model_id] || model.upstream_model || model.model_id;
 }
 
+function supportStatusLabel(request) {
+  if (request.status === "pending") {
+    return request.request_type === "live"
+      ? "Waiting for agent"
+      : "Pending";
+  }
+  if (request.status === "in_progress") {
+    return request.request_type === "live" ? "Live" : "In progress";
+  }
+  return request.status === "resolved" ? "Resolved" : "Cancelled";
+}
+
 function conversationTurns(messages) {
   const turns = [];
 
@@ -133,20 +146,69 @@ function conversationTurns(messages) {
   return turns;
 }
 
-function Sources({ chunks }) {
-  if (!chunks?.length) return null;
-
+function uniquePassengerSources(chunks) {
   const orderedChunks = [...chunks].sort(
     (left, right) => left.retrieval_rank - right.retrieval_rank,
   );
+  const uniqueSources = [];
+  const sourceKeys = new Set();
+
+  orderedChunks.forEach((chunk) => {
+    // New traces use stable document IDs. Canonical URLs safely deduplicate
+    // older traces without merging documents based only on similar titles.
+    const sourceKey = chunk.document_id
+      || chunk.source_url
+      || chunk.chunk_id;
+    if (!sourceKeys.has(sourceKey)) {
+      sourceKeys.add(sourceKey);
+      uniqueSources.push(chunk);
+    }
+  });
+  return uniqueSources;
+}
+
+function passengerAnswerText(message) {
+  if (!message.retrieved_chunks?.length) return message.message_text;
+
+  const uniqueSources = uniquePassengerSources(message.retrieved_chunks);
+  const citationBySource = new Map(
+    uniqueSources.map((chunk, index) => [
+      chunk.document_id || chunk.source_url || chunk.chunk_id,
+      `S${index + 1}`,
+    ]),
+  );
+  const citationAliases = new Map();
+  message.retrieved_chunks.forEach((chunk) => {
+    const sourceKey = chunk.document_id
+      || chunk.source_url
+      || chunk.chunk_id;
+    citationAliases.set(
+      chunk.citation_id,
+      citationBySource.get(sourceKey),
+    );
+  });
+  return message.message_text.replace(
+    /\[(S\d+)\]/g,
+    (match, citation) => (
+      citationAliases.has(citation)
+        ? `[${citationAliases.get(citation)}]`
+        : match
+    ),
+  );
+}
+
+function Sources({ chunks }) {
+  if (!chunks?.length) return null;
+
+  const uniqueSources = uniquePassengerSources(chunks);
   return (
     <details className="message-sources">
-      <summary>Sources ({orderedChunks.length})</summary>
+      <summary>Sources ({uniqueSources.length})</summary>
       <div className="sources-list">
-        {orderedChunks.map((chunk, index) => {
+        {uniqueSources.map((chunk, index) => {
           // Keep the persisted citation when available so inline [S1]
           // references continue to match the source row shown to passengers.
-          const reference = chunk.citation_id || `S${index + 1}`;
+          const reference = `S${index + 1}`;
           const title = chunk.source_title || "Kenya Airways support information";
           return (
             <div
@@ -193,7 +255,7 @@ function ChatMessage({ message }) {
         {isPassenger ? (
           <p>{message.message_text}</p>
         ) : (
-          <FormattedAnswer text={message.message_text} />
+          <FormattedAnswer text={passengerAnswerText(message)} />
         )}
       </div>
       {!isPassenger && <Sources chunks={message.retrieved_chunks} />}
@@ -208,6 +270,20 @@ function AgentMessage({ message }) {
       <p className="message-sender">
         Support agent{message.sender_name ? ` · ${message.sender_name}` : ""}
       </p>
+      <div className="message-bubble">
+        <p>{message.message_text}</p>
+      </div>
+      <time className="support-message-time" dateTime={message.timestamp}>
+        {new Date(message.timestamp).toLocaleString()}
+      </time>
+    </article>
+  );
+}
+
+function PassengerSupportMessage({ message }) {
+  return (
+    <article className="chat-message passenger support-passenger-message">
+      <p className="message-sender">You</p>
       <div className="message-bubble">
         <p>{message.message_text}</p>
       </div>
@@ -412,6 +488,7 @@ export function PassengerChat({
   const [activeSupport, setActiveSupport] = useState(null);
   const [supportDetail, setSupportDetail] = useState(null);
   const [supportState, setSupportState] = useState("idle");
+  const [activeView, setActiveView] = useState("ai");
   const [pendingEscalation, setPendingEscalation] = useState(null);
   const [unsuccessfulTurns, setUnsuccessfulTurns] = useState(0);
   const [expanded, setExpanded] = useState(false);
@@ -628,7 +705,7 @@ export function PassengerChat({
     if (list) {
       list.scrollTop = list.scrollHeight;
     }
-  }, [messages, isSending]);
+  }, [activeView, messages, supportDetail?.messages, isSending]);
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -682,6 +759,7 @@ export function PassengerChat({
       setFeedback(null);
       setQuestion("");
       setDrawerOpen(false);
+      setActiveView("ai");
     } catch (reason) {
       setError(
         reason instanceof Error
@@ -708,6 +786,7 @@ export function PassengerChat({
       setConversation(detail.conversation);
       setMessages(detail.messages);
       setDrawerOpen(false);
+      setActiveView("ai");
 
       try {
         const savedFeedback = await getConversationFeedback(user, conversationId);
@@ -724,13 +803,13 @@ export function PassengerChat({
     if (!user) return;
     setError(null);
     try {
-      const conversationDetail = await getConversation(
+      const detail = await getSupportRequest(
         user,
-        item.conversation_id,
+        item.request_id,
       );
-      setConversation(conversationDetail.conversation);
-      setMessages(conversationDetail.messages);
-      setActiveSupport(item);
+      setSupportDetail(detail);
+      setActiveSupport(detail.request);
+      setActiveView("support");
       setDrawerOpen(false);
     } catch (reason) {
       setError(reason.message);
@@ -831,6 +910,12 @@ export function PassengerChat({
       }
       setActiveSupport(created);
       setSupportRequests((current) => [created, ...current]);
+      setSupportDetail({
+        request: created,
+        messages: [],
+        feedback: null,
+      });
+      setActiveView("support");
       setSupportOffer(false);
       setPendingEscalation(null);
       setSupportState("idle");
@@ -883,7 +968,10 @@ export function PassengerChat({
 
     const trimmedQuestion = submittedQuestion.trim();
 
-    if (activeSupport?.status === "in_progress") {
+    if (
+      activeView === "support"
+      && activeSupport?.status === "in_progress"
+    ) {
       event.preventDefault();
       if (!trimmedQuestion || !user || isSending) return;
       setIsSending(true);
@@ -1009,6 +1097,7 @@ export function PassengerChat({
               message_chunk_id: `${chatbotId}_${source.chunk.chunk_id}`,
               message_id: chatbotId,
               chunk_id: source.chunk.chunk_id,
+              document_id: source.chunk.document_id,
               citation_id: source.citation_id,
               similarity_score: source.score,
               retrieval_rank: source.retrieval_rank,
@@ -1145,7 +1234,7 @@ export function PassengerChat({
             </div>
           </div>
         )}
-        <p className="drawer-section-label">Saved conversations</p>
+        <p className="drawer-section-label">AI Conversations</p>
         {historyLoading ? (
           <p className="muted">Loading history…</p>
         ) : !history.length ? (
@@ -1175,13 +1264,18 @@ export function PassengerChat({
             <div className="history-list support-history-list">
               {supportRequests.map((item) => (
                 <button
-                  className="history-item"
+                  className={`history-item ${
+                    activeView === "support"
+                    && item.request_id === activeSupport?.request_id
+                      ? "selected"
+                      : ""
+                  }`}
                   type="button"
                   key={item.request_id}
                   onClick={() => openSupportHistory(item)}
                 >
-                  <strong>{item.reference}</strong>
-                  <span>{item.status.replaceAll("_", " ")}</span>
+                  <strong>{item.issue_summary}</strong>
+                  <span>{supportStatusLabel(item)}</span>
                 </button>
               ))}
             </div>
@@ -1241,6 +1335,7 @@ export function PassengerChat({
         </div>
       </div>
 
+      {activeView === "ai" && (
       <div className="chat-controls">
         <div className="control-field">
           <label htmlFor="language-preference">Response language</label>
@@ -1275,18 +1370,8 @@ export function PassengerChat({
             End conversation
           </button>
         )}
-        {!activeSupport || ["resolved", "cancelled"].includes(
-          activeSupport.status,
-        ) ? (
-          <button
-            className="request-support-action"
-            type="button"
-            onClick={() => openSupportOffer("passenger_request")}
-          >
-            Request human support
-          </button>
-        ) : null}
       </div>
+      )}
 
       {confirmEndOpen && (
         <div
@@ -1346,7 +1431,32 @@ export function PassengerChat({
         </div>
       )}
 
-      {activeSupport && (
+      {activeView === "support" && activeSupport && (
+        <header className="human-support-header">
+          <button
+            className="support-back-button"
+            type="button"
+            onClick={() => setActiveView("ai")}
+            aria-label="Back to AI conversation"
+          >
+            <ArrowLeft aria-hidden="true" />
+          </button>
+          <div>
+            <h2>Human Support</h2>
+            <p>
+              {activeSupport.assigned_agent_name
+                || activeSupport.reference}
+            </p>
+          </div>
+          <span
+            className={`human-support-status ${activeSupport.status}`}
+          >
+            {supportStatusLabel(activeSupport)}
+          </span>
+        </header>
+      )}
+
+      {activeView === "support" && activeSupport && (
         <section className={`support-status-banner ${activeSupport.status}`}>
           <div>
             <strong>
@@ -1385,18 +1495,31 @@ export function PassengerChat({
       )}
 
       <div
-        className="message-list"
+        className={`message-list ${
+          activeView === "support" ? "human-support-messages" : ""
+        }`}
         ref={messageListRef}
         aria-live="polite"
         aria-relevant="additions"
       >
-        {modelLoading && !error && (
+        {activeView === "support" && activeSupport && (
+          <div className="support-case-summary">
+            <span>{activeSupport.reference}</span>
+            <strong>{activeSupport.issue_summary}</strong>
+          </div>
+        )}
+        {activeView === "support" && activeSupport && (
+          <p className="support-system-message">
+            Support request submitted.
+          </p>
+        )}
+        {activeView === "ai" && modelLoading && !error && (
           <div className="welcome-screen">
             <h3>Loading...</h3>
             <p className="empty-chat">Please wait while we connect to the support system.</p>
           </div>
         )}
-        {!messages.length && !isSending && (
+        {activeView === "ai" && !messages.length && !isSending && (
           <div className="welcome-screen">
             <KenyaAirwaysLogo className="welcome-airline-logo" variant="colour" />
             <h3>What can we help you with?</h3>
@@ -1417,7 +1540,7 @@ export function PassengerChat({
             </div>
           </div>
         )}
-        {conversationTurns(messages).map((turn) => (
+        {activeView === "ai" && conversationTurns(messages).map((turn) => (
           <div
             className="message-turn"
             key={turn.question?.message_id || turn.answer?.message_id}
@@ -1426,20 +1549,19 @@ export function PassengerChat({
             {turn.answer && <ChatMessage message={turn.answer} />}
           </div>
         ))}
-        {supportDetail?.messages.map((message) => (
+        {activeView === "support" && supportDetail?.messages.map((message) => (
           message.sender_role === "agent" ? (
             <AgentMessage message={message} key={message.message_id} />
           ) : (
-            <ChatMessage
+            <PassengerSupportMessage
               key={message.message_id}
-              message={{
-                ...message,
-                sender_type: "customer",
-              }}
+              message={message}
             />
           )
         ))}
-        {user && activeSupport?.status === "resolved" && (
+        {activeView === "support"
+          && user
+          && activeSupport?.status === "resolved" && (
           <SupportFeedbackRating
             user={user}
             request={activeSupport}
@@ -1450,7 +1572,7 @@ export function PassengerChat({
             }))}
           />
         )}
-        {supportOffer && (
+        {activeView === "ai" && supportOffer && (
           <section className="human-support-card">
             <h3>Need additional assistance?</h3>
             <p>
@@ -1534,7 +1656,7 @@ export function PassengerChat({
             </div>
           </section>
         )}
-        {isSending && (
+        {activeView === "ai" && isSending && (
           <div className="chat-message assistant loading-message">
             <p className="message-sender">KQ Support</p>
             <div className="message-bubble">
@@ -1549,7 +1671,9 @@ export function PassengerChat({
             </div>
           </div>
         )}
-        {user && conversation?.status === "ended" && (
+        {activeView === "ai"
+          && user
+          && conversation?.status === "ended" && (
           <FeedbackRating
             user={user}
             conversation={conversation}
@@ -1559,7 +1683,52 @@ export function PassengerChat({
         )}
       </div>
 
-      {/* Keep the composer separate from the scrolling transcript. */}
+      {activeView === "support" && activeSupport && (
+        <form
+          className="chat-composer support-composer"
+          onSubmit={submitQuestion}
+        >
+          <label className="sr-only" htmlFor="support-message">
+            Message your support agent
+          </label>
+          <textarea
+            id="support-message"
+            value={question}
+            onChange={(event) => setQuestion(event.target.value)}
+            onKeyDown={handleComposerKeyDown}
+            placeholder={
+              activeSupport.status === "in_progress"
+                ? "Message your support agent..."
+                : "Replies are available while your case is in progress."
+            }
+            rows="3"
+            maxLength="4000"
+            disabled={
+              isSending || activeSupport.status !== "in_progress"
+            }
+            required
+          />
+          <div className="composer-actions support-composer-actions">
+            <p>
+              {question.length}/4000 - Enter to send, Shift+Enter for a new line
+            </p>
+            <button
+              className="button primary"
+              type="submit"
+              disabled={
+                !question.trim()
+                || isSending
+                || activeSupport.status !== "in_progress"
+              }
+            >
+              {isSending ? "Sending..." : "Send"}
+            </button>
+          </div>
+        </form>
+      )}
+
+      {/* Keep the AI composer separate from the scrolling transcript. */}
+      {activeView === "ai" && (
       <form className="chat-composer" ref={composerFormRef} onSubmit={submitQuestion}>
         <label className="sr-only" htmlFor="chat-question">Your question</label>
         <textarea
@@ -1567,21 +1736,15 @@ export function PassengerChat({
           value={question}
           onChange={(event) => setQuestion(event.target.value)}
           onKeyDown={handleComposerKeyDown}
-          placeholder={
-            activeSupport?.status === "in_progress"
-              ? "Message your support agent..."
-              : "Enter your inquiry..."
-          }
+          placeholder="Enter your inquiry..."
           rows="3"
           maxLength="4000"
           disabled={
             isSending
             || isStarting
             || conversation?.status === "ended"
-            || (
-              activeSupport?.status !== "in_progress"
-              && (modelLoading || !selectedModelId)
-            )
+            || modelLoading
+            || !selectedModelId
           }
           required
         />
@@ -1630,10 +1793,8 @@ export function PassengerChat({
               !question.trim()
               || isSending
               || isStarting
-              || (
-                activeSupport?.status !== "in_progress"
-                && (modelLoading || !selectedModelId)
-              )
+              || modelLoading
+              || !selectedModelId
               || conversation?.status === "ended"
             }
           >
@@ -1642,6 +1803,7 @@ export function PassengerChat({
         </div>
         <p className="chat-disclaimer">AI can make mistakes. Please verify important travel information.</p>
       </form>
+      )}
       </div>
     </section>
   );

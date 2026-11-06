@@ -254,6 +254,105 @@
   background: var(--admin-red);
 }
 
+.user-dialog-button.danger {
+  border-color: var(--admin-red);
+  color: #ffffff;
+  background: var(--admin-red);
+}
+
+.user-actions {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.user-edit-button,
+.user-more-button {
+  min-height: 2.1rem;
+  padding: 0.35rem 0.65rem;
+  border: 1px solid #cbd7e6;
+  border-radius: 0.5rem;
+  color: var(--admin-navy);
+  background: #ffffff;
+  font-size: 0.78rem;
+  font-weight: 750;
+  cursor: pointer;
+}
+
+.user-more-button {
+  width: 2.15rem;
+  padding: 0;
+}
+
+.user-more-button svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+.user-action-menu {
+  position: absolute;
+  z-index: 30;
+  top: calc(100% + 0.35rem);
+  right: 0;
+  display: grid;
+  width: 10rem;
+  padding: 0.35rem;
+  border: 1px solid var(--admin-border);
+  border-radius: 0.6rem;
+  background: #ffffff;
+  box-shadow: 0 12px 28px rgb(11 35 71 / 16%);
+}
+
+.user-action-menu button {
+  padding: 0.55rem 0.65rem;
+  border: 0;
+  border-radius: 0.4rem;
+  color: var(--admin-navy);
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+}
+
+.user-action-menu button:hover:not(:disabled) {
+  background: #f1f5f9;
+}
+
+.user-action-menu button.danger {
+  color: var(--admin-red);
+}
+
+.user-action-menu button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.user-edit-dialog {
+  display: grid;
+  gap: 0.8rem;
+}
+
+.user-edit-dialog > label {
+  display: grid;
+  gap: 0.35rem;
+  color: var(--admin-navy);
+  font-size: 0.76rem;
+  font-weight: 750;
+}
+
+.user-edit-dialog input {
+  width: 100%;
+  min-height: 2.5rem;
+  padding: 0.5rem 0.65rem;
+  border: 1px solid var(--admin-border);
+  border-radius: 0.5rem;
+}
+
+.user-edit-dialog input[readonly] {
+  color: #64748b;
+  background: #f8fafc;
+}
+
 .user-dialog-button:disabled {
   cursor: wait;
   opacity: 0.65;

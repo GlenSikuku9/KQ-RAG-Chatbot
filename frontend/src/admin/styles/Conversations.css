@@ -172,3 +172,125 @@
     max-width: 92%;
   }
 }
+.conversation-actions {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.conversation-inspect-button,
+.conversation-more-button {
+  min-height: 2.05rem;
+  padding: 0.35rem 0.65rem;
+  border: 1px solid #cbd7e6;
+  border-radius: 0.5rem;
+  color: var(--admin-navy);
+  background: #ffffff;
+  font-size: 0.76rem;
+  font-weight: 750;
+  cursor: pointer;
+}
+
+.conversation-more-button {
+  width: 2.1rem;
+  padding: 0;
+}
+
+.conversation-more-button svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+.conversation-action-menu {
+  position: absolute;
+  z-index: 35;
+  top: calc(100% + 0.35rem);
+  right: 0;
+  width: 11.5rem;
+  padding: 0.35rem;
+  border: 1px solid var(--admin-border);
+  border-radius: 0.6rem;
+  background: #ffffff;
+  box-shadow: 0 12px 28px rgb(11 35 71 / 16%);
+}
+
+.conversation-action-menu button {
+  width: 100%;
+  padding: 0.55rem 0.65rem;
+  border: 0;
+  border-radius: 0.4rem;
+  color: var(--admin-red);
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+}
+
+.conversation-action-menu button:hover {
+  background: rgb(215 25 32 / 6%);
+}
+
+.conversation-delete-backdrop {
+  position: fixed;
+  z-index: 150;
+  inset: 0;
+  display: grid;
+  padding: 1rem;
+  place-items: center;
+  background: rgb(11 35 71 / 40%);
+}
+
+.conversation-delete-dialog {
+  width: min(30rem, 100%);
+  padding: 1.25rem;
+  border-radius: 0.85rem;
+  background: #ffffff;
+  box-shadow: 0 20px 55px rgb(11 35 71 / 22%);
+}
+
+.conversation-delete-dialog h2 {
+  margin: 0;
+  color: var(--admin-navy);
+}
+
+.conversation-delete-dialog > p {
+  color: var(--admin-muted);
+  line-height: 1.5;
+}
+
+.conversation-delete-dialog dl {
+  display: grid;
+  gap: 0.55rem;
+  padding-block: 0.8rem;
+  border-block: 1px solid var(--admin-border);
+}
+
+.conversation-delete-dialog dl div {
+  display: grid;
+  grid-template-columns: 6rem minmax(0, 1fr);
+  gap: 0.6rem;
+}
+
+.conversation-delete-dialog dt {
+  color: var(--admin-muted);
+  font-size: 0.72rem;
+  font-weight: 750;
+  text-transform: uppercase;
+}
+
+.conversation-delete-dialog dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.conversation-delete-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.6rem;
+  margin-top: 1rem;
+}
+
+.conversation-delete-actions .danger {
+  color: #ffffff;
+  background: var(--admin-red);
+}

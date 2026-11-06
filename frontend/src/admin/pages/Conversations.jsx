@@ -1,16 +1,26 @@
 import { useEffect, useRef, useState } from "react";
-import { adminConversationPage } from "../../api";
+import { EllipsisVertical } from "lucide-react";
+import {
+  adminConversationPage,
+  adminDeleteConversation,
+} from "../../api";
 import { FormattedAnswer } from "../../components/FormattedAnswer";
 import {
   Pagination as TablePagination,
   TableLoadingRows,
 } from "../components/Pagination";
-import { useAdminTablePage } from "../hooks/useAdminTablePage";
+import { AdminNotice } from "../components/AdminNotice";
+import { AdminRefreshIndicator } from "../components/AdminRefreshIndicator";
+import {
+  tablePageCache,
+  useAdminTablePage,
+} from "../hooks/useAdminTablePage";
 import {
   formatDateTime,
   languageLabel,
   readableEventName,
 } from "../utils";
+import { subscribeToAdminConversationChanges } from "../../adminRealtime";
 import "../styles/Conversations.css";
 
 function ConversationTable({ user, revision, onSelect }) {
@@ -22,6 +32,11 @@ function ConversationTable({ user, revision, onSelect }) {
   const [dateFrom, setDateFrom] = useState("");
   const [dateTo, setDateTo] = useState("");
   const [sortOrder, setSortOrder] = useState("newest");
+  const [refresh, setRefresh] = useState(0);
+  const [openMenu, setOpenMenu] = useState(null);
+  const [deleting, setDeleting] = useState(null);
+  const [mutationLoading, setMutationLoading] = useState(false);
+  const [notice, setNotice] = useState(null);
   const filters = {
     page,
     page_size: pageSize,
@@ -32,20 +47,88 @@ function ConversationTable({ user, revision, onSelect }) {
     started_to: dateTo ? `${dateTo}T23:59:59Z` : "",
     sort_order: sortOrder,
   };
-  const { data, loading, error } = useAdminTablePage(
+  const { data, loading, refreshing, error } = useAdminTablePage(
     user,
     "conversations",
     adminConversationPage,
     filters,
-    revision,
+    revision + refresh,
   );
+
+  useEffect(() => {
+    let refreshTimer;
+    const stop = subscribeToAdminConversationChanges(
+      () => {
+        // Collapse a burst of related conversation/message writes into one
+        // paginated summary refresh while leaving current rows mounted.
+        window.clearTimeout(refreshTimer);
+        refreshTimer = window.setTimeout(() => {
+          setRefresh((value) => value + 1);
+        }, 250);
+      },
+      // Real-time hints are optional. The authenticated paginated API remains
+      // authoritative and already exposes actionable refresh failures.
+      () => {},
+    );
+    return () => {
+      window.clearTimeout(refreshTimer);
+      stop();
+    };
+  }, [user.uid]);
+
+  useEffect(() => {
+    function closeMenu(event) {
+      if (
+        event.key === "Escape"
+        || !event.target.closest?.(".conversation-actions")
+      ) {
+        setOpenMenu(null);
+      }
+    }
+    document.addEventListener("mousedown", closeMenu);
+    document.addEventListener("keydown", closeMenu);
+    return () => {
+      document.removeEventListener("mousedown", closeMenu);
+      document.removeEventListener("keydown", closeMenu);
+    };
+  }, []);
+
+  useEffect(() => {
+    function closeDialog(event) {
+      if (event.key === "Escape" && !mutationLoading) setDeleting(null);
+    }
+    if (deleting) document.addEventListener("keydown", closeDialog);
+    return () => document.removeEventListener("keydown", closeDialog);
+  }, [deleting, mutationLoading]);
+
+  async function confirmDelete() {
+    if (!deleting || mutationLoading) return;
+    setMutationLoading(true);
+    setNotice(null);
+    try {
+      await adminDeleteConversation(user, deleting.conversation_id);
+      tablePageCache.clear();
+      setRefresh((value) => value + 1);
+      setDeleting(null);
+      setNotice({
+        type: "success",
+        text: "Conversation deleted permanently.",
+      });
+    } catch (reason) {
+      setNotice({ type: "error", text: reason.message });
+    } finally {
+      setMutationLoading(false);
+    }
+  }
   function reset(setter, value) {
     setter(value);
     setPage(1);
   }
   const conversations = data?.items || [];
   return (
-    <section className="admin-card table-management">
+    <>
+      <AdminRefreshIndicator active={refreshing} />
+      <section className="admin-card table-management">
       <div className="admin-toolbar conversation-filter-toolbar">
         <label className="admin-search-field">
           <span className="sr-only">Search conversations</span>
@@ -106,7 +189,11 @@ function ConversationTable({ user, revision, onSelect }) {
           </select>
         </label>
       </div>
-      {error && <p className="notice error">{error}</p>}
+      <AdminNotice type="error" message={error} />
+      <AdminNotice
+        notice={notice}
+        onDismiss={() => setNotice(null)}
+      />
       <div className="admin-table-scroll">
         <table className="admin-table">
           <thead>
@@ -143,13 +230,41 @@ function ConversationTable({ user, revision, onSelect }) {
                     </span>
                   </td>
                   <td>
-                    <button
-                      className="text-button"
-                      type="button"
-                      onClick={() => onSelect(item.conversation_id)}
-                    >
-                      Inspect
-                    </button>
+                    <div className="conversation-actions">
+                      <button
+                        className="conversation-inspect-button"
+                        type="button"
+                        onClick={() => onSelect(item.conversation_id)}
+                      >
+                        Inspect
+                      </button>
+                      <button
+                        className="conversation-more-button"
+                        type="button"
+                        aria-label={`More actions for ${item.title}`}
+                        aria-expanded={openMenu === item.conversation_id}
+                        onClick={() => setOpenMenu((current) => (
+                          current === item.conversation_id
+                            ? null
+                            : item.conversation_id
+                        ))}
+                      >
+                        <EllipsisVertical aria-hidden="true" />
+                      </button>
+                      {openMenu === item.conversation_id && (
+                        <div className="conversation-action-menu">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setOpenMenu(null);
+                              setDeleting(item);
+                            }}
+                          >
+                            Delete conversation
+                          </button>
+                        </div>
+                      )}
+                    </div>
                   </td>
                 </tr>
               ))
@@ -175,7 +290,65 @@ function ConversationTable({ user, revision, onSelect }) {
           setPage(1);
         }}
       />
-    </section>
+      {deleting && (
+        <div
+          className="conversation-delete-backdrop"
+          role="presentation"
+          onMouseDown={(event) => {
+            if (
+              event.target === event.currentTarget
+              && !mutationLoading
+            ) {
+              setDeleting(null);
+            }
+          }}
+        >
+          <section
+            className="conversation-delete-dialog"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="delete-conversation-title"
+          >
+            <h2 id="delete-conversation-title">Delete conversation?</h2>
+            <p>
+              Are you sure you want to permanently delete this conversation
+              and its messages? This action cannot be undone.
+            </p>
+            <dl>
+              <div><dt>Title</dt><dd>{deleting.title}</dd></div>
+              <div>
+                <dt>Passenger</dt>
+                <dd>{deleting.user_email || "Unavailable"}</dd>
+              </div>
+              <div>
+                <dt>Started</dt>
+                <dd>{formatDateTime(deleting.started_at)}</dd>
+              </div>
+              <div><dt>Messages</dt><dd>{deleting.message_count}</dd></div>
+            </dl>
+            <div className="conversation-delete-actions">
+              <button
+                className="button secondary"
+                type="button"
+                disabled={mutationLoading}
+                onClick={() => setDeleting(null)}
+              >
+                Cancel
+              </button>
+              <button
+                className="button danger"
+                type="button"
+                disabled={mutationLoading}
+                onClick={confirmDelete}
+              >
+                {mutationLoading ? "Deleting..." : "Delete conversation"}
+              </button>
+            </div>
+          </section>
+        </div>
+      )}
+      </section>
+    </>
   );
 }
 

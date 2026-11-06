@@ -74,10 +74,17 @@ export function subscribeToSupportRequest(
 export function subscribeToSupportEvents(onChange, onError) {
   if (!db) return () => {};
 
+  let initialSnapshot = true;
   // Admin security rules restrict this collection listener to administrators.
   return onSnapshot(
     collection(db, "support_requests"),
-    () => onChange(),
+    () => {
+      if (initialSnapshot) {
+        initialSnapshot = false;
+        return;
+      }
+      onChange();
+    },
     onError,
   );
 }

@@ -11,6 +11,8 @@ from uuid import uuid4
 
 from fastapi import HTTPException, UploadFile, status
 from firebase_admin import auth
+from google.cloud.firestore_v1.base_query import FieldFilter
+from pydantic import BaseModel
 
 from app.config import get_settings
 from app.models.admin import (
@@ -194,10 +196,40 @@ def _model_display_name(upstream_model: str) -> str:
     )
 
 
+def _is_legacy_gemini_record(value: object) -> bool:
+    """Identify retired Gemini records without matching active Gemma models."""
+    if isinstance(value, BaseModel):
+        fields = value.model_dump()
+    elif isinstance(value, dict):
+        fields = value
+    else:
+        fields = {"model_id": value}
+    identifiers = " ".join(
+        str(fields.get(name) or "").lower()
+        for name in (
+            "model_id",
+            "model_provider",
+            "model_version",
+            "provider",
+            "upstream_model",
+        )
+    )
+    return "gemini" in identifiers or "google_ai_studio" in identifiers
+
+
 def list_evaluations() -> list[EvaluationResult]:
     with firestore_operation():
         snapshots = get_firestore_client().collection("model_evaluations").stream(timeout=FIRESTORE_READ_TIMEOUT)
-    return sorted((EvaluationResult.model_validate(snapshot.to_dict()) for snapshot in snapshots), key=lambda item: item.evaluated_at, reverse=True)
+    evaluations = (
+        EvaluationResult.model_validate(snapshot.to_dict())
+        for snapshot in snapshots
+        if not _is_legacy_gemini_record(snapshot.to_dict() or {})
+    )
+    return sorted(
+        evaluations,
+        key=lambda item: item.evaluated_at,
+        reverse=True,
+    )
 
 
 def _audit_description(action: str, details: dict) -> str:
@@ -1272,6 +1304,215 @@ def update_user_status(admin: AuthenticatedUser, user_id: str, disabled: bool) -
     return next(item for item in list_users() if item.user_id == user_id)
 
 
+def update_user_display_name(
+    admin: AuthenticatedUser,
+    user_id: str,
+    display_name: str,
+) -> AdminUser:
+    """Synchronize a validated display name across Auth and Firestore."""
+    normalized = " ".join(display_name.split())
+    if len(normalized) < 2:
+        raise HTTPException(422, "Display name must contain at least two characters.")
+    previous = auth.get_user(user_id)
+    auth.update_user(user_id, display_name=normalized)
+    with firestore_operation():
+        get_firestore_client().collection("users").document(
+            encode_document_id(user_id),
+        ).set(
+            {
+                "user_id": user_id,
+                "name": normalized,
+            },
+            merge=True,
+        )
+    audit(
+        admin,
+        "user_display_name_changed",
+        "user",
+        user_id,
+        {
+            "affected_user": previous.email or user_id,
+            "previous_name": previous.display_name or "Not provided",
+            "new_name": normalized,
+        },
+    )
+    return next(item for item in list_users() if item.user_id == user_id)
+
+
+def _matching_documents(
+    collection_name: str,
+    field: str,
+    value: str,
+) -> list:
+    """Read a bounded cleanup target set before issuing batched deletes."""
+    return list(
+        get_firestore_client()
+        .collection(collection_name)
+        .where(filter=FieldFilter(field, "==", value))
+        .stream(timeout=FIRESTORE_READ_TIMEOUT)
+    )
+
+
+def _delete_snapshots(snapshots: list) -> None:
+    """Delete in Firestore-safe batches so cleanup can be retried."""
+    client = get_firestore_client()
+    for offset in range(0, len(snapshots), 400):
+        batch = client.batch()
+        for snapshot in snapshots[offset:offset + 400]:
+            batch.delete(snapshot.reference)
+        batch.commit()
+
+
+def _support_for_conversation(conversation_id: str) -> list:
+    return _matching_documents(
+        "support_requests",
+        "conversation_id",
+        conversation_id,
+    )
+
+
+def delete_conversation(
+    admin: AuthenticatedUser,
+    conversation_id: str,
+) -> None:
+    """Delete one conversation and its dependent personal records."""
+    client = get_firestore_client()
+    reference = client.collection("conversations").document(
+        encode_document_id(conversation_id),
+    )
+    with firestore_operation():
+        snapshot = reference.get(timeout=FIRESTORE_READ_TIMEOUT)
+        if not snapshot.exists:
+            raise HTTPException(404, "Conversation not found.")
+        support = _support_for_conversation(conversation_id)
+        active = [
+            item
+            for item in support
+            if (item.to_dict() or {}).get("status")
+            in {"pending", "in_progress"}
+        ]
+        if active:
+            raise HTTPException(
+                409,
+                "This conversation has an active human support request. "
+                "Resolve or cancel the support request before deleting the conversation.",
+            )
+
+        for support_snapshot in support:
+            request_id = str(
+                (support_snapshot.to_dict() or {}).get("request_id")
+                or support_snapshot.id
+            )
+            _delete_snapshots(
+                _matching_documents(
+                    "support_messages",
+                    "request_id",
+                    request_id,
+                ),
+            )
+            feedback_reference = client.collection(
+                "support_feedback",
+            ).document(encode_document_id(request_id))
+            feedback_reference.delete()
+        _delete_snapshots(support)
+        _delete_snapshots(
+            _matching_documents("messages", "conversation_id", conversation_id),
+        )
+        _delete_snapshots(
+            _matching_documents(
+                "message_chunks",
+                "conversation_id",
+                conversation_id,
+            ),
+        )
+        _delete_snapshots(
+            _matching_documents("feedback", "conversation_id", conversation_id),
+        )
+        reference.delete()
+
+    audit(
+        admin,
+        "conversation_deleted",
+        "conversation",
+        conversation_id,
+    )
+
+
+def delete_user_account(
+    admin: AuthenticatedUser,
+    user_id: str,
+) -> None:
+    """Disable access, clean personal records, then remove Firebase Auth."""
+    if user_id == admin.uid:
+        raise HTTPException(409, "You cannot delete your signed-in account.")
+    user = auth.get_user(user_id)
+    with firestore_operation():
+        active_support = [
+            item
+            for item in _matching_documents(
+                "support_requests",
+                "passenger_id",
+                user_id,
+            )
+            if (item.to_dict() or {}).get("status")
+            in {"pending", "in_progress"}
+        ]
+    if active_support:
+        raise HTTPException(
+            409,
+            "Resolve or cancel this user's active support cases before deleting the account.",
+        )
+
+    # Disabling first prevents new writes if a later cleanup step must be retried.
+    auth.update_user(user_id, disabled=True)
+    with firestore_operation():
+        conversations = _matching_documents(
+            "conversations",
+            "user_id",
+            user_id,
+        )
+    for item in conversations:
+        conversation_id = str(
+            (item.to_dict() or {}).get("conversation_id") or item.id
+        )
+        delete_conversation(admin, conversation_id)
+
+    with firestore_operation():
+        support = _matching_documents(
+            "support_requests",
+            "passenger_id",
+            user_id,
+        )
+        for item in support:
+            request_id = str(
+                (item.to_dict() or {}).get("request_id") or item.id
+            )
+            _delete_snapshots(
+                _matching_documents(
+                    "support_messages",
+                    "request_id",
+                    request_id,
+                ),
+            )
+            client = get_firestore_client()
+            client.collection("support_feedback").document(
+                encode_document_id(request_id),
+            ).delete()
+        _delete_snapshots(support)
+        get_firestore_client().collection("users").document(
+            encode_document_id(user_id),
+        ).delete()
+
+    auth.delete_user(user_id)
+    audit(
+        admin,
+        "user_account_deleted",
+        "user",
+        user_id,
+        {"affected_user": user.email or "Deleted account"},
+    )
+
+
 def list_conversations() -> list:
     client = get_firestore_client()
     with firestore_operation():
@@ -1366,7 +1607,10 @@ def analytics(period_days: int = 30) -> AdminAnalytics:
     events: list[OperationalEvent] = []
     for snapshot in event_snapshots:
         event = OperationalEvent.model_validate(snapshot.to_dict())
-        if event.occurred_at >= started:
+        if (
+            event.occurred_at >= started
+            and not _is_legacy_gemini_record(event)
+        ):
             events.append(event)
 
     feedback: list[Feedback] = []

@@ -1,4 +1,10 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 
 import {
   adminAcceptSupportRequest,
@@ -13,8 +19,13 @@ import {
   adminSupportSummary,
 } from "../../api";
 import { Pagination, TableLoadingRows } from "../components/Pagination";
+import { AdminNotice } from "../components/AdminNotice";
+import { AdminRefreshIndicator } from "../components/AdminRefreshIndicator";
 import { formatDateTime } from "../utils";
-import { subscribeToSupportRequest } from "../../supportRealtime";
+import {
+  subscribeToSupportEvents,
+  subscribeToSupportRequest,
+} from "../../supportRealtime";
 import "../styles/HumanSupport.css";
 
 
@@ -25,17 +36,11 @@ function statusLabel(value) {
 }
 
 
-function combinedMessages(detail) {
-  const aiMessages = (detail?.ai_messages || []).map((message) => ({
-    ...message,
-    kind: message.sender_type,
-  }));
-  const supportMessages = (detail?.messages || []).map((message) => ({
+function supportMessages(detail) {
+  return (detail?.messages || []).map((message) => ({
     ...message,
     kind: message.sender_role,
-  }));
-
-  return [...aiMessages, ...supportMessages].sort((left, right) => (
+  })).sort((left, right) => (
     new Date(left.timestamp) - new Date(right.timestamp)
   ));
 }
@@ -83,6 +88,7 @@ function SupportWorkspace({ user, requestId, onClose, onChanged }) {
   }, [load]);
 
   async function transition(operation) {
+    if (state === "saving") return;
     setState("saving");
     setError(null);
     try {
@@ -120,11 +126,16 @@ function SupportWorkspace({ user, requestId, onClose, onChanged }) {
     return <div className="support-workspace-loading">Loading case…</div>;
   }
   if (!detail) {
-    return <div className="notice error">{error || "Case unavailable."}</div>;
+    return (
+      <AdminNotice
+        type="error"
+        message={error || "Case unavailable."}
+      />
+    );
   }
 
   const request = detail.request;
-  const messages = combinedMessages(detail);
+  const messages = supportMessages(detail);
   const assignedToCurrentAgent = request.assigned_agent_id === user.uid;
 
   return (
@@ -139,7 +150,11 @@ function SupportWorkspace({ user, requestId, onClose, onChanged }) {
         </button>
       </header>
 
-      {error && <p className="notice error">{error}</p>}
+      <AdminNotice
+        type="error"
+        message={error}
+        onDismiss={() => setError(null)}
+      />
 
       <div className="support-workspace-grid">
         <section className="support-conversation-panel">
@@ -240,6 +255,7 @@ function SupportWorkspace({ user, requestId, onClose, onChanged }) {
                 <button
                   className="button primary"
                   type="button"
+                  disabled={state === "saving"}
                   onClick={() => transition(adminAcceptSupportRequest)}
                 >
                   Accept request
@@ -248,6 +264,7 @@ function SupportWorkspace({ user, requestId, onClose, onChanged }) {
                   <button
                     className="button secondary"
                     type="button"
+                    disabled={state === "saving"}
                     onClick={() => transition(adminConvertSupportRequest)}
                   >
                     Convert to ticket
@@ -259,15 +276,17 @@ function SupportWorkspace({ user, requestId, onClose, onChanged }) {
               <button
                 className="button primary"
                 type="button"
+                disabled={state === "saving"}
                 onClick={() => transition(adminResolveSupportRequest)}
               >
-                Resolve case
+                {state === "saving" ? "Resolving..." : "Resolve case"}
               </button>
             )}
             {request.status === "resolved" && (
               <button
                 className="button secondary"
                 type="button"
+                disabled={state === "saving"}
                 onClick={() => transition(adminReopenSupportRequest)}
               >
                 Reopen case
@@ -282,6 +301,22 @@ function SupportWorkspace({ user, requestId, onClose, onChanged }) {
               <p>{detail.feedback.comment || "No written comment."}</p>
             </section>
           )}
+
+          <details className="support-ai-context">
+            <summary>Originating AI conversation</summary>
+            <div className="support-ai-context-list">
+              {(detail.ai_messages || []).map((item) => (
+                <article key={item.message_id}>
+                  <strong>
+                    {item.sender_type === "customer"
+                      ? "Passenger"
+                      : "KQ Support AI"}
+                  </strong>
+                  <p>{item.message_text}</p>
+                </article>
+              ))}
+            </div>
+          </details>
         </aside>
       </div>
     </section>
@@ -289,7 +324,12 @@ function SupportWorkspace({ user, requestId, onClose, onChanged }) {
 }
 
 
-export default function HumanSupport({ user, initialRequestId, onOpened }) {
+export default function HumanSupport({
+  user,
+  initialRequestId,
+  onOpened,
+  revision = 0,
+}) {
   const [filters, setFilters] = useState({
     search: "",
     request_type: "",
@@ -304,10 +344,13 @@ export default function HumanSupport({ user, initialRequestId, onOpened }) {
   const [selected, setSelected] = useState(initialRequestId || null);
   const [available, setAvailable] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState(null);
+  const loaded = useRef(false);
   const filterKey = JSON.stringify(filters);
 
   const load = useCallback(async () => {
+    if (loaded.current) setRefreshing(true);
     const current = JSON.parse(filterKey);
     const params = new URLSearchParams();
     Object.entries(current).forEach(([key, value]) => {
@@ -323,17 +366,38 @@ export default function HumanSupport({ user, initialRequestId, onOpened }) {
       setSummary(metrics);
       setAvailable(presence.available);
       setError(null);
+      loaded.current = true;
     } catch (reason) {
       setError(reason.message);
     } finally {
       setLoading(false);
+      setRefreshing(false);
     }
-  }, [filterKey, user]);
+  }, [filterKey, revision, user]);
 
   useEffect(() => {
     const timer = window.setTimeout(load, filters.search ? 300 : 0);
     return () => window.clearTimeout(timer);
   }, [filters.search, load]);
+
+  useEffect(() => {
+    let refreshTimer;
+    const stop = subscribeToSupportEvents(
+      () => {
+        // Status and assignment bursts collapse into one background summary
+        // refresh; an open workspace and its draft remain mounted.
+        window.clearTimeout(refreshTimer);
+        refreshTimer = window.setTimeout(load, 250);
+      },
+      () => setError(
+        "Live support updates paused. Existing data remains available.",
+      ),
+    );
+    return () => {
+      window.clearTimeout(refreshTimer);
+      stop();
+    };
+  }, [load]);
 
   useEffect(() => {
     if (!initialRequestId) return;
@@ -385,6 +449,7 @@ export default function HumanSupport({ user, initialRequestId, onOpened }) {
 
   return (
     <section className="human-support-page">
+      <AdminRefreshIndicator active={refreshing} />
       <div className="support-availability-row">
         <div>
           <strong>Agent availability</strong>
@@ -404,7 +469,11 @@ export default function HumanSupport({ user, initialRequestId, onOpened }) {
         </label>
       </div>
 
-      {error && <p className="notice error">{error}</p>}
+      <AdminNotice
+        type="error"
+        message={error}
+        onDismiss={() => setError(null)}
+      />
 
       <div className="support-summary-grid">
         {cards.map(([label, value]) => (

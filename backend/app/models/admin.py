@@ -70,6 +70,20 @@ class UserRoleUpdate(BaseModel):
     role: Literal["passenger", "admin"]
 
 
+class UserDisplayNameUpdate(BaseModel):
+    """The only profile field administrators may edit from the Users page."""
+
+    display_name: str = Field(min_length=2, max_length=120)
+
+    @field_validator("display_name")
+    @classmethod
+    def normalize_display_name(cls, value: str) -> str:
+        normalized = " ".join(value.split())
+        if len(normalized) < 2:
+            raise ValueError("Display name must contain at least two characters.")
+        return normalized
+
+
 class AdminConversation(BaseModel):
     detail: ConversationDetail
     user_email: str | None = None

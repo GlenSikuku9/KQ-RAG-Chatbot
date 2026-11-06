@@ -26,7 +26,10 @@ class ContextTests(unittest.TestCase):
     def test_complete_cited_context_and_original_question_are_preserved(self):
         original = chunk(text="Baggage policy.\nRestrictions also apply.")
         response = retrieved((original, 0.9))
-        result = build_context(response, Settings())
+        result = build_context(
+            response,
+            Settings(context_min_similarity=0.87),
+        )
         self.assertEqual(result.context, "[S1]\n" + original.text)
         self.assertEqual(result.context_chars, len(result.context))
         self.assertEqual(result.sources[0].chunk, original)
@@ -41,15 +44,19 @@ class ContextTests(unittest.TestCase):
     def test_each_chunk_must_meet_threshold_including_exact_boundary(self):
         response = retrieved((chunk("high"), 0.9), (chunk("low", "refund"), 0.8699),
                              (chunk("boundary", "check-in"), 0.87))
-        result = build_context(response, Settings())
+        result = build_context(
+            response,
+            Settings(context_min_similarity=0.87),
+        )
         self.assertEqual([source.chunk.chunk_id for source in result.sources], ["high", "boundary"])
         self.assertEqual(result.excluded[0].chunk_id, "low")
         self.assertEqual(result.excluded[0].reason, "below_similarity_threshold")
-        self.assertEqual(result.sources[1].citation_id, "S2")
+        self.assertEqual(result.sources[1].citation_id, "S1")
         self.assertEqual(result.sources[1].retrieval_rank, 3)
 
     def test_budget_counts_citation_labels_and_separators_exactly(self):
         first, second = chunk(), chunk("two", "refund policy")
+        second.document_id = "second-document"
         expected = "[S1]\n" + first.text + "\n\n[S2]\n" + second.text
         response = retrieved((first, 0.95), (second, 0.9))
         result = build_context(response, Settings(context_max_chars=len(expected)))
@@ -99,7 +106,10 @@ class ContextTests(unittest.TestCase):
         empty = build_context(retrieved(), Settings())
         self.assertEqual(empty.decision, "fallback")
         self.assertEqual(empty.reason, "no_retrieved_chunks")
-        low = build_context(retrieved((chunk(), 0.86)), Settings())
+        low = build_context(
+            retrieved((chunk(), 0.86)),
+            Settings(context_min_similarity=0.87),
+        )
         self.assertEqual(low.decision, "clarification_required")
         self.assertEqual(low.reason, "below_similarity_threshold")
         for result in (empty, low):
@@ -107,6 +117,18 @@ class ContextTests(unittest.TestCase):
             self.assertEqual(result.sources, [])
             self.assertFalse(result.generation_called)
             self.assertTrue(result.message)
+
+    def test_chunks_from_one_document_share_one_citation(self):
+        response = retrieved(
+            (chunk("first", "Baggage allowance."), 0.95),
+            (chunk("second", "Baggage restrictions."), 0.93),
+        )
+        result = build_context(response, Settings())
+        self.assertEqual(len(result.sources), 2)
+        self.assertEqual(
+            [source.citation_id for source in result.sources],
+            ["S1", "S1"],
+        )
 
     def test_selected_language_controls_static_message_unknown_does_not_guess(self):
         messages = {}
