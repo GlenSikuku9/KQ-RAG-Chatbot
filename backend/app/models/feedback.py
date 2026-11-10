@@ -42,6 +42,9 @@ class OperationalEvent(BaseModel):
         "conversation_ended",
         "feedback_submitted",
         "feedback_updated",
+        "flight_lookup_completed",
+        "flight_lookup_failed",
+        "oag_api_request",
     ]
     occurred_at: UTCDateTime
     duration_ms: float | None = Field(
@@ -52,7 +55,12 @@ class OperationalEvent(BaseModel):
     model_id: str | None = Field(default=None, max_length=100)
     model_provider: str | None = Field(default=None, max_length=100)
     model_version: str | None = Field(default=None, max_length=300)
-    response_source: Literal["generated", "clarification", "fallback"] | None = None
+    response_source: Literal[
+        "generated",
+        "clarification",
+        "fallback",
+        "flight_information",
+    ] | None = None
     failure_category: Literal["provider", "storage", "retrieval", "validation", "unknown"] | None = None
     failed_operation: str | None = Field(default=None, max_length=100)
     error_code: str | None = Field(default=None, max_length=100)
@@ -61,3 +69,7 @@ class OperationalEvent(BaseModel):
     conversation_id: str | None = Field(default=None, max_length=128)
     actor: str | None = Field(default=None, max_length=40)
     model_selection_status: Literal["selected", "not_selected"] | None = None
+    external_provider: str | None = Field(default=None, max_length=40)
+    http_status: int | None = Field(default=None, ge=100, le=599)
+    request_outcome: str | None = Field(default=None, max_length=50)
+    attempt_number: int | None = Field(default=None, ge=1, le=10)

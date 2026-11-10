@@ -13,6 +13,7 @@ import {
   ListChecks,
   MessageCircleMore,
   MessageSquare,
+  Plane,
   RefreshCcw,
   Star,
   UserPlus,
@@ -94,6 +95,16 @@ function Overview({
           icon={Star}
           accent="green"
         />
+        <MetricCard
+          label="OAG API Calls"
+          value={analytics.totals.oag_api_calls}
+          hint={
+            `Flight information requests in the last `
+            + `${analytics.period_days} days`
+          }
+          icon={Plane}
+          accent="blue"
+        />
       </div>
       <AnalyticsPanels analytics={analytics} compact />
       <div className="admin-overview-lower">
@@ -157,6 +168,16 @@ function Analytics({ analytics }) {
           hint={`${analytics.feedback.count} submitted ratings`}
           icon={Star}
           accent="purple"
+        />
+        <MetricCard
+          label="OAG API Calls"
+          value={analytics.totals.oag_api_calls}
+          hint={
+            `Flight information API requests in the last `
+            + `${analytics.period_days} days`
+          }
+          icon={Plane}
+          accent="blue"
         />
       </div>
       <AnalyticsPanels analytics={analytics} />

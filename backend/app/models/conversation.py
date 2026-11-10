@@ -7,6 +7,7 @@ from pydantic import BaseModel, ConfigDict, Field, field_serializer, field_valid
 
 from app.models.database import UTCDateTime
 from app.models.feedback import Feedback
+from app.models.flight import FlightInformation
 from app.models.generation import GroundedAnswerRequest, GenerationResponse
 
 
@@ -25,6 +26,7 @@ class ResponseSource(str, Enum):
     GENERATED = "generated"
     CLARIFICATION = "clarification"
     FALLBACK = "fallback"
+    FLIGHT_INFORMATION = "flight_information"
 
 
 class ConversationCreateRequest(BaseModel):
@@ -81,6 +83,7 @@ class ConversationMessage(BaseModel):
     model_version: str | None = Field(default=None, max_length=300)
     response_source: ResponseSource | None = None
     retrieved_chunks: list[MessageChunk] = Field(default_factory=list)
+    flight_info: FlightInformation | None = None
 
     @field_serializer("sender_type", "response_source")
     def serialize_enums(self, value: SenderType | ResponseSource | None) -> str | None:

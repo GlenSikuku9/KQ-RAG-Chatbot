@@ -173,6 +173,20 @@ export const sendGuestMessage = (question, language, modelId) => publicRequest(
   },
   90000,
 );
+
+/** Refresh structured OAG data without exposing its subscription key. */
+export const refreshFlightInformation = (flightNumber, travelDate) => publicRequest(
+  "/flights/lookup",
+  {
+    method: "POST",
+    body: JSON.stringify({
+      flight_number: flightNumber,
+      travel_date: travelDate,
+      force_refresh: true,
+    }),
+  },
+  20000,
+);
 export const getPassengerThemeForAdmin = (user) => authenticatedRequest(user, "/admin/settings/passenger-theme");
 export const savePassengerTheme = (user, theme) => authenticatedRequest(user, "/admin/settings/passenger-theme", { method: "PUT", body: JSON.stringify(theme) });
 

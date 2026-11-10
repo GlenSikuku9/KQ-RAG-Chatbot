@@ -22,6 +22,11 @@ from app.services.firestore_client import (
     FIRESTORE_READ_TIMEOUT, firestore_operation, get_firestore_client, run_transaction,
 )
 from app.services.operational_logging import OperationalLogger, get_operational_logger
+from app.services.oag_flights import (
+    OAGFlightError,
+    OAGFlightService,
+    get_oag_flight_service,
+)
 
 
 logger = logging.getLogger(__name__)
@@ -225,6 +230,8 @@ class ConversationStore:
             # shorter "clarification" enum value. Keep that boundary explicit.
             if generated.generation_called:
                 source = ResponseSource.GENERATED
+            elif generated.decision == "flight_information":
+                source = ResponseSource.FLIGHT_INFORMATION
             elif generated.decision == "clarification_required":
                 source = ResponseSource.CLARIFICATION
             else:
@@ -236,6 +243,7 @@ class ConversationStore:
                 model_provider=model.provider if model else None,
                 model_version=model.upstream_model if model else None,
                 response_source=source,
+                flight_info=generated.flight_info,
                 retrieved_chunks=[MessageChunk(
                     message_chunk_id=f"{chatbot_id}_{source_item.chunk.chunk_id}", message_id=chatbot_id,
                     chunk_id=source_item.chunk.chunk_id,
@@ -314,11 +322,16 @@ class ConversationService:
     """Coordinates provider work outside the database transaction and persistence after it."""
 
     def __init__(
-        self, store: ConversationStore, grounded_answers: GroundedAnswerService, operational_logger: OperationalLogger,
+        self,
+        store: ConversationStore,
+        grounded_answers: GroundedAnswerService,
+        operational_logger: OperationalLogger,
+        flight_service: OAGFlightService | None = None,
     ) -> None:
         self.store = store
         self.grounded_answers = grounded_answers
         self.operational_logger = operational_logger
+        self.flight_service = flight_service
 
     def start(
         self,
@@ -363,8 +376,15 @@ class ConversationService:
             pass
 
         try:
-            # Do not write a successful chatbot message until generation succeeds.
-            generated = self.grounded_answers.answer(request)
+            # Operational flight questions bypass retrieval and generation.
+            generated = (
+                self.flight_service.answer_if_flight_query(request)
+                if self.flight_service
+                else None
+            )
+            if generated is None:
+                # Do not write a successful chatbot message until generation succeeds.
+                generated = self.grounded_answers.answer(request)
         except Exception as error:
             failure_category = self.operational_logger.category(error)
             failed_operation = {
@@ -384,6 +404,16 @@ class ConversationService:
                 )
             except HTTPException:
                 logger.warning("Could not persist a privacy-minimised operational failure event.")
+            if isinstance(error, OAGFlightError):
+                try:
+                    self.operational_logger.flight_lookup(
+                        succeeded=False,
+                        duration_ms=(perf_counter() - started) * 1000,
+                        request_id=request_id,
+                        error_code=error.code,
+                    )
+                except Exception:
+                    logger.warning("Could not persist the failed OAG lookup event.")
             raise
 
         try:
@@ -426,12 +456,20 @@ class ConversationService:
                 logger.warning("Could not persist a privacy-minimised operational failure event.")
             raise
         try:
-            self.operational_logger.completed(
-                generated,
-                (perf_counter() - started) * 1000,
-                request_id=request_id,
-                conversation_id=result.conversation.conversation_id,
-            )
+            if generated.decision == "flight_information":
+                self.operational_logger.flight_lookup(
+                    succeeded=True,
+                    duration_ms=(perf_counter() - started) * 1000,
+                    request_id=request_id,
+                    conversation_id=result.conversation.conversation_id,
+                )
+            else:
+                self.operational_logger.completed(
+                    generated,
+                    (perf_counter() - started) * 1000,
+                    request_id=request_id,
+                    conversation_id=result.conversation.conversation_id,
+                )
         except Exception:
             # The chat exchange is already safely committed; avoid falsely reporting
             # it as failed merely because its non-critical analytics event is unavailable.
@@ -441,4 +479,9 @@ class ConversationService:
 
 def get_conversation_service() -> ConversationService:
     client = get_firestore_client()
-    return ConversationService(ConversationStore(client), get_grounded_answer_service(), OperationalLogger(client))
+    return ConversationService(
+        ConversationStore(client),
+        get_grounded_answer_service(),
+        OperationalLogger(client),
+        get_oag_flight_service(),
+    )

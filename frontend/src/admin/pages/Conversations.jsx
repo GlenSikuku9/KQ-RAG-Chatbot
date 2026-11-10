@@ -5,6 +5,7 @@ import {
   adminDeleteConversation,
 } from "../../api";
 import { FormattedAnswer } from "../../components/FormattedAnswer";
+import { FlightInformationCard } from "../../components/FlightInformationCard";
 import {
   Pagination as TablePagination,
   TableLoadingRows,
@@ -461,6 +462,12 @@ function ConversationModal({ detail, onClose }) {
                 <FormattedAnswer text={message.message_text} />
               ) : (
                 <p>{message.message_text}</p>
+              )}
+              {message.sender_type === "chatbot" && message.flight_info && (
+                <FlightInformationCard
+                  initialInformation={message.flight_info}
+                  allowRefresh={false}
+                />
               )}
               {message.model_id && (
                 <small className="admin-message-model">
