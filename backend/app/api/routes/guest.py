@@ -5,6 +5,7 @@ from fastapi import APIRouter, HTTPException
 from app.models.generation import GroundedAnswerRequest, GroundedAnswerResponse
 from app.rag.generation import GenerationProviderError
 from app.rag.grounded_generation import get_grounded_answer_service
+from app.services.oag_flights import OAGFlightError, get_oag_flight_service
 
 
 router = APIRouter()
@@ -18,7 +19,13 @@ def answer_guest_message(payload: GroundedAnswerRequest) -> GroundedAnswerRespon
     backend receives only the individual question needed for this RAG request.
     """
     try:
-        return get_grounded_answer_service().answer(payload)
+        flight_answer = get_oag_flight_service().answer_if_flight_query(payload)
+        return flight_answer or get_grounded_answer_service().answer(payload)
+    except OAGFlightError as error:
+        raise HTTPException(
+            status_code=error.status_code,
+            detail=error.detail,
+        ) from error
     except GenerationProviderError as error:
         raise HTTPException(
             status_code=error.status_code,

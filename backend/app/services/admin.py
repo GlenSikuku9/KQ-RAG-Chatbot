@@ -1607,6 +1607,11 @@ def analytics(period_days: int = 30) -> AdminAnalytics:
         conversation_snapshots = list(client.collection("conversations").stream(timeout=FIRESTORE_READ_TIMEOUT))
         event_snapshots = list(client.collection("operational_events").stream(timeout=FIRESTORE_READ_TIMEOUT))
         feedback_snapshots = list(client.collection("feedback").stream(timeout=FIRESTORE_READ_TIMEOUT))
+        oag_baseline_snapshot = (
+            client.collection("app_settings")
+            .document("oag_usage_baseline")
+            .get(timeout=FIRESTORE_READ_TIMEOUT)
+        )
 
     conversations = []
     for snapshot in conversation_snapshots:
@@ -1634,6 +1639,29 @@ def analytics(period_days: int = 30) -> AdminAnalytics:
     model_counts = Counter(item.model_id for item in events if item.model_id)
     daily_counts = Counter(item.started_at.date().isoformat() for item in conversations)
     completed = [item for item in events if item.event_type == "chat_completed"]
+    tracked_oag_api_calls = sum(
+        1
+        for item in events
+        if item.event_type == "oag_api_request"
+        and item.external_provider == "OAG"
+    )
+    oag_baseline = (
+        oag_baseline_snapshot.to_dict()
+        if oag_baseline_snapshot.exists
+        else {}
+    ) or {}
+    baseline_recorded_at = oag_baseline.get("recorded_at")
+    baseline_count = oag_baseline.get("count", 0)
+    # The baseline preserves a known pre-instrumentation total without
+    # fabricating individual request outcomes or timestamps.
+    if (
+        not isinstance(baseline_count, int)
+        or baseline_count < 0
+        or not isinstance(baseline_recorded_at, datetime)
+        or baseline_recorded_at < started
+    ):
+        baseline_count = 0
+    oag_api_calls = baseline_count + tracked_oag_api_calls
     ratings = Counter(str(item.rating) for item in feedback)
     average_rating = sum(item.rating for item in feedback) / len(feedback) if feedback else 0.0
 
@@ -1743,6 +1771,7 @@ def analytics(period_days: int = 30) -> AdminAnalytics:
             "documents": len(document_snapshots),
             "active_documents": sum(1 for item in document_snapshots if (item.to_dict() or {}).get("active")),
             "system_events": len(events),
+            "oag_api_calls": oag_api_calls,
         },
         conversation_activity=[{"date": day, "count": daily_counts[day]} for day in dates],
         languages=dict(sorted(language_counts.items())),

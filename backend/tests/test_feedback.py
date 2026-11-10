@@ -83,6 +83,25 @@ class OperationalLoggingTests(unittest.TestCase):
         stored = next(iter(client.records["operational_events"].values()))
         self.assertEqual(stored["response_source"], "clarification")
 
+    def test_oag_attempt_event_contains_usage_fields_without_query_data(self):
+        client = MemoryClient()
+        logger = OperationalLogger(client)
+
+        logger.oag_api_request(
+            request_id="oag-request-1",
+            attempt_number=2,
+            outcome="http_error",
+            http_status=500,
+        )
+
+        stored = next(iter(client.records["operational_events"].values()))
+        self.assertEqual(stored["event_type"], "oag_api_request")
+        self.assertEqual(stored["external_provider"], "OAG")
+        self.assertEqual(stored["attempt_number"], 2)
+        self.assertEqual(stored["http_status"], 500)
+        self.assertNotIn("flight_number", stored)
+        self.assertNotIn("api_key", stored)
+
     def test_chat_service_records_completion_fallback_and_failure_without_logging_content(self):
         store, answers, events = Mock(), Mock(), Mock()
         generated = Mock(generation_called=False, decision="fallback", model=None)

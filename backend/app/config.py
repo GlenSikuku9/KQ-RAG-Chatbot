@@ -73,6 +73,12 @@ class Settings(BaseModel):
     support_agent_stale_seconds: int = Field(default=90, ge=30, le=600)
     support_live_wait_seconds: int = Field(default=180, ge=30, le=3600)
     support_clarification_attempts: int = Field(default=2, ge=1, le=10)
+    oag_api_key: str | None = Field(default=None, repr=False)
+    oag_base_url: str = "https://api.oag.com"
+    oag_timeout_seconds: float = Field(default=8.0, gt=0, le=30)
+    oag_status_cache_seconds: int = Field(default=60, ge=15, le=900)
+    oag_refresh_cooldown_seconds: int = Field(default=15, ge=5, le=300)
+    oag_route_search_enabled: bool = False
 
     @model_validator(mode="after")
     def validate_chunking(self) -> Self:
@@ -207,5 +213,26 @@ def get_settings() -> Settings:
         support_clarification_attempts=_get_int(
             "SUPPORT_CLARIFICATION_ATTEMPTS",
             2,
+        ),
+        oag_api_key=_get_optional("OAG_API_KEY"),
+        oag_base_url=os.getenv(
+            "OAG_BASE_URL",
+            "https://api.oag.com",
+        ).strip(),
+        oag_timeout_seconds=_get_float(
+            "OAG_TIMEOUT_SECONDS",
+            8.0,
+        ),
+        oag_status_cache_seconds=_get_int(
+            "OAG_STATUS_CACHE_SECONDS",
+            60,
+        ),
+        oag_refresh_cooldown_seconds=_get_int(
+            "OAG_REFRESH_COOLDOWN_SECONDS",
+            15,
+        ),
+        oag_route_search_enabled=_get_bool(
+            "OAG_ROUTE_SEARCH_ENABLED",
+            False,
         ),
     )

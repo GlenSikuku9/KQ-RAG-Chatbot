@@ -1335,7 +1335,7 @@ a {
 .status-badge.processed, .status-badge.active { color: #17633a; background: #e9f7ef; }
 .status-badge.failed { color: #8b1117; background: #fff0f0; }
 .admin-empty { padding: 2rem !important; color: var(--muted); text-align: center !important; }
-.admin-metric-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1rem; margin-bottom: 1rem; }
+.admin-metric-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 1rem; margin-bottom: 1rem; }
 .admin-metric-card, .admin-analytics-card { padding: 1.25rem; border: 1px solid var(--line); border-radius: 0.8rem; background: #ffffff; box-shadow: var(--shadow); }
 .admin-metric-card p, .admin-metric-card small, .admin-metric-note { margin: 0; color: var(--muted); }
 .admin-metric-card strong { display: block; margin: 0.45rem 0; color: #092c68; font-size: 1.8rem; }
@@ -4132,6 +4132,15 @@ a {
 .admin-metric-card.accent-green .admin-metric-heading > span {
   color: #187846;
   background: #e5f5ec;
+}
+
+.admin-metric-card.accent-blue::before {
+  background: #2878b5;
+}
+
+.admin-metric-card.accent-blue .admin-metric-heading > span {
+  color: #2878b5;
+  background: #e7f2fa;
 }
 
 .admin-analytics-card h2,

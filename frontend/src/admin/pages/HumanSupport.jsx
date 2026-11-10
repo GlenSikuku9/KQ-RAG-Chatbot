@@ -493,6 +493,13 @@ export default function HumanSupport({
   const durationMetric = (seconds) => (
     seconds == null ? "Not available" : `${seconds.toFixed(1)} seconds`
   );
+  // Acceptance is easier to scan operationally in minutes, while resolution
+  // retains its existing seconds display and backend storage remains unchanged.
+  const acceptanceMetric = (seconds) => (
+    seconds == null
+      ? "Not available"
+      : `${(seconds / 60).toFixed(1)} minutes`
+  );
 
   return (
     <section className="human-support-page">
@@ -536,7 +543,7 @@ export default function HumanSupport({
         <div><dt>Live / tickets</dt><dd>{summary?.live || 0} / {summary?.tickets || 0}</dd></div>
         <div>
           <dt>Average acceptance</dt>
-          <dd>{durationMetric(summary?.average_acceptance_seconds)}</dd>
+          <dd>{acceptanceMetric(summary?.average_acceptance_seconds)}</dd>
         </div>
         <div>
           <dt>Average resolution</dt>

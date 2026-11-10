@@ -64,6 +64,59 @@ class OperationalLogger:
         )
         self._write(event)
 
+    def flight_lookup(
+        self,
+        *,
+        succeeded: bool,
+        duration_ms: float,
+        request_id: str,
+        conversation_id: str | None = None,
+        error_code: str | None = None,
+    ) -> None:
+        """Record provider health without storing a flight number or passenger text."""
+
+        event = OperationalEvent(
+            event_id=uuid4().hex,
+            event_type=(
+                "flight_lookup_completed"
+                if succeeded
+                else "flight_lookup_failed"
+            ),
+            occurred_at=utc_now(),
+            duration_ms=duration_ms,
+            response_source=(
+                "flight_information"
+                if succeeded
+                else None
+            ),
+            request_id=request_id,
+            conversation_id=conversation_id,
+            error_code=error_code,
+        )
+        self._write(event)
+
+    def oag_api_request(
+        self,
+        *,
+        request_id: str,
+        attempt_number: int,
+        outcome: str,
+        http_status: int | None = None,
+    ) -> None:
+        """Record exactly one outbound OAG HTTP attempt without query data."""
+
+        event = OperationalEvent(
+            event_id=uuid4().hex,
+            event_type="oag_api_request",
+            occurred_at=utc_now(),
+            external_provider="OAG",
+            http_status=http_status,
+            request_outcome=outcome,
+            request_id=request_id,
+            attempt_number=attempt_number,
+        )
+        self._write(event)
+
     def failed(
         self,
         error: Exception,
@@ -107,6 +160,8 @@ class OperationalLogger:
         # persisted message enum ("clarification") so events stay queryable.
         if result.generation_called:
             return "generated"
+        if result.decision == "flight_information":
+            return "flight_information"
         if result.decision == "clarification_required":
             return "clarification"
         return "fallback"

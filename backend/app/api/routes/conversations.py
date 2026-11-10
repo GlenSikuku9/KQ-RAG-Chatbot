@@ -11,6 +11,7 @@ from app.models.conversation import (
 from app.models.user import AuthenticatedUser
 from app.rag.generation import GenerationProviderError
 from app.services.conversations import ConversationService, get_conversation_service
+from app.services.oag_flights import OAGFlightError
 
 
 router = APIRouter()
@@ -56,6 +57,11 @@ def start_with_message(
             status_code=error.status_code,
             detail=error.detail,
         ) from error
+    except OAGFlightError as error:
+        raise HTTPException(
+            status_code=error.status_code,
+            detail=error.detail,
+        ) from error
 
 
 @router.get("/{conversation_id}", response_model=ConversationDetail)
@@ -88,6 +94,11 @@ def send_message(
     except GenerationProviderError as error:
         # A provider failure happens before persistence and cannot appear as an answer.
         raise HTTPException(status_code=error.status_code, detail=error.detail) from error
+    except OAGFlightError as error:
+        raise HTTPException(
+            status_code=error.status_code,
+            detail=error.detail,
+        ) from error
 
 
 @router.post("/{conversation_id}/end", response_model=Conversation)

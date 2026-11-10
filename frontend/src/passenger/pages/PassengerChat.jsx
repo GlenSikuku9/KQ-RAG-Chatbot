@@ -35,6 +35,7 @@ import {
   startConversationWithMessage,
 } from "../../api";
 import { FormattedAnswer } from "../../components/FormattedAnswer";
+import { FlightInformationCard } from "../../components/FlightInformationCard";
 import { KenyaAirwaysLogo } from "../../components/KenyaAirwaysLogo";
 import { subscribeToSupportRequest } from "../../supportRealtime";
 
@@ -264,6 +265,9 @@ function ChatMessage({ message }) {
         )}
       </div>
       {!isPassenger && <Sources chunks={message.retrieved_chunks} />}
+      {!isPassenger && message.flight_info && (
+        <FlightInformationCard initialInformation={message.flight_info} />
+      )}
     </article>
   );
 }
@@ -1179,6 +1183,8 @@ export function PassengerChat({
             model_id: generated.model?.model_id || selectedModelId,
             response_source: generated.generation_called
               ? "generated"
+              : generated.decision === "flight_information"
+                ? "flight_information"
               : generated.decision === "clarification_required"
                 ? "clarification"
                 : "fallback",
@@ -1198,6 +1204,7 @@ export function PassengerChat({
               source_section: source.chunk.section,
               source_url: source.chunk.source_url,
             })),
+            flight_info: generated.flight_info || null,
           },
         };
       }

@@ -5,6 +5,7 @@ from typing import Literal
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 from app.models.context import ContextSource
+from app.models.flight import FlightInformation
 from app.models.retrieval import RetrievalRequest
 
 
@@ -51,7 +52,13 @@ class GroundedAnswerResponse(BaseModel):
 
     answer: str
     language: Literal["en", "sw", "mixed", "unknown"]
-    decision: Literal["context_available", "clarification_required", "fallback"]
+    decision: Literal[
+        "context_available",
+        "clarification_required",
+        "fallback",
+        "flight_information",
+    ]
     generation_called: bool
     model: GenerationResponse | None = None
     sources: list[ContextSource]
+    flight_info: FlightInformation | None = None
