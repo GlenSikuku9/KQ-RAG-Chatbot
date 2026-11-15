@@ -1,6 +1,7 @@
 """Passenger-owned conversation storage and atomic message traceability (I15)."""
 
 import logging
+import re
 from time import perf_counter
 from uuid import uuid4
 
@@ -8,6 +9,8 @@ from fastapi import HTTPException, status
 from google.cloud.firestore_v1 import Client, DocumentReference, DocumentSnapshot, Transaction
 from google.cloud.firestore_v1.base_query import FieldFilter
 from pydantic import ValidationError
+
+from app.config import get_settings
 
 from app.models.conversation import (
     Conversation, ConversationCreateRequest, ConversationDetail, ConversationMessage,
@@ -17,10 +20,21 @@ from app.models.conversation import (
 from app.models.database import encode_document_id, utc_now
 from app.models.generation import ConfiguredModel, GroundedAnswerResponse
 from app.models.user import AuthenticatedUser
-from app.rag.grounded_generation import GroundedAnswerService, get_grounded_answer_service
+from app.rag.grounded_generation import (
+    GroundedAnswerService,
+    answer_static_intent,
+    get_grounded_answer_service,
+)
 from app.services.firestore_client import (
     FIRESTORE_READ_TIMEOUT, firestore_operation, get_firestore_client, run_transaction,
 )
+from app.services.language_detection import get_language_detector
+from app.services.chat_intents import (
+    classify_static_intent,
+    is_substantive_message,
+    static_intent_language,
+)
+from app.services.conversation_context import resolve_conversation_query
 from app.services.operational_logging import OperationalLogger, get_operational_logger
 from app.services.oag_flights import (
     OAGFlightError,
@@ -36,18 +50,38 @@ def conversation_title_from_question(question: str) -> str:
     """Create a compact topic title without changing the customer's message."""
     text = " ".join(question.split()).strip(" ?.!\t\r\n")
     lowered = text.lower()
+    static_intent = classify_static_intent(text)
+    if static_intent and static_intent.intent == "capabilities":
+        return (
+            "Mada za Usaidizi"
+            if re.search(r"\b(?:unajibu|unaweza|maswali|nini)\b", lowered)
+            else "Supported Topics"
+        )
+    flight_match = re.search(
+        r"\b(?:KQ\s*-?\s*|Kenya\s+Airways(?:\s+flight)?\s+)"
+        r"([0-9]{1,4}[A-Z]?)\b",
+        text,
+        re.IGNORECASE,
+    )
+    if flight_match and re.search(
+        r"\b(?:status|track|delay|landed|depart|arriv|hali|iko\s+wapi)\b",
+        lowered,
+    ):
+        return f"KQ{flight_match.group(1).upper()} Flight Status"
     topics = (
-        (("baggage", "luggage", "mizigo"), "Baggage allowance and checked luggage policy"),
-        (("payment", "pay", "malipo"), "Payment methods and processing options for travel"),
-        (("refund", "marejesho"), "Refund eligibility and payment details for travel"),
-        (("wheelchair", "magurudumu"), "Wheelchair assistance and special care requirements"),
-        (("check in", "check-in", "kuingia"), "Online check-in and airport requirements guide"),
-        (("booking", "reservation", "nafasi"), "Booking changes and reservation support options"),
-        (("document", "passport", "visa", "nyaraka"), "Travel documents and international journey requirements"),
-        (("upgrade", "kuboresha"), "Flight upgrade options and refund information"),
+        (("baggage", "luggage", "mizigo"), "Baggage Allowance"),
+        (("payment", "pay", "malipo"), "Payment Options"),
+        (("refund", "marejesho"), "Refund Information"),
+        (("wheelchair", "magurudumu"), "Wheelchair Assistance"),
+        (("check in", "check-in", "kuingia"), "Check-in Requirements"),
+        (("booking", "reservation", "nafasi"), "Booking Support"),
+        (("document", "passport", "visa", "nyaraka"), "Travel Documents"),
+        (("upgrade", "kuboresha"), "Flight Upgrades"),
     )
     for keywords, title in topics:
         if any(keyword in lowered for keyword in keywords):
+            if title == "Baggage Allowance" and "economy" in lowered:
+                return "Economy Baggage Allowance"
             return title
     words = [word.strip(",:;()[]{}") for word in text.split() if word.strip(",:;()[]{}")]
     # Keep a fallback useful and bounded; CSS also clamps it to two lines.
@@ -234,6 +268,10 @@ class ConversationStore:
                 source = ResponseSource.FLIGHT_INFORMATION
             elif generated.decision == "clarification_required":
                 source = ResponseSource.CLARIFICATION
+            elif generated.decision == "non_rag":
+                source = ResponseSource.NON_RAG
+            elif generated.decision == "unsupported":
+                source = ResponseSource.UNSUPPORTED
             else:
                 source = ResponseSource.FALLBACK
             chatbot = ConversationMessage(
@@ -257,7 +295,10 @@ class ConversationStore:
             )
             # Store a separate topic title; the original customer question remains unchanged.
             title = conversation.title
-            if conversation.next_sequence == 1:
+            if (
+                title == "New conversation"
+                and is_substantive_message(request.question)
+            ):
                 title = conversation_title_from_question(request.question)
             updated = conversation.model_copy(update={
                 "title": title, "language": language, "next_sequence": conversation.next_sequence + 2,
@@ -361,27 +402,97 @@ class ConversationService:
         started = perf_counter()
         request_id = uuid4().hex
         selected_model = None
+        generated = None
+
+        # Greeting-only turns take a strict deterministic fast path. They skip
+        # statistical language detection, conversation resolution, OAG routing,
+        # retrieval, embeddings, and configured-model lookup. Persistence below
+        # remains unchanged so authenticated history is never lost.
+        static_intent = (
+            classify_static_intent(request.question)
+            if isinstance(request.question, str)
+            else None
+        )
+        fast_static_intent = (
+            static_intent
+            if static_intent
+            and static_intent.intent in {"greeting", "acknowledgement"}
+            else None
+        )
+        if fast_static_intent is not None:
+            request = request.model_copy(
+                update={
+                    "language": static_intent_language(
+                        request.question,
+                        request.previous_language,
+                    ),
+                    "conversation_context": [],
+                    "resolved_question": request.question,
+                },
+            )
+            generated = answer_static_intent(request)
+
+        # Detect once before routing. OAG and RAG therefore use the same
+        # language decision, and neither path needs an external detector API.
+        elif isinstance(request.question, str):
+            detected = get_language_detector().detect(
+                request.question,
+                request.previous_language,
+            )
+            request = request.model_copy(
+                update={"language": detected.language},
+            )
+
+            # Accept context only from this active conversation. It helps
+            # interpretation but never acts as evidence or authorization data.
+            context_items = (
+                request.conversation_context
+                if isinstance(request.conversation_context, list)
+                else []
+            )
+            relevant_context = [
+                item
+                for item in context_items
+                if conversation_id is not None
+                and item.conversation_id == conversation_id
+            ]
+            history_exchanges = (
+                get_settings().conversation_history_exchanges
+            )
+            resolution = resolve_conversation_query(
+                request.question,
+                relevant_context,
+                history_messages=history_exchanges * 2,
+            )
+            request = request.model_copy(
+                update={
+                    "conversation_context": list(resolution.context),
+                    "resolved_question": resolution.resolved_question,
+                },
+            )
 
         # Resolve safe model metadata before retrieval/generation so a later
         # provider or storage failure can still identify the selected model.
-        try:
-            selected_model = (
-                self.grounded_answers.generation_service.selected_model(
-                    request.model_id,
+        if generated is None:
+            try:
+                selected_model = (
+                    self.grounded_answers.generation_service.selected_model(
+                        request.model_id,
+                    )
                 )
-            )
-        except Exception:
-            # Some deterministic fallback responses never select a model. The
-            # answer pipeline remains authoritative for whether that is an error.
-            pass
+            except Exception:
+                # Some deterministic fallback responses never select a model. The
+                # answer pipeline remains authoritative for whether that is an error.
+                pass
 
         try:
             # Operational flight questions bypass retrieval and generation.
-            generated = (
-                self.flight_service.answer_if_flight_query(request)
-                if self.flight_service
-                else None
-            )
+            if generated is None:
+                generated = (
+                    self.flight_service.answer_if_flight_query(request)
+                    if self.flight_service
+                    else None
+                )
             if generated is None:
                 # Do not write a successful chatbot message until generation succeeds.
                 generated = self.grounded_answers.answer(request)
@@ -416,6 +527,7 @@ class ConversationService:
                     logger.warning("Could not persist the failed OAG lookup event.")
             raise
 
+        persistence_started = perf_counter()
         try:
             result = (
                 self.store.create_exchange(
@@ -431,6 +543,9 @@ class ConversationService:
                     generated,
                 )
             )
+            persistence_ms = (
+                perf_counter() - persistence_started
+            ) * 1000
         except Exception as error:
             # Generation succeeded, so this is explicitly a persistence failure.
             generated_model = generated.model
@@ -469,6 +584,7 @@ class ConversationService:
                     (perf_counter() - started) * 1000,
                     request_id=request_id,
                     conversation_id=result.conversation.conversation_id,
+                    persistence_ms=round(persistence_ms, 3),
                 )
         except Exception:
             # The chat exchange is already safely committed; avoid falsely reporting

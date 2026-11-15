@@ -620,6 +620,39 @@ a {
   padding-left: 0.15rem;
 }
 
+/* Wide policy comparisons scroll within the message instead of squeezing it. */
+.formatted-answer-table-wrap {
+  max-width: 100%;
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: 0.65rem;
+}
+
+.formatted-answer table {
+  width: 100%;
+  min-width: 32rem;
+  border-collapse: collapse;
+  background: #fff;
+}
+
+.formatted-answer th,
+.formatted-answer td {
+  padding: 0.65rem 0.75rem;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+  vertical-align: top;
+}
+
+.formatted-answer th {
+  color: var(--navy);
+  background: #f3f6fa;
+  font-weight: 700;
+}
+
+.formatted-answer tbody tr:last-child td {
+  border-bottom: 0;
+}
+
 .message-model {
   margin: 0.45rem 0 0;
   color: var(--muted);
@@ -1114,25 +1147,6 @@ a {
 .satisfaction-summary span {
   color: var(--admin-muted);
   font-size: 0.75rem;
-}
-
-.admin-data-notice {
-  display: flex;
-  grid-column: 1 / -1;
-  align-items: flex-start;
-  gap: 0.7rem;
-  padding: 0.85rem 1rem;
-  border: 1px solid #d8e3f1;
-  border-radius: 0.7rem;
-  color: var(--admin-navy);
-  background: #f2f6fb;
-}
-
-.admin-data-notice p {
-  margin: 0.2rem 0 0;
-  color: var(--admin-muted);
-  font-size: 0.78rem;
-  line-height: 1.45;
 }
 
 @media (max-width: 900px) {
@@ -4314,23 +4328,6 @@ a {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 0.75rem;
-}
-
-.admin-data-notice {
-  display: flex;
-  grid-column: 1 / -1;
-  gap: 0.7rem;
-  padding: 0.85rem 1rem;
-  border: 1px solid #d8e3f1;
-  border-radius: 0.7rem;
-  color: var(--admin-navy);
-  background: #f2f6fb;
-}
-
-.admin-data-notice p {
-  margin: 0.2rem 0 0;
-  color: var(--admin-muted);
-  font-size: 0.78rem;
 }
 
 @media (max-width: 900px) {

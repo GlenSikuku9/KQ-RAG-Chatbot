@@ -140,6 +140,8 @@ class GenerationServiceTests(unittest.TestCase):
         result = service.generate("Hi")
         self.assertEqual(result.text, "23 kg")
         self.assertEqual(fake.calls, 2)
+        self.assertEqual(result.attempt_count, 2)
+        self.assertIsNotNone(result.provider_duration_ms)
 
     def test_list_metadata_never_contains_secret(self):
         model = GenerationModelSettings(model_id="router", provider="openrouter", upstream_model="one", api_key="secret")

@@ -2,6 +2,14 @@ const MARKDOWN_LINK = /\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g;
 const BOLD = /\*\*([^*]+)\*\*/g;
 const BARE_URL = /(https?:\/\/[^\s<]+)/g;
 
+function normalizeAnswer(text) {
+  return text
+    .replace(/[\u200B\u200C\u200D\uFEFF]/g, "")
+    .replace(/[\u00A0\u202F]/g, " ")
+    .replace(/\\\|/g, "|")
+    .replace(/(^\s*\|.*\|\s*$)\n\s*\n(?=\s*\|)/gm, "$1\n");
+}
+
 function safeHttpUrl(value) {
   try {
     const url = new URL(value);
@@ -79,9 +87,25 @@ function renderInline(text, keyPrefix) {
 }
 
 function parseBlocks(text) {
-  const lines = text.replace(/\r\n/g, "\n").split("\n");
+  const lines = normalizeAnswer(text).replace(/\r\n/g, "\n").split("\n");
   const blocks = [];
   let list = null;
+
+  function tableCells(line) {
+    return line
+      .trim()
+      .replace(/^\|/, "")
+      .replace(/\|$/, "")
+      .split("|")
+      .map((cell) => cell.trim());
+  }
+
+  function isTableDivider(line) {
+    const cells = tableCells(line);
+    return cells.length > 1 && cells.every(
+      (cell) => /^:?-{3,}:?$/.test(cell),
+    );
+  }
 
   function closeList() {
     if (list) {
@@ -90,9 +114,33 @@ function parseBlocks(text) {
     }
   }
 
-  for (const line of lines) {
+  for (let index = 0; index < lines.length; index += 1) {
+    const line = lines[index];
     const bullet = line.match(/^\s*[-*]\s+(.+)$/);
     const heading = line.match(/^\s{0,3}#{1,3}\s+(.+)$/);
+
+    if (
+      line.trim().startsWith("|")
+      && index + 1 < lines.length
+      && isTableDivider(lines[index + 1])
+    ) {
+      closeList();
+      const headers = tableCells(line);
+      const rows = [];
+      index += 2;
+
+      while (
+        index < lines.length
+        && lines[index].trim().startsWith("|")
+      ) {
+        rows.push(tableCells(lines[index]));
+        index += 1;
+      }
+
+      blocks.push({ type: "table", headers, rows });
+      index -= 1;
+      continue;
+    }
 
     if (bullet) {
       if (!list) {
@@ -136,6 +184,38 @@ export function FormattedAnswer({ text }) {
   return (
     <div className="formatted-answer">
       {blocks.map((block, index) => {
+        if (block.type === "table") {
+          return (
+            <div className="formatted-answer-table-wrap" key={`table-${index}`}>
+              <table>
+                <thead>
+                  <tr>
+                    {block.headers.map((header, cellIndex) => (
+                      <th key={`head-${index}-${cellIndex}`} scope="col">
+                        {renderInline(header, `th-${index}-${cellIndex}`)}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {block.rows.map((row, rowIndex) => (
+                    <tr key={`row-${index}-${rowIndex}`}>
+                      {block.headers.map((_, cellIndex) => (
+                        <td key={`cell-${index}-${rowIndex}-${cellIndex}`}>
+                          {renderInline(
+                            row[cellIndex] || "",
+                            `td-${index}-${rowIndex}-${cellIndex}`,
+                          )}
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          );
+        }
+
         if (block.type === "list") {
           return (
             <ul key={`list-${index}`}>

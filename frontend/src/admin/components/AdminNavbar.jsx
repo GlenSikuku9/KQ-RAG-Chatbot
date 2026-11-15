@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   Bell,
   ChevronDown,
@@ -37,6 +37,7 @@ function AdminNavbar({
   const searchRef = useRef(null);
   const notificationsRef = useRef(null);
   const accountRef = useRef(null);
+  const notificationRequestId = useRef(0);
   const normalizedQuery = query.trim();
   const displayName = profile?.name || profile?.email || "Administrator";
   const initials = displayName
@@ -82,37 +83,41 @@ function AdminNavbar({
     };
   }, [normalizedQuery, user]);
 
-  useEffect(() => {
-    let cancelled = false;
-
-    async function loadNotifications() {
-      try {
-        const items = await adminNotifications(user);
-        if (!cancelled) {
-          setNotifications(items);
-          setNotificationsState("ready");
-        }
-      } catch {
-        if (!cancelled) {
-          setNotificationsState("error");
-        }
+  const loadNotifications = useCallback(async () => {
+    const requestId = ++notificationRequestId.current;
+    try {
+      const items = await adminNotifications(user);
+      if (requestId === notificationRequestId.current) {
+        setNotifications(items);
+        setNotificationsState("ready");
+      }
+    } catch {
+      if (requestId === notificationRequestId.current) {
+        setNotificationsState("error");
       }
     }
+  }, [user]);
 
+  useEffect(() => {
+    // Load the badge once. Subsequent reads are event-driven rather than a
+    // fixed 30-second poll that consumed quota while the panel was closed.
     loadNotifications();
+
     const stopSupportEvents = subscribeToSupportEvents(
       loadNotifications,
       () => {},
     );
-    // A small bounded query keeps the badge current without repeatedly
-    // loading the complete Logs collection.
-    const interval = window.setInterval(loadNotifications, 30000);
     return () => {
-      cancelled = true;
+      notificationRequestId.current += 1;
       stopSupportEvents();
-      window.clearInterval(interval);
     };
-  }, [user]);
+  }, [loadNotifications]);
+
+  useEffect(() => {
+    // Opening the panel refreshes system failures that do not emit a support
+    // collection event. Closing it performs no reads.
+    if (notificationsOpen) loadNotifications();
+  }, [loadNotifications, notificationsOpen]);
 
   useEffect(() => {
     // Both navbar popovers share one outside-click and Escape lifecycle so

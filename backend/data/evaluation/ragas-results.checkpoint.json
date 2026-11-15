@@ -1,0 +1,291 @@
+{
+  "source_run_id": "kq-evaluation-v1-3caadb3892",
+  "results": [
+    {
+      "metric_name": "context_precision",
+      "score": 0.0,
+      "status": "evaluated",
+      "reason": null,
+      "attempts": 1,
+      "case_id": "baggage-en-01",
+      "language": "en",
+      "model_id": null,
+      "context_fingerprint": "09c69cc60173badf50c907e2036fac45aad67756be4b4bce4409a8dfb60751c5"
+    },
+    {
+      "metric_name": "context_recall",
+      "score": 0.0,
+      "status": "evaluated",
+      "reason": null,
+      "attempts": 1,
+      "case_id": "baggage-en-01",
+      "language": "en",
+      "model_id": null,
+      "context_fingerprint": "09c69cc60173badf50c907e2036fac45aad67756be4b4bce4409a8dfb60751c5"
+    },
+    {
+      "metric_name": "context_recall",
+      "score": 1.0,
+      "status": "evaluated",
+      "reason": null,
+      "attempts": 2,
+      "case_id": "baggage-sw-01",
+      "language": "sw",
+      "model_id": null,
+      "context_fingerprint": "35ec5cbe13a574484c4e497504d07526236f641ddba7118f0ec11c00f98ad0fd"
+    },
+    {
+      "metric_name": "context_recall",
+      "score": 1.0,
+      "status": "evaluated",
+      "reason": null,
+      "attempts": 2,
+      "case_id": "baggage-mixed-01",
+      "language": "mixed",
+      "model_id": null,
+      "context_fingerprint": "338f3dcf2a7d426c0ce82aefde235beb87d0f3679b392ce4f8fbdfa67720602e"
+    },
+    {
+      "metric_name": "context_recall",
+      "score": 1.0,
+      "status": "evaluated",
+      "reason": null,
+      "attempts": 2,
+      "case_id": "payments-en-01",
+      "language": "en",
+      "model_id": null,
+      "context_fingerprint": "18d4f39c6ee1cb308669073bcf568a7a6940f64c1aca58f482781e5c57d40732"
+    },
+    {
+      "metric_name": "context_recall",
+      "score": 0.0,
+      "status": "evaluated",
+      "reason": null,
+      "attempts": 2,
+      "case_id": "payments-sw-01",
+      "language": "sw",
+      "model_id": null,
+      "context_fingerprint": "56c35e8d2e0c7d2e24b2eb094bf0175fcc66e7bb9ef6809de71db7d9ce750739"
+    },
+    {
+      "metric_name": "context_recall",
+      "score": 1.0,
+      "status": "evaluated",
+      "reason": null,
+      "attempts": 2,
+      "case_id": "refund-mixed-01",
+      "language": "mixed",
+      "model_id": null,
+      "context_fingerprint": "7d203f5d3cfa33819cd51981aa34903d160120c6aff24a58e69efeab20e71275"
+    },
+    {
+      "metric_name": "context_recall",
+      "score": 1.0,
+      "status": "evaluated",
+      "reason": null,
+      "attempts": 2,
+      "case_id": "care-en-01",
+      "language": "en",
+      "model_id": null,
+      "context_fingerprint": "060aae69305ae923a5bccf011a1bd984347d4c834111bb1a1794eabce7a95a6d"
+    },
+    {
+      "metric_name": "faithfulness",
+      "score": 1.0,
+      "status": "evaluated",
+      "reason": null,
+      "attempts": 6,
+      "case_id": "baggage-en-01",
+      "language": "en",
+      "model_id": "openrouter_gemma_26b",
+      "context_fingerprint": "09c69cc60173badf50c907e2036fac45aad67756be4b4bce4409a8dfb60751c5"
+    },
+    {
+      "metric_name": "answer_relevance",
+      "score": 0.9301263219789039,
+      "status": "evaluated",
+      "reason": null,
+      "attempts": 6,
+      "case_id": "baggage-en-01",
+      "language": "en",
+      "model_id": "openrouter_gemma_26b",
+      "context_fingerprint": "09c69cc60173badf50c907e2036fac45aad67756be4b4bce4409a8dfb60751c5"
+    },
+    {
+      "metric_name": "faithfulness",
+      "score": 1.0,
+      "status": "evaluated",
+      "reason": null,
+      "attempts": 1,
+      "case_id": "baggage-en-01",
+      "language": "en",
+      "model_id": "openrouter_gemma_31b",
+      "context_fingerprint": "09c69cc60173badf50c907e2036fac45aad67756be4b4bce4409a8dfb60751c5"
+    },
+    {
+      "metric_name": "answer_relevance",
+      "score": 0.9792814293182598,
+      "status": "evaluated",
+      "reason": null,
+      "attempts": 1,
+      "case_id": "baggage-en-01",
+      "language": "en",
+      "model_id": "openrouter_gemma_31b",
+      "context_fingerprint": "09c69cc60173badf50c907e2036fac45aad67756be4b4bce4409a8dfb60751c5"
+    },
+    {
+      "metric_name": "faithfulness",
+      "score": 1.0,
+      "status": "evaluated",
+      "reason": null,
+      "attempts": 3,
+      "case_id": "baggage-sw-01",
+      "language": "sw",
+      "model_id": "openrouter_gemma_26b",
+      "context_fingerprint": "35ec5cbe13a574484c4e497504d07526236f641ddba7118f0ec11c00f98ad0fd"
+    },
+    {
+      "metric_name": "answer_relevance",
+      "score": 0.8477860737520612,
+      "status": "evaluated",
+      "reason": null,
+      "attempts": 7,
+      "case_id": "baggage-sw-01",
+      "language": "sw",
+      "model_id": "openrouter_gemma_26b",
+      "context_fingerprint": "35ec5cbe13a574484c4e497504d07526236f641ddba7118f0ec11c00f98ad0fd"
+    },
+    {
+      "metric_name": "answer_relevance",
+      "score": 0.8367802532913416,
+      "status": "evaluated",
+      "reason": null,
+      "attempts": 3,
+      "case_id": "baggage-sw-01",
+      "language": "sw",
+      "model_id": "openrouter_gemma_31b",
+      "context_fingerprint": "35ec5cbe13a574484c4e497504d07526236f641ddba7118f0ec11c00f98ad0fd"
+    },
+    {
+      "metric_name": "faithfulness",
+      "score": 1.0,
+      "status": "evaluated",
+      "reason": null,
+      "attempts": 4,
+      "case_id": "baggage-sw-01",
+      "language": "sw",
+      "model_id": "groq_gpt_oss_120b",
+      "context_fingerprint": "35ec5cbe13a574484c4e497504d07526236f641ddba7118f0ec11c00f98ad0fd"
+    },
+    {
+      "metric_name": "answer_relevance",
+      "score": 0.8459816707259215,
+      "status": "evaluated",
+      "reason": null,
+      "attempts": 4,
+      "case_id": "baggage-sw-01",
+      "language": "sw",
+      "model_id": "groq_gpt_oss_120b",
+      "context_fingerprint": "35ec5cbe13a574484c4e497504d07526236f641ddba7118f0ec11c00f98ad0fd"
+    },
+    {
+      "metric_name": "faithfulness",
+      "score": 1.0,
+      "status": "evaluated",
+      "reason": null,
+      "attempts": 5,
+      "case_id": "baggage-mixed-01",
+      "language": "mixed",
+      "model_id": "openrouter_gemma_26b",
+      "context_fingerprint": "338f3dcf2a7d426c0ce82aefde235beb87d0f3679b392ce4f8fbdfa67720602e"
+    },
+    {
+      "metric_name": "answer_relevance",
+      "score": 0.9386101758674034,
+      "status": "evaluated",
+      "reason": null,
+      "attempts": 3,
+      "case_id": "baggage-mixed-01",
+      "language": "mixed",
+      "model_id": "openrouter_gemma_26b",
+      "context_fingerprint": "338f3dcf2a7d426c0ce82aefde235beb87d0f3679b392ce4f8fbdfa67720602e"
+    },
+    {
+      "metric_name": "faithfulness",
+      "score": 1.0,
+      "status": "evaluated",
+      "reason": null,
+      "attempts": 3,
+      "case_id": "baggage-mixed-01",
+      "language": "mixed",
+      "model_id": "openrouter_gemma_31b",
+      "context_fingerprint": "338f3dcf2a7d426c0ce82aefde235beb87d0f3679b392ce4f8fbdfa67720602e"
+    },
+    {
+      "metric_name": "answer_relevance",
+      "score": 0.9087449890245116,
+      "status": "evaluated",
+      "reason": null,
+      "attempts": 4,
+      "case_id": "baggage-mixed-01",
+      "language": "mixed",
+      "model_id": "openrouter_gemma_31b",
+      "context_fingerprint": "338f3dcf2a7d426c0ce82aefde235beb87d0f3679b392ce4f8fbdfa67720602e"
+    },
+    {
+      "metric_name": "faithfulness",
+      "score": 0.75,
+      "status": "evaluated",
+      "reason": null,
+      "attempts": 5,
+      "case_id": "baggage-mixed-01",
+      "language": "mixed",
+      "model_id": "groq_gpt_oss_120b",
+      "context_fingerprint": "338f3dcf2a7d426c0ce82aefde235beb87d0f3679b392ce4f8fbdfa67720602e"
+    },
+    {
+      "metric_name": "context_precision",
+      "status": "failed",
+      "error_type": "RateLimitError",
+      "error": "Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01m0cdkckfegmr900ztzw8vgry` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 199309, Requested 1822. Please try again in 8m8.592s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+      "attempts": 7,
+      "case_id": "baggage-sw-01",
+      "language": "sw",
+      "model_id": null,
+      "context_fingerprint": "35ec5cbe13a574484c4e497504d07526236f641ddba7118f0ec11c00f98ad0fd"
+    },
+    {
+      "metric_name": "context_precision",
+      "status": "failed",
+      "error_type": "RateLimitError",
+      "error": "Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01m0cdkckfegmr900ztzw8vgry` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 199015, Requested 1550. Please try again in 4m4.079999999s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+      "attempts": 7,
+      "case_id": "baggage-mixed-01",
+      "language": "mixed",
+      "model_id": null,
+      "context_fingerprint": "338f3dcf2a7d426c0ce82aefde235beb87d0f3679b392ce4f8fbdfa67720602e"
+    },
+    {
+      "metric_name": "context_precision",
+      "status": "failed",
+      "error_type": "RateLimitError",
+      "error": "Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01m0cdkckfegmr900ztzw8vgry` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198718, Requested 1653. Please try again in 2m40.272s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+      "attempts": 7,
+      "case_id": "payments-en-01",
+      "language": "en",
+      "model_id": null,
+      "context_fingerprint": "18d4f39c6ee1cb308669073bcf568a7a6940f64c1aca58f482781e5c57d40732"
+    },
+    {
+      "metric_name": "context_precision",
+      "status": "failed",
+      "error_type": "RateLimitError",
+      "error": "Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01m0cdkckfegmr900ztzw8vgry` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198425, Requested 1946. Please try again in 2m40.272s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+      "attempts": 7,
+      "case_id": "payments-sw-01",
+      "language": "sw",
+      "model_id": null,
+      "context_fingerprint": "56c35e8d2e0c7d2e24b2eb094bf0175fcc66e7bb9ef6809de71db7d9ce750739"
+    }
+  ]
+}

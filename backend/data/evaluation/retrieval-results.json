@@ -1,0 +1,955 @@
+{
+  "purpose": "development_passage_retrieval_not_held_out_evaluation",
+  "top_k": 5,
+  "score_type": "cosine_similarity",
+  "metrics": {
+    "en": {
+      "questions": 4,
+      "recall_at_k": 0.75,
+      "precision_at_k": 0.2,
+      "reciprocal_rank_at_k": 0.5833333333333334
+    },
+    "all": {
+      "questions": 12,
+      "recall_at_k": 0.5,
+      "precision_at_k": 0.15,
+      "reciprocal_rank_at_k": 0.34722222222222227
+    },
+    "sw": {
+      "questions": 4,
+      "recall_at_k": 0.25,
+      "precision_at_k": 0.1,
+      "reciprocal_rank_at_k": 0.125
+    },
+    "mixed": {
+      "questions": 4,
+      "recall_at_k": 0.5,
+      "precision_at_k": 0.15000000000000002,
+      "reciprocal_rank_at_k": 0.3333333333333333
+    }
+  },
+  "unanswerable_note": "Retrieval alone still returns neighbours. Optional context decisions use a conservative heuristic, not verified answerability.",
+  "outcomes": [
+    {
+      "id": "fees-en",
+      "language": "en",
+      "question": "How much does a name correction cost for an international booking?",
+      "answerable_in_fixture": true,
+      "evidence_status": "not_assessed",
+      "relevant_chunk_ids": [
+        "f0a0cf741433c6d1637d1567429cfb17650989337ba789618429b2001a1758a5"
+      ],
+      "retrieved_chunk_ids": [
+        "be668733ee527bfd39f2309ad157f816fe59ceced4e8af299db91bd666cf51ea",
+        "cdbce02fc752171a3baa2b309aeeec424e5f1d085ff63730183ff3987eaf9a6c",
+        "f0a0cf741433c6d1637d1567429cfb17650989337ba789618429b2001a1758a5",
+        "f604844a4cb6ea349ad060432016a37fd3e86710354eeb3bf31ca31d08fad1d2",
+        "3308b1d7ba2ad2adcbf2b1885bd8ae7b927c2dc9aa7ad28dfa57b73ed15ce277"
+      ],
+      "first_relevant_rank": 3,
+      "recall_at_k": 1.0,
+      "precision_at_k": 0.2,
+      "reciprocal_rank_at_k": 0.3333333333333333,
+      "retrieval_ms": 121801.596,
+      "candidates": [
+        {
+          "rank": 1,
+          "source": "KQ Data\\Payments.docx",
+          "score": 0.8487087488174438
+        },
+        {
+          "rank": 2,
+          "source": "KQ Data\\FAQs.docx",
+          "score": 0.8446958065032959
+        },
+        {
+          "rank": 3,
+          "source": "KQ Data\\Payments.docx",
+          "score": 0.8397841453552246
+        },
+        {
+          "rank": 4,
+          "source": "KQ Data\\Payments.docx",
+          "score": 0.8396140336990356
+        },
+        {
+          "rank": 5,
+          "source": "KQ Data\\FAQs.docx",
+          "score": 0.839040219783783
+        }
+      ],
+      "context_decision": "context_available",
+      "context_reason": "selected_context",
+      "context_chars": 5598,
+      "selected_chunk_ids": [
+        "be668733ee527bfd39f2309ad157f816fe59ceced4e8af299db91bd666cf51ea",
+        "cdbce02fc752171a3baa2b309aeeec424e5f1d085ff63730183ff3987eaf9a6c",
+        "f0a0cf741433c6d1637d1567429cfb17650989337ba789618429b2001a1758a5",
+        "f604844a4cb6ea349ad060432016a37fd3e86710354eeb3bf31ca31d08fad1d2",
+        "3308b1d7ba2ad2adcbf2b1885bd8ae7b927c2dc9aa7ad28dfa57b73ed15ce277"
+      ],
+      "context_contains_labelled_evidence": true
+    },
+    {
+      "id": "fees-sw",
+      "language": "sw",
+      "question": "Kusahihisha jina kwenye tiketi ya ndege ya kimataifa kunagharimu kiasi gani?",
+      "answerable_in_fixture": true,
+      "evidence_status": "not_assessed",
+      "relevant_chunk_ids": [
+        "f0a0cf741433c6d1637d1567429cfb17650989337ba789618429b2001a1758a5"
+      ],
+      "retrieved_chunk_ids": [
+        "6197c7f0fbba5bdaf1d4d36e56c38e8f7d776e0309e4f41fed1957cec863b5cb",
+        "be668733ee527bfd39f2309ad157f816fe59ceced4e8af299db91bd666cf51ea",
+        "3308b1d7ba2ad2adcbf2b1885bd8ae7b927c2dc9aa7ad28dfa57b73ed15ce277",
+        "6cf80311fedac48f56d8f27de2b32fe14c463155e50b344defa784d8107c5418",
+        "31cad70282aceb8596b8e786a6db1ab5da7cae336d86a9cf6c147cf7cd32edc6"
+      ],
+      "first_relevant_rank": null,
+      "recall_at_k": 0.0,
+      "precision_at_k": 0.0,
+      "reciprocal_rank_at_k": 0,
+      "retrieval_ms": 46.143,
+      "candidates": [
+        {
+          "rank": 1,
+          "source": "KQ Data\\Conditions of Carriage.docx",
+          "score": 0.8221853971481323
+        },
+        {
+          "rank": 2,
+          "source": "KQ Data\\Payments.docx",
+          "score": 0.8193867206573486
+        },
+        {
+          "rank": 3,
+          "source": "KQ Data\\FAQs.docx",
+          "score": 0.8103201389312744
+        },
+        {
+          "rank": 4,
+          "source": "KQ Data\\Conditions of Carriage.docx",
+          "score": 0.8100931644439697
+        },
+        {
+          "rank": 5,
+          "source": "KQ Data\\Flight upgrade.docx",
+          "score": 0.8088659048080444
+        }
+      ],
+      "context_decision": "context_available",
+      "context_reason": "selected_context",
+      "context_chars": 1350,
+      "selected_chunk_ids": [
+        "6197c7f0fbba5bdaf1d4d36e56c38e8f7d776e0309e4f41fed1957cec863b5cb"
+      ],
+      "context_contains_labelled_evidence": false
+    },
+    {
+      "id": "fees-mixed",
+      "language": "mixed",
+      "question": "Name correction ya international booking ni how much?",
+      "answerable_in_fixture": true,
+      "evidence_status": "not_assessed",
+      "relevant_chunk_ids": [
+        "f0a0cf741433c6d1637d1567429cfb17650989337ba789618429b2001a1758a5"
+      ],
+      "retrieved_chunk_ids": [
+        "be668733ee527bfd39f2309ad157f816fe59ceced4e8af299db91bd666cf51ea",
+        "cdbce02fc752171a3baa2b309aeeec424e5f1d085ff63730183ff3987eaf9a6c",
+        "3308b1d7ba2ad2adcbf2b1885bd8ae7b927c2dc9aa7ad28dfa57b73ed15ce277",
+        "f604844a4cb6ea349ad060432016a37fd3e86710354eeb3bf31ca31d08fad1d2",
+        "cfea193aec0d73f6dde1ada11dcf1a0db832fa824542df513308a4c275d646c2"
+      ],
+      "first_relevant_rank": null,
+      "recall_at_k": 0.0,
+      "precision_at_k": 0.0,
+      "reciprocal_rank_at_k": 0,
+      "retrieval_ms": 44.262,
+      "candidates": [
+        {
+          "rank": 1,
+          "source": "KQ Data\\Payments.docx",
+          "score": 0.8491302132606506
+        },
+        {
+          "rank": 2,
+          "source": "KQ Data\\FAQs.docx",
+          "score": 0.8487269878387451
+        },
+        {
+          "rank": 3,
+          "source": "KQ Data\\FAQs.docx",
+          "score": 0.8486051559448242
+        },
+        {
+          "rank": 4,
+          "source": "KQ Data\\Payments.docx",
+          "score": 0.8453590273857117
+        },
+        {
+          "rank": 5,
+          "source": "KQ Data\\Baggage Allowance Information.docx",
+          "score": 0.8452230095863342
+        }
+      ],
+      "context_decision": "context_available",
+      "context_reason": "selected_context",
+      "context_chars": 6238,
+      "selected_chunk_ids": [
+        "be668733ee527bfd39f2309ad157f816fe59ceced4e8af299db91bd666cf51ea",
+        "cdbce02fc752171a3baa2b309aeeec424e5f1d085ff63730183ff3987eaf9a6c",
+        "3308b1d7ba2ad2adcbf2b1885bd8ae7b927c2dc9aa7ad28dfa57b73ed15ce277",
+        "f604844a4cb6ea349ad060432016a37fd3e86710354eeb3bf31ca31d08fad1d2",
+        "cfea193aec0d73f6dde1ada11dcf1a0db832fa824542df513308a4c275d646c2"
+      ],
+      "context_contains_labelled_evidence": false
+    },
+    {
+      "id": "wheelchair-en",
+      "language": "en",
+      "question": "Can I bring my own wheelchair free of charge and how early should I reserve?",
+      "answerable_in_fixture": true,
+      "evidence_status": "not_assessed",
+      "relevant_chunk_ids": [
+        "65bd106b254593394ebf37ebaca07b41c54d771546bcba340c46f0cca1a17a63"
+      ],
+      "retrieved_chunk_ids": [
+        "65bd106b254593394ebf37ebaca07b41c54d771546bcba340c46f0cca1a17a63",
+        "6506daa9afd1313e628476a12dcf98169f7734e4c1cd36f9d93df12b0bdcc85c",
+        "8e5cf792a3dc59e0cc270af0b4b3b24d3ebeb639c75e89630ab571f6cb242e1a",
+        "a0f3e20eb1e4e62312acd729c2fbf42374c4e069242c7ccdb15a46693476e89b",
+        "af7748c98137072361d0e5b3851b136802c0002689ece636655c4112ecd9fede"
+      ],
+      "first_relevant_rank": 1,
+      "recall_at_k": 1.0,
+      "precision_at_k": 0.2,
+      "reciprocal_rank_at_k": 1.0,
+      "retrieval_ms": 43.802,
+      "candidates": [
+        {
+          "rank": 1,
+          "source": "KQ Data\\Special Care.docx",
+          "score": 0.8858121633529663
+        },
+        {
+          "rank": 2,
+          "source": "KQ Data\\Baggage Allowance Information.docx",
+          "score": 0.8653073906898499
+        },
+        {
+          "rank": 3,
+          "source": "KQ Data\\Special Care.docx",
+          "score": 0.864687442779541
+        },
+        {
+          "rank": 4,
+          "source": "KQ Data\\Special Care.docx",
+          "score": 0.8634340763092041
+        },
+        {
+          "rank": 5,
+          "source": "KQ Data\\Conditions of Carriage.docx",
+          "score": 0.8598506450653076
+        }
+      ],
+      "context_decision": "context_available",
+      "context_reason": "selected_context",
+      "context_chars": 6694,
+      "selected_chunk_ids": [
+        "65bd106b254593394ebf37ebaca07b41c54d771546bcba340c46f0cca1a17a63",
+        "6506daa9afd1313e628476a12dcf98169f7734e4c1cd36f9d93df12b0bdcc85c",
+        "8e5cf792a3dc59e0cc270af0b4b3b24d3ebeb639c75e89630ab571f6cb242e1a",
+        "a0f3e20eb1e4e62312acd729c2fbf42374c4e069242c7ccdb15a46693476e89b",
+        "af7748c98137072361d0e5b3851b136802c0002689ece636655c4112ecd9fede"
+      ],
+      "context_contains_labelled_evidence": true
+    },
+    {
+      "id": "wheelchair-sw",
+      "language": "sw",
+      "question": "Ninaweza kuleta kiti changu cha magurudumu bila malipo na niweke nafasi saa ngapi kabla ya safari?",
+      "answerable_in_fixture": true,
+      "evidence_status": "not_assessed",
+      "relevant_chunk_ids": [
+        "65bd106b254593394ebf37ebaca07b41c54d771546bcba340c46f0cca1a17a63"
+      ],
+      "retrieved_chunk_ids": [
+        "b656f106726ee5b7e6486043571bfdbb87ba7dc98512446a71faaedd6d5c7d6f",
+        "6197c7f0fbba5bdaf1d4d36e56c38e8f7d776e0309e4f41fed1957cec863b5cb",
+        "71995436b1d12fe055841c0456e90af344d052a77be0342b12a3f257b5e64af1",
+        "af7748c98137072361d0e5b3851b136802c0002689ece636655c4112ecd9fede",
+        "6506daa9afd1313e628476a12dcf98169f7734e4c1cd36f9d93df12b0bdcc85c"
+      ],
+      "first_relevant_rank": null,
+      "recall_at_k": 0.0,
+      "precision_at_k": 0.0,
+      "reciprocal_rank_at_k": 0,
+      "retrieval_ms": 45.737,
+      "candidates": [
+        {
+          "rank": 1,
+          "source": "KQ Data\\Conditions of Carriage.docx",
+          "score": 0.8436844944953918
+        },
+        {
+          "rank": 2,
+          "source": "KQ Data\\Conditions of Carriage.docx",
+          "score": 0.8380177617073059
+        },
+        {
+          "rank": 3,
+          "source": "KQ Data\\FAQs.docx",
+          "score": 0.8363689184188843
+        },
+        {
+          "rank": 4,
+          "source": "KQ Data\\Conditions of Carriage.docx",
+          "score": 0.8353548049926758
+        },
+        {
+          "rank": 5,
+          "source": "KQ Data\\Baggage Allowance Information.docx",
+          "score": 0.8341917991638184
+        }
+      ],
+      "context_decision": "context_available",
+      "context_reason": "selected_context",
+      "context_chars": 7148,
+      "selected_chunk_ids": [
+        "b656f106726ee5b7e6486043571bfdbb87ba7dc98512446a71faaedd6d5c7d6f",
+        "6197c7f0fbba5bdaf1d4d36e56c38e8f7d776e0309e4f41fed1957cec863b5cb",
+        "71995436b1d12fe055841c0456e90af344d052a77be0342b12a3f257b5e64af1",
+        "af7748c98137072361d0e5b3851b136802c0002689ece636655c4112ecd9fede",
+        "6506daa9afd1313e628476a12dcf98169f7734e4c1cd36f9d93df12b0bdcc85c"
+      ],
+      "context_contains_labelled_evidence": false
+    },
+    {
+      "id": "wheelchair-mixed",
+      "language": "mixed",
+      "question": "Can I bring kiti changu cha magurudumu free of charge, na reservation ni how many hours before departure?",
+      "answerable_in_fixture": true,
+      "evidence_status": "not_assessed",
+      "relevant_chunk_ids": [
+        "65bd106b254593394ebf37ebaca07b41c54d771546bcba340c46f0cca1a17a63"
+      ],
+      "retrieved_chunk_ids": [
+        "387d08b9fd60495e7a58af6e371cb0f34c0ab5b1763b61ebe8e2bd86bd730b9a",
+        "8c0c1993f238c677a35ba63a50dce184be11caaaa39568df74dcfe338de28a8e",
+        "af7748c98137072361d0e5b3851b136802c0002689ece636655c4112ecd9fede",
+        "71995436b1d12fe055841c0456e90af344d052a77be0342b12a3f257b5e64af1",
+        "8f31410d2a6d03052434214e0361595bd16dc45c4f3ba357d5b97f9501a881fc"
+      ],
+      "first_relevant_rank": null,
+      "recall_at_k": 0.0,
+      "precision_at_k": 0.0,
+      "reciprocal_rank_at_k": 0,
+      "retrieval_ms": 42.398,
+      "candidates": [
+        {
+          "rank": 1,
+          "source": "KQ Data\\Check-in.docx",
+          "score": 0.8497098684310913
+        },
+        {
+          "rank": 2,
+          "source": "KQ Data\\Baggage Restrictions.docx",
+          "score": 0.8475096821784973
+        },
+        {
+          "rank": 3,
+          "source": "KQ Data\\Conditions of Carriage.docx",
+          "score": 0.8465139865875244
+        },
+        {
+          "rank": 4,
+          "source": "KQ Data\\FAQs.docx",
+          "score": 0.8444335460662842
+        },
+        {
+          "rank": 5,
+          "source": "KQ Data\\Conditions of Carriage.docx",
+          "score": 0.8438806533813477
+        }
+      ],
+      "context_decision": "context_available",
+      "context_reason": "selected_context",
+      "context_chars": 5936,
+      "selected_chunk_ids": [
+        "387d08b9fd60495e7a58af6e371cb0f34c0ab5b1763b61ebe8e2bd86bd730b9a",
+        "8c0c1993f238c677a35ba63a50dce184be11caaaa39568df74dcfe338de28a8e",
+        "af7748c98137072361d0e5b3851b136802c0002689ece636655c4112ecd9fede",
+        "71995436b1d12fe055841c0456e90af344d052a77be0342b12a3f257b5e64af1",
+        "8f31410d2a6d03052434214e0361595bd16dc45c4f3ba357d5b97f9501a881fc"
+      ],
+      "context_contains_labelled_evidence": false
+    },
+    {
+      "id": "baggage-en",
+      "language": "en",
+      "question": "What is the business class checked baggage allowance between Africa and Europe?",
+      "answerable_in_fixture": true,
+      "evidence_status": "not_assessed",
+      "relevant_chunk_ids": [
+        "c98e558acca18cb892616cdf275ce920947e3f4d79bc22b77607530949c96d08"
+      ],
+      "retrieved_chunk_ids": [
+        "b4a045cd6f8b69930dfc1a8e374fd867f1e66c2da2b55accd361d072cef0818e",
+        "cfea193aec0d73f6dde1ada11dcf1a0db832fa824542df513308a4c275d646c2",
+        "31cad70282aceb8596b8e786a6db1ab5da7cae336d86a9cf6c147cf7cd32edc6",
+        "af900eb57df3a440a1c9000cb8fd07aeb8fa85c481293d7bbd40bc2b274e8583",
+        "0112dbfe8e254d64f8ee4da022d1775c1c855fa2884cefbbdd9422dac8a3cd4c"
+      ],
+      "first_relevant_rank": null,
+      "recall_at_k": 0.0,
+      "precision_at_k": 0.0,
+      "reciprocal_rank_at_k": 0,
+      "retrieval_ms": 47.509,
+      "candidates": [
+        {
+          "rank": 1,
+          "source": "KQ Data\\Baggage Allowance Information.docx",
+          "score": 0.8515218496322632
+        },
+        {
+          "rank": 2,
+          "source": "KQ Data\\Baggage Allowance Information.docx",
+          "score": 0.8477972745895386
+        },
+        {
+          "rank": 3,
+          "source": "KQ Data\\Flight upgrade.docx",
+          "score": 0.8476824760437012
+        },
+        {
+          "rank": 4,
+          "source": "KQ Data\\Conditions of Carriage.docx",
+          "score": 0.8454396724700928
+        },
+        {
+          "rank": 5,
+          "source": "KQ Data\\Flight upgrade.docx",
+          "score": 0.8436133861541748
+        }
+      ],
+      "context_decision": "context_available",
+      "context_reason": "selected_context",
+      "context_chars": 6182,
+      "selected_chunk_ids": [
+        "b4a045cd6f8b69930dfc1a8e374fd867f1e66c2da2b55accd361d072cef0818e",
+        "cfea193aec0d73f6dde1ada11dcf1a0db832fa824542df513308a4c275d646c2",
+        "31cad70282aceb8596b8e786a6db1ab5da7cae336d86a9cf6c147cf7cd32edc6",
+        "af900eb57df3a440a1c9000cb8fd07aeb8fa85c481293d7bbd40bc2b274e8583",
+        "0112dbfe8e254d64f8ee4da022d1775c1c855fa2884cefbbdd9422dac8a3cd4c"
+      ],
+      "context_contains_labelled_evidence": false
+    },
+    {
+      "id": "baggage-sw",
+      "language": "sw",
+      "question": "Ninaruhusiwa kubeba mizigo kiasi gani katika daraja la biashara kati ya Afrika na Ulaya?",
+      "answerable_in_fixture": true,
+      "evidence_status": "not_assessed",
+      "relevant_chunk_ids": [
+        "c98e558acca18cb892616cdf275ce920947e3f4d79bc22b77607530949c96d08"
+      ],
+      "retrieved_chunk_ids": [
+        "cfea193aec0d73f6dde1ada11dcf1a0db832fa824542df513308a4c275d646c2",
+        "31cad70282aceb8596b8e786a6db1ab5da7cae336d86a9cf6c147cf7cd32edc6",
+        "dadd26844495f51dd2eea3787c69b2ff1e1391c8a539be1b3a341ba5c20c6eb2",
+        "6cf80311fedac48f56d8f27de2b32fe14c463155e50b344defa784d8107c5418",
+        "8cc9a5b8ec30dd8bc41542234ef085070a3be4c57c651546c568f878ec832182"
+      ],
+      "first_relevant_rank": null,
+      "recall_at_k": 0.0,
+      "precision_at_k": 0.0,
+      "reciprocal_rank_at_k": 0,
+      "retrieval_ms": 62.61,
+      "candidates": [
+        {
+          "rank": 1,
+          "source": "KQ Data\\Baggage Allowance Information.docx",
+          "score": 0.8039070963859558
+        },
+        {
+          "rank": 2,
+          "source": "KQ Data\\Flight upgrade.docx",
+          "score": 0.7967919111251831
+        },
+        {
+          "rank": 3,
+          "source": "KQ Data\\Flight upgrade.docx",
+          "score": 0.795202374458313
+        },
+        {
+          "rank": 4,
+          "source": "KQ Data\\Conditions of Carriage.docx",
+          "score": 0.7934964895248413
+        },
+        {
+          "rank": 5,
+          "source": "KQ Data\\Baggage Allowance Information.docx",
+          "score": 0.7933924794197083
+        }
+      ],
+      "context_decision": "clarification_required",
+      "context_reason": "below_similarity_threshold",
+      "context_chars": 0,
+      "selected_chunk_ids": [],
+      "context_contains_labelled_evidence": false
+    },
+    {
+      "id": "baggage-mixed",
+      "language": "mixed",
+      "question": "Business class Africa to Europe checked baggage allowance ni kiasi gani?",
+      "answerable_in_fixture": true,
+      "evidence_status": "not_assessed",
+      "relevant_chunk_ids": [
+        "c98e558acca18cb892616cdf275ce920947e3f4d79bc22b77607530949c96d08"
+      ],
+      "retrieved_chunk_ids": [
+        "b4a045cd6f8b69930dfc1a8e374fd867f1e66c2da2b55accd361d072cef0818e",
+        "9f5d7f883cc4ed42cf7c1419d3d663c88e535c44bd8c54e8011f0f38429040e5",
+        "c98e558acca18cb892616cdf275ce920947e3f4d79bc22b77607530949c96d08",
+        "c3410f22052696f3d04d251e0980326f8f3996912d21804497ca745d0d0315c3",
+        "31cad70282aceb8596b8e786a6db1ab5da7cae336d86a9cf6c147cf7cd32edc6"
+      ],
+      "first_relevant_rank": 3,
+      "recall_at_k": 1.0,
+      "precision_at_k": 0.2,
+      "reciprocal_rank_at_k": 0.3333333333333333,
+      "retrieval_ms": 41.461,
+      "candidates": [
+        {
+          "rank": 1,
+          "source": "KQ Data\\Baggage Allowance Information.docx",
+          "score": 0.8465423583984375
+        },
+        {
+          "rank": 2,
+          "source": "KQ Data\\Delayed or Lost or Damaged Baggage.docx",
+          "score": 0.8434329032897949
+        },
+        {
+          "rank": 3,
+          "source": "KQ Data\\Baggage Allowance Information.docx",
+          "score": 0.8410706520080566
+        },
+        {
+          "rank": 4,
+          "source": "KQ Data\\Delayed or Lost or Damaged Baggage.docx",
+          "score": 0.8402639031410217
+        },
+        {
+          "rank": 5,
+          "source": "KQ Data\\Flight upgrade.docx",
+          "score": 0.8402071595191956
+        }
+      ],
+      "context_decision": "context_available",
+      "context_reason": "selected_context",
+      "context_chars": 6411,
+      "selected_chunk_ids": [
+        "b4a045cd6f8b69930dfc1a8e374fd867f1e66c2da2b55accd361d072cef0818e",
+        "9f5d7f883cc4ed42cf7c1419d3d663c88e535c44bd8c54e8011f0f38429040e5",
+        "c98e558acca18cb892616cdf275ce920947e3f4d79bc22b77607530949c96d08",
+        "c3410f22052696f3d04d251e0980326f8f3996912d21804497ca745d0d0315c3",
+        "31cad70282aceb8596b8e786a6db1ab5da7cae336d86a9cf6c147cf7cd32edc6"
+      ],
+      "context_contains_labelled_evidence": true
+    },
+    {
+      "id": "upgrade-en",
+      "language": "en",
+      "question": "If my upgrade refund is approved, will it go back to the credit card used to pay?",
+      "answerable_in_fixture": true,
+      "evidence_status": "not_assessed",
+      "relevant_chunk_ids": [
+        "5b66f238b7d458c5516d483599ab3beabfaa2101f76eceff3b982db7e107ddd4",
+        "8a7e89a73c55a5d5fc425341756214ab8d19bc041f147644ab99e1103c0a4a79"
+      ],
+      "retrieved_chunk_ids": [
+        "5b66f238b7d458c5516d483599ab3beabfaa2101f76eceff3b982db7e107ddd4",
+        "8a7e89a73c55a5d5fc425341756214ab8d19bc041f147644ab99e1103c0a4a79",
+        "9fe66089494a750cb2e8b6e5c976e978cfdda6c48dc0d186b98eb7510834ff8d",
+        "15957459e1b35e57f794cf2bd903a35815a5c36fdf21728dd11f13744cb9d389",
+        "4229de60ab77305d0491068a4c108358595f627555db155a8f339f944bf401be"
+      ],
+      "first_relevant_rank": 1,
+      "recall_at_k": 1.0,
+      "precision_at_k": 0.4,
+      "reciprocal_rank_at_k": 1.0,
+      "retrieval_ms": 44.326,
+      "candidates": [
+        {
+          "rank": 1,
+          "source": "KQ Data\\Flight upgrade.docx",
+          "score": 0.897903323173523
+        },
+        {
+          "rank": 2,
+          "source": "KQ Data\\Flight upgrade.docx",
+          "score": 0.8811327219009399
+        },
+        {
+          "rank": 3,
+          "source": "KQ Data\\Flight upgrade.docx",
+          "score": 0.8762019872665405
+        },
+        {
+          "rank": 4,
+          "source": "KQ Data\\FAQs.docx",
+          "score": 0.8745334148406982
+        },
+        {
+          "rank": 5,
+          "source": "KQ Data\\Online Refunds.docx",
+          "score": 0.8481302261352539
+        }
+      ],
+      "context_decision": "context_available",
+      "context_reason": "selected_context",
+      "context_chars": 7523,
+      "selected_chunk_ids": [
+        "5b66f238b7d458c5516d483599ab3beabfaa2101f76eceff3b982db7e107ddd4",
+        "8a7e89a73c55a5d5fc425341756214ab8d19bc041f147644ab99e1103c0a4a79",
+        "9fe66089494a750cb2e8b6e5c976e978cfdda6c48dc0d186b98eb7510834ff8d",
+        "15957459e1b35e57f794cf2bd903a35815a5c36fdf21728dd11f13744cb9d389",
+        "4229de60ab77305d0491068a4c108358595f627555db155a8f339f944bf401be"
+      ],
+      "context_contains_labelled_evidence": true
+    },
+    {
+      "id": "upgrade-sw",
+      "language": "sw",
+      "question": "Marejesho ya pesa za kuboresha daraja la safari yakikubaliwa, zitarudishwa kwenye kadi niliyotumia kulipa?",
+      "answerable_in_fixture": true,
+      "evidence_status": "not_assessed",
+      "relevant_chunk_ids": [
+        "5b66f238b7d458c5516d483599ab3beabfaa2101f76eceff3b982db7e107ddd4",
+        "8a7e89a73c55a5d5fc425341756214ab8d19bc041f147644ab99e1103c0a4a79"
+      ],
+      "retrieved_chunk_ids": [
+        "64d5b752d09760edc28abe0d07e6605eca5e501655f50be35393a90a3f6dae2a",
+        "5b66f238b7d458c5516d483599ab3beabfaa2101f76eceff3b982db7e107ddd4",
+        "6197c7f0fbba5bdaf1d4d36e56c38e8f7d776e0309e4f41fed1957cec863b5cb",
+        "960f0028dbf42f0cc60e398d98dcb34018c61da5f3c22b1f78e4a8c165c587f3",
+        "8a7e89a73c55a5d5fc425341756214ab8d19bc041f147644ab99e1103c0a4a79"
+      ],
+      "first_relevant_rank": 2,
+      "recall_at_k": 1.0,
+      "precision_at_k": 0.4,
+      "reciprocal_rank_at_k": 0.5,
+      "retrieval_ms": 53.764,
+      "candidates": [
+        {
+          "rank": 1,
+          "source": "KQ Data\\Conditions of Carriage.docx",
+          "score": 0.8386937379837036
+        },
+        {
+          "rank": 2,
+          "source": "KQ Data\\Flight upgrade.docx",
+          "score": 0.8338502645492554
+        },
+        {
+          "rank": 3,
+          "source": "KQ Data\\Conditions of Carriage.docx",
+          "score": 0.8288492560386658
+        },
+        {
+          "rank": 4,
+          "source": "KQ Data\\Conditions of Carriage.docx",
+          "score": 0.8288267850875854
+        },
+        {
+          "rank": 5,
+          "source": "KQ Data\\Flight upgrade.docx",
+          "score": 0.8287834525108337
+        }
+      ],
+      "context_decision": "context_available",
+      "context_reason": "selected_context",
+      "context_chars": 7407,
+      "selected_chunk_ids": [
+        "64d5b752d09760edc28abe0d07e6605eca5e501655f50be35393a90a3f6dae2a",
+        "5b66f238b7d458c5516d483599ab3beabfaa2101f76eceff3b982db7e107ddd4",
+        "6197c7f0fbba5bdaf1d4d36e56c38e8f7d776e0309e4f41fed1957cec863b5cb",
+        "960f0028dbf42f0cc60e398d98dcb34018c61da5f3c22b1f78e4a8c165c587f3",
+        "8a7e89a73c55a5d5fc425341756214ab8d19bc041f147644ab99e1103c0a4a79"
+      ],
+      "context_contains_labelled_evidence": true
+    },
+    {
+      "id": "upgrade-mixed",
+      "language": "mixed",
+      "question": "Upgrade refund ikiapproved, pesa zinarudi kwa original credit card?",
+      "answerable_in_fixture": true,
+      "evidence_status": "not_assessed",
+      "relevant_chunk_ids": [
+        "5b66f238b7d458c5516d483599ab3beabfaa2101f76eceff3b982db7e107ddd4",
+        "8a7e89a73c55a5d5fc425341756214ab8d19bc041f147644ab99e1103c0a4a79"
+      ],
+      "retrieved_chunk_ids": [
+        "5b66f238b7d458c5516d483599ab3beabfaa2101f76eceff3b982db7e107ddd4",
+        "15957459e1b35e57f794cf2bd903a35815a5c36fdf21728dd11f13744cb9d389",
+        "8a7e89a73c55a5d5fc425341756214ab8d19bc041f147644ab99e1103c0a4a79",
+        "9fe66089494a750cb2e8b6e5c976e978cfdda6c48dc0d186b98eb7510834ff8d",
+        "1e9946ec182c28c2c1107c68822358ffbc1ada62a419b4c2748cee4c6b0e982b"
+      ],
+      "first_relevant_rank": 1,
+      "recall_at_k": 1.0,
+      "precision_at_k": 0.4,
+      "reciprocal_rank_at_k": 1.0,
+      "retrieval_ms": 54.685,
+      "candidates": [
+        {
+          "rank": 1,
+          "source": "KQ Data\\Flight upgrade.docx",
+          "score": 0.8539289832115173
+        },
+        {
+          "rank": 2,
+          "source": "KQ Data\\FAQs.docx",
+          "score": 0.8469319939613342
+        },
+        {
+          "rank": 3,
+          "source": "KQ Data\\Flight upgrade.docx",
+          "score": 0.8427945971488953
+        },
+        {
+          "rank": 4,
+          "source": "KQ Data\\Flight upgrade.docx",
+          "score": 0.8400525450706482
+        },
+        {
+          "rank": 5,
+          "source": "KQ Data\\Flight upgrade.docx",
+          "score": 0.8213369250297546
+        }
+      ],
+      "context_decision": "context_available",
+      "context_reason": "selected_context",
+      "context_chars": 7399,
+      "selected_chunk_ids": [
+        "5b66f238b7d458c5516d483599ab3beabfaa2101f76eceff3b982db7e107ddd4",
+        "15957459e1b35e57f794cf2bd903a35815a5c36fdf21728dd11f13744cb9d389",
+        "8a7e89a73c55a5d5fc425341756214ab8d19bc041f147644ab99e1103c0a4a79",
+        "9fe66089494a750cb2e8b6e5c976e978cfdda6c48dc0d186b98eb7510834ff8d",
+        "1e9946ec182c28c2c1107c68822358ffbc1ada62a419b4c2748cee4c6b0e982b"
+      ],
+      "context_contains_labelled_evidence": true
+    },
+    {
+      "id": "unanswerable-en",
+      "language": "en",
+      "question": "What is the current departure gate for my flight today?",
+      "answerable_in_fixture": false,
+      "evidence_status": "not_assessed",
+      "relevant_chunk_ids": [],
+      "retrieved_chunk_ids": [
+        "39699f097fc1a0d3599ab613a02c2436b37ffcc0eaff0ba675f35da2ed7427e5",
+        "387d08b9fd60495e7a58af6e371cb0f34c0ab5b1763b61ebe8e2bd86bd730b9a",
+        "7c1085add8651d36fe8b0b9aaf74b87cf6abcf5cf2c2665ce7a52e827c3fe50e",
+        "15957459e1b35e57f794cf2bd903a35815a5c36fdf21728dd11f13744cb9d389",
+        "8e5cf792a3dc59e0cc270af0b4b3b24d3ebeb639c75e89630ab571f6cb242e1a"
+      ],
+      "first_relevant_rank": null,
+      "recall_at_k": null,
+      "precision_at_k": null,
+      "reciprocal_rank_at_k": null,
+      "retrieval_ms": 41.85,
+      "candidates": [
+        {
+          "rank": 1,
+          "source": "KQ Data\\Bookings and Self-Rebooking.docx",
+          "score": 0.8612386584281921
+        },
+        {
+          "rank": 2,
+          "source": "KQ Data\\Check-in.docx",
+          "score": 0.8576613664627075
+        },
+        {
+          "rank": 3,
+          "source": "KQ Data\\Bookings and Self-Rebooking.docx",
+          "score": 0.8540674448013306
+        },
+        {
+          "rank": 4,
+          "source": "KQ Data\\FAQs.docx",
+          "score": 0.8522506356239319
+        },
+        {
+          "rank": 5,
+          "source": "KQ Data\\Special Care.docx",
+          "score": 0.8495815992355347
+        }
+      ],
+      "context_decision": "context_available",
+      "context_reason": "selected_context",
+      "context_chars": 7431,
+      "selected_chunk_ids": [
+        "39699f097fc1a0d3599ab613a02c2436b37ffcc0eaff0ba675f35da2ed7427e5",
+        "387d08b9fd60495e7a58af6e371cb0f34c0ab5b1763b61ebe8e2bd86bd730b9a",
+        "7c1085add8651d36fe8b0b9aaf74b87cf6abcf5cf2c2665ce7a52e827c3fe50e",
+        "15957459e1b35e57f794cf2bd903a35815a5c36fdf21728dd11f13744cb9d389",
+        "8e5cf792a3dc59e0cc270af0b4b3b24d3ebeb639c75e89630ab571f6cb242e1a"
+      ],
+      "context_contains_labelled_evidence": false
+    },
+    {
+      "id": "unanswerable-sw",
+      "language": "sw",
+      "question": "Salio la akaunti yangu ya benki ni kiasi gani sasa?",
+      "answerable_in_fixture": false,
+      "evidence_status": "not_assessed",
+      "relevant_chunk_ids": [],
+      "retrieved_chunk_ids": [
+        "4b5f3a65d6adc07340d93247e2c4f7c8d3c3afeecc0b25ee912a2786a3dcdd0d",
+        "51e0152b2bc5e6e92b96b35de6adc40ec786ab442aab10105ef46db9f4f32ea6",
+        "b4d187fd7277e037674ef5d4bd16b128f902f08086cbc2bbe19bfc7f58439384",
+        "942b296f5cb1e3fb34ab2b809cb36167d47e721774ea249b612ffea8d6a38c3a",
+        "27b63102f7bbc440d5f889b6e42e5a90044a344b069b8117441a4d6e11912950"
+      ],
+      "first_relevant_rank": null,
+      "recall_at_k": null,
+      "precision_at_k": null,
+      "reciprocal_rank_at_k": null,
+      "retrieval_ms": 46.77,
+      "candidates": [
+        {
+          "rank": 1,
+          "source": "KQ Data\\FAQs.docx",
+          "score": 0.8153708577156067
+        },
+        {
+          "rank": 2,
+          "source": "KQ Data\\Payments.docx",
+          "score": 0.8145478963851929
+        },
+        {
+          "rank": 3,
+          "source": "KQ Data\\Payments.docx",
+          "score": 0.8106790781021118
+        },
+        {
+          "rank": 4,
+          "source": "KQ Data\\Payments.docx",
+          "score": 0.8082747459411621
+        },
+        {
+          "rank": 5,
+          "source": "KQ Data\\Payments.docx",
+          "score": 0.8068978786468506
+        }
+      ],
+      "context_decision": "clarification_required",
+      "context_reason": "below_similarity_threshold",
+      "context_chars": 0,
+      "selected_chunk_ids": [],
+      "context_contains_labelled_evidence": false
+    },
+    {
+      "id": "unanswerable-mixed",
+      "language": "mixed",
+      "question": "My booking ABC123 iko seat gani right now?",
+      "answerable_in_fixture": false,
+      "evidence_status": "not_assessed",
+      "relevant_chunk_ids": [],
+      "retrieved_chunk_ids": [
+        "71995436b1d12fe055841c0456e90af344d052a77be0342b12a3f257b5e64af1",
+        "cdbce02fc752171a3baa2b309aeeec424e5f1d085ff63730183ff3987eaf9a6c",
+        "5d0e3a91b8fefe4c341095e005f222167175d8f96eda2ca77bf3a961483c81ad",
+        "d191fb0ac3653c4c08a0bc7db685baf8fa180ad8921381b5348ceecf6b2c16e4",
+        "1346c76983fd6d874478f20b3716fdc3829e7d044d90af47e16be8560257885d"
+      ],
+      "first_relevant_rank": null,
+      "recall_at_k": null,
+      "precision_at_k": null,
+      "reciprocal_rank_at_k": null,
+      "retrieval_ms": 40.882,
+      "candidates": [
+        {
+          "rank": 1,
+          "source": "KQ Data\\FAQs.docx",
+          "score": 0.8301219940185547
+        },
+        {
+          "rank": 2,
+          "source": "KQ Data\\FAQs.docx",
+          "score": 0.8288593292236328
+        },
+        {
+          "rank": 3,
+          "source": "KQ Data\\FAQs.docx",
+          "score": 0.8277396559715271
+        },
+        {
+          "rank": 4,
+          "source": "KQ Data\\FAQs.docx",
+          "score": 0.8267946243286133
+        },
+        {
+          "rank": 5,
+          "source": "KQ Data\\FAQs.docx",
+          "score": 0.8260460495948792
+        }
+      ],
+      "context_decision": "context_available",
+      "context_reason": "selected_context",
+      "context_chars": 7617,
+      "selected_chunk_ids": [
+        "71995436b1d12fe055841c0456e90af344d052a77be0342b12a3f257b5e64af1",
+        "cdbce02fc752171a3baa2b309aeeec424e5f1d085ff63730183ff3987eaf9a6c",
+        "5d0e3a91b8fefe4c341095e005f222167175d8f96eda2ca77bf3a961483c81ad",
+        "d191fb0ac3653c4c08a0bc7db685baf8fa180ad8921381b5348ceecf6b2c16e4",
+        "1346c76983fd6d874478f20b3716fdc3829e7d044d90af47e16be8560257885d"
+      ],
+      "context_contains_labelled_evidence": false
+    }
+  ],
+  "context_settings": {
+    "min_similarity": 0.82,
+    "max_chars": 8000,
+    "evidence_status": "heuristic_only"
+  },
+  "context_metrics": {
+    "all": {
+      "questions": 15,
+      "context_available": 13,
+      "accepted_with_labelled_evidence": 6,
+      "accepted_without_labelled_evidence": 7,
+      "answerable_questions_rejected": 1,
+      "unanswerable_questions_rejected": 1
+    },
+    "en": {
+      "questions": 5,
+      "context_available": 5,
+      "accepted_with_labelled_evidence": 3,
+      "accepted_without_labelled_evidence": 2,
+      "answerable_questions_rejected": 0,
+      "unanswerable_questions_rejected": 0
+    },
+    "sw": {
+      "questions": 5,
+      "context_available": 3,
+      "accepted_with_labelled_evidence": 1,
+      "accepted_without_labelled_evidence": 2,
+      "answerable_questions_rejected": 1,
+      "unanswerable_questions_rejected": 1
+    },
+    "mixed": {
+      "questions": 5,
+      "context_available": 5,
+      "accepted_with_labelled_evidence": 2,
+      "accepted_without_labelled_evidence": 3,
+      "answerable_questions_rejected": 0,
+      "unanswerable_questions_rejected": 0
+    }
+  },
+  "knowledge_base_version": "9371034e889fd616"
+}

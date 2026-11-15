@@ -24,6 +24,7 @@ from app.models.admin import (
     DocumentUpdate,
     EvaluationResult,
     PassengerTheme,
+    RAGEvaluationMetrics,
     UserDisplayNameUpdate,
     UserRoleUpdate,
     UserStatusUpdate,
@@ -41,6 +42,7 @@ from app.models.support import (
     SupportSummary,
 )
 from app.services import admin as service
+from app.services import rag_evaluation
 from app.services.conversations import ConversationStore
 from app.services.firestore_client import get_firestore_client
 from app.services.support import get_support_service
@@ -83,7 +85,7 @@ def support_summary(
 def support_requests(
     page: int = Query(1, ge=1),
     page_size: int = Query(10, ge=1, le=50),
-    search: str = "",
+    search: str = Query(default="", max_length=200),
     request_type: str | None = None,
     case_status: str | None = None,
     assigned_agent: str | None = None,
@@ -258,6 +260,22 @@ def analytics(days: int = 30, _: AuthenticatedUser = Depends(require_admin)):
     return service.analytics(days)
 
 
+@router.get("/rag-evaluation-metrics", response_model=RAGEvaluationMetrics)
+def rag_evaluation_metrics(
+    days: int = Query(30, ge=1, le=365),
+    model_id: str | None = Query(default=None, max_length=100),
+    language: str = Query("all", pattern="^(all|en|sw|mixed)$"),
+    _: AuthenticatedUser = Depends(require_admin),
+):
+    """Expose offline evaluation evidence and RAG-only operations to admins."""
+
+    return rag_evaluation.evaluation_metrics(
+        period_days=days,
+        model_id=model_id,
+        language=language,
+    )
+
+
 @router.get("/documents", response_model=list[AdminDocument])
 def documents(_: AuthenticatedUser = Depends(require_admin)):
     return service.list_documents()
@@ -267,8 +285,8 @@ def documents(_: AuthenticatedUser = Depends(require_admin)):
 def document_page(
     page: int = Query(1, ge=1),
     page_size: int = Query(10, ge=1, le=50),
-    search: str = "",
-    category: str | None = None,
+    search: str = Query(default="", max_length=200),
+    category: str | None = Query(default=None, max_length=120),
     processing_status: str | None = None,
     sort_order: str = "newest",
     _: AuthenticatedUser = Depends(require_admin),
@@ -284,7 +302,11 @@ def document_page(
 
 
 @router.post("/documents", response_model=AdminDocument, status_code=status.HTTP_201_CREATED)
-def upload_document(file: UploadFile = File(...), category: str | None = Form(None), admin: AuthenticatedUser = Depends(require_admin)):
+def upload_document(
+    file: UploadFile = File(...),
+    category: str | None = Form(default=None, max_length=120),
+    admin: AuthenticatedUser = Depends(require_admin),
+):
     return service.process_upload(admin, file, category)
 
 
@@ -370,7 +392,7 @@ def users(_: AuthenticatedUser = Depends(require_admin)):
 def user_page(
     page: int = Query(1, ge=1),
     page_size: int = Query(10, ge=1, le=50),
-    search: str = "",
+    search: str = Query(default="", max_length=200),
     role: str | None = None,
     account_status: str | None = None,
     verification: str | None = None,
@@ -427,7 +449,7 @@ def conversations(_: AuthenticatedUser = Depends(require_admin)):
 def conversation_page(
     page: int = Query(1, ge=1),
     page_size: int = Query(10, ge=1, le=50),
-    search: str = "",
+    search: str = Query(default="", max_length=200),
     language: str | None = None,
     conversation_status: str | None = None,
     started_from: datetime | None = None,

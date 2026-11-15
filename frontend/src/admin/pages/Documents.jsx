@@ -1,5 +1,8 @@
 import { useEffect, useRef, useState } from "react";
-import { EllipsisVertical } from "lucide-react";
+import {
+  EllipsisVertical,
+  X,
+} from "lucide-react";
 import {
   adminDeleteDocument,
   adminDocumentContent,
@@ -556,7 +559,18 @@ function Documents({ user, revision }) {
               </h2>
               <p>Edit extracted document content. Changes will be saved and re-indexed for chatbot retrieval.</p>
             </div>
-            <button aria-label="Close editor" className="icon-button" type="button" onClick={closeEditor}>×</button>
+            <button
+              aria-label="Close editor"
+              className="icon-button document-editor-close"
+              type="button"
+              onClick={closeEditor}
+            >
+              <X
+                aria-hidden="true"
+                size={21}
+                strokeWidth={2.5}
+              />
+            </button>
           </header>
           <AdminNotice
             type="info"

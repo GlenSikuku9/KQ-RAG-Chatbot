@@ -15,7 +15,13 @@ class ContextSource(BaseModel):
 
 class ExcludedChunk(BaseModel):
     chunk_id: str
-    reason: Literal["below_similarity_threshold", "duplicate_content", "context_budget_exceeded"]
+    reason: Literal[
+        "below_similarity_threshold",
+        "duplicate_content",
+        "context_budget_exceeded",
+        "document_limit_exceeded",
+        "document_chunk_limit_exceeded",
+    ]
     duplicate_of: str | None = None
 
 
@@ -24,6 +30,7 @@ class PreparedContext(BaseModel):
     decision: Literal["context_available", "clarification_required", "fallback"]
     reason: Literal[
         "selected_context", "no_retrieved_chunks", "below_similarity_threshold", "context_budget_exceeded",
+        "unsupported_query",
     ]
     evidence_status: Literal["heuristic_only"] = "heuristic_only"
     generation_called: Literal[False] = False

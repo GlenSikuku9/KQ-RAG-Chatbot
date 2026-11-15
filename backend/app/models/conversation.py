@@ -9,6 +9,7 @@ from app.models.database import UTCDateTime
 from app.models.feedback import Feedback
 from app.models.flight import FlightInformation
 from app.models.generation import GroundedAnswerRequest, GenerationResponse
+from app.security.urls import official_kenya_airways_url
 
 
 class ConversationStatus(str, Enum):
@@ -27,6 +28,8 @@ class ResponseSource(str, Enum):
     CLARIFICATION = "clarification"
     FALLBACK = "fallback"
     FLIGHT_INFORMATION = "flight_information"
+    NON_RAG = "non_rag"
+    UNSUPPORTED = "unsupported"
 
 
 class ConversationCreateRequest(BaseModel):
@@ -67,6 +70,11 @@ class MessageChunk(BaseModel):
     source_title: str | None = Field(default=None, max_length=300)
     source_section: str | None = Field(default=None, max_length=500)
     source_url: str | None = Field(default=None, max_length=2048)
+
+    @field_validator("source_url")
+    @classmethod
+    def validate_source_url(cls, value: str | None) -> str | None:
+        return official_kenya_airways_url(value)
 
 
 class ConversationMessage(BaseModel):

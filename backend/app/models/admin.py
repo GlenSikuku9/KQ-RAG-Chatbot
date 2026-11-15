@@ -120,6 +120,34 @@ class AdminAnalytics(BaseModel):
     recent_activity: list[dict[str, str | None]]
 
 
+class RAGMetricValue(BaseModel):
+    """One transparent metric value and the evidence behind its display."""
+
+    value: float | None = None
+    sample_size: int = Field(default=0, ge=0)
+    status: Literal["evaluated", "not_evaluated", "insufficient_data"]
+    method: str
+
+
+class RAGEvaluationMetrics(BaseModel):
+    """Offline evaluation and live RAG operations shown in Analytics."""
+
+    period_days: int = Field(ge=1, le=365)
+    model_id: str | None = None
+    language: str
+    retrieval_k: int | None = Field(default=None, ge=1)
+    evaluated_at: UTCDateTime | None = None
+    available_models: list[str] = Field(default_factory=list)
+    available_languages: list[str] = Field(default_factory=list)
+    retrieval: dict[str, RAGMetricValue]
+    document_retrieval: dict[str, RAGMetricValue]
+    ragas: dict[str, RAGMetricValue]
+    # Retained as a compatibility alias for older dashboard clients.
+    response_quality: dict[str, RAGMetricValue]
+    fallback: dict[str, RAGMetricValue]
+    operational: dict[str, RAGMetricValue]
+
+
 LEGACY_PASSENGER_THEME = {
     "primary": "#0b2e6f",
     "secondary": "#16458f",
@@ -208,6 +236,7 @@ class EvaluationResult(BaseModel):
     dataset_version: str | None = None
     knowledge_base_version: str | None = None
     model_settings: dict[str, str] = Field(default_factory=dict)
+    evaluation_methods: dict[str, str] = Field(default_factory=dict)
 
 
 class AdminLog(BaseModel):

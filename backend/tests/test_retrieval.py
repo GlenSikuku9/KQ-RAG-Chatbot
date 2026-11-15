@@ -27,10 +27,27 @@ class RetrievalTests(unittest.TestCase):
         original = "  Mizigo\t yangu\r\n allowance ni kiasi gani?  "
         result = self.service.retrieve(RetrievalRequest(question=original, language="mixed"))
         self.assertEqual(result.question, original)
-        self.assertEqual(result.normalized_query, "Mizigo yangu allowance ni kiasi gani?")
+        self.assertEqual(
+            result.normalized_query,
+            "Mizigo yangu allowance ni kiasi gani? | baggage allowance",
+        )
         self.assertEqual(result.language, "mixed")
         self.assertEqual(result.language_source, "selected")
         self.index.search.assert_called_once_with(result.normalized_query, 7)
+
+    def test_swahili_policy_concepts_are_expanded_without_translation_api(self):
+        result = self.service.retrieve(RetrievalRequest(
+            question=(
+                "Kusahihisha jina kwenye tiketi ya kimataifa "
+                "kunagharimu kiasi gani?"
+            ),
+            language="sw",
+        ))
+
+        self.assertIn("name correction", result.normalized_query)
+        self.assertIn("ticket", result.normalized_query)
+        self.assertIn("international", result.normalized_query)
+        self.assertIn("fee cost", result.normalized_query)
 
     def test_unspecified_language_is_unknown_without_guessing(self):
         for question in ("Hello", "Habari", "Hello habari"):
@@ -134,6 +151,36 @@ class RetrievalTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 evaluate_retrieval.evaluate(self.service, [chunk()], [case], 5)
         self.index.search.assert_not_called()
+
+    def test_reciprocal_rank_is_zero_when_relevant_chunk_is_not_retrieved(self):
+        case = {
+            "id": "not-retrieved",
+            "question": "bag?",
+            "language": "en",
+            "source": "policy.docx",
+            "evidence": ["bag allowance"],
+        }
+        relevant = chunk()
+        self.index.search.return_value = [
+            SearchHit(
+                chunk=chunk("irrelevant", "refund only"),
+                score=0.9,
+            ),
+        ]
+
+        report = evaluate_retrieval.evaluate(
+            self.service,
+            [relevant],
+            [case],
+            1,
+        )
+
+        self.assertEqual(report["metrics"]["all"]["precision_at_k"], 0)
+        self.assertEqual(report["metrics"]["all"]["recall_at_k"], 0)
+        self.assertEqual(
+            report["metrics"]["all"]["reciprocal_rank_at_k"],
+            0,
+        )
 
 
 if __name__ == "__main__":

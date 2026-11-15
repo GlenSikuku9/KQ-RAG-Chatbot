@@ -197,7 +197,11 @@ export function AdminDashboard({ user, profile, onSignOut }) {
       onOpenConversation: openConversation,
       onOpenLog: openLog,
     },
-    Analytics: { analytics },
+    Analytics: {
+      analytics,
+      periodDays,
+      user,
+    },
     Settings: {
       user,
       theme,

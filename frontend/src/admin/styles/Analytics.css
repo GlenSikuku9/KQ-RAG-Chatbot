@@ -1,1 +1,166 @@
 /* Analytics page-specific styles. Shared dashboard rules live in AdminDashboard.css. */
+
+/* Evaluation groups remain compact so the established analytics charts keep
+   their visual priority on wide and narrow screens. */
+.rag-evaluation-panel {
+  grid-column: 1 / -1;
+  padding: 1.25rem;
+  border: 1px solid var(--admin-border);
+  border-radius: 0.8rem;
+  background: #ffffff;
+  box-shadow: var(--shadow);
+}
+
+.rag-evaluation-header {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.rag-evaluation-header h2,
+.rag-metric-section h3 {
+  margin: 0;
+  color: var(--admin-navy);
+}
+
+.rag-evaluation-header p,
+.rag-metric-section p {
+  margin: 0.35rem 0 0;
+  color: var(--admin-muted);
+  font-size: 0.84rem;
+  line-height: 1.45;
+}
+
+.rag-evaluation-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.rag-evaluation-filters label {
+  display: grid;
+  gap: 0.3rem;
+  color: var(--admin-muted);
+  font-size: 0.76rem;
+  font-weight: 650;
+}
+
+.rag-evaluation-filters select {
+  min-width: 10rem;
+  padding: 0.55rem 2rem 0.55rem 0.65rem;
+  border: 1px solid var(--admin-border);
+  border-radius: 0.55rem;
+  color: var(--admin-text);
+  background: #ffffff;
+  font: inherit;
+}
+
+.rag-evaluation-sections {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.9rem;
+}
+
+.rag-metric-section {
+  min-width: 0;
+  padding: 1rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.7rem;
+  background: #f8fafc;
+}
+
+.rag-metric-section h3 {
+  font-size: 0.96rem;
+}
+
+.rag-metric-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.65rem;
+  margin-top: 0.8rem;
+}
+
+.rag-metric-card {
+  display: grid;
+  align-content: start;
+  gap: 0.3rem;
+  min-width: 0;
+  padding: 0.8rem;
+  border: 1px solid #dce4ef;
+  border-radius: 0.6rem;
+  background: #ffffff;
+}
+
+.rag-metric-card > span {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.4rem;
+  color: var(--admin-muted);
+  font-size: 0.78rem;
+  font-weight: 650;
+}
+
+.rag-metric-kind {
+  padding: 0.12rem 0.38rem;
+  border-radius: 999px;
+  color: #102f70;
+  background: #eaf2fc;
+  font-size: 0.62rem;
+  font-style: normal;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.rag-metric-card strong {
+  color: var(--admin-navy);
+  font-size: 1.3rem;
+}
+
+.rag-metric-card strong.unavailable {
+  font-size: 0.95rem;
+}
+
+.rag-metric-card small {
+  color: var(--admin-muted);
+  font-size: 0.72rem;
+  line-height: 1.4;
+}
+
+.rag-evaluation-state {
+  margin: 0;
+  padding: 1rem;
+  border-radius: 0.6rem;
+  color: var(--admin-muted);
+  background: #f8fafc;
+}
+
+.rag-evaluation-state.error {
+  color: #991b1b;
+  background: #fff1f2;
+}
+
+@media (max-width: 900px) {
+  .rag-evaluation-header {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .rag-evaluation-sections {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 560px) {
+  .rag-evaluation-filters,
+  .rag-evaluation-filters label,
+  .rag-evaluation-filters select {
+    width: 100%;
+  }
+
+  .rag-metric-grid {
+    grid-template-columns: 1fr;
+  }
+}

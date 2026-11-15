@@ -9,6 +9,15 @@ from app.models.document_chunk import DocumentChunk
 
 logger = logging.getLogger(__name__)
 LanguagePreference = Literal["en", "sw", "mixed"]
+DetectedLanguage = Literal["en", "sw", "mixed", "unknown"]
+
+
+class ConversationContextMessage(BaseModel):
+    """A bounded prior message used for interpretation, never policy evidence."""
+
+    conversation_id: str = Field(min_length=1, max_length=128)
+    sender_type: Literal["customer", "chatbot"]
+    message_text: str = Field(min_length=1, max_length=4000)
 
 
 class RetrievalRequest(BaseModel):
@@ -16,6 +25,17 @@ class RetrievalRequest(BaseModel):
 
     question: str = Field(strict=True, min_length=1, max_length=4000)
     language: LanguagePreference | None = None
+    previous_language: DetectedLanguage | None = None
+    conversation_context: list[ConversationContextMessage] = Field(
+        default_factory=list,
+        max_length=10,
+    )
+    resolved_question: str | None = Field(
+        default=None,
+        min_length=1,
+        max_length=4000,
+        exclude=True,
+    )
     top_k: int | None = Field(default=None, strict=True, ge=1, le=20)
 
     @field_validator("question")

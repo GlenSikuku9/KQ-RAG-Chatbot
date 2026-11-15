@@ -15,7 +15,7 @@ import { PassengerLanding } from "./passenger/pages/PassengerLanding";
 import { auth } from "./firebase";
 import "./passenger/styles/AuthScreen.css";
 
-function AuthScreen({ initialScreen = "sign-in", onAuthenticated, onCancel }) {
+function AuthScreen({ initialScreen = "sign-in", onCancel }) {
   const [screen, setScreen] = useState(initialScreen);
   const [email, setEmail] = useState("");
   const [firstName, setFirstName] = useState("");
@@ -67,7 +67,8 @@ function AuthScreen({ initialScreen = "sign-in", onAuthenticated, onCancel }) {
         });
       }
 
-      await onAuthenticated(credential.user);
+      // onAuthStateChanged below owns profile synchronisation. Calling it here
+      // as well would send two identical profile requests after every sign-in.
     } catch (reason) {
       const code = reason?.code;
       const friendlyErrors = {
@@ -370,7 +371,6 @@ export function App() {
         <div className="auth-modal" role="dialog" aria-modal="true" aria-label="Passenger account access">
           <AuthScreen
             initialScreen={authScreen}
-            onAuthenticated={establishProfile}
             onCancel={() => setAuthScreen(null)}
           />
         </div>

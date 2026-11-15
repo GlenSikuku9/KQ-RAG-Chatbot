@@ -19,7 +19,11 @@ from app.api.dependencies import get_current_user
 from app.main import create_app
 from app.api.routes import conversations
 from app.rag.generation import GenerationProviderError
-from app.services.conversations import ConversationService, ConversationStore
+from app.services.conversations import (
+    ConversationService,
+    ConversationStore,
+    conversation_title_from_question,
+)
 
 
 class Snapshot:
@@ -95,6 +99,16 @@ def generated_answer():
     )
 
 
+def deterministic_answer(answer, language="en", decision="non_rag"):
+    return GroundedAnswerResponse(
+        answer=answer,
+        language=language,
+        decision=decision,
+        generation_called=False,
+        sources=[],
+    )
+
+
 class ConversationStoreTests(unittest.TestCase):
     def setUp(self):
         self.client = MemoryClient()
@@ -152,6 +166,49 @@ class ConversationStoreTests(unittest.TestCase):
             [("customer", 1), ("chatbot", 2), ("customer", 3), ("chatbot", 4)],
         )
 
+    def test_greeting_title_is_temporary_until_first_substantive_enquiry(self):
+        conversation = self.create()
+        greeting = self.store.save_exchange(
+            self.user,
+            conversation.conversation_id,
+            SendMessageRequest(question="Hi", language="en"),
+            deterministic_answer("Hello!"),
+        )
+        self.assertEqual(greeting.conversation.title, "New conversation")
+        self.assertEqual(
+            greeting.chatbot_message.response_source,
+            ResponseSource.NON_RAG,
+        )
+
+        capability = self.store.save_exchange(
+            self.user,
+            conversation.conversation_id,
+            SendMessageRequest(
+                question="Sasa, unajibu maswali kuhusu nini?",
+                language="mixed",
+            ),
+            deterministic_answer("Ninaweza kusaidia.", "mixed"),
+        )
+        self.assertEqual(capability.conversation.title, "Mada za Usaidizi")
+        self.assertEqual(
+            self.client.records["conversations"][conversation.conversation_id]["title"],
+            "Mada za Usaidizi",
+        )
+
+    def test_conversation_titles_are_short_and_topic_specific(self):
+        cases = {
+            "What is the baggage allowance for economy class?": "Economy Baggage Allowance",
+            "What is the status of KQ100?": "KQ100 Flight Status",
+            "What can you help me with?": "Supported Topics",
+            "Habari": "Habari",
+        }
+        for question, expected in cases.items():
+            with self.subTest(question=question):
+                self.assertEqual(
+                    conversation_title_from_question(question),
+                    expected,
+                )
+
     def test_clarification_response_persists_with_its_message_enum_value(self):
         conversation = self.create()
         clarification = GroundedAnswerResponse(
@@ -193,6 +250,36 @@ class ConversationStoreTests(unittest.TestCase):
             service.send(self.user, conversation.conversation_id, SendMessageRequest(question="Question?"))
         self.assertFalse(self.client.records.get("messages"))
         self.assertFalse(self.client.records.get("message_chunks"))
+
+    @patch("app.services.conversations.resolve_conversation_query")
+    @patch("app.services.conversations.get_language_detector")
+    def test_greeting_fast_path_skips_rag_routing_and_model_selection(
+        self,
+        detector,
+        resolver,
+    ):
+        answers = Mock()
+        flight_service = Mock()
+        logger = Mock()
+        service = ConversationService(
+            self.store,
+            answers,
+            logger,
+            flight_service,
+        )
+
+        result = service.start(
+            self.user,
+            SendMessageRequest(question="Habari", language="sw"),
+        )
+
+        self.assertEqual(result.chatbot_message.response_source, ResponseSource.NON_RAG)
+        self.assertEqual(result.conversation.title, "New conversation")
+        detector.assert_not_called()
+        resolver.assert_not_called()
+        answers.answer.assert_not_called()
+        answers.generation_service.selected_model.assert_not_called()
+        flight_service.answer_if_flight_query.assert_not_called()
 
 
 class ConversationEndpointTests(unittest.TestCase):

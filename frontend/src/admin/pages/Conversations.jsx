@@ -1,5 +1,8 @@
 import { useEffect, useRef, useState } from "react";
-import { EllipsisVertical } from "lucide-react";
+import {
+  EllipsisVertical,
+  X,
+} from "lucide-react";
 import {
   adminConversationPage,
   adminDeleteConversation,
@@ -23,6 +26,16 @@ import {
 } from "../utils";
 import { subscribeToAdminConversationChanges } from "../../adminRealtime";
 import "../styles/Conversations.css";
+
+function transcriptSenderLabel(message) {
+  if (message.sender_type === "customer") return "Passenger";
+  if (message.sender_type === "agent") return "Support agent";
+  if (message.response_source === "generated") return "AI response";
+  if (message.response_source === "flight_information") {
+    return "Flight information";
+  }
+  return "Chatbot";
+}
 
 function ConversationTable({ user, revision, onSelect }) {
   const [page, setPage] = useState(1);
@@ -386,11 +399,11 @@ function ConversationModal({ detail, onClose }) {
           <button
             ref={closeButtonRef}
             aria-label="Close conversation details"
-            className="icon-button"
+            className="icon-button conversation-details-close"
             type="button"
             onClick={onClose}
           >
-            ×
+            <X aria-hidden="true" size={21} strokeWidth={2.5} />
           </button>
         </header>
         <dl className="conversation-summary">
@@ -455,7 +468,7 @@ function ConversationModal({ detail, onClose }) {
               key={message.message_id}
             >
               <small>
-                {message.sender_type === "customer" ? "Passenger" : "Chatbot"}
+                {transcriptSenderLabel(message)}
                 {" · "}{formatDateTime(message.timestamp)}
               </small>
               {message.sender_type === "chatbot" ? (

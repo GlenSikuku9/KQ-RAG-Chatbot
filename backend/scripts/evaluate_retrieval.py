@@ -1,10 +1,13 @@
 import argparse
 from collections import defaultdict
+from datetime import datetime, timezone
+import hashlib
 import json
 import logging
 from pathlib import Path
 import re
 import sys
+from uuid import uuid4
 
 BACKEND_DIR = Path(__file__).resolve().parents[1]
 sys.path.append(str(BACKEND_DIR))
@@ -17,7 +20,7 @@ from app.models.retrieval import LanguagePreference, RetrievalRequest
 from app.rag.ingestion import write_json_atomic
 from app.rag.context import build_context
 from app.rag.retrieval import RetrievalService, get_retrieval_service
-from app.services.firestore_client import get_firestore_client
+from app.services.firestore_client import firestore_operation, get_firestore_client
 from app.services.knowledge_base import KnowledgeBaseStore
 
 
@@ -132,11 +135,45 @@ def evaluate(
     return report
 
 
+def persist_report(report: dict, questions_path: Path) -> str:
+    """Persist aggregates only when an administrator explicitly requests it."""
+
+    run_id = f"retrieval-{uuid4().hex[:12]}"
+    evaluated_at = datetime.now(timezone.utc)
+    dataset_hash = hashlib.sha256(questions_path.read_bytes()).hexdigest()[:16]
+    client = get_firestore_client()
+    for language, metrics in report["metrics"].items():
+        record = {
+            "run_id": run_id,
+            "evaluated_at": evaluated_at,
+            "dataset_id": questions_path.stem,
+            "dataset_version": dataset_hash,
+            "knowledge_base_version": report.get("knowledge_base_version"),
+            "language": language,
+            "sample_size": metrics["questions"],
+            "top_k": report["top_k"],
+            "precision_at_k": metrics["precision_at_k"],
+            "recall_at_k": metrics["recall_at_k"],
+            "mrr_at_k": metrics["reciprocal_rank_at_k"],
+            "method": "labelled_relevant_chunks",
+        }
+        with firestore_operation():
+            client.collection("retrieval_evaluations").document(
+                f"{run_id}-{language}",
+            ).set(record)
+    return run_id
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Measure development retrieval against predeclared policy excerpts.")
     parser.add_argument("--top-k", type=int, choices=range(1, 21), default=5)
     parser.add_argument("--questions", type=Path, default=DEFAULT_QUESTIONS)
     parser.add_argument("--prepare-context", action="store_true", help="Also measure conservative context decisions.")
+    parser.add_argument(
+        "--persist",
+        action="store_true",
+        help="Save aggregate metrics to Firestore for the admin Analytics page.",
+    )
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args(argv)
     try:
@@ -146,7 +183,21 @@ def main(argv: list[str] | None = None) -> int:
             get_retrieval_service(), chunks, cases, args.top_k,
             get_settings() if args.prepare_context else None,
         )
+        # Tie every persisted score to the exact published chunk snapshot.
+        chunk_manifest = "\n".join(
+            sorted(
+                f"{chunk.chunk_id}:"
+                f"{hashlib.sha256(chunk.text.encode('utf-8')).hexdigest()}"
+                for chunk in chunks
+            )
+        )
+        report["knowledge_base_version"] = hashlib.sha256(
+            chunk_manifest.encode("utf-8"),
+        ).hexdigest()[:16]
         write_json_atomic(args.output, report)
+        if args.persist:
+            run_id = persist_report(report, args.questions)
+            print(f"Persisted retrieval evaluation run {run_id}")
         print(json.dumps(report["metrics"], indent=2))
         if args.prepare_context:
             print(json.dumps(report["context_metrics"], indent=2))

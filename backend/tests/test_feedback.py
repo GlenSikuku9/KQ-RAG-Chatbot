@@ -65,12 +65,24 @@ class OperationalLoggingTests(unittest.TestCase):
         client = MemoryClient()
         logger = OperationalLogger(client)
         result = Mock(generation_called=True, decision="context_available")
-        result.model = Mock(model_id="gemma", provider="openrouter", upstream_model="google/gemma")
-        logger.completed(result, 12.5)
+        result.retrieval_ms = 4.5
+        result.context_build_ms = 0.8
+        result.generation_ms = 6.2
+        result.model = Mock(
+            model_id="gemma",
+            provider="openrouter",
+            upstream_model="google/gemma",
+            provider_duration_ms=5.9,
+            attempt_count=1,
+        )
+        logger.completed(result, 12.5, persistence_ms=1.0)
         stored = next(iter(client.records["operational_events"].values()))
         self.assertEqual(stored["duration_ms"], 12.5)
         self.assertEqual(stored["model_id"], "gemma")
         self.assertEqual(stored["response_source"], "generated")
+        self.assertEqual(stored["retrieval_ms"], 4.5)
+        self.assertEqual(stored["provider_duration_ms"], 5.9)
+        self.assertEqual(stored["persistence_ms"], 1.0)
         self.assertNotIn("prompt", stored)
         self.assertNotIn("api_key", stored)
         self.assertNotIn("user_id", stored)
@@ -113,6 +125,7 @@ class OperationalLoggingTests(unittest.TestCase):
             ANY,
             request_id=ANY,
             conversation_id=ANY,
+            persistence_ms=ANY,
         )
 
         answers.answer.side_effect = RuntimeError("customer question and API key must not be logged")

@@ -118,6 +118,44 @@ class ContextTests(unittest.TestCase):
             self.assertFalse(result.generation_called)
             self.assertTrue(result.message)
 
+    def test_live_and_private_record_queries_bypass_policy_context(self):
+        questions = (
+            "What is the current departure gate for my flight today?",
+            "Salio la akaunti yangu ya benki ni kiasi gani sasa?",
+            "My booking ABC123 iko seat gani right now?",
+        )
+        for question in questions:
+            response = retrieved((chunk(), 0.95))
+            response.question = question
+            result = build_context(response, Settings())
+
+            self.assertEqual(result.decision, "fallback")
+            self.assertEqual(result.reason, "unsupported_query")
+            self.assertEqual(result.sources, [])
+
+    def test_context_limits_distinct_documents_without_changing_top_k(self):
+        first = chunk("one", "Primary evidence")
+        second = chunk("two", "Secondary evidence")
+        second.document_id = "second-document"
+        third = chunk("three", "Unrelated evidence")
+        third.document_id = "third-document"
+        response = retrieved(
+            (first, 0.95),
+            (second, 0.94),
+            (third, 0.93),
+        )
+
+        result = build_context(
+            response,
+            Settings(context_max_documents=2),
+        )
+
+        self.assertEqual(len(result.sources), 2)
+        self.assertEqual(
+            result.excluded[0].reason,
+            "document_limit_exceeded",
+        )
+
     def test_chunks_from_one_document_share_one_citation(self):
         response = retrieved(
             (chunk("first", "Baggage allowance."), 0.95),
@@ -145,6 +183,8 @@ class ContextTests(unittest.TestCase):
             {"context_max_chars": 0}, {"context_max_chars": True}, {"context_max_chars": 100001},
             {"context_min_similarity": -1.1}, {"context_min_similarity": 1.1},
             {"context_min_similarity": float("nan")}, {"context_min_similarity": True},
+            {"context_max_documents": 0},
+            {"context_max_chunks_per_document": 0},
         ):
             with self.assertRaises(ValidationError):
                 Settings(**values)

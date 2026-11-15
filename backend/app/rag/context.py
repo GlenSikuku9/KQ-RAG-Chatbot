@@ -1,5 +1,6 @@
 from functools import lru_cache
 import logging
+import re
 from typing import Literal
 
 from fastapi import HTTPException
@@ -22,6 +23,35 @@ CLARIFICATION_MESSAGES = {
     "mixed": "Sijapata strong enough policy evidence. Please clarify huduma au sera ya Kenya Airways unayoulizia.",
 }
 
+# These patterns require live/private records rather than static policy text.
+# They intentionally avoid broad words such as "seat" or "flight" alone so
+# ordinary policy questions continue through retrieval.
+_UNSUPPORTED_QUERY_PATTERNS = (
+    re.compile(
+        r"\b(?:current|today|now|leo|sasa)\b.{0,45}\b(?:gate|lango)\b"
+        r"|\b(?:gate|lango)\b.{0,45}\b(?:current|today|now|leo|sasa)\b",
+        re.IGNORECASE,
+    ),
+    re.compile(
+        r"\b(?:bank account balance|account balance|salio la akaunti.{0,20}benki)\b",
+        re.IGNORECASE,
+    ),
+    re.compile(
+        r"\bbooking\s+[a-z0-9]{5,}\b.{0,50}\bseat\b"
+        r"|\bseat\b.{0,50}\bbooking\s+[a-z0-9]{5,}\b",
+        re.IGNORECASE,
+    ),
+)
+
+
+def is_unsupported_policy_query(question: str) -> bool:
+    """Return true only for explicit live/private-data requests."""
+
+    return any(
+        pattern.search(question)
+        for pattern in _UNSUPPORTED_QUERY_PATTERNS
+    )
+
 
 def build_context(retrieval: RetrievalResponse, settings: Settings) -> PreparedContext:
     sources: list[ContextSource] = []
@@ -30,6 +60,21 @@ def build_context(retrieval: RetrievalResponse, settings: Settings) -> PreparedC
     document_citations: dict[str, str] = {}
     used = 0
     eligible = 0
+    if is_unsupported_policy_query(retrieval.question):
+        language = "en" if retrieval.language == "unknown" else retrieval.language
+        return PreparedContext(
+            retrieval=retrieval,
+            decision="fallback",
+            reason="unsupported_query",
+            message=FALLBACK_MESSAGES[language],
+            context="",
+            context_chars=0,
+            max_context_chars=settings.context_max_chars,
+            min_similarity=settings.context_min_similarity,
+            sources=[],
+            excluded=[],
+        )
+
     for hit in retrieval.results:
         chunk = hit.chunk
         if not chunk.text.strip():
@@ -39,6 +84,29 @@ def build_context(retrieval: RetrievalResponse, settings: Settings) -> PreparedC
             excluded.append(ExcludedChunk(chunk_id=chunk.chunk_id, reason="below_similarity_threshold"))
             continue
         eligible += 1
+        selected_for_document = [
+            source
+            for source in sources
+            if source.chunk.document_id == chunk.document_id
+        ]
+        if (
+            chunk.document_id not in document_citations
+            and len(document_citations) >= settings.context_max_documents
+        ):
+            excluded.append(ExcludedChunk(
+                chunk_id=chunk.chunk_id,
+                reason="document_limit_exceeded",
+            ))
+            continue
+        if (
+            len(selected_for_document)
+            >= settings.context_max_chunks_per_document
+        ):
+            excluded.append(ExcludedChunk(
+                chunk_id=chunk.chunk_id,
+                reason="document_chunk_limit_exceeded",
+            ))
+            continue
         # Only remove exact, fully contained text with matching source context.
         # Partial overlap and table headers stay intact to preserve qualifications.
         duplicate = next((
@@ -75,6 +143,7 @@ def build_context(retrieval: RetrievalResponse, settings: Settings) -> PreparedC
     decision: Literal["context_available", "clarification_required", "fallback"]
     reason: Literal[
         "selected_context", "no_retrieved_chunks", "below_similarity_threshold", "context_budget_exceeded",
+        "unsupported_query",
     ]
     language = "en" if retrieval.language == "unknown" else retrieval.language
     message = None

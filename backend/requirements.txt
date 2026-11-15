@@ -13,3 +13,6 @@ chromadb==1.5.9
 filelock==3.20.3
 httpx==0.28.1
 python-multipart==0.0.22
+# Offline evaluation only. RAGAS is never invoked by passenger requests.
+ragas==0.4.4
+py3langid==0.4.0
