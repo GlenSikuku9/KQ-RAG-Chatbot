@@ -1,6 +1,8 @@
 from typing import Literal
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
+
+from app.security.urls import official_kenya_airways_url
 
 
 class DocumentChunk(BaseModel):
@@ -23,3 +25,8 @@ class DocumentChunk(BaseModel):
     source_locations: list[str] = Field(default_factory=list)
     table_location: str | None = None
     table_rows: list[int] = Field(default_factory=list)
+
+    @field_validator("source_url")
+    @classmethod
+    def validate_source_url(cls, value: str | None) -> str | None:
+        return official_kenya_airways_url(value)

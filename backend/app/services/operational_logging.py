@@ -30,6 +30,7 @@ class OperationalLogger:
         *,
         request_id: str | None = None,
         conversation_id: str | None = None,
+        persistence_ms: float | None = None,
     ) -> None:
         """Record one successful generation request with trace identifiers."""
         model = result.model
@@ -44,6 +45,23 @@ class OperationalLogger:
             response_source=self._response_source(result),
             request_id=request_id,
             conversation_id=conversation_id,
+            retrieval_ms=self._optional_number(result, "retrieval_ms"),
+            context_build_ms=self._optional_number(
+                result,
+                "context_build_ms",
+            ),
+            generation_ms=self._optional_number(result, "generation_ms"),
+            provider_duration_ms=(
+                self._optional_number(model, "provider_duration_ms")
+                if model
+                else None
+            ),
+            persistence_ms=persistence_ms,
+            provider_attempts=(
+                self._optional_integer(model, "attempt_count")
+                if model
+                else None
+            ),
         )
         self._write(event)
 
@@ -164,7 +182,23 @@ class OperationalLogger:
             return "flight_information"
         if result.decision == "clarification_required":
             return "clarification"
+        if result.decision in {"non_rag", "unsupported"}:
+            return result.decision
         return "fallback"
+
+    @staticmethod
+    def _optional_number(value: object, name: str) -> float | None:
+        measured = getattr(value, name, None)
+        if isinstance(measured, (int, float)) and not isinstance(measured, bool):
+            return float(measured)
+        return None
+
+    @staticmethod
+    def _optional_integer(value: object, name: str) -> int | None:
+        measured = getattr(value, name, None)
+        if isinstance(measured, int) and not isinstance(measured, bool):
+            return measured
+        return None
 
     @staticmethod
     def category(error: Exception) -> str:

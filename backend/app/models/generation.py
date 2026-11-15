@@ -30,6 +30,8 @@ class GenerationResponse(BaseModel):
     upstream_model: str
     text: str
     provider_request_id: str | None = None
+    provider_duration_ms: float | None = Field(default=None, ge=0)
+    attempt_count: int = Field(default=1, ge=1, le=3)
 
 
 class ConfiguredModel(BaseModel):
@@ -57,8 +59,13 @@ class GroundedAnswerResponse(BaseModel):
         "clarification_required",
         "fallback",
         "flight_information",
+        "non_rag",
+        "unsupported",
     ]
     generation_called: bool
     model: GenerationResponse | None = None
     sources: list[ContextSource]
     flight_info: FlightInformation | None = None
+    retrieval_ms: float | None = Field(default=None, ge=0)
+    context_build_ms: float | None = Field(default=None, ge=0)
+    generation_ms: float | None = Field(default=None, ge=0)

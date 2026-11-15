@@ -78,6 +78,23 @@ class AuthenticationEndpointTests(unittest.TestCase):
                 denied = self.client.get("/api/v1/auth/admin-check", headers=self.headers)
                 self.assertEqual(denied.status_code, 403)
 
+    @patch("app.services.firebase_auth.sleep")
+    def test_newly_issued_token_is_retried_once_when_firebase_is_not_ready(self, pause):
+        self.verify.side_effect = [
+            auth.InvalidIdTokenError("token not ready"),
+            {
+                "uid": "test-user",
+                "email": "passenger@example.com",
+                "email_verified": True,
+            },
+        ]
+
+        response = self.client.get("/api/v1/auth/me", headers=self.headers)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(self.verify.call_count, 2)
+        pause.assert_called_once()
+
     def test_missing_or_wrong_authorization_never_calls_firebase(self):
         for header in (None, "", "Bearer", "Bearer ", "Basic test", "Token test"):
             with self.subTest(header=header):

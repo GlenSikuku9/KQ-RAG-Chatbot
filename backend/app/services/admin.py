@@ -43,6 +43,10 @@ from app.models.user import AuthenticatedUser
 from app.services.conversations import ConversationStore, conversation_title_from_question
 from app.services.firestore_client import FIRESTORE_READ_TIMEOUT, firestore_operation, get_firestore_client
 from app.services.knowledge_base import KnowledgeBaseStore
+from app.security.document_upload import (
+    UnsafeDocumentError,
+    validate_docx_upload,
+)
 from app.rag.ingestion import publish_document, remove_document
 
 
@@ -412,6 +416,12 @@ def list_logs() -> list[AdminLog]:
             "actor": item.get("actor"),
             "model_selection_status": item.get("model_selection_status"),
             "duration_ms": item.get("duration_ms"),
+            "retrieval_ms": item.get("retrieval_ms"),
+            "context_build_ms": item.get("context_build_ms"),
+            "generation_ms": item.get("generation_ms"),
+            "provider_duration_ms": item.get("provider_duration_ms"),
+            "persistence_ms": item.get("persistence_ms"),
+            "provider_attempts": item.get("provider_attempts"),
             "response_source": item.get("response_source"),
         }
         descriptions = {
@@ -457,23 +467,33 @@ def list_notifications(
 ) -> list[AdminNotification]:
     """Combine system failures and human handoffs with per-admin read state."""
     client = get_firestore_client()
+    source_limit = max(20, min(limit, 50))
     with firestore_operation():
         event_snapshots = list(
             client.collection("operational_events")
+            .where(filter=FieldFilter("event_type", "==", "chat_failed"))
             .order_by("occurred_at", direction="DESCENDING")
-            .limit(100)
+            .limit(source_limit)
             .stream(timeout=FIRESTORE_READ_TIMEOUT),
         )
         audit_snapshots = list(
             client.collection("admin_activity")
+            .where(filter=FieldFilter("status", "==", "failure"))
             .order_by("timestamp", direction="DESCENDING")
-            .limit(100)
+            .limit(source_limit)
             .stream(timeout=FIRESTORE_READ_TIMEOUT),
         )
         support_snapshots = list(
             client.collection("support_requests")
+            .where(
+                filter=FieldFilter(
+                    "status",
+                    "in",
+                    ["pending", "in_progress"],
+                ),
+            )
             .order_by("created_at", direction="DESCENDING")
-            .limit(100)
+            .limit(source_limit)
             .stream(timeout=FIRESTORE_READ_TIMEOUT),
         )
         error_items = [
@@ -792,7 +812,31 @@ def process_upload(admin: AuthenticatedUser, file: UploadFile, category: str | N
         raise HTTPException(status.HTTP_422_UNPROCESSABLE_ENTITY, "Only .docx documents are supported.")
     settings = get_settings()
     safe_name = Path(file.filename).name
-    uploaded_bytes = file.file.read()
+    if (
+        len(safe_name) > 180
+        or safe_name in {".", ".."}
+        or any(ord(character) < 32 for character in safe_name)
+    ):
+        raise HTTPException(
+            status.HTTP_422_UNPROCESSABLE_ENTITY,
+            "The document filename is invalid.",
+        )
+    uploaded_bytes = file.file.read(
+        settings.document_upload_max_bytes + 1,
+    )
+    try:
+        validate_docx_upload(
+            uploaded_bytes,
+            max_bytes=settings.document_upload_max_bytes,
+            max_uncompressed_bytes=(
+                settings.document_uncompressed_max_bytes
+            ),
+        )
+    except UnsafeDocumentError as error:
+        raise HTTPException(
+            status.HTTP_422_UNPROCESSABLE_ENTITY,
+            str(error),
+        ) from error
     file_hash = sha256(uploaded_bytes).hexdigest()
     existing = _document_for_filename(safe_name)
     destination = settings.raw_data_dir / (existing.source if existing else f"admin/{safe_name}")

@@ -1,8 +1,11 @@
 """Provider adapters for configurable text-generation models (I13)."""
 
 import logging
+import re
 from collections.abc import Callable
+from functools import lru_cache
 from time import sleep
+from time import perf_counter
 
 import httpx
 from fastapi import status
@@ -31,6 +34,9 @@ class GenerationService:
         self.client_factory = client_factory
         self.sleeper = sleeper
         self.models = {model.model_id: model for model in settings.generation_models}
+        # A process-wide service reuses this client so consecutive requests can
+        # reuse DNS results and pooled TCP/TLS connections to Groq/OpenRouter.
+        self.client = self.client_factory()
 
     def configured_models(self) -> list[ConfiguredModel]:
         default_model_id = self._effective_default_model_id()
@@ -68,25 +74,43 @@ class GenerationService:
                 503,
                 "The selected model is not configured with an API key.",
             )
+        provider_duration_ms = 0.0
         for attempt in (1, 2, 3):
+            attempt_started = perf_counter()
             try:
                 if model.provider == "openrouter":
-                    return self._openrouter(
+                    response = self._openrouter(
                         model,
                         prompt,
                         system_instruction,
                     )
-                if model.provider == "groq":
-                    return self._groq(
+                elif model.provider == "groq":
+                    response = self._groq(
                         model,
                         prompt,
                         system_instruction,
                     )
-                raise GenerationProviderError(
-                    503,
-                    "The selected AI provider is not supported.",
+                else:
+                    raise GenerationProviderError(
+                        503,
+                        "The selected AI provider is not supported.",
+                    )
+                provider_duration_ms += (
+                    perf_counter() - attempt_started
+                ) * 1000
+                return response.model_copy(
+                    update={
+                        "provider_duration_ms": round(
+                            provider_duration_ms,
+                            3,
+                        ),
+                        "attempt_count": attempt,
+                    },
                 )
             except httpx.TimeoutException as error:
+                provider_duration_ms += (
+                    perf_counter() - attempt_started
+                ) * 1000
                 logger.warning(
                     "Generation request timed out for %s.",
                     model.model_id,
@@ -96,6 +120,9 @@ class GenerationService:
                     "The selected AI provider timed out. Please try again later.",
                 ) from error
             except GenerationProviderError as error:
+                provider_duration_ms += (
+                    perf_counter() - attempt_started
+                ) * 1000
                 # Retry only transient provider outages. Client errors such as an
                 # invalid key or rate limit return immediately to avoid request spam.
                 if error.status_code != 503 or attempt == 3:
@@ -110,6 +137,9 @@ class GenerationService:
                 )
                 self.sleeper(delay_seconds)
             except httpx.RequestError as error:
+                provider_duration_ms += (
+                    perf_counter() - attempt_started
+                ) * 1000
                 logger.warning(
                     "Generation network failure for %s: %s",
                     model.model_id,
@@ -263,15 +293,15 @@ class GenerationService:
         payload: dict,
         headers: dict[str, str],
     ) -> dict:
-        with self.client_factory(timeout=model.timeout_seconds) as client:
-            response = client.post(
-                url,
-                json=payload,
-                headers={
-                    "Content-Type": "application/json",
-                    **headers,
-                },
-            )
+        response = self.client.post(
+            url,
+            json=payload,
+            headers={
+                "Content-Type": "application/json",
+                **headers,
+            },
+            timeout=model.timeout_seconds,
+        )
         # Keep useful provider categories distinct. Do not return the raw response:
         # it can contain provider internals and must never include secrets in logs/API output.
         if response.status_code == 400:
@@ -325,7 +355,25 @@ class GenerationService:
                 502,
                 "The selected AI provider returned an empty response.",
             )
-        return value
+
+        # Provider output occasionally contains invisible Unicode spacing in
+        # citations or escaped table delimiters. Normalize these presentation
+        # artifacts before validation, persistence, and frontend rendering.
+        normalized = value.translate({
+            ord("\u00a0"): " ",
+            ord("\u202f"): " ",
+            ord("\u200b"): None,
+            ord("\u200c"): None,
+            ord("\u200d"): None,
+            ord("\ufeff"): None,
+        })
+        normalized = normalized.replace(r"\|", "|")
+        normalized = re.sub(
+            r"(?m)(^\s*\|.*\|\s*$)\n\s*\n(?=\s*\|)",
+            r"\1\n",
+            normalized,
+        )
+        return normalized.strip()
 
     @staticmethod
     def _response(
@@ -346,5 +394,6 @@ class GenerationService:
         )
 
 
+@lru_cache(maxsize=1)
 def get_generation_service() -> GenerationService:
     return GenerationService(get_settings())

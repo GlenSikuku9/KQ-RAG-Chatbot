@@ -72,6 +72,38 @@
   margin: 1rem 0;
 }
 
+/* Match the prominent, accessible dismissal control used by Inspect dialogs. */
+.document-editor-close {
+  display: inline-grid;
+  width: 2.35rem;
+  height: 2.35rem;
+  flex: 0 0 auto;
+  place-items: center;
+  padding: 0;
+  border: 1px solid #cbd5e1;
+  border-radius: 50%;
+  color: #0b2e6f;
+  background: #f8fafc;
+  cursor: pointer;
+  transition:
+    color 180ms ease,
+    border-color 180ms ease,
+    background-color 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.document-editor-close:hover:not(:disabled) {
+  border-color: #d71920;
+  color: #d71920;
+  background: #fff1f2;
+}
+
+.document-editor-close:focus-visible {
+  outline: 3px solid rgb(215 25 32 / 22%);
+  outline-offset: 2px;
+  border-color: #d71920;
+}
+
 .document-form label {
   display: grid;
   gap: 0.4rem;

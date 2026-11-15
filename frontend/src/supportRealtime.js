@@ -1,7 +1,9 @@
 import {
   collection,
   doc,
+  limit,
   onSnapshot,
+  orderBy,
   query,
   where,
 } from "@firebase/firestore";
@@ -142,8 +144,14 @@ export function subscribeToSupportEvents(onChange, onError) {
     // The navbar and Human Support page share one watch target. Delayed
     // teardown also prevents React Strict Mode from rapidly recycling the
     // target during its development-only effect verification pass.
-    stopSupportEventsListener = onSnapshot(
+    const activeSupportRequests = query(
       collection(db, "support_requests"),
+      where("status", "in", ["pending", "in_progress"]),
+      orderBy("created_at", "desc"),
+      limit(50),
+    );
+    stopSupportEventsListener = onSnapshot(
+      activeSupportRequests,
       () => {
         if (initialSnapshot) {
           initialSnapshot = false;

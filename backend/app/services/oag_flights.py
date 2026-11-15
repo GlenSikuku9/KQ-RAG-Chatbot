@@ -20,7 +20,19 @@ from app.services.operational_logging import get_operational_logger
 logger = logging.getLogger(__name__)
 NAIROBI_TIMEZONE = ZoneInfo("Africa/Nairobi")
 OAG_SUBSCRIPTION_HEADER = "Subscription-Key"
-FLIGHT_NUMBER = re.compile(r"\bKQ\s*([0-9]{1,4}[A-Z]?)\b", re.IGNORECASE)
+FLIGHT_NUMBER = re.compile(
+    r"\b(?:KQ\s*-?\s*|Kenya\s+Airways(?:\s+flight)?\s+)"
+    r"([0-9]{1,4}[A-Z]?)\b",
+    re.IGNORECASE,
+)
+BARE_FLIGHT_NUMBER = re.compile(
+    r"\bflight\s+([0-9]{1,4}[A-Z]?)\b",
+    re.IGNORECASE,
+)
+OTHER_AIRLINE_FLIGHT = re.compile(
+    r"\b([A-Z][A-Z0-9])\s*-?\s*([0-9]{1,4}[A-Z]?)\b",
+    re.IGNORECASE,
+)
 ISO_DATE = re.compile(r"\b(20[0-9]{2}-[01][0-9]-[0-3][0-9])\b")
 DISPLAY_DATE = re.compile(r"\b([0-3][0-9]-[01][0-9]-20[0-9]{2})\b")
 FLIGHT_INTENT = re.compile(
@@ -78,13 +90,29 @@ class OAGFlightService:
     ) -> GroundedAnswerResponse | None:
         """Return None for policy queries so the existing RAG path remains authoritative."""
 
-        question = request.question.strip()
+        # A resolved follow-up may inherit the flight number or date, while the
+        # original passenger wording remains unchanged in conversation storage.
+        question = (
+            request.resolved_question
+            or request.question
+        ).strip()
         match = FLIGHT_NUMBER.search(question)
         has_flight_intent = bool(FLIGHT_INTENT.search(question))
 
         # Conditional refund and compensation questions remain policy questions.
         if POLICY_INTENT.search(question):
             return None
+        unsupported_match = OTHER_AIRLINE_FLIGHT.search(question)
+        if (
+            unsupported_match
+            and unsupported_match.group(1).upper() != "KQ"
+            and has_flight_intent
+        ):
+            return self._unsupported_airline(request)
+        # A bare "flight 100" is interpreted as KQ only because this is the
+        # Kenya Airways assistant and an operational flight intent is explicit.
+        if match is None and has_flight_intent:
+            match = BARE_FLIGHT_NUMBER.search(question)
         if ROUTE_INTENT.search(question) and not match:
             return self._route_clarification(request)
         if not match or not has_flight_intent:
@@ -114,6 +142,27 @@ class OAGFlightService:
             generation_called=False,
             sources=[],
             flight_info=information,
+        )
+
+    @staticmethod
+    def _unsupported_airline(
+        request: GroundedAnswerRequest,
+    ) -> GroundedAnswerResponse:
+        """Decline non-KQ operational lookups without retrieval or an OAG call."""
+
+        language = request.language or "unknown"
+        messages = {
+            "en": "I can currently look up flight information for Kenya Airways flights (KQ) only.",
+            "sw": "Kwa sasa ninaweza kuangalia taarifa za ndege za Kenya Airways (KQ) pekee.",
+            "mixed": "Kwa sasa ninaweza ku-check flight information ya Kenya Airways flights (KQ) pekee.",
+            "unknown": "I can currently look up flight information for Kenya Airways flights (KQ) only.",
+        }
+        return GroundedAnswerResponse(
+            answer=messages[language],
+            language=language,
+            decision="fallback",
+            generation_called=False,
+            sources=[],
         )
 
     def lookup(
@@ -304,7 +353,11 @@ class OAGFlightService:
 
     @staticmethod
     def normalize_flight_number(value: str) -> str:
-        match = re.fullmatch(r"\s*KQ\s*([0-9]{1,4}[A-Z]?)\s*", value, re.IGNORECASE)
+        match = re.fullmatch(
+            r"\s*KQ\s*-?\s*([0-9]{1,4}[A-Z]?)\s*",
+            value,
+            re.IGNORECASE,
+        )
         if match is None:
             raise OAGFlightError(400, "Enter a Kenya Airways flight number such as KQ100.", "invalid_flight")
         return f"KQ{match.group(1).upper()}"

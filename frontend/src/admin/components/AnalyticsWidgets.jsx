@@ -1,11 +1,10 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Activity,
   ArrowRight,
   Bot,
   ChartColumn,
   ChartPie,
-  CircleAlert,
   CircleCheck,
   Clock3,
   Cpu,
@@ -20,6 +19,7 @@ import {
   UsersRound,
   X,
 } from "lucide-react";
+import { adminRagEvaluationMetrics } from "../../api";
 import {
   activityPresentation,
   formatChartLabel,
@@ -123,7 +123,37 @@ function Overview({
   );
 }
 
-function Analytics({ analytics }) {
+function Analytics({ analytics, periodDays, user }) {
+  const [ragMetrics, setRagMetrics] = useState(null);
+  const [ragLoading, setRagLoading] = useState(true);
+  const [ragError, setRagError] = useState("");
+  const [modelId, setModelId] = useState("");
+  const [language, setLanguage] = useState("all");
+
+  useEffect(() => {
+    let active = true;
+    setRagLoading(true);
+    setRagError("");
+    adminRagEvaluationMetrics(
+      user,
+      periodDays,
+      modelId,
+      language,
+    )
+      .then((result) => {
+        if (active) setRagMetrics(result);
+      })
+      .catch((error) => {
+        if (active) setRagError(error.message);
+      })
+      .finally(() => {
+        if (active) setRagLoading(false);
+      });
+    return () => {
+      active = false;
+    };
+  }, [language, modelId, periodDays, user]);
+
   if (!analytics)
     return (
       <p className="admin-empty">
@@ -180,12 +210,279 @@ function Analytics({ analytics }) {
           accent="blue"
         />
       </div>
-      <AnalyticsPanels analytics={analytics} />
+      <AnalyticsPanels
+        analytics={analytics}
+        ragEvaluation={(
+          <RagEvaluationPanel
+            data={ragMetrics}
+            error={ragError}
+            language={language}
+            loading={ragLoading}
+            modelId={modelId}
+            onLanguageChange={setLanguage}
+            onModelChange={setModelId}
+          />
+        )}
+      />
     </div>
   );
 }
 
-function AnalyticsPanels({ analytics, compact = false }) {
+function RagEvaluationPanel({
+  data,
+  error,
+  language,
+  loading,
+  modelId,
+  onLanguageChange,
+  onModelChange,
+}) {
+  // Support the previous API shape during rolling backend/frontend restarts.
+  // Missing metrics render as "Not evaluated" rather than crashing Analytics.
+  const documentMetrics = data?.document_retrieval || {
+    document_source_precision: data?.response_quality?.context_precision,
+    document_source_recall: data?.response_quality?.context_recall,
+  };
+  const ragasMetrics = data?.ragas || {
+    context_precision: undefined,
+    context_recall: undefined,
+    faithfulness: data?.response_quality?.faithfulness,
+    answer_relevance: data?.response_quality?.answer_relevance,
+  };
+
+  return (
+    <section
+      className="rag-evaluation-panel"
+      aria-labelledby="rag-evaluation-title"
+    >
+      <header className="rag-evaluation-header">
+        <div>
+          <h2 id="rag-evaluation-title">RAG evaluation</h2>
+          <p>
+            Labelled offline policy evaluation and live RAG operations only.
+            OAG flight responses are excluded.
+          </p>
+        </div>
+        <div className="rag-evaluation-filters">
+          <label>
+            Model
+            <select
+              value={modelId}
+              onChange={(event) => onModelChange(event.target.value)}
+            >
+              <option value="">All evaluated models</option>
+              {(data?.available_models || []).map((value) => (
+                <option key={value} value={value}>
+                  {modelDisplayName(value)}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label>
+            Language
+            <select
+              value={language}
+              onChange={(event) => onLanguageChange(event.target.value)}
+            >
+              <option value="all">All languages</option>
+              {(data?.available_languages || []).map((value) => (
+                <option key={value} value={value}>
+                  {languageLabel(value)}
+                </option>
+              ))}
+            </select>
+          </label>
+        </div>
+      </header>
+      {loading && (
+        <p className="rag-evaluation-state" role="status">
+          Loading RAG evaluation metrics...
+        </p>
+      )}
+      {!loading && error && (
+        <p className="rag-evaluation-state error" role="alert">
+          {error}
+        </p>
+      )}
+      {!loading && !error && data && (
+        <div className="rag-evaluation-sections">
+          <RagMetricSection
+            title="Retrieval performance"
+            subtitle={
+              data.retrieval_k
+                ? `Labelled chunk relevance at K = ${data.retrieval_k}.`
+                : "No persisted labelled retrieval run is available."
+            }
+            metrics={[
+              [
+                "Precision@K",
+                data.retrieval.precision_at_k,
+                "Relevant chunks in the top K divided by K.",
+              ],
+              [
+                "Recall@K",
+                data.retrieval.recall_at_k,
+                "Retrieved relevant chunks divided by all labelled relevant chunks.",
+              ],
+              [
+                "MRR@K",
+                data.retrieval.mrr_at_k,
+                "Mean reciprocal rank of the first relevant chunk within K.",
+              ],
+            ]}
+          />
+          <RagMetricSection
+            title="Document-level retrieval quality"
+            subtitle={
+              "Custom document-source overlap for unique answerable questions; "
+              + "these are not RAGAS metrics."
+            }
+            metrics={[
+              [
+                "Document source precision",
+                documentMetrics.document_source_precision,
+                "Reviewed expected documents divided by selected documents, "
+                  + "for answerable questions only.",
+                null,
+                "Custom",
+              ],
+              [
+                "Document source recall",
+                documentMetrics.document_source_recall,
+                "Reviewed expected documents represented in selected context, "
+                  + "for answerable questions only.",
+                null,
+                "Custom",
+              ],
+            ]}
+          />
+          <RagMetricSection
+            title="RAGAS evaluation"
+            subtitle={
+              "Official RAGAS 0.4 metrics from explicit offline evaluation runs."
+            }
+            metrics={[
+              [
+                "Context precision",
+                ragasMetrics.context_precision,
+                "Rank-aware usefulness of the retrieved chunks against the "
+                  + "validated reference answer.",
+                null,
+                "RAGAS",
+              ],
+              [
+                "Context recall",
+                ragasMetrics.context_recall,
+                "Reference-answer claims supported by the retrieved context.",
+                null,
+                "RAGAS",
+              ],
+              [
+                "Faithfulness",
+                ragasMetrics.faithfulness,
+                "Whether answer claims are supported by retrieved policy context.",
+                null,
+                "RAGAS",
+              ],
+              [
+                "Answer relevance",
+                ragasMetrics.answer_relevance,
+                "Whether the answer addresses the passenger enquiry.",
+                null,
+                "RAGAS",
+              ],
+            ]}
+          />
+          <RagMetricSection
+            title="Fallback performance"
+            subtitle="Uses labelled supported and unsupported policy enquiries."
+            metrics={[
+              [
+                "Fallback accuracy",
+                data.fallback.fallback_accuracy,
+                "Correct fallback decisions divided by all labelled decisions.",
+              ],
+            ]}
+          />
+          <RagMetricSection
+            title="Operational performance"
+            subtitle={
+              `RAG-only attempts from the selected ${data.period_days}-day period.`
+            }
+            metrics={[
+              [
+                "Average response time",
+                data.operational.average_response_ms,
+                "Mean duration of completed RAG processing attempts.",
+                "duration",
+              ],
+              [
+                "Failure rate",
+                data.operational.failure_rate,
+                "Failed RAG attempts divided by all RAG attempts.",
+              ],
+            ]}
+          />
+        </div>
+      )}
+    </section>
+  );
+}
+
+function RagMetricSection({ metrics, subtitle, title }) {
+  return (
+    <article className="rag-metric-section">
+      <h3>{title}</h3>
+      <p>{subtitle}</p>
+      <div className="rag-metric-grid">
+        {metrics.map(([label, metric, explanation, format, kind]) => (
+          <RagMetricCard
+            explanation={explanation}
+            format={format}
+            key={label}
+            kind={kind}
+            label={label}
+            metric={metric}
+          />
+        ))}
+      </div>
+    </article>
+  );
+}
+
+function RagMetricCard({ explanation, format, kind, label, metric }) {
+  const available = metric?.status === "evaluated";
+  let value = metric?.status === "insufficient_data"
+    ? "Insufficient data"
+    : "Not evaluated";
+  if (available && format === "duration") {
+    value = `${(metric.value / 1000).toFixed(2)} s`;
+  } else if (available) {
+    value = `${(metric.value * 100).toFixed(1)}%`;
+  }
+  return (
+    <div className="rag-metric-card" title={explanation}>
+      <span>
+        {label}
+        {kind && <i className="rag-metric-kind">{kind}</i>}
+      </span>
+      <strong className={available ? "" : "unavailable"}>{value}</strong>
+      <small>
+        {available
+          ? format === "duration"
+            ? `${metric.value.toFixed(0)} ms · n=${metric.sample_size}`
+            : `${metric.value.toFixed(3)} score (0-1) · n=${metric.sample_size}`
+          : explanation}
+      </small>
+    </div>
+  );
+}
+
+function AnalyticsPanels({
+  analytics,
+  compact = false,
+  ragEvaluation = null,
+}) {
   const activitySeries = buildActivitySeries(
     analytics.conversation_activity,
     analytics.period_days,
@@ -225,6 +522,7 @@ function AnalyticsPanels({ analytics, compact = false }) {
           progress
         />
       </section>
+      {!compact && ragEvaluation}
       {!compact && (
         <>
           <section className="admin-analytics-card quality-card">
@@ -290,19 +588,6 @@ function AnalyticsPanels({ analytics, compact = false }) {
             <span>{analytics.feedback.count} submitted ratings</span>
           </div>
           <RatingDistribution values={analytics.rating_distribution} />
-        </section>
-      )}
-      {!compact && (
-        <section className="admin-data-notice">
-          <CircleAlert size={19} />
-          <div>
-            <strong>Data availability</strong>
-            <p>
-              Query categories, RAG evaluation scores, and CSV export are not
-              recorded by the current backend, so they are intentionally not
-              estimated here.
-            </p>
-          </div>
         </section>
       )}
     </div>

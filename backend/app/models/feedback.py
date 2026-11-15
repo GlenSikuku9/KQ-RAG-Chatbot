@@ -60,6 +60,8 @@ class OperationalEvent(BaseModel):
         "clarification",
         "fallback",
         "flight_information",
+        "non_rag",
+        "unsupported",
     ] | None = None
     failure_category: Literal["provider", "storage", "retrieval", "validation", "unknown"] | None = None
     failed_operation: str | None = Field(default=None, max_length=100)
@@ -73,3 +75,9 @@ class OperationalEvent(BaseModel):
     http_status: int | None = Field(default=None, ge=100, le=599)
     request_outcome: str | None = Field(default=None, max_length=50)
     attempt_number: int | None = Field(default=None, ge=1, le=10)
+    retrieval_ms: float | None = Field(default=None, ge=0)
+    context_build_ms: float | None = Field(default=None, ge=0)
+    generation_ms: float | None = Field(default=None, ge=0)
+    provider_duration_ms: float | None = Field(default=None, ge=0)
+    persistence_ms: float | None = Field(default=None, ge=0)
+    provider_attempts: int | None = Field(default=None, ge=1, le=3)

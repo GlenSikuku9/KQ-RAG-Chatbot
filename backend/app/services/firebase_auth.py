@@ -1,5 +1,6 @@
 import logging
 from threading import Lock
+from time import sleep
 
 from fastapi import HTTPException, status
 from firebase_admin import App, auth, credentials, exceptions, get_app, initialize_app
@@ -11,6 +12,7 @@ from app.models.user import AuthenticatedUser, UnsupportedUserRoleError
 
 logger = logging.getLogger(__name__)
 _initialization_lock = Lock()
+_TOKEN_READINESS_RETRY_SECONDS = 0.35
 
 
 class FirebaseConfigurationError(RuntimeError):
@@ -62,6 +64,22 @@ def _unauthorized(detail: str) -> HTTPException:
     )
 
 
+def _verify_token_with_readiness_retry(id_token: str, app: App) -> dict:
+    """Retry once when Firebase has not yet accepted a newly issued token.
+
+    Firebase Authentication can briefly return an invalid-token or missing-user
+    result immediately after restoring or creating a browser session. Verification
+    remains fully enabled on both attempts; this retry does not bypass revocation,
+    expiry, signature, issuer, or audience checks.
+    """
+
+    try:
+        return auth.verify_id_token(id_token, app=app, check_revoked=True)
+    except (auth.InvalidIdTokenError, auth.UserNotFoundError):
+        sleep(_TOKEN_READINESS_RETRY_SECONDS)
+        return auth.verify_id_token(id_token, app=app, check_revoked=True)
+
+
 def verify_firebase_id_token(id_token: str) -> AuthenticatedUser:
     """Verify a Firebase ID token and return a role-aware application user."""
 
@@ -79,10 +97,12 @@ def verify_firebase_id_token(id_token: str) -> AuthenticatedUser:
 
     try:
         # Revocation checks also reject disabled accounts and deleted users.
-        decoded_token = auth.verify_id_token(id_token, app=app, check_revoked=True)
+        decoded_token = _verify_token_with_readiness_retry(id_token, app)
     except auth.ExpiredIdTokenError as exc:
+        logger.warning("Firebase ID token rejected: expired.")
         raise _unauthorized("Your session has expired. Please log in again.") from exc
     except auth.RevokedIdTokenError as exc:
+        logger.warning("Firebase ID token rejected: revoked.")
         raise _unauthorized("This session has been revoked. Please log in again.") from exc
     except auth.UserDisabledError as exc:
         raise HTTPException(
@@ -90,8 +110,15 @@ def verify_firebase_id_token(id_token: str) -> AuthenticatedUser:
             detail="This account has been disabled. Contact support.",
         ) from exc
     except auth.UserNotFoundError as exc:
+        logger.warning("Firebase ID token rejected: user not found.")
         raise _unauthorized("This account is no longer available.") from exc
     except (auth.InvalidIdTokenError, ValueError) as exc:
+        # Record only the exception class. Token contents and SDK messages can
+        # contain sensitive request details and must never enter application logs.
+        logger.warning(
+            "Firebase ID token rejected: %s.",
+            type(exc).__name__,
+        )
         raise _unauthorized("Invalid authentication token.") from exc
     except (exceptions.FirebaseError, GoogleAuthError) as exc:
         # SDK exception messages may contain request data; log only the exception type.
@@ -109,4 +136,5 @@ def verify_firebase_id_token(id_token: str) -> AuthenticatedUser:
             detail="This account has an unsupported role. Contact the administrator.",
         ) from exc
     except ValueError as exc:
+        logger.warning("Verified Firebase identity claims were invalid.")
         raise _unauthorized("Invalid authentication identity.") from exc

@@ -15,6 +15,38 @@ from app.rag.vector_index import IndexStateError, VectorIndex
 
 logger = logging.getLogger(__name__)
 
+# Small, reviewed bilingual expansions help multilingual E5 connect common
+# Kiswahili passenger wording to the English policy corpus. The passenger's
+# original question is still preserved for generation and audit records.
+_SWAHILI_QUERY_CONCEPTS = (
+    (re.compile(r"\bmizigo\b", re.IGNORECASE), "baggage allowance"),
+    (re.compile(r"\bdaraja la biashara\b", re.IGNORECASE), "business class"),
+    (re.compile(r"\bulaya\b", re.IGNORECASE), "Europe"),
+    (re.compile(r"\bkusahihisha jina\b", re.IGNORECASE), "name correction"),
+    (re.compile(r"\b(?:ada|gharama|\w*gharimu)\b", re.IGNORECASE), "fee cost"),
+    (re.compile(r"\btiketi\b", re.IGNORECASE), "ticket"),
+    (re.compile(r"\bkimataifa\b", re.IGNORECASE), "international"),
+    (re.compile(r"\bkubadilisha nafasi\b", re.IGNORECASE), "change booking"),
+    (re.compile(r"\b(?:hati|nyaraka) za safari\b", re.IGNORECASE), "travel documents passport visa"),
+)
+
+
+def normalized_search_query(question: str, language: str | None) -> str:
+    """Normalize whitespace and append only concepts present in Swahili text."""
+
+    normalized = re.sub(r"\s+", " ", question).strip()
+    if language not in {"sw", "mixed"}:
+        return normalized
+    concepts = [
+        concept
+        for pattern, concept in _SWAHILI_QUERY_CONCEPTS
+        if pattern.search(normalized)
+        and concept.lower() not in normalized.lower()
+    ]
+    if not concepts:
+        return normalized
+    return f"{normalized} | {'; '.join(dict.fromkeys(concepts))}"
+
 
 class RetrievalService:
     def __init__(self, index: VectorIndex, settings: Settings):
@@ -23,7 +55,10 @@ class RetrievalService:
 
     def retrieve(self, request: RetrievalRequest) -> RetrievalResponse:
         # Preserve the original for generation/audit; only whitespace changes in the search query.
-        normalized = re.sub(r"\s+", " ", request.question).strip()
+        normalized = normalized_search_query(
+            request.resolved_question or request.question,
+            request.language,
+        )
         limit = request.top_k if request.top_k is not None else self.settings.retrieval_top_k
         start = perf_counter()
         try:
@@ -34,11 +69,14 @@ class RetrievalService:
         except (IndexStateError, EmbeddingConfigurationError, OSError, RuntimeError, ChromaError, Timeout) as exc:
             logger.error("Retrieval unavailable (%s).", type(exc).__name__)
             raise HTTPException(503, "Retrieval is unavailable. Check the local model and published vector index.") from exc
-        # Language is a preference, not a detector output; no translation or guessed confidence.
         return RetrievalResponse(
             question=request.question, normalized_query=normalized,
             language=request.language or "unknown",
-            language_source="selected" if request.language else "unspecified",
+            language_source=(
+                "selected"
+                if request.language
+                else "unspecified"
+            ),
             top_k=limit, returned_count=len(hits),
             results=[RankedChunk(rank=index, score=hit.score, chunk=hit.chunk)
                      for index, hit in enumerate(hits, 1)],

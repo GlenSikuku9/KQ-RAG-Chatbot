@@ -64,21 +64,56 @@ class Settings(BaseModel):
     embedding_batch_size: int = Field(default=4, gt=0, le=64, strict=True)
     embedding_cache_dir: Path = BASE_DIR.parent / "model_cache"
     retrieval_top_k: int = Field(default=5, ge=1, le=20, strict=True)
+    conversation_history_exchanges: int = Field(
+        default=4,
+        ge=1,
+        le=5,
+        strict=True,
+    )
     context_max_chars: int = Field(default=8000, ge=1, le=100000, strict=True)
+    context_max_documents: int = Field(default=2, ge=1, le=10, strict=True)
+    context_max_chunks_per_document: int = Field(
+        default=3,
+        ge=1,
+        le=10,
+        strict=True,
+    )
     # Multilingual E5 scores for direct policy matches commonly sit in the low
     # 0.80s; 0.82 retains a conservative boundary without rejecting core FAQs.
     context_min_similarity: float = Field(default=0.82, ge=-1, le=1, strict=True, allow_inf_nan=False)
+    rag_warmup_on_startup: bool = True
     default_generation_model_id: str | None = None
     generation_models: tuple[GenerationModelSettings, ...] = ()
     support_agent_stale_seconds: int = Field(default=90, ge=30, le=600)
     support_live_wait_seconds: int = Field(default=180, ge=30, le=3600)
     support_clarification_attempts: int = Field(default=2, ge=1, le=10)
+    document_upload_max_bytes: int = Field(
+        default=10_485_760,
+        ge=1024,
+        le=52_428_800,
+    )
+    document_uncompressed_max_bytes: int = Field(
+        default=52_428_800,
+        ge=1024,
+        le=209_715_200,
+    )
+    expensive_requests_per_minute: int = Field(
+        default=30,
+        ge=1,
+        le=300,
+    )
     oag_api_key: str | None = Field(default=None, repr=False)
     oag_base_url: str = "https://api.oag.com"
     oag_timeout_seconds: float = Field(default=8.0, gt=0, le=30)
     oag_status_cache_seconds: int = Field(default=60, ge=15, le=900)
     oag_refresh_cooldown_seconds: int = Field(default=15, ge=5, le=300)
     oag_route_search_enabled: bool = False
+    # RAGAS uses a deliberately separate, explicit evaluator configuration.
+    # No evaluation runs unless the administrator invokes its CLI script.
+    ragas_evaluator_model: str | None = None
+    ragas_evaluator_api_key: str | None = Field(default=None, repr=False)
+    ragas_evaluator_base_url: str = "https://api.groq.com/openai/v1"
+    ragas_evaluator_timeout_seconds: float = Field(default=60, gt=0, le=300)
 
     @model_validator(mode="after")
     def validate_chunking(self) -> Self:
@@ -88,6 +123,8 @@ class Settings(BaseModel):
             raise ValueError("Generation model IDs must be unique.")
         if self.default_generation_model_id and self.default_generation_model_id not in model_ids:
             raise ValueError("DEFAULT_GENERATION_MODEL_ID must name a configured generation model.")
+        if self.environment.lower() == "production":
+            self.debug = False
         return self
 
 
@@ -119,6 +156,17 @@ def _get_path(name: str, default: Path | None) -> Path | None:
 def _get_optional(name: str) -> str | None:
     value = os.getenv(name)
     return value.strip() if value and value.strip() else None
+
+
+def _usable_evaluator_value(name: str) -> str | None:
+    """Treat copied documentation placeholders as missing configuration."""
+
+    value = _get_optional(name)
+    if value and value.lower().startswith(
+        ("your-", "replace_", "placeholder", "test-"),
+    ):
+        return None
+    return value
 
 
 def _get_int(name: str, default: int) -> int:
@@ -198,8 +246,18 @@ def get_settings() -> Settings:
         embedding_batch_size=_get_int("EMBEDDING_BATCH_SIZE", 4),
         embedding_cache_dir=_get_path("EMBEDDING_CACHE_DIR", BASE_DIR.parent / "model_cache"),
         retrieval_top_k=_get_int("RETRIEVAL_TOP_K", 5),
+        conversation_history_exchanges=_get_int(
+            "CONVERSATION_HISTORY_EXCHANGES",
+            4,
+        ),
         context_max_chars=_get_int("CONTEXT_MAX_CHARS", 8000),
+        context_max_documents=_get_int("CONTEXT_MAX_DOCUMENTS", 2),
+        context_max_chunks_per_document=_get_int(
+            "CONTEXT_MAX_CHUNKS_PER_DOCUMENT",
+            3,
+        ),
         context_min_similarity=float(os.getenv("CONTEXT_MIN_SIMILARITY", "0.82")),
+        rag_warmup_on_startup=_get_bool("RAG_WARMUP_ON_STARTUP", True),
         default_generation_model_id=_get_optional("DEFAULT_GENERATION_MODEL_ID"),
         generation_models=_get_generation_models(),
         support_agent_stale_seconds=_get_int(
@@ -213,6 +271,18 @@ def get_settings() -> Settings:
         support_clarification_attempts=_get_int(
             "SUPPORT_CLARIFICATION_ATTEMPTS",
             2,
+        ),
+        document_upload_max_bytes=_get_int(
+            "DOCUMENT_UPLOAD_MAX_BYTES",
+            10_485_760,
+        ),
+        document_uncompressed_max_bytes=_get_int(
+            "DOCUMENT_UNCOMPRESSED_MAX_BYTES",
+            52_428_800,
+        ),
+        expensive_requests_per_minute=_get_int(
+            "EXPENSIVE_REQUESTS_PER_MINUTE",
+            30,
         ),
         oag_api_key=_get_optional("OAG_API_KEY"),
         oag_base_url=os.getenv(
@@ -234,5 +304,23 @@ def get_settings() -> Settings:
         oag_route_search_enabled=_get_bool(
             "OAG_ROUTE_SEARCH_ENABLED",
             False,
+        ),
+        # A dedicated override is preferred. Reusing the existing Groq
+        # credential is safe because evaluation remains an explicit CLI action.
+        ragas_evaluator_model=(
+            _usable_evaluator_value("RAGAS_EVALUATOR_MODEL")
+            or _get_optional("GROQ_MODEL")
+        ),
+        ragas_evaluator_api_key=(
+            _usable_evaluator_value("RAGAS_EVALUATOR_API_KEY")
+            or _get_optional("GROQ_API_KEY")
+        ),
+        ragas_evaluator_base_url=os.getenv(
+            "RAGAS_EVALUATOR_BASE_URL",
+            "https://api.groq.com/openai/v1",
+        ).strip(),
+        ragas_evaluator_timeout_seconds=_get_float(
+            "RAGAS_EVALUATOR_TIMEOUT_SECONDS",
+            60,
         ),
     )

@@ -45,9 +45,9 @@ export function authenticatedRequest(
   const key = requestKey(user?.uid || "authenticated", path);
 
   const performRequest = async () => {
-    const token = await user.getIdToken(forceRefreshToken);
+    let token = await user.getIdToken(forceRefreshToken);
 
-    const request = async () => {
+    const request = async (idToken = token) => {
       // Never leave the authentication screen waiting forever when Uvicorn or
       // Firestore is unavailable; callers can then show a useful retry action.
       const controller = new AbortController();
@@ -68,7 +68,7 @@ export function authenticatedRequest(
           ...init,
           signal,
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${idToken}`,
             ...(init.body instanceof FormData
               ? {}
               : { "Content-Type": "application/json" }),
@@ -86,6 +86,19 @@ export function authenticatedRequest(
       response = await request();
     } catch (error) {
       if (init.signal?.aborted) throw error;
+      // Retrying a chat POST can repeat an expensive generation after the
+      // browser loses the original response. Only safe, idempotent reads get
+      // the short development-reload retry below.
+      if (method !== "GET") {
+        if (error?.name === "AbortError") {
+          throw new Error(
+            "The request timed out before the service returned a response.",
+          );
+        }
+        throw new Error(
+          `Cannot reach the KQ Support API at ${baseUrl}. Try again when the connection is stable.`,
+        );
+      }
       // Uvicorn can briefly drop a connection while --reload replaces the process.
       await new Promise((resolve) => setTimeout(resolve, 350));
 
@@ -97,6 +110,13 @@ export function authenticatedRequest(
           `Cannot reach the KQ Support API at ${baseUrl}. Start the backend and try again.`,
         );
       }
+    }
+
+    // A 401 means no protected operation was performed. Refresh a cached token
+    // once, but never repeat a request that already used a freshly issued token.
+    if (response.status === 401 && !forceRefreshToken) {
+      token = await user.getIdToken(true);
+      response = await request(token);
     }
 
     if (!response.ok) {
@@ -161,14 +181,20 @@ export const getPassengerTheme = () => publicRequest("/theme");
 export const getPublicModels = () => publicRequest("/models/public");
 
 /** Guest requests generate an answer but never create conversation records. */
-export const sendGuestMessage = (question, language, modelId) => publicRequest(
+export const sendGuestMessage = (
+  question,
+  previousLanguage,
+  modelId,
+  conversationContext = [],
+) => publicRequest(
   "/guest/messages",
   {
     method: "POST",
     body: JSON.stringify({
       question,
-      language,
+      previous_language: previousLanguage,
       model_id: modelId,
+      conversation_context: conversationContext,
     }),
   },
   90000,
@@ -197,11 +223,11 @@ export function syncProfile(user) {
   }, true);
 }
 
-/** Create a passenger-owned conversation using the selected language preference. */
-export function createConversation(user, language) {
+/** Create a passenger-owned conversation without a manual language preference. */
+export function createConversation(user) {
   return authenticatedRequest(user, "/conversations", {
     method: "POST",
-    body: JSON.stringify({ language }),
+    body: "{}",
   });
 }
 
@@ -209,8 +235,9 @@ export function createConversation(user, language) {
 export function startConversationWithMessage(
   user,
   question,
-  language,
+  previousLanguage,
   modelId,
+  conversationContext = [],
 ) {
   return authenticatedRequest(
     user,
@@ -219,8 +246,9 @@ export function startConversationWithMessage(
       method: "POST",
       body: JSON.stringify({
         question,
-        language,
+        previous_language: previousLanguage,
         model_id: modelId,
+        conversation_context: conversationContext,
       }),
     },
     false,
@@ -266,15 +294,17 @@ export function sendConversationMessage(
   user,
   conversationId,
   question,
-  language,
+  previousLanguage,
   modelId,
+  conversationContext = [],
 ) {
   return authenticatedRequest(user, `/conversations/${conversationId}/messages`, {
     method: "POST",
     body: JSON.stringify({
       question,
-      language,
+      previous_language: previousLanguage,
       model_id: modelId,
+      conversation_context: conversationContext,
     }),
   }, false, 90000);
 }
@@ -282,6 +312,22 @@ export function sendConversationMessage(
 // Administrator requests remain behind the same Firebase bearer-token boundary.
 export const adminDocuments = (user) => authenticatedRequest(user, "/admin/documents");
 export const adminAnalytics = (user, days = 30) => authenticatedRequest(user, `/admin/analytics?days=${days}`);
+export const adminRagEvaluationMetrics = (
+  user,
+  days = 30,
+  modelId = "",
+  language = "all",
+) => {
+  const parameters = new URLSearchParams({
+    days: String(days),
+    language,
+  });
+  if (modelId) parameters.set("model_id", modelId);
+  return authenticatedRequest(
+    user,
+    `/admin/rag-evaluation-metrics?${parameters.toString()}`,
+  );
+};
 export const adminModels = (user) => authenticatedRequest(user, "/admin/models");
 export const adminEvaluations = (user) => authenticatedRequest(user, "/admin/evaluations");
 export const adminLogs = (user) => authenticatedRequest(user, "/admin/logs");

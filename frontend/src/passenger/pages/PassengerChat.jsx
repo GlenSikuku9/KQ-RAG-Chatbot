@@ -38,12 +38,7 @@ import { FormattedAnswer } from "../../components/FormattedAnswer";
 import { FlightInformationCard } from "../../components/FlightInformationCard";
 import { KenyaAirwaysLogo } from "../../components/KenyaAirwaysLogo";
 import { subscribeToSupportRequest } from "../../supportRealtime";
-
-const LANGUAGE_OPTIONS = [
-  { value: "en", label: "English" },
-  { value: "sw", label: "Kiswahili" },
-  { value: "mixed", label: "English and Kiswahili" },
-];
+import { safeOfficialKenyaAirwaysUrl } from "../../utils/safeUrl";
 
 const SUGGESTED_QUESTIONS = [
   "What is the baggage allowance for international flights?",
@@ -53,6 +48,21 @@ const SUGGESTED_QUESTIONS = [
   "What travel documents do I need?",
   "How can I change my booking?",
 ];
+
+function recentConversationContext(messages, conversationId) {
+  // Four bounded exchanges provide continuity without sending an entire chat.
+  return messages
+    .filter((item) => (
+      item.conversation_id === conversationId
+      && ["customer", "chatbot"].includes(item.sender_type)
+    ))
+    .slice(-8)
+    .map((item) => ({
+      conversation_id: conversationId,
+      sender_type: item.sender_type,
+      message_text: item.message_text.slice(0, 4000),
+    }));
+}
 
 // These phrases intentionally cover clear English, Kiswahili and mixed
 // requests. Ambiguous questions continue through normal RAG assistance.
@@ -93,15 +103,11 @@ function requestsHumanSupport(text) {
 }
 
 function responseLabel(responseSource) {
-  if (responseSource === "clarification") {
-    return "More information needed";
-  }
-
-  if (responseSource === "fallback") {
-    return "Unable to confirm from KQ information";
-  }
-
-  return "KQ Support response";
+  if (responseSource === "generated") return "AI response";
+  if (responseSource === "flight_information") return "Flight information";
+  // Clarifications, greetings, capability answers, and safe fallbacks already
+  // explain themselves. An extra verification heading is misleading.
+  return null;
 }
 
 const MODEL_LABELS = {
@@ -216,6 +222,9 @@ function Sources({ chunks }) {
           // references continue to match the source row shown to passengers.
           const reference = `S${index + 1}`;
           const title = chunk.source_title || "Kenya Airways support information";
+          const sourceUrl = safeOfficialKenyaAirwaysUrl(
+            chunk.source_url,
+          );
           return (
             <div
               className="source-item"
@@ -228,10 +237,10 @@ function Sources({ chunks }) {
                 <span className="source-reference">{reference}</span>
                 <strong>{title}</strong>
               </div>
-              {chunk.source_url && (
+              {sourceUrl && (
                 <a
                   className="source-link"
-                  href={chunk.source_url}
+                  href={sourceUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -251,12 +260,15 @@ function ChatMessage({ message }) {
   const responseSource = message.response_source;
   const isFallback = responseSource === "fallback";
   const isClarification = responseSource === "clarification";
+  const senderLabel = responseLabel(responseSource);
 
   return (
     <article className={`chat-message ${isPassenger ? "passenger" : "assistant"}`}>
-      <p className="message-sender">
-        {isPassenger ? "You" : responseLabel(responseSource)}
-      </p>
+      {(isPassenger || senderLabel) && (
+        <p className="message-sender">
+          {isPassenger ? "You" : senderLabel}
+        </p>
+      )}
       <div className={`message-bubble ${isFallback || isClarification ? "message-bubble-notice" : ""}`}>
         {isPassenger ? (
           <p>{message.message_text}</p>
@@ -490,7 +502,6 @@ export function PassengerChat({
   onDrawerToggle,
   initialQuestion = "",
 }) {
-  const [language, setLanguage] = useState("en");
   const [conversation, setConversation] = useState(null);
   const [messages, setMessages] = useState([]);
   const [history, setHistory] = useState([]);
@@ -841,7 +852,7 @@ export function PassengerChat({
         conversation_id: crypto.randomUUID(),
         user_id: user?.uid || "guest",
         title: "Temporary conversation",
-        language,
+        language: "unknown",
         status: "active",
         started_at: new Date().toISOString(),
         persisted: false,
@@ -995,7 +1006,7 @@ export function PassengerChat({
           conversation_id: conversationId,
           user_id: user.uid,
           title: issueSummary.slice(0, 120),
-          language,
+          language: "unknown",
           status: "active",
           started_at: created.created_at,
           persisted: true,
@@ -1124,7 +1135,7 @@ export function PassengerChat({
         conversation_id: crypto.randomUUID(),
         user_id: user?.uid || "guest",
         title: "Temporary conversation",
-        language,
+        language: conversation?.language || "unknown",
         status: "active",
         started_at: new Date().toISOString(),
         persisted: false,
@@ -1135,27 +1146,34 @@ export function PassengerChat({
       }
 
       let response;
+      const conversationContext = recentConversationContext(
+        messages,
+        activeConversation.conversation_id,
+      );
 
       if (user) {
         response = activeConversation.persisted === false
           ? await startConversationWithMessage(
               user,
               trimmedQuestion,
-              language,
+              activeConversation.language,
               selectedModelId,
+              conversationContext,
             )
           : await sendConversationMessage(
               user,
               activeConversation.conversation_id,
               trimmedQuestion,
-              language,
+              activeConversation.language,
               selectedModelId,
+              conversationContext,
             );
       } else {
         const generated = await sendGuestMessage(
           trimmedQuestion,
-          language,
+          activeConversation.language,
           selectedModelId,
+          conversationContext,
         );
         const now = new Date().toISOString();
         const customerId = crypto.randomUUID();
@@ -1164,7 +1182,10 @@ export function PassengerChat({
         // Adapt the non-persistent RAG response to the same message component
         // used by saved conversations, keeping the guest UI fully featured.
         response = {
-          conversation: activeConversation,
+          conversation: {
+            ...activeConversation,
+            language: generated.language,
+          },
           customer_message: {
             message_id: customerId,
             conversation_id: activeConversation.conversation_id,
@@ -1187,6 +1208,10 @@ export function PassengerChat({
                 ? "flight_information"
               : generated.decision === "clarification_required"
                 ? "clarification"
+              : generated.decision === "non_rag"
+                ? "non_rag"
+              : generated.decision === "unsupported"
+                ? "unsupported"
                 : "fallback",
             retrieved_chunks: generated.sources.map((source) => ({
               message_chunk_id: `${chatbotId}_${source.chunk.chunk_id}`,
@@ -1445,21 +1470,6 @@ export function PassengerChat({
         >
           <ArrowLeft aria-hidden="true" />
         </button>
-        <div className="control-field">
-          <label htmlFor="language-preference">Response language</label>
-          <select
-            id="language-preference"
-            value={language}
-            onChange={(event) => setLanguage(event.target.value)}
-            disabled={isStarting || isSending}
-          >
-            {LANGUAGE_OPTIONS.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
-        </div>
         <button
           className="button secondary"
           type="button"

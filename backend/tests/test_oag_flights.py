@@ -96,7 +96,7 @@ class OAGFlightServiceTests(unittest.TestCase):
         )
 
     def test_normalizes_supported_flight_variations(self):
-        for value in ("KQ100", "KQ 100", "kq100"):
+        for value in ("KQ100", "KQ 100", "KQ-100", "kq100"):
             with self.subTest(value=value):
                 self.assertEqual(
                     OAGFlightService.normalize_flight_number(value),
@@ -128,6 +128,44 @@ class OAGFlightServiceTests(unittest.TestCase):
                 )
                 self.assertEqual(result.decision, "flight_information")
                 self.assertEqual(result.flight_info.flight_number, "KQ100")
+
+    def test_equivalent_kenya_airways_flight_references_route_to_oag(self):
+        payload = {
+            "data": [{
+                "flightNumber": 100,
+                "carrier": {"iata": "KQ"},
+                "departure": {"airport": {"iata": "NBO"}},
+                "arrival": {"airport": {"iata": "LHR"}},
+            }],
+        }
+        for reference in (
+            "KQ-100",
+            "Kenya Airways flight 100",
+            "Kenya Airways 100",
+            "Flight 100",
+        ):
+            with self.subTest(reference=reference):
+                service = self.service(response(200, payload))
+                result = service.answer_if_flight_query(
+                    GroundedAnswerRequest(
+                        question=f"What is the status of {reference} today?",
+                        language="en",
+                    ),
+                )
+                self.assertEqual(result.decision, "flight_information")
+                self.assertEqual(result.flight_info.flight_number, "KQ100")
+
+    def test_other_airline_status_lookup_is_declined_without_oag_request(self):
+        provider = response(500, {})
+        service = self.service(provider)
+        result = service.answer_if_flight_query(
+            GroundedAnswerRequest(
+                question="What is the status of BA100 today?",
+                language="en",
+            ),
+        )
+        self.assertEqual(result.decision, "fallback")
+        self.assertIn("Kenya Airways flights (KQ) only", result.answer)
 
     def test_missing_date_returns_clarification_without_provider_call(self):
         service = self.service(response(500, {}))

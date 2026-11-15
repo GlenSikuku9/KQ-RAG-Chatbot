@@ -27,6 +27,7 @@ import {
   subscribeToSupportRequest,
 } from "../../supportRealtime";
 import "../styles/HumanSupport.css";
+import { safeOfficialKenyaAirwaysUrl } from "../../utils/safeUrl";
 
 
 function statusLabel(value) {
@@ -223,10 +224,14 @@ function SupportWorkspace({
                 </div>
                 {item.retrieved_chunks?.length > 0 && (
                   <div className="support-case-sources">
-                    {item.retrieved_chunks.map((source) => (
-                      source.source_url ? (
+                    {item.retrieved_chunks.map((source) => {
+                      const sourceUrl = safeOfficialKenyaAirwaysUrl(
+                        source.source_url,
+                      );
+
+                      return sourceUrl ? (
                         <a
-                          href={source.source_url}
+                          href={sourceUrl}
                           target="_blank"
                           rel="noopener noreferrer"
                           key={source.message_chunk_id}
@@ -237,8 +242,8 @@ function SupportWorkspace({
                         <span key={source.message_chunk_id}>
                           {source.citation_id} · {source.source_title}
                         </span>
-                      )
-                    ))}
+                      );
+                    })}
                   </div>
                 )}
               </article>
