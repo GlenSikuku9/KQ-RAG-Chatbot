@@ -39,6 +39,21 @@ class SequenceClient(FakeClient):
         return self.responses.pop(0)
 
 
+class RecordingClient(FakeClient):
+    """Capture request parameters while returning a mocked OAG response."""
+
+    def __init__(self, response, requests, **kwargs):
+        super().__init__(response=response, **kwargs)
+        self.requests = requests
+
+    def get(self, url, **kwargs):
+        self.requests.append({
+            "url": url,
+            **kwargs,
+        })
+        return self.response
+
+
 def response(status, body):
     return httpx.Response(
         status,
@@ -71,6 +86,7 @@ class OAGFlightServiceTests(unittest.TestCase):
 
     def setUp(self):
         OAGFlightService._cache.clear()
+        OAGFlightService._route_cache.clear()
 
     @staticmethod
     def flight_information(
@@ -367,6 +383,46 @@ class OAGFlightServiceTests(unittest.TestCase):
             timeout.lookup("KQ102", date(2026, 11, 10))
         self.assertEqual(caught.exception.status_code, 504)
 
+    def test_provider_validation_error_is_an_upstream_failure(self):
+        service = self.service(response(400, {
+            "title": "Invalid query parameters",
+            "status": 400,
+            "errors": {
+                "ArrivalAirport": ["Invalid filter combination"],
+            },
+            "traceId": "safe-provider-trace",
+        }))
+
+        with self.assertRaises(OAGFlightError) as caught:
+            service.lookup("KQ100", date(2026, 11, 10))
+
+        self.assertEqual(caught.exception.status_code, 502)
+        self.assertEqual(
+            caught.exception.code,
+            "invalid_provider_filters",
+        )
+
+    def test_route_provider_rejection_returns_clarification_not_502(self):
+        service = self.service(
+            response(400, {
+                "title": "Invalid query parameters",
+                "status": 400,
+            }),
+            oag_route_search_enabled=True,
+        )
+
+        result = service.answer_if_flight_query(
+            GroundedAnswerRequest(
+                question=(
+                    "KQ flights from JKIA to Johannesburg tomorrow"
+                ),
+                language="en",
+            ),
+        )
+
+        self.assertEqual(result.decision, "clarification_required")
+        self.assertIn("KQ flight number", result.answer)
+
     def test_missing_api_key_fails_without_network_access(self):
         service = OAGFlightService(Settings())
         with self.assertRaises(OAGFlightError) as caught:
@@ -443,6 +499,205 @@ class OAGFlightServiceTests(unittest.TestCase):
             attempts[0]["request_id"],
             attempts[1]["request_id"],
         )
+
+    @staticmethod
+    def route_record(number, departure, arrival, hour):
+        """Create a minimal real-contract OAG record for route tests."""
+
+        return {
+            "flightNumber": number,
+            "carrier": {"iata": "KQ"},
+            "departure": {
+                "airport": {"iata": departure},
+                "date": {"local": "2026-11-16"},
+                "time": {"local": f"{hour}:00:00"},
+            },
+            "arrival": {
+                "airport": {"iata": arrival},
+                "date": {"local": "2026-11-16"},
+                "time": {"local": "20:00:00"},
+            },
+            "statusDetails": [{"state": "Scheduled"}],
+        }
+
+    def test_destination_only_query_requests_departure_without_calling_oag(self):
+        requests = []
+        provider_response = response(200, {
+            "data": [self.route_record(100, "NBO", "LHR", "09")],
+        })
+        service = OAGFlightService(
+            Settings(
+                oag_api_key="test-key",
+                oag_route_search_enabled=True,
+            ),
+            client_factory=lambda **kwargs: RecordingClient(
+                provider_response,
+                requests,
+                **kwargs,
+            ),
+            sleeper=lambda _seconds: None,
+        )
+
+        result = service.answer_if_flight_query(
+            GroundedAnswerRequest(
+                question="Are there any KQ flights to London today?",
+                language="en",
+            ),
+        )
+
+        self.assertEqual(result.decision, "clarification_required")
+        self.assertIn("departing from", result.answer)
+        self.assertIn("London", result.answer)
+        self.assertEqual(requests, [])
+
+    def test_complete_route_uses_departure_local_date_filter(self):
+        requests = []
+        provider_response = response(200, {
+            "data": [self.route_record(760, "NBO", "JNB", "08")],
+        })
+        service = OAGFlightService(
+            Settings(
+                oag_api_key="test-key",
+                oag_route_search_enabled=True,
+            ),
+            client_factory=lambda **kwargs: RecordingClient(
+                provider_response,
+                requests,
+                **kwargs,
+            ),
+            sleeper=lambda _seconds: None,
+        )
+
+        service.answer_if_flight_query(
+            GroundedAnswerRequest(
+                question="KQ flights from Nairobi to Johannesburg today",
+                language="en",
+            ),
+        )
+
+        self.assertEqual(
+            requests[0]["params"]["DepartureDateTime"],
+            date.today().isoformat(),
+        )
+        self.assertNotIn(
+            "ArrivalDateTime",
+            requests[0]["params"],
+        )
+        self.assertEqual(requests[0]["params"]["DepartureAirport"], "NBO")
+        self.assertEqual(requests[0]["params"]["ArrivalAirport"], "JNB")
+
+    def test_route_query_returns_every_distinct_oag_match(self):
+        service = self.service(response(200, {
+            "data": [
+                self.route_record(760, "NBO", "JNB", "08"),
+                self.route_record(762, "NBO", "JNB", "18"),
+            ],
+        }), oag_route_search_enabled=True)
+
+        result = service.answer_if_flight_query(
+            GroundedAnswerRequest(
+                question="Show me KQ flights from Nairobi to Johannesburg today.",
+                language="en",
+            ),
+        )
+
+        self.assertIsNone(result.flight_info)
+        self.assertEqual(
+            [item.flight_number for item in result.flight_options],
+            ["KQ760", "KQ762"],
+        )
+        self.assertIn("2 matching Kenya Airways flights", result.answer)
+
+    def test_airport_codes_and_requested_status_are_applied(self):
+        delayed = self.route_record(762, "NBO", "JNB", "18")
+        delayed["statusDetails"] = [{"state": "Delayed"}]
+        service = self.service(response(200, {
+            "data": [
+                self.route_record(760, "NBO", "JNB", "08"),
+                delayed,
+            ],
+        }), oag_route_search_enabled=True)
+
+        result = service.answer_if_flight_query(
+            GroundedAnswerRequest(
+                question="Are there delayed KQ flights from NBO to JNB today?",
+                language="en",
+            ),
+        )
+
+        self.assertEqual(result.flight_info.flight_number, "KQ762")
+        self.assertEqual(result.flight_info.status, "Delayed")
+
+    def test_evening_follow_up_filters_cached_route_results(self):
+        service = self.service(response(200, {
+            "data": [
+                self.route_record(760, "NBO", "JNB", "08"),
+                self.route_record(762, "NBO", "JNB", "18"),
+            ],
+        }), oag_route_search_enabled=True)
+
+        result = service.answer_if_flight_query(
+            GroundedAnswerRequest(
+                question=(
+                    "Show me KQ flights from Nairobi to Johannesburg today. "
+                    "Follow-up: What about the evening flight?"
+                ),
+                language="en",
+            ),
+        )
+
+        self.assertEqual(result.flight_info.flight_number, "KQ762")
+
+    def test_route_missing_date_and_disabled_subscription_do_not_call_oag(self):
+        missing_date = self.service(response(500, {}), oag_route_search_enabled=True)
+        clarification = missing_date.answer_if_flight_query(
+            GroundedAnswerRequest(
+                question="Ndege ya KQ kwenda Johannesburg iko aje?",
+                language="sw",
+            ),
+        )
+        self.assertEqual(clarification.decision, "clarification_required")
+        self.assertIn("tarehe gani", clarification.answer)
+
+        disabled = self.service(response(500, {}))
+        limitation = disabled.answer_if_flight_query(
+            GroundedAnswerRequest(
+                question="KQ flights from Nairobi to London today",
+                language="en",
+            ),
+        )
+        self.assertEqual(limitation.decision, "clarification_required")
+        self.assertIn("not enabled", limitation.answer)
+
+    def test_no_route_matches_returns_flight_specific_message(self):
+        service = self.service(
+            response(200, {"data": []}),
+            oag_route_search_enabled=True,
+        )
+        result = service.answer_if_flight_query(
+            GroundedAnswerRequest(
+                question="Nipe status ya KQ kutoka Nairobi kwenda London leo",
+                language="mixed",
+            ),
+        )
+
+        self.assertEqual(result.decision, "flight_information")
+        self.assertIn("No Kenya Airways flight", result.answer)
+
+    def test_non_kq_route_is_declined_without_provider_request(self):
+        service = self.service(
+            response(500, {}),
+            oag_route_search_enabled=True,
+        )
+        result = service.answer_if_flight_query(
+            GroundedAnswerRequest(
+                question="Show me BA flights to London today",
+                language="en",
+            ),
+        )
+
+        self.assertEqual(result.decision, "fallback")
+        self.assertIn("Kenya Airways flights (KQ) only", result.answer)
 
 
 if __name__ == "__main__":

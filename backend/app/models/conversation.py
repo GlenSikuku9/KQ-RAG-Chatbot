@@ -92,6 +92,7 @@ class ConversationMessage(BaseModel):
     response_source: ResponseSource | None = None
     retrieved_chunks: list[MessageChunk] = Field(default_factory=list)
     flight_info: FlightInformation | None = None
+    flight_options: list[FlightInformation] = Field(default_factory=list)
 
     @field_serializer("sender_type", "response_source")
     def serialize_enums(self, value: SenderType | ResponseSource | None) -> str | None:

@@ -68,6 +68,72 @@ class ConversationContextTests(unittest.TestCase):
         self.assertIn("KQ101", changed_flight.resolved_question)
         self.assertNotIn("KQ100", changed_flight.resolved_question)
 
+    def test_route_follow_up_retains_date_and_replaces_destination(self) -> None:
+        context = [
+            customer(
+                "Show me KQ flights from Nairobi to Johannesburg tomorrow",
+            ),
+        ]
+
+        result = resolve_conversation_query(
+            "What about flights to London?",
+            context,
+        )
+
+        self.assertTrue(result.is_follow_up)
+        self.assertIn("from Nairobi to London", result.resolved_question)
+        self.assertIn("tomorrow", result.resolved_question)
+
+    def test_complete_route_does_not_inherit_an_old_flight_number(self) -> None:
+        result = resolve_conversation_query(
+            (
+                "What is the status of the flight from Nairobi to "
+                "Johannesburg tomorrow?"
+            ),
+            [
+                customer("What is the status of KQ100 tomorrow?"),
+            ],
+        )
+
+        self.assertFalse(result.is_follow_up)
+        self.assertNotIn("KQ100", result.resolved_question)
+        self.assertIn(
+            "from Nairobi to Johannesburg",
+            result.resolved_question,
+        )
+
+    def test_route_clarifications_retain_destination_and_date(self) -> None:
+        result = resolve_conversation_query(
+            "Nairobi",
+            [
+                customer(
+                    "What is the status of the flight to Johannesburg?",
+                ),
+                customer("tomorrow"),
+            ],
+        )
+
+        self.assertTrue(result.is_follow_up)
+        self.assertIn("from Nairobi", result.resolved_question)
+        self.assertIn("to Johannesburg", result.resolved_question)
+        self.assertIn("tomorrow", result.resolved_question)
+
+    def test_jkia_is_accepted_as_a_departure_clarification(self) -> None:
+        result = resolve_conversation_query(
+            "JKIA",
+            [
+                customer(
+                    "What is the status of the flight to Johannesburg?",
+                ),
+                customer("tomorrow"),
+            ],
+        )
+
+        self.assertTrue(result.is_follow_up)
+        self.assertIn("from JKIA", result.resolved_question)
+        self.assertIn("to Johannesburg", result.resolved_question)
+        self.assertIn("tomorrow", result.resolved_question)
+
     def test_assistant_text_is_not_used_as_the_retrieval_query(self) -> None:
         result = resolve_conversation_query(
             "How long does it take?",
