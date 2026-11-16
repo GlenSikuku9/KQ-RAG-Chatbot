@@ -280,6 +280,17 @@ function ChatMessage({ message }) {
       {!isPassenger && message.flight_info && (
         <FlightInformationCard initialInformation={message.flight_info} />
       )}
+      {!isPassenger && message.flight_options?.map((information) => (
+        <FlightInformationCard
+          key={[
+            information.flight_number,
+            information.scheduled_departure,
+            information.departure?.code,
+            information.arrival?.code,
+          ].join("-")}
+          initialInformation={information}
+        />
+      ))}
     </article>
   );
 }
@@ -1230,6 +1241,7 @@ export function PassengerChat({
               source_url: source.chunk.source_url,
             })),
             flight_info: generated.flight_info || null,
+            flight_options: generated.flight_options || [],
           },
         };
       }

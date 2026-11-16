@@ -14,6 +14,7 @@ import httpx
 from app.config import Settings, get_settings
 from app.models.flight import FlightAirport, FlightInformation
 from app.models.generation import GroundedAnswerRequest, GroundedAnswerResponse
+from app.services.airport_lookup import AirportSelection, extract_route
 from app.services.operational_logging import get_operational_logger
 
 
@@ -33,13 +34,14 @@ OTHER_AIRLINE_FLIGHT = re.compile(
     r"\b([A-Z][A-Z0-9])\s*-?\s*([0-9]{1,4}[A-Z]?)\b",
     re.IGNORECASE,
 )
+OTHER_AIRLINE_ROUTE = re.compile(r"\b([A-Z0-9]{2})\s+flights?\b")
 ISO_DATE = re.compile(r"\b(20[0-9]{2}-[01][0-9]-[0-3][0-9])\b")
 DISPLAY_DATE = re.compile(r"\b([0-3][0-9]-[01][0-9]-20[0-9]{2})\b")
 FLIGHT_INTENT = re.compile(
     r"\b(track|tracking|status|delayed|delay|landed|depart|departure|"
     r"arrive|arrival|in[- ]?flight|cancelled|canceled|schedule|time|"
     r"fuatilia|nifuatilie|iko wapi|imechelewa|itaondoka|inafika|"
-    r"imefika|ratiba|hali)\b",
+    r"imefika|ratiba|hali|flights?|ndege)\b",
     re.IGNORECASE,
 )
 POLICY_INTENT = re.compile(
@@ -47,8 +49,8 @@ POLICY_INTENT = re.compile(
     r"sera|marejesho|fidia)\b",
     re.IGNORECASE,
 )
-ROUTE_INTENT = re.compile(
-    r"\b(from|kutoka)\s+[a-z ]+\s+(?:to|hadi|kwenda)\s+[a-z ]+",
+TIME_WINDOW = re.compile(
+    r"\b(morning|asubuhi|afternoon|mchana|evening|jioni)\b",
     re.IGNORECASE,
 )
 
@@ -67,6 +69,7 @@ class OAGFlightService:
     """Validate, cache and map OAG responses without using an LLM."""
 
     _cache: dict[str, tuple[float, FlightInformation]] = {}
+    _route_cache: dict[str, tuple[float, list[FlightInformation]]] = {}
     _last_provider_request: dict[str, float] = {}
     _cache_lock = Lock()
 
@@ -103,20 +106,80 @@ class OAGFlightService:
         if POLICY_INTENT.search(question):
             return None
         unsupported_match = OTHER_AIRLINE_FLIGHT.search(question)
+        unsupported_route = OTHER_AIRLINE_ROUTE.search(question)
         if (
-            unsupported_match
-            and unsupported_match.group(1).upper() != "KQ"
-            and has_flight_intent
-        ):
+            (
+                unsupported_match
+                and unsupported_match.group(1).upper() != "KQ"
+            )
+            or (
+                unsupported_route
+                and unsupported_route.group(1).upper() != "KQ"
+            )
+        ) and has_flight_intent:
             return self._unsupported_airline(request)
         # A bare "flight 100" is interpreted as KQ only because this is the
         # Kenya Airways assistant and an operational flight intent is explicit.
         if match is None and has_flight_intent:
             match = BARE_FLIGHT_NUMBER.search(question)
-        if ROUTE_INTENT.search(question) and not match:
-            return self._route_clarification(request)
-        if not match or not has_flight_intent:
+        if not has_flight_intent:
             return None
+
+        # Route and destination searches use the same Flight Info v2 endpoint
+        # as numbered lookups. Extraction remains deterministic and therefore
+        # adds no model call, latency, or hallucinated airport information.
+        if match is None:
+            departure, arrival, route_wording = extract_route(question)
+            if not route_wording:
+                return None
+            if departure is None and arrival is None:
+                return self._location_clarification(request)
+
+            travel_date = self._travel_date(question)
+            if travel_date is None:
+                return self._route_date_clarification(
+                    request,
+                    departure,
+                    arrival,
+                )
+            # The current subscription rejects arrival-only Flight Info
+            # searches. Ask for the missing origin instead of forwarding a
+            # provider-invalid filter combination or guessing Nairobi.
+            if departure is None and arrival is not None:
+                return self._departure_clarification(
+                    request,
+                    arrival,
+                    travel_date,
+                )
+            if not self.settings.oag_route_search_enabled:
+                return self._route_subscription_limitation(request)
+
+            try:
+                options = self.lookup_route(
+                    travel_date,
+                    departure=departure,
+                    arrival=arrival,
+                )
+            except OAGFlightError as error:
+                # Some OAG subscriptions accept numbered-flight filters but
+                # reject route filters. This is a capability limitation, not a
+                # chatbot failure requiring a support ticket.
+                if error.code == "invalid_provider_filters":
+                    return self._route_provider_limitation(request)
+                raise self._localized_error(
+                    error,
+                    request.language or "unknown",
+                ) from error
+
+            options = self._filter_time_window(options, question)
+            options = self._filter_requested_status(options, question)
+            return self._route_answer(
+                request,
+                options,
+                departure,
+                arrival,
+                travel_date,
+            )
 
         flight_number = f"KQ{match.group(1).upper()}"
         travel_date = self._travel_date(question)
@@ -142,6 +205,7 @@ class OAGFlightService:
             generation_called=False,
             sources=[],
             flight_info=information,
+            flight_options=[],
         )
 
     @staticmethod
@@ -201,7 +265,20 @@ class OAGFlightService:
             )
 
         self._last_provider_request[cache_key] = monotonic()
-        payload = self._request(normalized, travel_date)
+        payload = self._request({
+            "CarrierCode": "KQ",
+            # OAG expects only the numeric part of the designator here.
+            "FlightNumber": re.match(
+                r"KQ([0-9]{1,4})",
+                normalized,
+            ).group(1),
+            "DepartureDateTime": travel_date.isoformat(),
+            "CodeType": "IATA",
+            "Content": "Status",
+            "FlightType": "Scheduled",
+            "Limit": "10",
+            "version": "v2",
+        })
         records = payload.get("data") if isinstance(payload, dict) else None
         if not isinstance(records, list):
             raise OAGFlightError(
@@ -231,18 +308,114 @@ class OAGFlightService:
             )
         return information
 
-    def _request(self, flight_number: str, travel_date: date) -> dict:
+    def lookup_route(
+        self,
+        travel_date: date,
+        *,
+        departure: AirportSelection | None = None,
+        arrival: AirportSelection | None = None,
+    ) -> list[FlightInformation]:
+        """Return every KQ flight matching supported airport/date filters."""
+
+        if departure is None and arrival is None:
+            raise OAGFlightError(
+                400,
+                "Enter a departure airport, destination, or route.",
+                "invalid_route",
+            )
+        if not self.settings.oag_api_key:
+            raise OAGFlightError(
+                503,
+                "Flight information is not configured. Please try Kenya Airways' official flight information channels.",
+                "configuration_missing",
+            )
+
+        departure_codes = ",".join(departure.codes) if departure else ""
+        arrival_codes = ",".join(arrival.codes) if arrival else ""
+        cache_key = ":".join((
+            "route",
+            travel_date.isoformat(),
+            departure_codes,
+            arrival_codes,
+        ))
+        cached = self._cached_route(cache_key)
+        if cached is not None:
+            return cached
+
         params = {
             "CarrierCode": "KQ",
-            # OAG expects only the numeric part of the designator here.
-            "FlightNumber": re.match(r"KQ([0-9]{1,4})", flight_number).group(1),
-            "DepartureDateTime": travel_date.isoformat(),
             "CodeType": "IATA",
             "Content": "Status",
             "FlightType": "Scheduled",
-            "Limit": "10",
+            # One bounded provider page avoids quota-heavy automatic paging.
+            "Limit": "100",
             "version": "v2",
         }
+        # OAG applies airport-local dates at the corresponding end of a flight.
+        # A destination-only enquiry therefore needs ArrivalDateTime; otherwise
+        # a passenger asking for tomorrow's arrivals can receive a rejected or
+        # semantically incorrect departure-date query.
+        date_filter = (
+            "ArrivalDateTime"
+            if departure is None and arrival is not None
+            else "DepartureDateTime"
+        )
+        params[date_filter] = travel_date.isoformat()
+        if departure_codes:
+            params["DepartureAirport"] = departure_codes
+        if arrival_codes:
+            params["ArrivalAirport"] = arrival_codes
+
+        self._last_provider_request[cache_key] = monotonic()
+        payload = self._request(params)
+        records = payload.get("data") if isinstance(payload, dict) else None
+        if not isinstance(records, list):
+            raise OAGFlightError(
+                502,
+                "OAG returned an unexpected flight-information response.",
+                "malformed_response",
+            )
+
+        information: list[FlightInformation] = []
+        seen: set[tuple[str, str | None, str | None, str | None]] = set()
+        for record in records:
+            if not isinstance(record, dict):
+                continue
+            carrier = record.get("carrier") or {}
+            carrier_code = str(carrier.get("iata") or "").upper()
+            number = str(record.get("flightNumber") or "").strip()
+            if carrier_code not in {"", "KQ"} or not number:
+                continue
+
+            mapped = self._map(
+                record,
+                f"KQ{number}",
+                travel_date,
+            )
+            identity = (
+                mapped.flight_number,
+                mapped.departure.code,
+                mapped.arrival.code,
+                mapped.scheduled_departure,
+            )
+            if identity not in seen:
+                seen.add(identity)
+                information.append(mapped)
+
+        information.sort(
+            key=lambda item: (
+                item.scheduled_departure or "",
+                item.flight_number,
+            ),
+        )
+        with self._cache_lock:
+            self._route_cache[cache_key] = (
+                monotonic() + self.settings.oag_status_cache_seconds,
+                information,
+            )
+        return information
+
+    def _request(self, params: dict[str, str]) -> dict:
         headers = {
             OAG_SUBSCRIPTION_HEADER: self.settings.oag_api_key,
         }
@@ -312,12 +485,42 @@ class OAGFlightService:
             if response.status_code >= 500 and attempt == 0:
                 self.sleeper(0.5)
                 continue
+            if response.status_code == 400:
+                logger.warning(
+                    "OAG rejected validated flight filters: %s",
+                    self._provider_error_summary(response),
+                )
+                raise OAGFlightError(
+                    502,
+                    "OAG rejected the flight-search filters. Please try a specific departure airport or KQ flight number.",
+                    "invalid_provider_filters",
+                )
             raise OAGFlightError(
                 503 if response.status_code >= 500 else 400,
                 "OAG could not complete the flight-information request.",
                 "provider_error",
             )
         raise OAGFlightError(503, "Flight information is unavailable.", "provider_error")
+
+    @staticmethod
+    def _provider_error_summary(response: httpx.Response) -> str:
+        """Log OAG validation fields without headers, credentials, or request URLs."""
+
+        try:
+            payload = response.json()
+        except ValueError:
+            return f"HTTP {response.status_code}; unreadable response body"
+        if not isinstance(payload, dict):
+            return f"HTTP {response.status_code}; unexpected response body"
+
+        safe = {
+            key: payload.get(key)
+            for key in ("title", "status", "errors", "type", "traceId")
+            if payload.get(key) is not None
+        }
+        # Provider messages can be unexpectedly verbose. Keep logs useful and
+        # bounded while never including outbound headers or the subscription key.
+        return f"HTTP {response.status_code}; {str(safe)[:1000]}"
 
     def _record_attempt(
         self,
@@ -350,6 +553,22 @@ class OAGFlightService:
                 self._cache.pop(key, None)
                 return None
             return information.model_copy(update={"cached": True})
+
+    def _cached_route(self, key: str) -> list[FlightInformation] | None:
+        """Return copied route results so cache metadata cannot mutate storage."""
+
+        with self._cache_lock:
+            cached = self._route_cache.get(key)
+            if cached is None:
+                return None
+            expires_at, information = cached
+            if expires_at <= monotonic():
+                self._route_cache.pop(key, None)
+                return None
+            return [
+                item.model_copy(update={"cached": True})
+                for item in information
+            ]
 
     @staticmethod
     def normalize_flight_number(value: str) -> str:
@@ -839,21 +1058,287 @@ class OAGFlightService:
             sources=[],
         )
 
-    def _route_clarification(self, request: GroundedAnswerRequest) -> GroundedAnswerResponse:
+    @staticmethod
+    def _location_clarification(
+        request: GroundedAnswerRequest,
+    ) -> GroundedAnswerResponse:
+        """Ask only for a location that the deterministic catalogue could not resolve."""
+
         language = request.language or "unknown"
-        if self.settings.oag_route_search_enabled:
-            message = "Please provide the three-letter departure and arrival airport codes and travel date."
-        else:
-            message = (
-                "Route schedule search is not enabled for this OAG subscription. "
-                "Please provide a KQ flight number and date."
-            )
+        message = {
+            "sw": "Tafadhali taja mji au msimbo wa uwanja wa ndege wa kuondoka na unakoenda.",
+            "mixed": "Please taja departure na destination city au airport code.",
+        }.get(
+            language,
+            "Please provide the departure or destination city, or its three-letter airport code.",
+        )
         return GroundedAnswerResponse(
             answer=message,
             language=language,
             decision="clarification_required",
             generation_called=False,
             sources=[],
+        )
+
+    @staticmethod
+    def _route_date_clarification(
+        request: GroundedAnswerRequest,
+        departure: AirportSelection | None,
+        arrival: AirportSelection | None,
+    ) -> GroundedAnswerResponse:
+        """Retain recognized locations and request only the missing date."""
+
+        language = request.language or "unknown"
+        route = " to ".join(
+            selection.label
+            for selection in (departure, arrival)
+            if selection is not None
+        )
+        message = {
+            "sw": f"Ungependa kuangalia ndege za {route} kwa tarehe gani? Taja leo, kesho, au DD-MM-YYYY.",
+            "mixed": f"Unataka KQ flights za {route} tarehe gani? Use leo, kesho, or DD-MM-YYYY.",
+        }.get(
+            language,
+            f"Which travel date should I use for Kenya Airways flights {route}? Enter today, tomorrow, or DD-MM-YYYY.",
+        )
+        return GroundedAnswerResponse(
+            answer=message,
+            language=language,
+            decision="clarification_required",
+            generation_called=False,
+            sources=[],
+        )
+
+    @staticmethod
+    def _route_subscription_limitation(
+        request: GroundedAnswerRequest,
+    ) -> GroundedAnswerResponse:
+        """Do not spend quota until route search is confirmed for this key."""
+
+        language = request.language or "unknown"
+        message = {
+            "sw": (
+                "Utafutaji wa ndege kwa njia au unakoenda haujawezeshwa kwa usajili huu wa OAG. "
+                "Tafadhali taja nambari ya ndege ya KQ na tarehe."
+            ),
+            "mixed": (
+                "Route search haija-enable kwa OAG subscription hii. "
+                "Please provide KQ flight number na date."
+            ),
+        }.get(
+            language,
+            "Route and destination search is not enabled for this OAG subscription. Please provide a KQ flight number and date.",
+        )
+        return GroundedAnswerResponse(
+            answer=message,
+            language=language,
+            decision="clarification_required",
+            generation_called=False,
+            sources=[],
+        )
+
+    @staticmethod
+    def _route_provider_limitation(
+        request: GroundedAnswerRequest,
+    ) -> GroundedAnswerResponse:
+        """Explain a provider route-filter rejection without returning 502."""
+
+        language = request.language or "unknown"
+        message = {
+            "sw": (
+                "OAG haikuruhusu utafutaji huu kwa njia ya safari. "
+                "Tafadhali taja nambari ya ndege ya KQ, kwa mfano KQ760, "
+                "pamoja na tarehe."
+            ),
+            "mixed": (
+                "OAG haija-allow route search hii. Please provide a KQ "
+                "flight number, for example KQ760, pamoja na date."
+            ),
+        }.get(
+            language,
+            (
+                "OAG did not allow this route search for the current "
+                "subscription. Please provide a KQ flight number, for "
+                "example KQ760, and the travel date."
+            ),
+        )
+        return GroundedAnswerResponse(
+            answer=message,
+            language=language,
+            decision="clarification_required",
+            generation_called=False,
+            sources=[],
+        )
+
+    @staticmethod
+    def _departure_clarification(
+        request: GroundedAnswerRequest,
+        arrival: AirportSelection,
+        travel_date: date,
+    ) -> GroundedAnswerResponse:
+        """Ask for the origin required by this OAG subscription."""
+
+        language = request.language or "unknown"
+        display_date = travel_date.strftime("%d-%m-%Y")
+        message = {
+            "sw": (
+                f"Ndege ya kwenda {arrival.label} tarehe {display_date} "
+                "itaondoka mji au uwanja gani wa ndege?"
+            ),
+            "mixed": (
+                f"Flight ya kwenda {arrival.label} tarehe {display_date} "
+                "ina-depart from which city au airport?"
+            ),
+        }.get(
+            language,
+            (
+                f"Which city or airport is the flight to {arrival.label} "
+                f"departing from on {display_date}?"
+            ),
+        )
+        return GroundedAnswerResponse(
+            answer=message,
+            language=language,
+            decision="clarification_required",
+            generation_called=False,
+            sources=[],
+        )
+
+    @staticmethod
+    def _filter_time_window(
+        options: list[FlightInformation],
+        question: str,
+    ) -> list[FlightInformation]:
+        """Apply an explicit morning/afternoon/evening follow-up locally."""
+
+        match = TIME_WINDOW.search(question)
+        if match is None:
+            return options
+        requested = match.group(1).lower()
+        window = {
+            "morning": (0, 12),
+            "asubuhi": (0, 12),
+            "afternoon": (12, 17),
+            "mchana": (12, 17),
+            "evening": (17, 24),
+            "jioni": (17, 24),
+        }[requested]
+
+        filtered: list[FlightInformation] = []
+        for option in options:
+            try:
+                hour = datetime.fromisoformat(
+                    option.scheduled_departure or "",
+                ).hour
+            except ValueError:
+                continue
+            if window[0] <= hour < window[1]:
+                filtered.append(option)
+        return filtered
+
+    @staticmethod
+    def _filter_requested_status(
+        options: list[FlightInformation],
+        question: str,
+    ) -> list[FlightInformation]:
+        """Filter only when the passenger explicitly names a flight state."""
+
+        requested: set[str] = set()
+        lowered = question.lower()
+        status_terms = {
+            "delayed": ("delayed", "imechelewa"),
+            "cancelled": ("cancelled", "canceled", "imefutwa"),
+            "landed": ("landed", "imetua"),
+            "inflight": ("in flight", "in-flight", "iko angani"),
+            "departed": ("departed", "imeondoka"),
+        }
+        for status_name, terms in status_terms.items():
+            if any(term in lowered for term in terms):
+                requested.add(status_name)
+        if not requested:
+            return options
+
+        return [
+            option
+            for option in options
+            if re.sub(
+                r"[^a-z]",
+                "",
+                (option.status or "").lower(),
+            ) in requested
+        ]
+
+    @staticmethod
+    def _route_answer(
+        request: GroundedAnswerRequest,
+        options: list[FlightInformation],
+        departure: AirportSelection | None,
+        arrival: AirportSelection | None,
+        travel_date: date,
+    ) -> GroundedAnswerResponse:
+        """Present one verified card or every distinct OAG match."""
+
+        language = request.language or "unknown"
+        route = " to ".join(
+            selection.label
+            for selection in (departure, arrival)
+            if selection is not None
+        )
+        display_date = travel_date.strftime("%d-%m-%Y")
+
+        if not options:
+            answer = {
+                "sw": f"Hakuna ndege ya Kenya Airways iliyopatikana kwa {route} tarehe {display_date}.",
+                "mixed": f"No Kenya Airways flight imepatikana kwa {route} tarehe {display_date}.",
+            }.get(
+                language,
+                f"No matching Kenya Airways flight was found for {route} on {display_date}.",
+            )
+            return GroundedAnswerResponse(
+                answer=answer,
+                language=language,
+                decision="flight_information",
+                generation_called=False,
+                sources=[],
+            )
+
+        if len(options) == 1:
+            information = options[0]
+            return GroundedAnswerResponse(
+                answer=OAGFlightService._format_answer(
+                    information,
+                    language,
+                ),
+                language=language,
+                decision="flight_information",
+                generation_called=False,
+                sources=[],
+                flight_info=information,
+            )
+
+        answer = {
+            "sw": (
+                f"Nimepata ndege {len(options)} za Kenya Airways kwa {route} tarehe {display_date}. "
+                "Chagua nambari ya ndege au muda unaotaka kutoka kwenye maelezo hapa chini."
+            ),
+            "mixed": (
+                f"Nimepata Kenya Airways flights {len(options)} kwa {route} tarehe {display_date}. "
+                "Choose flight number au departure time kutoka details hapa chini."
+            ),
+        }.get(
+            language,
+            (
+                f"I found {len(options)} matching Kenya Airways flights for {route} on {display_date}. "
+                "Choose the flight number or departure time you want from the details below."
+            ),
+        )
+        return GroundedAnswerResponse(
+            answer=answer,
+            language=language,
+            decision="flight_information",
+            generation_called=False,
+            sources=[],
+            flight_options=options,
         )
 
     @staticmethod

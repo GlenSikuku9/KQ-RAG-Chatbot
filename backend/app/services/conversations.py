@@ -282,6 +282,7 @@ class ConversationStore:
                 model_version=model.upstream_model if model else None,
                 response_source=source,
                 flight_info=generated.flight_info,
+                flight_options=generated.flight_options,
                 retrieved_chunks=[MessageChunk(
                     message_chunk_id=f"{chatbot_id}_{source_item.chunk.chunk_id}", message_id=chatbot_id,
                     chunk_id=source_item.chunk.chunk_id,

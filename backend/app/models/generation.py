@@ -66,6 +66,7 @@ class GroundedAnswerResponse(BaseModel):
     model: GenerationResponse | None = None
     sources: list[ContextSource]
     flight_info: FlightInformation | None = None
+    flight_options: list[FlightInformation] = Field(default_factory=list)
     retrieval_ms: float | None = Field(default=None, ge=0)
     context_build_ms: float | None = Field(default=None, ge=0)
     generation_ms: float | None = Field(default=None, ge=0)

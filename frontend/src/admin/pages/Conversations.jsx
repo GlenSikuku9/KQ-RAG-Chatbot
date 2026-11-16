@@ -482,6 +482,18 @@ function ConversationModal({ detail, onClose }) {
                   allowRefresh={false}
                 />
               )}
+              {message.sender_type === "chatbot" && message.flight_options?.map((information) => (
+                <FlightInformationCard
+                  key={[
+                    information.flight_number,
+                    information.scheduled_departure,
+                    information.departure?.code,
+                    information.arrival?.code,
+                  ].join("-")}
+                  initialInformation={information}
+                  allowRefresh={false}
+                />
+              ))}
               {message.model_id && (
                 <small className="admin-message-model">
                   Model: {message.model_id}
