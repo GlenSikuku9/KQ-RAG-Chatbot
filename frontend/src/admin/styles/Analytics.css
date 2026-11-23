@@ -103,17 +103,6 @@
   font-weight: 650;
 }
 
-.rag-metric-kind {
-  padding: 0.12rem 0.38rem;
-  border-radius: 999px;
-  color: #102f70;
-  background: #eaf2fc;
-  font-size: 0.62rem;
-  font-style: normal;
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
-}
-
 .rag-metric-card strong {
   color: var(--admin-navy);
   font-size: 1.3rem;

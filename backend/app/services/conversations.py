@@ -528,6 +528,9 @@ class ConversationService:
                     logger.warning("Could not persist the failed OAG lookup event.")
             raise
 
+        # Response-time analytics stop when the answer is ready. Firestore
+        # persistence is timed separately and must not inflate model latency.
+        response_duration_ms = (perf_counter() - started) * 1000
         persistence_started = perf_counter()
         try:
             result = (
@@ -575,14 +578,14 @@ class ConversationService:
             if generated.decision == "flight_information":
                 self.operational_logger.flight_lookup(
                     succeeded=True,
-                    duration_ms=(perf_counter() - started) * 1000,
+                    duration_ms=response_duration_ms,
                     request_id=request_id,
                     conversation_id=result.conversation.conversation_id,
                 )
             else:
                 self.operational_logger.completed(
                     generated,
-                    (perf_counter() - started) * 1000,
+                    response_duration_ms,
                     request_id=request_id,
                     conversation_id=result.conversation.conversation_id,
                     persistence_ms=round(persistence_ms, 3),

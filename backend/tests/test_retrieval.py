@@ -106,8 +106,8 @@ class RetrievalTests(unittest.TestCase):
         self.index.search_hybrid.assert_called_once_with(
             "Economy baggage allowance",
             1,
-            dense_candidates=20,
-            lexical_candidates=20,
+            dense_candidates=40,
+            lexical_candidates=40,
             rrf_k=self.settings.hybrid_rrf_k,
         )
         self.assertEqual(result.ranking_method, "hybrid_rrf")

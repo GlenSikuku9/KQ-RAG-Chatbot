@@ -1,1 +1,51 @@
 /* Models page-specific styles. Shared dashboard rules live in AdminDashboard.css. */
+
+.model-test-answer {
+  display: grid;
+  min-width: 0;
+  gap: 0.65rem;
+}
+
+.model-test-answer .formatted-answer {
+  line-height: 1.6;
+}
+
+/* Keep generated comparison tables readable inside the model-test panel. */
+.model-test-answer .formatted-answer-table-wrap {
+  max-width: 100%;
+  overflow-x: auto;
+  border: 1px solid var(--admin-border, #d7e0eb);
+  border-radius: 0.6rem;
+  background: #ffffff;
+  -webkit-overflow-scrolling: touch;
+}
+
+.model-test-answer table {
+  width: 100%;
+  min-width: 32rem;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.model-test-answer th,
+.model-test-answer td {
+  padding: 0.65rem 0.75rem;
+  border-right: 1px solid var(--admin-border, #d7e0eb);
+  border-bottom: 1px solid var(--admin-border, #d7e0eb);
+  text-align: left;
+  vertical-align: top;
+}
+
+.model-test-answer th {
+  color: var(--admin-navy, #092c68);
+  background: #eef4fb;
+  font-weight: 700;
+}
+
+.model-test-answer tr > :last-child {
+  border-right: 0;
+}
+
+.model-test-answer tbody tr:last-child td {
+  border-bottom: 0;
+}

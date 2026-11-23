@@ -17,16 +17,15 @@ import {
   savePassengerTheme,
 } from "../../api";
 import {
-  formatDate,
   languageLabel,
-  metricValue,
   modelDisplayName,
   readableEventName,
 } from "../utils";
 import { AdminNotice } from "../components/AdminNotice";
+import { FormattedAnswer } from "../../components/FormattedAnswer";
 import "../styles/Models.css";
 
-function ModelManagement({ user, models, evaluations, onChanged }) {
+function ModelManagement({ user, models, onChanged }) {
   const [prompt, setPrompt] = useState("");
   const [selectedModel, setSelectedModel] = useState("");
   const [testResult, setTestResult] = useState(null);
@@ -120,6 +119,14 @@ function ModelManagement({ user, models, evaluations, onChanged }) {
           >
             {testResult?.loading ? "Testing model..." : "Test model"}
           </button>
+          <button
+            className="button secondary"
+            disabled={!testResult || testResult.loading}
+            onClick={() => setTestResult(null)}
+            type="button"
+          >
+            Clear response
+          </button>
         </div>
         {testResult && !testResult.loading && (
           <div
@@ -142,9 +149,9 @@ function ModelManagement({ user, models, evaluations, onChanged }) {
                 onDismiss={() => setTestResult(null)}
               />
             ) : (
-              <div>
+              <div className="model-test-answer">
                 <strong>Generated response</strong>
-                <p>{testResult.text}</p>
+                <FormattedAnswer text={testResult.text} />
               </div>
             )}
           </div>
@@ -233,56 +240,6 @@ function ModelManagement({ user, models, evaluations, onChanged }) {
         ))}
       </div>
 
-      <section className="admin-table-card evaluation-card">
-        <div className="admin-card-heading">
-          <h2>Evaluation comparison</h2>
-        </div>
-        {evaluations.length ? (
-          <div className="admin-table-scroll">
-            <table className="admin-table">
-              <thead>
-                <tr>
-                  <th>Model</th>
-                  <th>Language</th>
-                  <th>Faithfulness</th>
-                  <th>Answer relevance</th>
-                  <th>Context precision</th>
-                  <th>Context recall</th>
-                  <th>Sample</th>
-                  <th>Run</th>
-                </tr>
-              </thead>
-              <tbody>
-                {evaluations.map((item) => (
-                  <tr key={`${item.run_id}-${item.model_id}-${item.language}`}>
-                    <td>{modelDisplayName(item.model_id)}</td>
-                    <td>{languageLabel(item.language)}</td>
-                    <td>{metricValue(item.faithfulness)}</td>
-                    <td>{metricValue(item.answer_relevance)}</td>
-                    <td>{metricValue(item.context_precision)}</td>
-                    <td>{metricValue(item.context_recall)}</td>
-                    <td>{item.sample_size}</td>
-                    <td>
-                      <small>
-                        {item.dataset_id}
-                        <br />
-                        {formatDate(item.evaluated_at)}
-                      </small>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        ) : (
-          <div className="admin-empty-state evaluation-empty">
-            <h3>No evaluation results yet</h3>
-            <p>
-              Persist a real evaluation run before comparing quality metrics.
-            </p>
-          </div>
-        )}
-      </section>
     </div>
   );
 }

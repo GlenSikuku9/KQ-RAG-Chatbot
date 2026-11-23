@@ -7,6 +7,13 @@ function normalizeAnswer(text) {
     .replace(/[\u200B\u200C\u200D\uFEFF]/g, "")
     .replace(/[\u00A0\u202F]/g, " ")
     .replace(/\\\|/g, "|")
+    // Some providers return valid Markdown blocks on one line. Restore only
+    // unambiguous block boundaries so headings, lists and tables remain safe.
+    .replace(/\s+---\s+/g, "\n\n")
+    .replace(/\s+(?=#{1,3}\s)/g, "\n\n")
+    .replace(/\|\s+\|(?=[^|\n]+\|)/g, "|\n|")
+    .replace(/\|\s+(?=\*\*[^|\n]+(?::\*\*|\*\*:))/g, "|\n\n")
+    .replace(/\s+(?=(?:[-*]|\d+\.)\s+\*\*)/g, "\n")
     .replace(/(^\s*\|.*\|\s*$)\n\s*\n(?=\s*\|)/gm, "$1\n");
 }
 
@@ -186,7 +193,13 @@ export function FormattedAnswer({ text }) {
       {blocks.map((block, index) => {
         if (block.type === "table") {
           return (
-            <div className="formatted-answer-table-wrap" key={`table-${index}`}>
+            <div
+              className="formatted-answer-table-wrap"
+              key={`table-${index}`}
+              role="region"
+              aria-label="Response table"
+              tabIndex="0"
+            >
               <table>
                 <thead>
                   <tr>

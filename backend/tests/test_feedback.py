@@ -133,6 +133,29 @@ class OperationalLoggingTests(unittest.TestCase):
             service.send(AuthenticatedUser(uid="passenger"), "conversation", Mock())
         events.failed.assert_called_once()
 
+    def test_successful_response_duration_excludes_persistence(self):
+        store, answers, events = Mock(), Mock(), Mock()
+        generated = Mock(generation_called=True, decision="context_available")
+        answers.answer.return_value = generated
+        service = ConversationService(store, answers, events)
+
+        # The answer is ready at two seconds; saving then takes five seconds.
+        with patch(
+            "app.services.conversations.perf_counter",
+            side_effect=[0.0, 2.0, 2.0, 7.0],
+        ):
+            service.send(
+                AuthenticatedUser(uid="passenger"),
+                "conversation",
+                Mock(),
+            )
+
+        self.assertEqual(events.completed.call_args.args[1], 2000.0)
+        self.assertEqual(
+            events.completed.call_args.kwargs["persistence_ms"],
+            5000.0,
+        )
+
     def test_failed_event_records_model_stage_and_sanitized_diagnostics(self):
         client = MemoryClient()
         logger = OperationalLogger(client)

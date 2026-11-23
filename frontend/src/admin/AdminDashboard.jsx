@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from "react";
 import {
   adminAnalytics,
   adminConversation,
-  adminEvaluations,
   adminLogs,
   adminModels,
   adminUploadDocument,
@@ -52,7 +51,6 @@ export function AdminDashboard({ user, profile, onSignOut }) {
   const [periodDays, setPeriodDays] = useState(30);
   const [theme, setTheme] = useState(null);
   const [models, setModels] = useState([]);
-  const [evaluations, setEvaluations] = useState([]);
   const [logs, setLogs] = useState([]);
   const [tableRevision, setTableRevision] = useState(0);
   const [pageRevisions, setPageRevisions] = useState({});
@@ -70,10 +68,7 @@ export function AdminDashboard({ user, profile, onSignOut }) {
     if (targetPage === "Overview" || targetPage === "Analytics")
       setAnalytics(data);
     if (targetPage === "Settings") setTheme(data);
-    if (targetPage === "Models") {
-      setModels(data.models);
-      setEvaluations(data.evaluations);
-    }
+    if (targetPage === "Models") setModels(data);
     if (targetPage === "Logs") setLogs(data);
   }
   async function fetchPageData(targetPage) {
@@ -89,14 +84,7 @@ export function AdminDashboard({ user, profile, onSignOut }) {
     if (targetPage === "Overview" || targetPage === "Analytics")
       return adminAnalytics(user, periodDays);
     if (targetPage === "Settings") return getPassengerThemeForAdmin(user);
-    if (targetPage === "Models") {
-      // These resources are independent, so retain concurrent loading.
-      const [nextModels, nextEvaluations] = await Promise.all([
-        adminModels(user),
-        adminEvaluations(user),
-      ]);
-      return { models: nextModels, evaluations: nextEvaluations };
-    }
+    if (targetPage === "Models") return adminModels(user);
     if (targetPage === "Logs") return adminLogs(user);
     return null;
   }
@@ -215,7 +203,7 @@ export function AdminDashboard({ user, profile, onSignOut }) {
         setNotice({ type: "success", text: message });
       },
     },
-    Models: { user, models, evaluations, onChanged: () => reload(true) },
+    Models: { user, models, onChanged: () => reload(true) },
     Logs: {
       logs,
       selectedLogId,

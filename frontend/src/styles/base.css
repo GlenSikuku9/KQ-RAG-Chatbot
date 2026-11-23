@@ -620,36 +620,49 @@ a {
   padding-left: 0.15rem;
 }
 
-/* Wide policy comparisons scroll within the message instead of squeezing it. */
-.formatted-answer-table-wrap {
+/* Keep wide AI-response tables readable without widening the passenger chat. */
+.chat-window-wrap .assistant .formatted-answer-table-wrap {
   max-width: 100%;
   overflow-x: auto;
-  border: 1px solid var(--border);
+  border: 1px solid var(--passenger-border, #dce4ef);
   border-radius: 0.65rem;
+  -webkit-overflow-scrolling: touch;
 }
 
-.formatted-answer table {
+.chat-window-wrap .assistant .formatted-answer-table-wrap:focus-visible {
+  outline: 2px solid var(--passenger-primary, #102f70);
+  outline-offset: 2px;
+}
+
+.chat-window-wrap .assistant .formatted-answer table {
   width: 100%;
   min-width: 32rem;
-  border-collapse: collapse;
-  background: #fff;
+  border-collapse: separate;
+  border-spacing: 0;
+  color: var(--passenger-text, #172033);
+  background: var(--passenger-panel, #ffffff);
 }
 
-.formatted-answer th,
-.formatted-answer td {
+.chat-window-wrap .assistant .formatted-answer th,
+.chat-window-wrap .assistant .formatted-answer td {
   padding: 0.65rem 0.75rem;
-  border-bottom: 1px solid var(--border);
+  border-right: 1px solid var(--passenger-border, #dce4ef);
+  border-bottom: 1px solid var(--passenger-border, #dce4ef);
   text-align: left;
   vertical-align: top;
 }
 
-.formatted-answer th {
-  color: var(--navy);
-  background: #f3f6fa;
+.chat-window-wrap .assistant .formatted-answer th {
+  color: var(--passenger-primary, #102f70);
+  background: var(--passenger-assistant-message, #f3f6fa);
   font-weight: 700;
 }
 
-.formatted-answer tbody tr:last-child td {
+.chat-window-wrap .assistant .formatted-answer tr > :last-child {
+  border-right: 0;
+}
+
+.chat-window-wrap .assistant .formatted-answer tbody tr:last-child td {
   border-bottom: 0;
 }
 
@@ -1427,12 +1440,10 @@ a {
 .model-card h2 { margin: 0; color: #092c68; font-size: 1rem; overflow-wrap: anywhere; }
 .model-card p { margin: 0; color: var(--muted); line-height: 1.45; }
 .model-card-heading { display: flex; align-items: start; justify-content: space-between; gap: 0.5rem; }
-.evaluation-card { margin-top: 1rem; padding: 1.25rem; }
 .model-test-panel { margin-bottom: 1rem; }
 .model-test-panel textarea { width: 100%; min-height: 5rem; padding: 0.75rem; border: 1px solid var(--line); border-radius: 0.45rem; resize: vertical; }
 .model-test-buttons { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.6rem; }
 .model-test-result { margin-top: 0.75rem; padding: 0.75rem; border-radius: 0.45rem; background: #f1f5f9; line-height: 1.55; }
-.evaluation-card h2 { margin-top: 0; color: #092c68; font-size: 1.05rem; }
 @media (max-width: 900px) { .admin-metric-grid, .admin-analytics-grid, .admin-overview-lower, .model-card-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 760px) { .admin-shell { grid-template-columns: 1fr; } .admin-sidebar { min-height: auto; } .admin-sidebar-note { margin-top: 1rem; } .admin-header { align-items: start; flex-direction: column; } .admin-metric-grid, .admin-analytics-grid, .admin-overview-lower, .model-card-grid { grid-template-columns: 1fr; } }
 @media (max-width: 560px) { .language-pie-layout { grid-template-columns: 1fr; justify-items: center; } .language-pie-key { width: 100%; } }
@@ -3411,7 +3422,6 @@ a {
 }
 
 .admin-analytics-card h2,
-.evaluation-card h2,
 .settings-intro h2 {
   color: var(--admin-navy);
 }
@@ -3631,28 +3641,10 @@ a {
   background: #f8fafc;
 }
 
-.evaluation-empty,
 .admin-empty-state {
   padding: 2rem;
   color: var(--admin-muted);
   text-align: center;
-}
-
-.evaluation-empty > span {
-  display: grid;
-  width: 3rem;
-  height: 3rem;
-  margin: 0 auto 0.75rem;
-  place-items: center;
-  border-radius: 50%;
-  color: var(--admin-navy);
-  background: #edf3fb;
-  font-size: 1.4rem;
-}
-
-.evaluation-empty h3 {
-  margin: 0;
-  color: var(--admin-navy);
 }
 
 .theme-settings {
