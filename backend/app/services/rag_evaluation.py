@@ -1,4 +1,4 @@
-"""Read retrieval evaluations and aggregate live RAG operations.
+"""Read fallback evaluations and aggregate live RAG operations.
 
 Offline evaluation is intentionally separate from passenger requests. This
 module never calls a generator, retrieval model, or external evaluation API.
@@ -34,33 +34,6 @@ def _metric(
         status=status,
         method=method,
     )
-
-
-def _weighted(
-    records: list[dict],
-    field: str,
-    count_field: str = "sample_size",
-) -> tuple[float | None, int]:
-    """Combine language records using their evaluated enquiry counts."""
-
-    usable = [
-        item
-        for item in records
-        if item.get(field) is not None
-        and int(item.get(count_field, item.get("sample_size", 0))) > 0
-    ]
-    count = sum(
-        int(item.get(count_field, item.get("sample_size", 0)))
-        for item in usable
-    )
-    if not count:
-        return None, 0
-    value = sum(
-        float(item[field])
-        * int(item.get(count_field, item.get("sample_size", 0)))
-        for item in usable
-    ) / count
-    return round(value, 6), count
 
 
 def aggregate_rag_operations(
@@ -136,16 +109,6 @@ def evaluation_metrics(
     started = utc_now() - timedelta(days=period_days)
     client = get_firestore_client()
     with firestore_operation():
-        retrieval_snapshots = list(
-            client.collection("retrieval_evaluations").stream(
-                timeout=FIRESTORE_READ_TIMEOUT,
-            )
-        )
-        model_snapshots = list(
-            client.collection("model_evaluations").stream(
-                timeout=FIRESTORE_READ_TIMEOUT,
-            )
-        )
         context_snapshots = list(
             client.collection("context_evaluations").stream(
                 timeout=FIRESTORE_READ_TIMEOUT,
@@ -157,38 +120,19 @@ def evaluation_metrics(
             )
         )
 
-    retrieval_records = _records_in_period(retrieval_snapshots, started)
-    model_records = _records_in_period(model_snapshots, started)
     context_records = _records_in_period(context_snapshots, started)
-    available_models = sorted(
-        {
-            str(item["model_id"])
-            for item in model_records
-            if item.get("model_id")
-        }
-    )
     available_languages = sorted(
         {
             str(item["language"])
-            for item in (
-                retrieval_records
-                + model_records
-                + context_records
-            )
+            for item in context_records
             if item.get("language") and item.get("language") != "all"
         }
     )
 
-    retrieval = _latest_retrieval(retrieval_records, language)
-    response_records = _latest_model_run(model_records, model_id, language)
     context_record = _latest_context(context_records, language)
     evaluated_times = [
         item.get("evaluated_at")
-        for item in (
-            ([retrieval] if retrieval else [])
-            + ([context_record] if context_record else [])
-            + response_records
-        )
+        for item in ([context_record] if context_record else [])
         if isinstance(item.get("evaluated_at"), datetime)
     ]
 
@@ -197,77 +141,25 @@ def evaluation_metrics(
         event = OperationalEvent.model_validate(snapshot.to_dict())
         if event.occurred_at >= started:
             events.append(event)
+    available_models = sorted(
+        {str(event.model_id) for event in events if event.model_id}
+    )
 
-    retrieval_count = int((retrieval or {}).get("sample_size", 0))
     if context_record:
-        context_precision = context_record.get("context_precision")
-        context_recall = context_record.get("context_recall")
         fallback_accuracy = context_record.get("fallback_accuracy")
-        context_precision_count = int(
-            context_record.get("context_sample_size", 0),
-        )
-        context_recall_count = context_precision_count
         fallback_count = int(
             context_record.get("fallback_sample_size", 0),
         )
     else:
-        # Compatibility for runs persisted before unique context records were
-        # introduced. Deduplicate identical model-independent language rows.
-        unique_context = _unique_context_records(response_records)
-        context_precision, context_precision_count = _weighted(
-            unique_context,
-            "context_precision",
-            "context_sample_size",
-        )
-        context_recall, context_recall_count = _weighted(
-            unique_context,
-            "context_recall",
-            "context_sample_size",
-        )
-        fallback_accuracy, fallback_count = _weighted(
-            unique_context,
-            "fallback_accuracy",
-            "fallback_sample_size",
-        )
+        fallback_accuracy, fallback_count = None, 0
 
-    document_metrics = {
-        "document_source_precision": _metric(
-            context_precision,
-            context_precision_count,
-            "custom_document_source_overlap_unique_questions",
-        ),
-        "document_source_recall": _metric(
-            context_recall,
-            context_recall_count,
-            "custom_document_source_overlap_unique_questions",
-        ),
-    }
     return RAGEvaluationMetrics(
         period_days=period_days,
         model_id=model_id,
         language=language,
-        retrieval_k=(retrieval or {}).get("top_k"),
         evaluated_at=max(evaluated_times) if evaluated_times else None,
         available_models=available_models,
         available_languages=available_languages,
-        retrieval={
-            "precision_at_k": _metric(
-                (retrieval or {}).get("precision_at_k"),
-                retrieval_count,
-                "labelled_relevant_chunks",
-            ),
-            "recall_at_k": _metric(
-                (retrieval or {}).get("recall_at_k"),
-                retrieval_count,
-                "labelled_relevant_chunks",
-            ),
-            "mrr_at_k": _metric(
-                (retrieval or {}).get("mrr_at_k"),
-                retrieval_count,
-                "first_labelled_relevant_chunk_rank",
-            ),
-        },
-        document_retrieval=document_metrics,
         fallback={
             "fallback_accuracy": _metric(
                 fallback_accuracy,
@@ -276,16 +168,6 @@ def evaluation_metrics(
             ),
         },
         operational=aggregate_rag_operations(events, model_id),
-    )
-
-
-def _latest_retrieval(records: list[dict], language: str) -> dict | None:
-    matches = [item for item in records if item.get("language") == language]
-    return max(
-        matches,
-        key=lambda item: item.get("evaluated_at")
-        or datetime.min.replace(tzinfo=timezone.utc),
-        default=None,
     )
 
 
@@ -301,21 +183,6 @@ def _latest_context(records: list[dict], language: str) -> dict | None:
     )
 
 
-def _unique_context_records(records: list[dict]) -> list[dict]:
-    """Avoid tripling model-independent context results across AI models."""
-
-    unique = {}
-    for item in records:
-        key = (
-            item.get("run_id"),
-            item.get("language"),
-            item.get("dataset_version"),
-            item.get("knowledge_base_version"),
-        )
-        unique.setdefault(key, item)
-    return list(unique.values())
-
-
 def _records_in_period(snapshots: list, started: datetime) -> list[dict]:
     """Ignore malformed and out-of-period evaluation records safely."""
 
@@ -328,24 +195,3 @@ def _records_in_period(snapshots: list, started: datetime) -> list[dict]:
     return records
 
 
-def _latest_model_run(
-    records: list[dict],
-    model_id: str | None,
-    language: str,
-) -> list[dict]:
-    matches = [
-        item
-        for item in records
-        if model_id is None or item.get("model_id") == model_id
-    ]
-    if language != "all":
-        matches = [item for item in matches if item.get("language") == language]
-    if not matches:
-        return []
-    newest = max(
-        matches,
-        key=lambda item: item.get("evaluated_at")
-        or datetime.min.replace(tzinfo=timezone.utc),
-    )
-    run_id = newest.get("run_id")
-    return [item for item in matches if item.get("run_id") == run_id]

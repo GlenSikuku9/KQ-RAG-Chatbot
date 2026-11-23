@@ -22,7 +22,6 @@ from app.models.admin import (
     DefaultModelUpdate,
     DocumentContent,
     DocumentUpdate,
-    EvaluationResult,
     PassengerTheme,
     RAGEvaluationMetrics,
     UserDisplayNameUpdate,
@@ -207,11 +206,6 @@ def models(_: AuthenticatedUser = Depends(require_admin)):
 @router.put("/models/default", response_model=AdminModel)
 def default_model(payload: DefaultModelUpdate, admin: AuthenticatedUser = Depends(require_admin)):
     return service.set_default_model(admin, payload.model_id)
-
-
-@router.get("/evaluations", response_model=list[EvaluationResult])
-def evaluations(_: AuthenticatedUser = Depends(require_admin)):
-    return service.list_evaluations()
 
 
 @router.get("/logs", response_model=list[AdminLog])

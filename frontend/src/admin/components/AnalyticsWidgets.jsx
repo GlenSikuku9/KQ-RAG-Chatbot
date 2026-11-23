@@ -237,8 +237,6 @@ function RagEvaluationPanel({
   onLanguageChange,
   onModelChange,
 }) {
-  const documentMetrics = data?.document_retrieval;
-
   return (
     <section
       className="rag-evaluation-panel"
@@ -248,7 +246,7 @@ function RagEvaluationPanel({
         <div>
           <h2 id="rag-evaluation-title">RAG evaluation</h2>
           <p>
-            Labelled offline policy evaluation and live RAG operations only.
+            Labelled fallback evaluation and live RAG operations only.
             OAG flight responses are excluded.
           </p>
         </div>
@@ -296,55 +294,6 @@ function RagEvaluationPanel({
       {!loading && !error && data && (
         <div className="rag-evaluation-sections">
           <RagMetricSection
-            title="Retrieval performance"
-            subtitle={
-              data.retrieval_k
-                ? `Labelled chunk relevance at K = ${data.retrieval_k}.`
-                : "No persisted labelled retrieval run is available."
-            }
-            metrics={[
-              [
-                "Precision@K",
-                data.retrieval.precision_at_k,
-                "Relevant chunks in the top K divided by K.",
-              ],
-              [
-                "Recall@K",
-                data.retrieval.recall_at_k,
-                "Retrieved relevant chunks divided by all labelled relevant chunks.",
-              ],
-              [
-                "MRR@K",
-                data.retrieval.mrr_at_k,
-                "Mean reciprocal rank of the first relevant chunk within K.",
-              ],
-            ]}
-          />
-          <RagMetricSection
-            title="Document-level retrieval quality"
-            subtitle={
-              "Custom document-source overlap for unique answerable questions."
-            }
-            metrics={[
-              [
-                "Document source precision",
-                documentMetrics.document_source_precision,
-                "Reviewed expected documents divided by selected documents, "
-                  + "for answerable questions only.",
-                null,
-                "Custom",
-              ],
-              [
-                "Document source recall",
-                documentMetrics.document_source_recall,
-                "Reviewed expected documents represented in selected context, "
-                  + "for answerable questions only.",
-                null,
-                "Custom",
-              ],
-            ]}
-          />
-          <RagMetricSection
             title="Fallback performance"
             subtitle="Uses labelled supported and unsupported policy enquiries."
             metrics={[
@@ -386,12 +335,11 @@ function RagMetricSection({ metrics, subtitle, title }) {
       <h3>{title}</h3>
       <p>{subtitle}</p>
       <div className="rag-metric-grid">
-        {metrics.map(([label, metric, explanation, format, kind]) => (
+        {metrics.map(([label, metric, explanation, format]) => (
           <RagMetricCard
             explanation={explanation}
             format={format}
             key={label}
-            kind={kind}
             label={label}
             metric={metric}
           />
@@ -401,7 +349,7 @@ function RagMetricSection({ metrics, subtitle, title }) {
   );
 }
 
-function RagMetricCard({ explanation, format, kind, label, metric }) {
+function RagMetricCard({ explanation, format, label, metric }) {
   const available = metric?.status === "evaluated";
   let value = metric?.status === "insufficient_data"
     ? "Insufficient data"
@@ -415,7 +363,6 @@ function RagMetricCard({ explanation, format, kind, label, metric }) {
     <div className="rag-metric-card" title={explanation}>
       <span>
         {label}
-        {kind && <i className="rag-metric-kind">{kind}</i>}
       </span>
       <strong className={available ? "" : "unavailable"}>{value}</strong>
       <small>

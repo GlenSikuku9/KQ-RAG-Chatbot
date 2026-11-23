@@ -553,10 +553,6 @@
   margin-top: auto;
 }
 
-.evaluation-card {
-  padding-top: 1rem;
-}
-
 .log-drawer-backdrop {
   position: fixed;
   z-index: 100;

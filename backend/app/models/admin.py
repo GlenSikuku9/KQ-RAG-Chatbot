@@ -132,17 +132,14 @@ class RAGMetricValue(BaseModel):
 
 
 class RAGEvaluationMetrics(BaseModel):
-    """Retrieval evaluation and live RAG operations shown in Analytics."""
+    """Fallback evaluation and live RAG operations shown in Analytics."""
 
     period_days: int = Field(ge=1, le=365)
     model_id: str | None = None
     language: str
-    retrieval_k: int | None = Field(default=None, ge=1)
     evaluated_at: UTCDateTime | None = None
     available_models: list[str] = Field(default_factory=list)
     available_languages: list[str] = Field(default_factory=list)
-    retrieval: dict[str, RAGMetricValue]
-    document_retrieval: dict[str, RAGMetricValue]
     fallback: dict[str, RAGMetricValue]
     operational: dict[str, RAGMetricValue]
 
@@ -214,28 +211,6 @@ class AdminModel(BaseModel):
 
 class DefaultModelUpdate(BaseModel):
     model_id: str = Field(min_length=1, max_length=100)
-
-
-class EvaluationResult(BaseModel):
-    run_id: str
-    evaluated_at: UTCDateTime
-    dataset_id: str
-    model_id: str
-    language: str
-    sample_size: int = Field(ge=0)
-    faithfulness: float | None = None
-    answer_relevance: float | None = None
-    context_precision: float | None = None
-    context_recall: float | None = None
-    average_response_ms: float | None = None
-    correctness: float | None = None
-    fallback_accuracy: float | None = None
-    language_quality: float | None = None
-    failure_rate: float | None = None
-    dataset_version: str | None = None
-    knowledge_base_version: str | None = None
-    model_settings: dict[str, str] = Field(default_factory=dict)
-    evaluation_methods: dict[str, str] = Field(default_factory=dict)
 
 
 class AdminLog(BaseModel):

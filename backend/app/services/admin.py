@@ -32,7 +32,6 @@ from app.models.admin import (
     AdminUser,
     AdminUserPage,
     DocumentContent,
-    EvaluationResult,
     PassengerTheme,
 )
 from app.models.generation import ConfiguredModel
@@ -72,23 +71,40 @@ def _uploader_email(value: object) -> str | None:
 
 
 def sync_vector_index() -> dict:
-    """Publish the current Firestore snapshot to Chroma before success returns."""
+    """Publish mapped bilingual search text to Chroma before success returns."""
+    from app.rag.bilingual_index import build_bilingual_search_snapshot
     from app.rag.embeddings import get_embedder
-    from app.rag.vector_index import VectorIndex, content_hash
+    from app.rag.vector_index import VectorIndex, representation_hash
 
     settings = get_settings()
     store = KnowledgeBaseStore(get_firestore_client())
-    chunks = store.read_index_snapshot()
-    digest = content_hash(chunks)
+    snapshot = store.read_index_snapshot()
+    parents, representations = build_bilingual_search_snapshot(
+        snapshot,
+        settings.raw_data_dir,
+        settings.rag_chunk_size,
+        settings.rag_chunk_overlap,
+    )
+    digest = representation_hash(
+        parents,
+        representations,
+    )
     index = VectorIndex(
         settings.chroma_persist_dir,
         get_embedder(),
         settings.embedding_batch_size,
     )
     return index.sync(
-        chunks,
-        still_current=lambda: content_hash(store.read_index_snapshot())
-        == digest,
+        parents,
+        search_representations=representations,
+        still_current=lambda: representation_hash(
+            *build_bilingual_search_snapshot(
+                store.read_index_snapshot(),
+                settings.raw_data_dir,
+                settings.rag_chunk_size,
+                settings.rag_chunk_overlap,
+            ),
+        ) == digest,
     )
 
 
@@ -243,21 +259,6 @@ def _is_legacy_gemini_record(value: object) -> bool:
         )
     )
     return "gemini" in identifiers or "google_ai_studio" in identifiers
-
-
-def list_evaluations() -> list[EvaluationResult]:
-    with firestore_operation():
-        snapshots = get_firestore_client().collection("model_evaluations").stream(timeout=FIRESTORE_READ_TIMEOUT)
-    evaluations = (
-        EvaluationResult.model_validate(snapshot.to_dict())
-        for snapshot in snapshots
-        if not _is_legacy_gemini_record(snapshot.to_dict() or {})
-    )
-    return sorted(
-        evaluations,
-        key=lambda item: item.evaluated_at,
-        reverse=True,
-    )
 
 
 def _audit_description(action: str, details: dict) -> str:

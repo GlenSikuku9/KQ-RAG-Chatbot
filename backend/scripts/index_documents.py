@@ -9,8 +9,9 @@ sys.path.append(str(BACKEND_DIR))
 
 from fastapi import HTTPException
 from app.config import get_settings
+from app.rag.bilingual_index import build_bilingual_search_snapshot
 from app.rag.embeddings import get_embedder
-from app.rag.vector_index import VectorIndex, content_hash
+from app.rag.vector_index import VectorIndex, representation_hash
 from app.models.retrieval import RetrievalRequest
 from app.rag.retrieval import get_retrieval_service
 from app.services.firestore_client import get_firestore_client
@@ -47,11 +48,29 @@ def main(argv: list[str] | None = None) -> int:
             index = VectorIndex(settings.chroma_persist_dir, get_embedder(), settings.embedding_batch_size)
             # Only published active content is authoritative; raw files and preview exports are not.
             store = KnowledgeBaseStore(get_firestore_client())
-            chunks = store.read_index_snapshot()
-            digest = content_hash(chunks)
+            snapshot = store.read_index_snapshot()
+            parents, representations = build_bilingual_search_snapshot(
+                snapshot,
+                settings.raw_data_dir,
+                settings.rag_chunk_size,
+                settings.rag_chunk_overlap,
+            )
+            digest = representation_hash(
+                parents,
+                representations,
+            )
             result = index.sync(
-                chunks, rebuild=args.rebuild,
-                still_current=lambda: content_hash(store.read_index_snapshot()) == digest,
+                parents,
+                rebuild=args.rebuild,
+                search_representations=representations,
+                still_current=lambda: representation_hash(
+                    *build_bilingual_search_snapshot(
+                        store.read_index_snapshot(),
+                        settings.raw_data_dir,
+                        settings.rag_chunk_size,
+                        settings.rag_chunk_overlap,
+                    ),
+                ) == digest,
             )
             print(json.dumps(result, indent=2))
         return 0

@@ -321,7 +321,6 @@ export const adminRagEvaluationMetrics = (
   );
 };
 export const adminModels = (user) => authenticatedRequest(user, "/admin/models");
-export const adminEvaluations = (user) => authenticatedRequest(user, "/admin/evaluations");
 export const adminLogs = (user) => authenticatedRequest(user, "/admin/logs");
 
 // Human-support requests use a separate lifecycle while retaining their

@@ -11,8 +11,10 @@ from pydantic import BaseModel, Field, model_validator
 BASE_DIR = Path(__file__).resolve().parents[1]
 load_dotenv(BASE_DIR / ".env")
 logger = logging.getLogger(__name__)
-DEFAULT_CHUNK_SIZE = 1600
-DEFAULT_CHUNK_OVERLAP = 250
+# E20 uses the strongest non-reranked chunking configuration from the
+# controlled comparative retrieval evaluation.
+DEFAULT_CHUNK_SIZE = 1800
+DEFAULT_CHUNK_OVERLAP = 360
 ProviderName = Literal["openrouter", "groq"]
 
 
@@ -65,8 +67,10 @@ class Settings(BaseModel):
     embedding_cache_dir: Path = BASE_DIR.parent / "model_cache"
     retrieval_top_k: int = Field(default=5, ge=1, le=20, strict=True)
     hybrid_retrieval_enabled: bool = True
-    hybrid_dense_candidates: int = Field(default=20, ge=1, le=100, strict=True)
-    hybrid_lexical_candidates: int = Field(default=20, ge=1, le=100, strict=True)
+    # E20 retrieves 40 candidates from each channel before RRF and parent-level
+    # deduplication select the configured final top five chunks.
+    hybrid_dense_candidates: int = Field(default=40, ge=1, le=100, strict=True)
+    hybrid_lexical_candidates: int = Field(default=40, ge=1, le=100, strict=True)
     # A lower constant preserves meaningful rank separation in the small,
     # curated policy corpus instead of making ranks 1-20 nearly equivalent.
     hybrid_rrf_k: int = Field(default=10, ge=1, le=1000, strict=True)
@@ -241,11 +245,11 @@ def get_settings() -> Settings:
         ),
         hybrid_dense_candidates=_get_int(
             "HYBRID_DENSE_CANDIDATES",
-            20,
+            40,
         ),
         hybrid_lexical_candidates=_get_int(
             "HYBRID_LEXICAL_CANDIDATES",
-            20,
+            40,
         ),
         hybrid_rrf_k=_get_int("HYBRID_RRF_K", 10),
         conversation_history_exchanges=_get_int(
