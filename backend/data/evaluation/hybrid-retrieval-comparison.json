@@ -1,0 +1,2779 @@
+{
+  "methodology": {
+    "type": "deterministic_labelled_chunk_overlap",
+    "not_ragas": true,
+    "precision_limitation": "Unlabelled but useful chunks count as non-relevant. Human chunk review is required before interpreting this as standard context precision.",
+    "memory_measurement": "Peak Python allocations only; native Torch and Chroma memory are not included."
+  },
+  "top_k": 5,
+  "baseline": {
+    "questions": 15,
+    "parent_chunks": 188,
+    "active_manifest": {
+      "collection": "kq_generation_660dc432a69f4af18ea75b6c05117e93",
+      "fingerprint": {
+        "model": "intfloat/multilingual-e5-small",
+        "revision": "614241f622f53c4eeff9890bdc4f31cfecc418b3",
+        "dimension": 384,
+        "max_tokens": 512,
+        "normalization": true,
+        "query_prefix": "query: ",
+        "passage_prefix": "passage: ",
+        "pipeline": "e5-cpu-segments-v2",
+        "libraries": {
+          "sentence-transformers": "6.1.0",
+          "transformers": "5.20.2",
+          "torch": "2.15.0"
+        }
+      },
+      "content_hash": "db6d84677ae2652a75043b3de3370270cfb7c03046428279e193d8b225ea63f8",
+      "count": 189
+    }
+  },
+  "dense_metrics": {
+    "all": {
+      "questions": 12,
+      "precision_at_k": 0.20000000000000004,
+      "recall_at_k": 0.75,
+      "mrr_at_k": 0.5555555555555556,
+      "mean_retrieval_ms": 102.59908333333334,
+      "mean_context_ms": 3.81325
+    },
+    "en": {
+      "questions": 4,
+      "precision_at_k": 0.2,
+      "recall_at_k": 0.75,
+      "mrr_at_k": 0.5833333333333334,
+      "mean_retrieval_ms": 118.6165,
+      "mean_context_ms": 3.593
+    },
+    "sw": {
+      "questions": 4,
+      "precision_at_k": 0.2,
+      "recall_at_k": 0.75,
+      "mrr_at_k": 0.5,
+      "mean_retrieval_ms": 101.70825,
+      "mean_context_ms": 4.244
+    },
+    "mixed": {
+      "questions": 4,
+      "precision_at_k": 0.2,
+      "recall_at_k": 0.75,
+      "mrr_at_k": 0.5833333333333334,
+      "mean_retrieval_ms": 87.4725,
+      "mean_context_ms": 3.60275
+    }
+  },
+  "hybrid_metrics": {
+    "all": {
+      "questions": 12,
+      "precision_at_k": 0.21666666666666667,
+      "recall_at_k": 0.875,
+      "mrr_at_k": 0.7222222222222222,
+      "mean_retrieval_ms": 321.01466666666664,
+      "mean_context_ms": 2.63325
+    },
+    "en": {
+      "questions": 4,
+      "precision_at_k": 0.25,
+      "recall_at_k": 1.0,
+      "mrr_at_k": 0.75,
+      "mean_retrieval_ms": 393.16724999999997,
+      "mean_context_ms": 2.675
+    },
+    "sw": {
+      "questions": 4,
+      "precision_at_k": 0.15000000000000002,
+      "recall_at_k": 0.625,
+      "mrr_at_k": 0.5833333333333334,
+      "mean_retrieval_ms": 295.25775,
+      "mean_context_ms": 2.14525
+    },
+    "mixed": {
+      "questions": 4,
+      "precision_at_k": 0.25,
+      "recall_at_k": 1.0,
+      "mrr_at_k": 0.8333333333333334,
+      "mean_retrieval_ms": 274.61899999999997,
+      "mean_context_ms": 3.0795
+    }
+  },
+  "fallback_accuracy": {
+    "dense": 1.0,
+    "hybrid": 1.0
+  },
+  "peak_python_allocated_bytes": 6895108,
+  "outcomes": [
+    {
+      "id": "fees-en",
+      "language": "en",
+      "question": "How much does a name correction cost for an international booking?",
+      "answerable": true,
+      "labelled_relevant_chunk_ids": [
+        "f0a0cf741433c6d1637d1567429cfb17650989337ba789618429b2001a1758a5"
+      ],
+      "dense": {
+        "ranking_method": "dense_cosine",
+        "retrieval_ms": 208.344,
+        "context_ms": 2.568,
+        "context_chars": 5598,
+        "context_tokens": 1404,
+        "first_relevant_rank": 3,
+        "precision_at_k": 0.2,
+        "recall_at_k": 1.0,
+        "reciprocal_rank_at_k": 0.3333333333333333,
+        "context_precision": 0.2,
+        "context_recall": 1.0,
+        "fallback_correct": true,
+        "context_decision": "context_available",
+        "context_reason": "selected_context",
+        "selected_chunk_ids": [
+          "be668733ee527bfd39f2309ad157f816fe59ceced4e8af299db91bd666cf51ea",
+          "cdbce02fc752171a3baa2b309aeeec424e5f1d085ff63730183ff3987eaf9a6c",
+          "f0a0cf741433c6d1637d1567429cfb17650989337ba789618429b2001a1758a5",
+          "f604844a4cb6ea349ad060432016a37fd3e86710354eeb3bf31ca31d08fad1d2",
+          "3308b1d7ba2ad2adcbf2b1885bd8ae7b927c2dc9aa7ad28dfa57b73ed15ce277"
+        ],
+        "excluded": [],
+        "candidates": [
+          {
+            "rank": 1,
+            "document": "Payments.docx",
+            "chunk_id": "be668733ee527bfd39f2309ad157f816fe59ceced4e8af299db91bd666cf51ea",
+            "chunk_index": 5,
+            "cosine_similarity": 0.8487087488174438,
+            "dense_rank": null,
+            "lexical_rank": null,
+            "fusion_score": null,
+            "text_preview": "through their own bank. When making a purchase online: [List level 1] - Select iDEAL as the payment method. [List level 1] - You’re redirected to your bank’s online banking environment. [List level 1] - After logging in, confirm the payment. [List level 1] - The transaction is processed instantly, and once we receive payment confirmation, you will be sent an e-ticket and payment confirmation by e-mail. Optional Fees Kenya Airways provides a variety of extra services that can be added to your fli"
+          },
+          {
+            "rank": 2,
+            "document": "FAQs.docx",
+            "chunk_id": "cdbce02fc752171a3baa2b309aeeec424e5f1d085ff63730183ff3987eaf9a6c",
+            "chunk_index": 5,
+            "cosine_similarity": 0.8446958065032959,
+            "dense_rank": null,
+            "lexical_rank": null,
+            "fusion_score": null,
+            "text_preview": "of payment and will be widely accepted as a receipt. After booking your flight on Kenya-airways.com you will receive your ticket via e-mail as soon as we have received the payment. Can I pay for a ticket for another person travelling from abroad? Yes, you can book for another person travelling from abroad. However, if you choose to pay with credit or debit cards you may be required to present the card used for booking, it must be presented while checking into your flight at the commencement of t"
+          },
+          {
+            "rank": 3,
+            "document": "Payments.docx",
+            "chunk_id": "f0a0cf741433c6d1637d1567429cfb17650989337ba789618429b2001a1758a5",
+            "chunk_index": 6,
+            "cosine_similarity": 0.8397841453552246,
+            "dense_rank": null,
+            "lexical_rank": null,
+            "fusion_score": null,
+            "text_preview": "Preceding paragraph: Name Correction Table (Body/block 58): Opening row (context, not a declared header): Row 1: Column 1: [empty] | Column 2: Domestic PNRs | Column 3: International PNRs Row 2: Column 1: Amount Paid | Column 2: USD 15 | Column 3: USD 75"
+          },
+          {
+            "rank": 4,
+            "document": "Payments.docx",
+            "chunk_id": "f604844a4cb6ea349ad060432016a37fd3e86710354eeb3bf31ca31d08fad1d2",
+            "chunk_index": 12,
+            "cosine_similarity": 0.8396140336990356,
+            "dense_rank": null,
+            "lexical_rank": null,
+            "fusion_score": null,
+            "text_preview": "Preceding paragraph: Administrative Fees: Table (Body/block 70): Opening row (context, not a declared header): Row 1: Column 1: Administrative Fees | Column 2: Description | Column 3: Fees(USD) Row 2: Column 1: Online Bookings | Column 2: Change a ticket via manage my booking | Column 3: From USD 100-300 Row 3: Column 1: Online Bookings | Column 2: Cancel a ticket through the online refund form | Column 3: From USD 100-300 Row 4: Column 1: Telephone Bookings | Column 2: Book a ticket via phone r"
+          },
+          {
+            "rank": 5,
+            "document": "FAQs.docx",
+            "chunk_id": "3308b1d7ba2ad2adcbf2b1885bd8ae7b927c2dc9aa7ad28dfa57b73ed15ce277",
+            "chunk_index": 1,
+            "cosine_similarity": 0.839040219783783,
+            "dense_rank": null,
+            "lexical_rank": null,
+            "fusion_score": null,
+            "text_preview": "extra legroom [List level 1] - Update contact information [List level 1] - Pay in advance for excess baggage [List level 1] - Request for refund Can I modify my flight details online if I booked it through a travel agent or another website? Bookings purchased directly from Kenya-airways.com, Kenya Airways direct offices and preferred travel agents can be modified online through Manage My Booking. For flights purchased from travel agents and 3rd party websites, you need to contact your travel age"
+          }
+        ]
+      },
+      "hybrid": {
+        "ranking_method": "hybrid_rrf",
+        "retrieval_ms": 579.194,
+        "context_ms": 1.911,
+        "context_chars": 5913,
+        "context_tokens": 1483,
+        "first_relevant_rank": 2,
+        "precision_at_k": 0.2,
+        "recall_at_k": 1.0,
+        "reciprocal_rank_at_k": 0.5,
+        "context_precision": 0.2,
+        "context_recall": 1.0,
+        "fallback_correct": true,
+        "context_decision": "context_available",
+        "context_reason": "selected_context",
+        "selected_chunk_ids": [
+          "be668733ee527bfd39f2309ad157f816fe59ceced4e8af299db91bd666cf51ea",
+          "f0a0cf741433c6d1637d1567429cfb17650989337ba789618429b2001a1758a5",
+          "3308b1d7ba2ad2adcbf2b1885bd8ae7b927c2dc9aa7ad28dfa57b73ed15ce277",
+          "15957459e1b35e57f794cf2bd903a35815a5c36fdf21728dd11f13744cb9d389",
+          "cdbce02fc752171a3baa2b309aeeec424e5f1d085ff63730183ff3987eaf9a6c"
+        ],
+        "excluded": [],
+        "candidates": [
+          {
+            "rank": 1,
+            "document": "Payments.docx",
+            "chunk_id": "be668733ee527bfd39f2309ad157f816fe59ceced4e8af299db91bd666cf51ea",
+            "chunk_index": 5,
+            "cosine_similarity": 0.8487086347876217,
+            "dense_rank": 1,
+            "lexical_rank": 4,
+            "fusion_score": 0.032018442622950824,
+            "text_preview": "through their own bank. When making a purchase online: [List level 1] - Select iDEAL as the payment method. [List level 1] - You’re redirected to your bank’s online banking environment. [List level 1] - After logging in, confirm the payment. [List level 1] - The transaction is processed instantly, and once we receive payment confirmation, you will be sent an e-ticket and payment confirmation by e-mail. Optional Fees Kenya Airways provides a variety of extra services that can be added to your fli"
+          },
+          {
+            "rank": 2,
+            "document": "Payments.docx",
+            "chunk_id": "f0a0cf741433c6d1637d1567429cfb17650989337ba789618429b2001a1758a5",
+            "chunk_index": 6,
+            "cosine_similarity": 0.839783875520145,
+            "dense_rank": 3,
+            "lexical_rank": 2,
+            "fusion_score": 0.03200204813108039,
+            "text_preview": "Preceding paragraph: Name Correction Table (Body/block 58): Opening row (context, not a declared header): Row 1: Column 1: [empty] | Column 2: Domestic PNRs | Column 3: International PNRs Row 2: Column 1: Amount Paid | Column 2: USD 15 | Column 3: USD 75"
+          },
+          {
+            "rank": 3,
+            "document": "FAQs.docx",
+            "chunk_id": "3308b1d7ba2ad2adcbf2b1885bd8ae7b927c2dc9aa7ad28dfa57b73ed15ce277",
+            "chunk_index": 1,
+            "cosine_similarity": 0.8390399766680814,
+            "dense_rank": 5,
+            "lexical_rank": 7,
+            "fusion_score": 0.030309988518943745,
+            "text_preview": "extra legroom [List level 1] - Update contact information [List level 1] - Pay in advance for excess baggage [List level 1] - Request for refund Can I modify my flight details online if I booked it through a travel agent or another website? Bookings purchased directly from Kenya-airways.com, Kenya Airways direct offices and preferred travel agents can be modified online through Manage My Booking. For flights purchased from travel agents and 3rd party websites, you need to contact your travel age"
+          },
+          {
+            "rank": 4,
+            "document": "FAQs.docx",
+            "chunk_id": "15957459e1b35e57f794cf2bd903a35815a5c36fdf21728dd11f13744cb9d389",
+            "chunk_index": 9,
+            "cosine_similarity": 0.8272761849022194,
+            "dense_rank": 11,
+            "lexical_rank": 3,
+            "fusion_score": 0.029957522915269395,
+            "text_preview": "the strength of your bid but does not guarantee its success. Can I offer different amounts for the Upgrade for each segment of my journey? Yes, you can offer different amounts for each eligible segment. How much does it cost to make an offer? The offer is free of charge. Only if you receive the Upgrade, your credit card will be debited with the amount of your offer. Please, we still need your credit card details at the time of making your offer for standard verification purposes. Can I change my"
+          },
+          {
+            "rank": 5,
+            "document": "FAQs.docx",
+            "chunk_id": "cdbce02fc752171a3baa2b309aeeec424e5f1d085ff63730183ff3987eaf9a6c",
+            "chunk_index": 5,
+            "cosine_similarity": 0.844695568724355,
+            "dense_rank": 2,
+            "lexical_rank": 14,
+            "fusion_score": 0.02964254577157803,
+            "text_preview": "of payment and will be widely accepted as a receipt. After booking your flight on Kenya-airways.com you will receive your ticket via e-mail as soon as we have received the payment. Can I pay for a ticket for another person travelling from abroad? Yes, you can book for another person travelling from abroad. However, if you choose to pay with credit or debit cards you may be required to present the card used for booking, it must be presented while checking into your flight at the commencement of t"
+          }
+        ]
+      }
+    },
+    {
+      "id": "fees-sw",
+      "language": "sw",
+      "question": "Kusahihisha jina kwenye tiketi ya ndege ya kimataifa kunagharimu kiasi gani?",
+      "answerable": true,
+      "labelled_relevant_chunk_ids": [
+        "f0a0cf741433c6d1637d1567429cfb17650989337ba789618429b2001a1758a5"
+      ],
+      "dense": {
+        "ranking_method": "dense_cosine",
+        "retrieval_ms": 80.421,
+        "context_ms": 1.773,
+        "context_chars": 3340,
+        "context_tokens": 836,
+        "first_relevant_rank": null,
+        "precision_at_k": 0.0,
+        "recall_at_k": 0.0,
+        "reciprocal_rank_at_k": 0,
+        "context_precision": 0.0,
+        "context_recall": 0.0,
+        "fallback_correct": true,
+        "context_decision": "context_available",
+        "context_reason": "selected_context",
+        "selected_chunk_ids": [
+          "be668733ee527bfd39f2309ad157f816fe59ceced4e8af299db91bd666cf51ea",
+          "6197c7f0fbba5bdaf1d4d36e56c38e8f7d776e0309e4f41fed1957cec863b5cb",
+          "6cf80311fedac48f56d8f27de2b32fe14c463155e50b344defa784d8107c5418"
+        ],
+        "excluded": [
+          {
+            "chunk_id": "3308b1d7ba2ad2adcbf2b1885bd8ae7b927c2dc9aa7ad28dfa57b73ed15ce277",
+            "reason": "document_limit_exceeded",
+            "duplicate_of": null
+          },
+          {
+            "chunk_id": "4b5f3a65d6adc07340d93247e2c4f7c8d3c3afeecc0b25ee912a2786a3dcdd0d",
+            "reason": "document_limit_exceeded",
+            "duplicate_of": null
+          }
+        ],
+        "candidates": [
+          {
+            "rank": 1,
+            "document": "Payments.docx",
+            "chunk_id": "be668733ee527bfd39f2309ad157f816fe59ceced4e8af299db91bd666cf51ea",
+            "chunk_index": 5,
+            "cosine_similarity": 0.859047532081604,
+            "dense_rank": null,
+            "lexical_rank": null,
+            "fusion_score": null,
+            "text_preview": "through their own bank. When making a purchase online: [List level 1] - Select iDEAL as the payment method. [List level 1] - You’re redirected to your bank’s online banking environment. [List level 1] - After logging in, confirm the payment. [List level 1] - The transaction is processed instantly, and once we receive payment confirmation, you will be sent an e-ticket and payment confirmation by e-mail. Optional Fees Kenya Airways provides a variety of extra services that can be added to your fli"
+          },
+          {
+            "rank": 2,
+            "document": "Conditions of Carriage.docx",
+            "chunk_id": "6197c7f0fbba5bdaf1d4d36e56c38e8f7d776e0309e4f41fed1957cec863b5cb",
+            "chunk_index": 8,
+            "cosine_similarity": 0.8437275886535645,
+            "dense_rank": null,
+            "lexical_rank": null,
+            "fusion_score": null,
+            "text_preview": "The name on the Ticket must exactly match the name in the Passenger’s valid passport or travel document. Travel may be denied if the names do not match. 3.1.2 A Ticket is not transferable, except as required by any locally applicable laws. 3.1.3 Some Tickets are sold at discounted fares which may be partially or completely non-refundable. You should choose the fare best suited to your needs. You may also wish to ensure that you have appropriate insurance to cover instances where you have to canc"
+          },
+          {
+            "rank": 3,
+            "document": "FAQs.docx",
+            "chunk_id": "3308b1d7ba2ad2adcbf2b1885bd8ae7b927c2dc9aa7ad28dfa57b73ed15ce277",
+            "chunk_index": 1,
+            "cosine_similarity": 0.8411309719085693,
+            "dense_rank": null,
+            "lexical_rank": null,
+            "fusion_score": null,
+            "text_preview": "extra legroom [List level 1] - Update contact information [List level 1] - Pay in advance for excess baggage [List level 1] - Request for refund Can I modify my flight details online if I booked it through a travel agent or another website? Bookings purchased directly from Kenya-airways.com, Kenya Airways direct offices and preferred travel agents can be modified online through Manage My Booking. For flights purchased from travel agents and 3rd party websites, you need to contact your travel age"
+          },
+          {
+            "rank": 4,
+            "document": "FAQs.docx",
+            "chunk_id": "4b5f3a65d6adc07340d93247e2c4f7c8d3c3afeecc0b25ee912a2786a3dcdd0d",
+            "chunk_index": 0,
+            "cosine_similarity": 0.8333070278167725,
+            "dense_rank": null,
+            "lexical_rank": null,
+            "fusion_score": null,
+            "text_preview": "FAQS FAQs link: https://www.kenya-airways.com/en-ke/help/faqs/ Booking & Payment FAQs What are my payment options? Pay quickly and efficiently through any of our payment options: credit and debit cards, eWallet , mobile payment or real-time bank transfer. Read more about our payments options.(Link: https://www.kenya-airways.com/en-ke/book-manage/booking-online/payment-methods/ ) Can I make an online payment in a currency of my choice? Our prices are automatically displayed based on the country y"
+          },
+          {
+            "rank": 5,
+            "document": "Conditions of Carriage.docx",
+            "chunk_id": "6cf80311fedac48f56d8f27de2b32fe14c463155e50b344defa784d8107c5418",
+            "chunk_index": 13,
+            "cosine_similarity": 0.8322742581367493,
+            "dense_rank": null,
+            "lexical_rank": null,
+            "fusion_score": null,
+            "text_preview": "or reversing the direction you travel, can result in an increase in price. Many special fares are valid only on the dates and for the flights shown on the Ticket and may not be changed at all, or may be changed only upon payment of an additional fee. 3.3.5 Each Flight Coupon contained in your Ticket will be accepted for carriage in the class of service on the date and flight for which space has been reserved. When a Ticket is originally issued without a reservation being specified, space may be "
+          }
+        ]
+      },
+      "hybrid": {
+        "ranking_method": "hybrid_rrf",
+        "retrieval_ms": 258.496,
+        "context_ms": 1.27,
+        "context_chars": 3340,
+        "context_tokens": 836,
+        "first_relevant_rank": null,
+        "precision_at_k": 0.0,
+        "recall_at_k": 0.0,
+        "reciprocal_rank_at_k": 0,
+        "context_precision": 0.0,
+        "context_recall": 0.0,
+        "fallback_correct": true,
+        "context_decision": "context_available",
+        "context_reason": "selected_context",
+        "selected_chunk_ids": [
+          "be668733ee527bfd39f2309ad157f816fe59ceced4e8af299db91bd666cf51ea",
+          "6197c7f0fbba5bdaf1d4d36e56c38e8f7d776e0309e4f41fed1957cec863b5cb",
+          "6cf80311fedac48f56d8f27de2b32fe14c463155e50b344defa784d8107c5418"
+        ],
+        "excluded": [
+          {
+            "chunk_id": "e234612580708c736de8b0d31111e099e584b3ae25a67c82efcb9b14b5c4b9de",
+            "reason": "document_limit_exceeded",
+            "duplicate_of": null
+          },
+          {
+            "chunk_id": "3308b1d7ba2ad2adcbf2b1885bd8ae7b927c2dc9aa7ad28dfa57b73ed15ce277",
+            "reason": "document_limit_exceeded",
+            "duplicate_of": null
+          }
+        ],
+        "candidates": [
+          {
+            "rank": 1,
+            "document": "Payments.docx",
+            "chunk_id": "be668733ee527bfd39f2309ad157f816fe59ceced4e8af299db91bd666cf51ea",
+            "chunk_index": 5,
+            "cosine_similarity": 0.8590474679964507,
+            "dense_rank": 1,
+            "lexical_rank": 2,
+            "fusion_score": 0.03252247488101534,
+            "text_preview": "through their own bank. When making a purchase online: [List level 1] - Select iDEAL as the payment method. [List level 1] - You’re redirected to your bank’s online banking environment. [List level 1] - After logging in, confirm the payment. [List level 1] - The transaction is processed instantly, and once we receive payment confirmation, you will be sent an e-ticket and payment confirmation by e-mail. Optional Fees Kenya Airways provides a variety of extra services that can be added to your fli"
+          },
+          {
+            "rank": 2,
+            "document": "Conditions of Carriage.docx",
+            "chunk_id": "6197c7f0fbba5bdaf1d4d36e56c38e8f7d776e0309e4f41fed1957cec863b5cb",
+            "chunk_index": 8,
+            "cosine_similarity": 0.8437274107744499,
+            "dense_rank": 2,
+            "lexical_rank": 3,
+            "fusion_score": 0.03200204813108039,
+            "text_preview": "The name on the Ticket must exactly match the name in the Passenger’s valid passport or travel document. Travel may be denied if the names do not match. 3.1.2 A Ticket is not transferable, except as required by any locally applicable laws. 3.1.3 Some Tickets are sold at discounted fares which may be partially or completely non-refundable. You should choose the fare best suited to your needs. You may also wish to ensure that you have appropriate insurance to cover instances where you have to canc"
+          },
+          {
+            "rank": 3,
+            "document": "Conditions of Carriage.docx",
+            "chunk_id": "6cf80311fedac48f56d8f27de2b32fe14c463155e50b344defa784d8107c5418",
+            "chunk_index": 13,
+            "cosine_similarity": 0.8322741155258748,
+            "dense_rank": 5,
+            "lexical_rank": 4,
+            "fusion_score": 0.031009615384615385,
+            "text_preview": "or reversing the direction you travel, can result in an increase in price. Many special fares are valid only on the dates and for the flights shown on the Ticket and may not be changed at all, or may be changed only upon payment of an additional fee. 3.3.5 Each Flight Coupon contained in your Ticket will be accepted for carriage in the class of service on the date and flight for which space has been reserved. When a Ticket is originally issued without a reservation being specified, space may be "
+          },
+          {
+            "rank": 4,
+            "document": "Special Care.docx",
+            "chunk_id": "e234612580708c736de8b0d31111e099e584b3ae25a67c82efcb9b14b5c4b9de",
+            "chunk_index": 1,
+            "cosine_similarity": 0.8244711929723814,
+            "dense_rank": 14,
+            "lexical_rank": 5,
+            "fusion_score": 0.0288981288981289,
+            "text_preview": "Get the form here(Link:https://www.kenya-airways.com/globalassets/commercial/plan/special-care/unaccompanied-minors/kq_unaccompaniedminor_form.pdf ). Unaccompanied Minors are accepted only on Kenya Airways-operated flights. Expert Support & Fees: [List level 1] - Expert Assistance: A dedicated team handles the booking process, ensuring all necessary information about the child, parents/guardians, and the designated pick-up person is collected accurately. [List level 1] - Unaccompanied Minor Fee:"
+          },
+          {
+            "rank": 5,
+            "document": "FAQs.docx",
+            "chunk_id": "3308b1d7ba2ad2adcbf2b1885bd8ae7b927c2dc9aa7ad28dfa57b73ed15ce277",
+            "chunk_index": 1,
+            "cosine_similarity": 0.8411306893708674,
+            "dense_rank": 3,
+            "lexical_rank": 17,
+            "fusion_score": 0.02886002886002886,
+            "text_preview": "extra legroom [List level 1] - Update contact information [List level 1] - Pay in advance for excess baggage [List level 1] - Request for refund Can I modify my flight details online if I booked it through a travel agent or another website? Bookings purchased directly from Kenya-airways.com, Kenya Airways direct offices and preferred travel agents can be modified online through Manage My Booking. For flights purchased from travel agents and 3rd party websites, you need to contact your travel age"
+          }
+        ]
+      }
+    },
+    {
+      "id": "fees-mixed",
+      "language": "mixed",
+      "question": "Name correction ya international booking ni how much?",
+      "answerable": true,
+      "labelled_relevant_chunk_ids": [
+        "f0a0cf741433c6d1637d1567429cfb17650989337ba789618429b2001a1758a5"
+      ],
+      "dense": {
+        "ranking_method": "dense_cosine",
+        "retrieval_ms": 96.307,
+        "context_ms": 2.942,
+        "context_chars": 5335,
+        "context_tokens": 1336,
+        "first_relevant_rank": null,
+        "precision_at_k": 0.0,
+        "recall_at_k": 0.0,
+        "reciprocal_rank_at_k": 0,
+        "context_precision": 0.0,
+        "context_recall": 0.0,
+        "fallback_correct": true,
+        "context_decision": "context_available",
+        "context_reason": "selected_context",
+        "selected_chunk_ids": [
+          "be668733ee527bfd39f2309ad157f816fe59ceced4e8af299db91bd666cf51ea",
+          "cdbce02fc752171a3baa2b309aeeec424e5f1d085ff63730183ff3987eaf9a6c",
+          "3308b1d7ba2ad2adcbf2b1885bd8ae7b927c2dc9aa7ad28dfa57b73ed15ce277",
+          "f604844a4cb6ea349ad060432016a37fd3e86710354eeb3bf31ca31d08fad1d2"
+        ],
+        "excluded": [
+          {
+            "chunk_id": "cfea193aec0d73f6dde1ada11dcf1a0db832fa824542df513308a4c275d646c2",
+            "reason": "document_limit_exceeded",
+            "duplicate_of": null
+          }
+        ],
+        "candidates": [
+          {
+            "rank": 1,
+            "document": "Payments.docx",
+            "chunk_id": "be668733ee527bfd39f2309ad157f816fe59ceced4e8af299db91bd666cf51ea",
+            "chunk_index": 5,
+            "cosine_similarity": 0.8491302132606506,
+            "dense_rank": null,
+            "lexical_rank": null,
+            "fusion_score": null,
+            "text_preview": "through their own bank. When making a purchase online: [List level 1] - Select iDEAL as the payment method. [List level 1] - You’re redirected to your bank’s online banking environment. [List level 1] - After logging in, confirm the payment. [List level 1] - The transaction is processed instantly, and once we receive payment confirmation, you will be sent an e-ticket and payment confirmation by e-mail. Optional Fees Kenya Airways provides a variety of extra services that can be added to your fli"
+          },
+          {
+            "rank": 2,
+            "document": "FAQs.docx",
+            "chunk_id": "cdbce02fc752171a3baa2b309aeeec424e5f1d085ff63730183ff3987eaf9a6c",
+            "chunk_index": 5,
+            "cosine_similarity": 0.8487269878387451,
+            "dense_rank": null,
+            "lexical_rank": null,
+            "fusion_score": null,
+            "text_preview": "of payment and will be widely accepted as a receipt. After booking your flight on Kenya-airways.com you will receive your ticket via e-mail as soon as we have received the payment. Can I pay for a ticket for another person travelling from abroad? Yes, you can book for another person travelling from abroad. However, if you choose to pay with credit or debit cards you may be required to present the card used for booking, it must be presented while checking into your flight at the commencement of t"
+          },
+          {
+            "rank": 3,
+            "document": "FAQs.docx",
+            "chunk_id": "3308b1d7ba2ad2adcbf2b1885bd8ae7b927c2dc9aa7ad28dfa57b73ed15ce277",
+            "chunk_index": 1,
+            "cosine_similarity": 0.8486051559448242,
+            "dense_rank": null,
+            "lexical_rank": null,
+            "fusion_score": null,
+            "text_preview": "extra legroom [List level 1] - Update contact information [List level 1] - Pay in advance for excess baggage [List level 1] - Request for refund Can I modify my flight details online if I booked it through a travel agent or another website? Bookings purchased directly from Kenya-airways.com, Kenya Airways direct offices and preferred travel agents can be modified online through Manage My Booking. For flights purchased from travel agents and 3rd party websites, you need to contact your travel age"
+          },
+          {
+            "rank": 4,
+            "document": "Payments.docx",
+            "chunk_id": "f604844a4cb6ea349ad060432016a37fd3e86710354eeb3bf31ca31d08fad1d2",
+            "chunk_index": 12,
+            "cosine_similarity": 0.8453590273857117,
+            "dense_rank": null,
+            "lexical_rank": null,
+            "fusion_score": null,
+            "text_preview": "Preceding paragraph: Administrative Fees: Table (Body/block 70): Opening row (context, not a declared header): Row 1: Column 1: Administrative Fees | Column 2: Description | Column 3: Fees(USD) Row 2: Column 1: Online Bookings | Column 2: Change a ticket via manage my booking | Column 3: From USD 100-300 Row 3: Column 1: Online Bookings | Column 2: Cancel a ticket through the online refund form | Column 3: From USD 100-300 Row 4: Column 1: Telephone Bookings | Column 2: Book a ticket via phone r"
+          },
+          {
+            "rank": 5,
+            "document": "Baggage Allowance Information.docx",
+            "chunk_id": "cfea193aec0d73f6dde1ada11dcf1a0db832fa824542df513308a4c275d646c2",
+            "chunk_index": 3,
+            "cosine_similarity": 0.8452230095863342,
+            "dense_rank": null,
+            "lexical_rank": null,
+            "fusion_score": null,
+            "text_preview": "Preceding paragraph: Reference Table Table (Body/block 11): Opening row (context, not a declared header): Row 1: Column 1: Domestic | Column 2: Kisumu, Mombasa, and Malindi Row 2: Column 1: Africa | Column 2: All Africa points Row 3: Column 1: Middle East/Asia | Column 2: Middle East and Asian points Row 4: Column 1: Europe/America | Column 2: All Europe and American points Row 5: Column 1: 5th freedom Sectors | Column 2: Flights that carry passengers to and from any point without connecting thr"
+          }
+        ]
+      },
+      "hybrid": {
+        "ranking_method": "hybrid_rrf",
+        "retrieval_ms": 277.631,
+        "context_ms": 2.211,
+        "context_chars": 4230,
+        "context_tokens": 1062,
+        "first_relevant_rank": 3,
+        "precision_at_k": 0.2,
+        "recall_at_k": 1.0,
+        "reciprocal_rank_at_k": 0.3333333333333333,
+        "context_precision": 0.25,
+        "context_recall": 1.0,
+        "fallback_correct": true,
+        "context_decision": "context_available",
+        "context_reason": "selected_context",
+        "selected_chunk_ids": [
+          "be668733ee527bfd39f2309ad157f816fe59ceced4e8af299db91bd666cf51ea",
+          "3308b1d7ba2ad2adcbf2b1885bd8ae7b927c2dc9aa7ad28dfa57b73ed15ce277",
+          "f0a0cf741433c6d1637d1567429cfb17650989337ba789618429b2001a1758a5",
+          "9c9ccfc385b5453ca580e5e680a670ac217ae7a83c70836a36d495113dfe5cd5"
+        ],
+        "excluded": [
+          {
+            "chunk_id": "cfea193aec0d73f6dde1ada11dcf1a0db832fa824542df513308a4c275d646c2",
+            "reason": "document_limit_exceeded",
+            "duplicate_of": null
+          }
+        ],
+        "candidates": [
+          {
+            "rank": 1,
+            "document": "Payments.docx",
+            "chunk_id": "be668733ee527bfd39f2309ad157f816fe59ceced4e8af299db91bd666cf51ea",
+            "chunk_index": 5,
+            "cosine_similarity": 0.8491301505897997,
+            "dense_rank": 1,
+            "lexical_rank": 2,
+            "fusion_score": 0.03252247488101534,
+            "text_preview": "through their own bank. When making a purchase online: [List level 1] - Select iDEAL as the payment method. [List level 1] - You’re redirected to your bank’s online banking environment. [List level 1] - After logging in, confirm the payment. [List level 1] - The transaction is processed instantly, and once we receive payment confirmation, you will be sent an e-ticket and payment confirmation by e-mail. Optional Fees Kenya Airways provides a variety of extra services that can be added to your fli"
+          },
+          {
+            "rank": 2,
+            "document": "FAQs.docx",
+            "chunk_id": "3308b1d7ba2ad2adcbf2b1885bd8ae7b927c2dc9aa7ad28dfa57b73ed15ce277",
+            "chunk_index": 1,
+            "cosine_similarity": 0.848605034579535,
+            "dense_rank": 3,
+            "lexical_rank": 3,
+            "fusion_score": 0.031746031746031744,
+            "text_preview": "extra legroom [List level 1] - Update contact information [List level 1] - Pay in advance for excess baggage [List level 1] - Request for refund Can I modify my flight details online if I booked it through a travel agent or another website? Bookings purchased directly from Kenya-airways.com, Kenya Airways direct offices and preferred travel agents can be modified online through Manage My Booking. For flights purchased from travel agents and 3rd party websites, you need to contact your travel age"
+          },
+          {
+            "rank": 3,
+            "document": "Payments.docx",
+            "chunk_id": "f0a0cf741433c6d1637d1567429cfb17650989337ba789618429b2001a1758a5",
+            "chunk_index": 6,
+            "cosine_similarity": 0.8445659553132256,
+            "dense_rank": 6,
+            "lexical_rank": 1,
+            "fusion_score": 0.031544957774465976,
+            "text_preview": "Preceding paragraph: Name Correction Table (Body/block 58): Opening row (context, not a declared header): Row 1: Column 1: [empty] | Column 2: Domestic PNRs | Column 3: International PNRs Row 2: Column 1: Amount Paid | Column 2: USD 15 | Column 3: USD 75"
+          },
+          {
+            "rank": 4,
+            "document": "FAQs.docx",
+            "chunk_id": "9c9ccfc385b5453ca580e5e680a670ac217ae7a83c70836a36d495113dfe5cd5",
+            "chunk_index": 8,
+            "cosine_similarity": 0.8349583800846612,
+            "dense_rank": 11,
+            "lexical_rank": 4,
+            "fusion_score": 0.029709507042253523,
+            "text_preview": "[List level 1] - Enter your credit card details for general verification and confirm your offer [List level 1] - You will receive an offer confirmation by email [List level 1] - You may change or cancel your offer up to 13 hours before departure [List level 1] - After that time, all offers received will be assessed and the remaining Business Class seats available will be assigned. If your offer has been accepted, you will receive an email confirming your upgrade within 12 hours before departure."
+          },
+          {
+            "rank": 5,
+            "document": "Baggage Allowance Information.docx",
+            "chunk_id": "cfea193aec0d73f6dde1ada11dcf1a0db832fa824542df513308a4c275d646c2",
+            "chunk_index": 3,
+            "cosine_similarity": 0.8452230407765126,
+            "dense_rank": 5,
+            "lexical_rank": 17,
+            "fusion_score": 0.028371628371628373,
+            "text_preview": "Preceding paragraph: Reference Table Table (Body/block 11): Opening row (context, not a declared header): Row 1: Column 1: Domestic | Column 2: Kisumu, Mombasa, and Malindi Row 2: Column 1: Africa | Column 2: All Africa points Row 3: Column 1: Middle East/Asia | Column 2: Middle East and Asian points Row 4: Column 1: Europe/America | Column 2: All Europe and American points Row 5: Column 1: 5th freedom Sectors | Column 2: Flights that carry passengers to and from any point without connecting thr"
+          }
+        ]
+      }
+    },
+    {
+      "id": "wheelchair-en",
+      "language": "en",
+      "question": "Can I bring my own wheelchair free of charge and how early should I reserve?",
+      "answerable": true,
+      "labelled_relevant_chunk_ids": [
+        "65bd106b254593394ebf37ebaca07b41c54d771546bcba340c46f0cca1a17a63"
+      ],
+      "dense": {
+        "ranking_method": "dense_cosine",
+        "retrieval_ms": 81.654,
+        "context_ms": 3.828,
+        "context_chars": 5435,
+        "context_tokens": 1360,
+        "first_relevant_rank": 1,
+        "precision_at_k": 0.2,
+        "recall_at_k": 1.0,
+        "reciprocal_rank_at_k": 1.0,
+        "context_precision": 0.25,
+        "context_recall": 1.0,
+        "fallback_correct": true,
+        "context_decision": "context_available",
+        "context_reason": "selected_context",
+        "selected_chunk_ids": [
+          "65bd106b254593394ebf37ebaca07b41c54d771546bcba340c46f0cca1a17a63",
+          "6506daa9afd1313e628476a12dcf98169f7734e4c1cd36f9d93df12b0bdcc85c",
+          "8e5cf792a3dc59e0cc270af0b4b3b24d3ebeb639c75e89630ab571f6cb242e1a",
+          "a0f3e20eb1e4e62312acd729c2fbf42374c4e069242c7ccdb15a46693476e89b"
+        ],
+        "excluded": [
+          {
+            "chunk_id": "af7748c98137072361d0e5b3851b136802c0002689ece636655c4112ecd9fede",
+            "reason": "document_limit_exceeded",
+            "duplicate_of": null
+          }
+        ],
+        "candidates": [
+          {
+            "rank": 1,
+            "document": "Special Care.docx",
+            "chunk_id": "65bd106b254593394ebf37ebaca07b41c54d771546bcba340c46f0cca1a17a63",
+            "chunk_index": 8,
+            "cosine_similarity": 0.8858121633529663,
+            "dense_rank": null,
+            "lexical_rank": null,
+            "fusion_score": null,
+            "text_preview": "– Wheelchair Assistance: [List level 1] - Passengers traveling to or from London Heathrow (LHR), London Gatwick (LGW), and Paris Charles de Gaulle (CDG) are kindly advised to request wheelchair assistance at least 48 hours before departure. [List level 1] - Requests submitted within 48 hours of departure cannot be guaranteed, and service availability will be subject to operational constraints at the airport. What Type of Wheelchair can you Bring? [List level 1] - You may bring your own wheelchai"
+          },
+          {
+            "rank": 2,
+            "document": "Baggage Allowance Information.docx",
+            "chunk_id": "6506daa9afd1313e628476a12dcf98169f7734e4c1cd36f9d93df12b0bdcc85c",
+            "chunk_index": 4,
+            "cosine_similarity": 0.8653073906898499,
+            "dense_rank": null,
+            "lexical_rank": null,
+            "fusion_score": null,
+            "text_preview": "[List level 1] - As a mandatory standard each piece of checked in baggage shall have a name label that bears the passenger's name, physical address, and phone number on the outside and also on the inside. The name should be the same as the one mentioned on the ticket. An email address is also recommended. Exceptions [List level 1] - Guests travelling from Jeddah are allowed to carry one free bottle of Holy Water, Max 5 Litres. The bottle must be sealed with a plastic covering to avoid leakage. K"
+          },
+          {
+            "rank": 3,
+            "document": "Special Care.docx",
+            "chunk_id": "8e5cf792a3dc59e0cc270af0b4b3b24d3ebeb639c75e89630ab571f6cb242e1a",
+            "chunk_index": 7,
+            "cosine_similarity": 0.864687442779541,
+            "dense_rank": null,
+            "lexical_rank": null,
+            "fusion_score": null,
+            "text_preview": "committed to making your journey with your infant as smooth and comfortable as possible. We value your trust in us and look forward to serving you and your family on board. Reduced Mobility Passengers with Reduced Mobility General Information [List level 1] - Passengers with reduced mobility are those with a medical or neurodevelopmental disabilities who require individual attention, not given to passengers normally during (dis)embarkation, during the flight, during ground handling and/or in cas"
+          },
+          {
+            "rank": 4,
+            "document": "Special Care.docx",
+            "chunk_id": "a0f3e20eb1e4e62312acd729c2fbf42374c4e069242c7ccdb15a46693476e89b",
+            "chunk_index": 10,
+            "cosine_similarity": 0.8634340763092041,
+            "dense_rank": null,
+            "lexical_rank": null,
+            "fusion_score": null,
+            "text_preview": "Other types of wheelchairs will be transported as check-in baggage. After checking in, you can use one of the wheelchairs we have available for you at the airport. Passengers with reduced mobility travelling alone Except as provided by applicable law, passengers may travel alone on our flights provided they are self supporting on board and can assist in their own evacuation should the need arise. [List level 1] - Self-supporting means that: [List level 1] - Passenger can be able to eat unassiste"
+          },
+          {
+            "rank": 5,
+            "document": "Conditions of Carriage.docx",
+            "chunk_id": "af7748c98137072361d0e5b3851b136802c0002689ece636655c4112ecd9fede",
+            "chunk_index": 16,
+            "cosine_similarity": 0.8598506450653076,
+            "dense_rank": null,
+            "lexical_rank": null,
+            "fusion_score": null,
+            "text_preview": "longer apply to you, or a lesser amount is due, you will be entitled to claim a refund. We are not responsible for any omission or error by our agents or by third parties in advising you of, or collecting, such taxes, fees or charges. 4.3 CURRENCY Fares, taxes, fees and charges are payable in the currency of the country in which the Ticket is issued, unless another currency is indicated by us or our Authorized Agent at or before the time payment is made (for example, because of the non-convertib"
+          }
+        ]
+      },
+      "hybrid": {
+        "ranking_method": "hybrid_rrf",
+        "retrieval_ms": 261.923,
+        "context_ms": 3.534,
+        "context_chars": 5435,
+        "context_tokens": 1360,
+        "first_relevant_rank": 1,
+        "precision_at_k": 0.2,
+        "recall_at_k": 1.0,
+        "reciprocal_rank_at_k": 1.0,
+        "context_precision": 0.25,
+        "context_recall": 1.0,
+        "fallback_correct": true,
+        "context_decision": "context_available",
+        "context_reason": "selected_context",
+        "selected_chunk_ids": [
+          "65bd106b254593394ebf37ebaca07b41c54d771546bcba340c46f0cca1a17a63",
+          "a0f3e20eb1e4e62312acd729c2fbf42374c4e069242c7ccdb15a46693476e89b",
+          "6506daa9afd1313e628476a12dcf98169f7734e4c1cd36f9d93df12b0bdcc85c",
+          "8e5cf792a3dc59e0cc270af0b4b3b24d3ebeb639c75e89630ab571f6cb242e1a"
+        ],
+        "excluded": [
+          {
+            "chunk_id": "27741a5d936f03520c91832155a3fe5dc92d51d5e3b0eebd75f935741226121f",
+            "reason": "document_limit_exceeded",
+            "duplicate_of": null
+          }
+        ],
+        "candidates": [
+          {
+            "rank": 1,
+            "document": "Special Care.docx",
+            "chunk_id": "65bd106b254593394ebf37ebaca07b41c54d771546bcba340c46f0cca1a17a63",
+            "chunk_index": 8,
+            "cosine_similarity": 0.8858119200833124,
+            "dense_rank": 1,
+            "lexical_rank": 1,
+            "fusion_score": 0.03278688524590164,
+            "text_preview": "– Wheelchair Assistance: [List level 1] - Passengers traveling to or from London Heathrow (LHR), London Gatwick (LGW), and Paris Charles de Gaulle (CDG) are kindly advised to request wheelchair assistance at least 48 hours before departure. [List level 1] - Requests submitted within 48 hours of departure cannot be guaranteed, and service availability will be subject to operational constraints at the airport. What Type of Wheelchair can you Bring? [List level 1] - You may bring your own wheelchai"
+          },
+          {
+            "rank": 2,
+            "document": "Special Care.docx",
+            "chunk_id": "a0f3e20eb1e4e62312acd729c2fbf42374c4e069242c7ccdb15a46693476e89b",
+            "chunk_index": 10,
+            "cosine_similarity": 0.8634339467708944,
+            "dense_rank": 4,
+            "lexical_rank": 8,
+            "fusion_score": 0.030330882352941176,
+            "text_preview": "Other types of wheelchairs will be transported as check-in baggage. After checking in, you can use one of the wheelchairs we have available for you at the airport. Passengers with reduced mobility travelling alone Except as provided by applicable law, passengers may travel alone on our flights provided they are self supporting on board and can assist in their own evacuation should the need arise. [List level 1] - Self-supporting means that: [List level 1] - Passenger can be able to eat unassiste"
+          },
+          {
+            "rank": 3,
+            "document": "Baggage Allowance Information.docx",
+            "chunk_id": "6506daa9afd1313e628476a12dcf98169f7734e4c1cd36f9d93df12b0bdcc85c",
+            "chunk_index": 4,
+            "cosine_similarity": 0.8653071163743082,
+            "dense_rank": 2,
+            "lexical_rank": 13,
+            "fusion_score": 0.029827662395050816,
+            "text_preview": "[List level 1] - As a mandatory standard each piece of checked in baggage shall have a name label that bears the passenger's name, physical address, and phone number on the outside and also on the inside. The name should be the same as the one mentioned on the ticket. An email address is also recommended. Exceptions [List level 1] - Guests travelling from Jeddah are allowed to carry one free bottle of Holy Water, Max 5 Litres. The bottle must be sealed with a plastic covering to avoid leakage. K"
+          },
+          {
+            "rank": 4,
+            "document": "Special Care.docx",
+            "chunk_id": "8e5cf792a3dc59e0cc270af0b4b3b24d3ebeb639c75e89630ab571f6cb242e1a",
+            "chunk_index": 7,
+            "cosine_similarity": 0.8646872433295649,
+            "dense_rank": 3,
+            "lexical_rank": 17,
+            "fusion_score": 0.02886002886002886,
+            "text_preview": "committed to making your journey with your infant as smooth and comfortable as possible. We value your trust in us and look forward to serving you and your family on board. Reduced Mobility Passengers with Reduced Mobility General Information [List level 1] - Passengers with reduced mobility are those with a medical or neurodevelopmental disabilities who require individual attention, not given to passengers normally during (dis)embarkation, during the flight, during ground handling and/or in cas"
+          },
+          {
+            "rank": 5,
+            "document": "Conditions of Carriage.docx",
+            "chunk_id": "27741a5d936f03520c91832155a3fe5dc92d51d5e3b0eebd75f935741226121f",
+            "chunk_index": 28,
+            "cosine_similarity": 0.8557773053657822,
+            "dense_rank": 8,
+            "lexical_rank": 16,
+            "fusion_score": 0.02786377708978328,
+            "text_preview": "is unable to produce the Baggage Check and identify the Baggage by means of a Baggage Identification Tag, we will deliver the Baggage to such person only on condition that he or she establishes to our satisfaction his or her right to the Baggage. 8.9 ANIMALS We reserve the right, at our absolute discretion, to refuse to carry any animals. If we agree to carry any animals, they will be carried subject to the following conditions: 8.9.1 You must ensure that animals such as dogs, cats, household bi"
+          }
+        ]
+      }
+    },
+    {
+      "id": "wheelchair-sw",
+      "language": "sw",
+      "question": "Ninaweza kuleta kiti changu cha magurudumu bila malipo na niweke nafasi saa ngapi kabla ya safari?",
+      "answerable": true,
+      "labelled_relevant_chunk_ids": [
+        "65bd106b254593394ebf37ebaca07b41c54d771546bcba340c46f0cca1a17a63"
+      ],
+      "dense": {
+        "ranking_method": "dense_cosine",
+        "retrieval_ms": 89.518,
+        "context_ms": 3.398,
+        "context_chars": 4445,
+        "context_tokens": 1113,
+        "first_relevant_rank": 1,
+        "precision_at_k": 0.2,
+        "recall_at_k": 1.0,
+        "reciprocal_rank_at_k": 1.0,
+        "context_precision": 0.25,
+        "context_recall": 1.0,
+        "fallback_correct": true,
+        "context_decision": "context_available",
+        "context_reason": "selected_context",
+        "selected_chunk_ids": [
+          "65bd106b254593394ebf37ebaca07b41c54d771546bcba340c46f0cca1a17a63",
+          "83e146b4c9e8365fc56728146554eef2cf42731f5fcd938fa3cf3bd9813a8617",
+          "b656f106726ee5b7e6486043571bfdbb87ba7dc98512446a71faaedd6d5c7d6f",
+          "af7748c98137072361d0e5b3851b136802c0002689ece636655c4112ecd9fede"
+        ],
+        "excluded": [
+          {
+            "chunk_id": "71995436b1d12fe055841c0456e90af344d052a77be0342b12a3f257b5e64af1",
+            "reason": "document_limit_exceeded",
+            "duplicate_of": null
+          }
+        ],
+        "candidates": [
+          {
+            "rank": 1,
+            "document": "Special Care.docx",
+            "chunk_id": "65bd106b254593394ebf37ebaca07b41c54d771546bcba340c46f0cca1a17a63",
+            "chunk_index": 8,
+            "cosine_similarity": 0.8495841026306152,
+            "dense_rank": null,
+            "lexical_rank": null,
+            "fusion_score": null,
+            "text_preview": "– Wheelchair Assistance: [List level 1] - Passengers traveling to or from London Heathrow (LHR), London Gatwick (LGW), and Paris Charles de Gaulle (CDG) are kindly advised to request wheelchair assistance at least 48 hours before departure. [List level 1] - Requests submitted within 48 hours of departure cannot be guaranteed, and service availability will be subject to operational constraints at the airport. What Type of Wheelchair can you Bring? [List level 1] - You may bring your own wheelchai"
+          },
+          {
+            "rank": 2,
+            "document": "Special Care.docx",
+            "chunk_id": "83e146b4c9e8365fc56728146554eef2cf42731f5fcd938fa3cf3bd9813a8617",
+            "chunk_index": 28,
+            "cosine_similarity": 0.8484750986099243,
+            "dense_rank": null,
+            "lexical_rank": null,
+            "fusion_score": null,
+            "text_preview": "6. Stretcher and Mobility Assistance Limited mobility? We’ve got you covered. Kenya Airways provides stretcher services subject to the medical clearance and conditions of carriage. Stretcher case clearance requires at least 48hrs prior notification. You will however, require an appropriate medical escort and may be asked to provide a medical certificate. 7. Medical Escort Services Patients requiring medical support on board, such as those travelling on a stretcher or requiring prescribed oxygen "
+          },
+          {
+            "rank": 3,
+            "document": "Conditions of Carriage.docx",
+            "chunk_id": "b656f106726ee5b7e6486043571bfdbb87ba7dc98512446a71faaedd6d5c7d6f",
+            "chunk_index": 17,
+            "cosine_similarity": 0.8480316996574402,
+            "dense_rank": null,
+            "lexical_rank": null,
+            "fusion_score": null,
+            "text_preview": "of medical equipment and mobility aids may be accepted on a provisional basis until such clearance is obtained. Requests should generally be made no later than 48–96 hours before scheduled departure, depending on the nature of assistance required. 5.1.4 If, at the time of booking or subsequently, you provide us with false, misleading, or incomplete information that is material to your reservation (including information relating to your identity, travel documents, medical condition, or special as"
+          },
+          {
+            "rank": 4,
+            "document": "Conditions of Carriage.docx",
+            "chunk_id": "af7748c98137072361d0e5b3851b136802c0002689ece636655c4112ecd9fede",
+            "chunk_index": 16,
+            "cosine_similarity": 0.8438618779182434,
+            "dense_rank": null,
+            "lexical_rank": null,
+            "fusion_score": null,
+            "text_preview": "longer apply to you, or a lesser amount is due, you will be entitled to claim a refund. We are not responsible for any omission or error by our agents or by third parties in advising you of, or collecting, such taxes, fees or charges. 4.3 CURRENCY Fares, taxes, fees and charges are payable in the currency of the country in which the Ticket is issued, unless another currency is indicated by us or our Authorized Agent at or before the time payment is made (for example, because of the non-convertib"
+          },
+          {
+            "rank": 5,
+            "document": "FAQs.docx",
+            "chunk_id": "71995436b1d12fe055841c0456e90af344d052a77be0342b12a3f257b5e64af1",
+            "chunk_index": 3,
+            "cosine_similarity": 0.8434703946113586,
+            "dense_rank": null,
+            "lexical_rank": null,
+            "fusion_score": null,
+            "text_preview": "meet the exit row seat safety requirements, we strongly recommend you to book early as seats are available on a first-come, first-served basis. Extra Legroom Seats are subject to availability, terms & conditions, and other eligibility requirements. What should I do if my Promotional Code is not working? Use the feedback icon hanging on the right side of your browsing window Where do I present my credit/debit card? If Kenya Airways advise you to present the card used for booking, it must be prese"
+          }
+        ]
+      },
+      "hybrid": {
+        "ranking_method": "hybrid_rrf",
+        "retrieval_ms": 293.044,
+        "context_ms": 4.417,
+        "context_chars": 5106,
+        "context_tokens": 1278,
+        "first_relevant_rank": 1,
+        "precision_at_k": 0.2,
+        "recall_at_k": 1.0,
+        "reciprocal_rank_at_k": 1.0,
+        "context_precision": 0.25,
+        "context_recall": 1.0,
+        "fallback_correct": true,
+        "context_decision": "context_available",
+        "context_reason": "selected_context",
+        "selected_chunk_ids": [
+          "65bd106b254593394ebf37ebaca07b41c54d771546bcba340c46f0cca1a17a63",
+          "b656f106726ee5b7e6486043571bfdbb87ba7dc98512446a71faaedd6d5c7d6f",
+          "af7748c98137072361d0e5b3851b136802c0002689ece636655c4112ecd9fede",
+          "8e5cf792a3dc59e0cc270af0b4b3b24d3ebeb639c75e89630ab571f6cb242e1a"
+        ],
+        "excluded": [
+          {
+            "chunk_id": "6506daa9afd1313e628476a12dcf98169f7734e4c1cd36f9d93df12b0bdcc85c",
+            "reason": "document_limit_exceeded",
+            "duplicate_of": null
+          }
+        ],
+        "candidates": [
+          {
+            "rank": 1,
+            "document": "Special Care.docx",
+            "chunk_id": "65bd106b254593394ebf37ebaca07b41c54d771546bcba340c46f0cca1a17a63",
+            "chunk_index": 8,
+            "cosine_similarity": 0.8495839856743651,
+            "dense_rank": 1,
+            "lexical_rank": 1,
+            "fusion_score": 0.03278688524590164,
+            "text_preview": "– Wheelchair Assistance: [List level 1] - Passengers traveling to or from London Heathrow (LHR), London Gatwick (LGW), and Paris Charles de Gaulle (CDG) are kindly advised to request wheelchair assistance at least 48 hours before departure. [List level 1] - Requests submitted within 48 hours of departure cannot be guaranteed, and service availability will be subject to operational constraints at the airport. What Type of Wheelchair can you Bring? [List level 1] - You may bring your own wheelchai"
+          },
+          {
+            "rank": 2,
+            "document": "Conditions of Carriage.docx",
+            "chunk_id": "b656f106726ee5b7e6486043571bfdbb87ba7dc98512446a71faaedd6d5c7d6f",
+            "chunk_index": 17,
+            "cosine_similarity": 0.8480316285330874,
+            "dense_rank": 3,
+            "lexical_rank": 4,
+            "fusion_score": 0.03149801587301587,
+            "text_preview": "of medical equipment and mobility aids may be accepted on a provisional basis until such clearance is obtained. Requests should generally be made no later than 48–96 hours before scheduled departure, depending on the nature of assistance required. 5.1.4 If, at the time of booking or subsequently, you provide us with false, misleading, or incomplete information that is material to your reservation (including information relating to your identity, travel documents, medical condition, or special as"
+          },
+          {
+            "rank": 3,
+            "document": "Conditions of Carriage.docx",
+            "chunk_id": "af7748c98137072361d0e5b3851b136802c0002689ece636655c4112ecd9fede",
+            "chunk_index": 16,
+            "cosine_similarity": 0.8438619108006383,
+            "dense_rank": 4,
+            "lexical_rank": 3,
+            "fusion_score": 0.03149801587301587,
+            "text_preview": "longer apply to you, or a lesser amount is due, you will be entitled to claim a refund. We are not responsible for any omission or error by our agents or by third parties in advising you of, or collecting, such taxes, fees or charges. 4.3 CURRENCY Fares, taxes, fees and charges are payable in the currency of the country in which the Ticket is issued, unless another currency is indicated by us or our Authorized Agent at or before the time payment is made (for example, because of the non-convertib"
+          },
+          {
+            "rank": 4,
+            "document": "Special Care.docx",
+            "chunk_id": "8e5cf792a3dc59e0cc270af0b4b3b24d3ebeb639c75e89630ab571f6cb242e1a",
+            "chunk_index": 7,
+            "cosine_similarity": 0.8387826456088504,
+            "dense_rank": 7,
+            "lexical_rank": 2,
+            "fusion_score": 0.031054405392392875,
+            "text_preview": "committed to making your journey with your infant as smooth and comfortable as possible. We value your trust in us and look forward to serving you and your family on board. Reduced Mobility Passengers with Reduced Mobility General Information [List level 1] - Passengers with reduced mobility are those with a medical or neurodevelopmental disabilities who require individual attention, not given to passengers normally during (dis)embarkation, during the flight, during ground handling and/or in cas"
+          },
+          {
+            "rank": 5,
+            "document": "Baggage Allowance Information.docx",
+            "chunk_id": "6506daa9afd1313e628476a12dcf98169f7734e4c1cd36f9d93df12b0bdcc85c",
+            "chunk_index": 4,
+            "cosine_similarity": 0.8375461736714392,
+            "dense_rank": 8,
+            "lexical_rank": 8,
+            "fusion_score": 0.029411764705882353,
+            "text_preview": "[List level 1] - As a mandatory standard each piece of checked in baggage shall have a name label that bears the passenger's name, physical address, and phone number on the outside and also on the inside. The name should be the same as the one mentioned on the ticket. An email address is also recommended. Exceptions [List level 1] - Guests travelling from Jeddah are allowed to carry one free bottle of Holy Water, Max 5 Litres. The bottle must be sealed with a plastic covering to avoid leakage. K"
+          }
+        ]
+      }
+    },
+    {
+      "id": "wheelchair-mixed",
+      "language": "mixed",
+      "question": "Can I bring kiti changu cha magurudumu free of charge, na reservation ni how many hours before departure?",
+      "answerable": true,
+      "labelled_relevant_chunk_ids": [
+        "65bd106b254593394ebf37ebaca07b41c54d771546bcba340c46f0cca1a17a63"
+      ],
+      "dense": {
+        "ranking_method": "dense_cosine",
+        "retrieval_ms": 87.244,
+        "context_ms": 2.541,
+        "context_chars": 3632,
+        "context_tokens": 909,
+        "first_relevant_rank": 1,
+        "precision_at_k": 0.2,
+        "recall_at_k": 1.0,
+        "reciprocal_rank_at_k": 1.0,
+        "context_precision": 0.3333333333333333,
+        "context_recall": 1.0,
+        "fallback_correct": true,
+        "context_decision": "context_available",
+        "context_reason": "selected_context",
+        "selected_chunk_ids": [
+          "65bd106b254593394ebf37ebaca07b41c54d771546bcba340c46f0cca1a17a63",
+          "af7748c98137072361d0e5b3851b136802c0002689ece636655c4112ecd9fede",
+          "b656f106726ee5b7e6486043571bfdbb87ba7dc98512446a71faaedd6d5c7d6f"
+        ],
+        "excluded": [
+          {
+            "chunk_id": "71995436b1d12fe055841c0456e90af344d052a77be0342b12a3f257b5e64af1",
+            "reason": "document_limit_exceeded",
+            "duplicate_of": null
+          },
+          {
+            "chunk_id": "387d08b9fd60495e7a58af6e371cb0f34c0ab5b1763b61ebe8e2bd86bd730b9a",
+            "reason": "document_limit_exceeded",
+            "duplicate_of": null
+          }
+        ],
+        "candidates": [
+          {
+            "rank": 1,
+            "document": "Special Care.docx",
+            "chunk_id": "65bd106b254593394ebf37ebaca07b41c54d771546bcba340c46f0cca1a17a63",
+            "chunk_index": 8,
+            "cosine_similarity": 0.8584251403808594,
+            "dense_rank": null,
+            "lexical_rank": null,
+            "fusion_score": null,
+            "text_preview": "– Wheelchair Assistance: [List level 1] - Passengers traveling to or from London Heathrow (LHR), London Gatwick (LGW), and Paris Charles de Gaulle (CDG) are kindly advised to request wheelchair assistance at least 48 hours before departure. [List level 1] - Requests submitted within 48 hours of departure cannot be guaranteed, and service availability will be subject to operational constraints at the airport. What Type of Wheelchair can you Bring? [List level 1] - You may bring your own wheelchai"
+          },
+          {
+            "rank": 2,
+            "document": "Conditions of Carriage.docx",
+            "chunk_id": "af7748c98137072361d0e5b3851b136802c0002689ece636655c4112ecd9fede",
+            "chunk_index": 16,
+            "cosine_similarity": 0.8575384616851807,
+            "dense_rank": null,
+            "lexical_rank": null,
+            "fusion_score": null,
+            "text_preview": "longer apply to you, or a lesser amount is due, you will be entitled to claim a refund. We are not responsible for any omission or error by our agents or by third parties in advising you of, or collecting, such taxes, fees or charges. 4.3 CURRENCY Fares, taxes, fees and charges are payable in the currency of the country in which the Ticket is issued, unless another currency is indicated by us or our Authorized Agent at or before the time payment is made (for example, because of the non-convertib"
+          },
+          {
+            "rank": 3,
+            "document": "FAQs.docx",
+            "chunk_id": "71995436b1d12fe055841c0456e90af344d052a77be0342b12a3f257b5e64af1",
+            "chunk_index": 3,
+            "cosine_similarity": 0.852066695690155,
+            "dense_rank": null,
+            "lexical_rank": null,
+            "fusion_score": null,
+            "text_preview": "meet the exit row seat safety requirements, we strongly recommend you to book early as seats are available on a first-come, first-served basis. Extra Legroom Seats are subject to availability, terms & conditions, and other eligibility requirements. What should I do if my Promotional Code is not working? Use the feedback icon hanging on the right side of your browsing window Where do I present my credit/debit card? If Kenya Airways advise you to present the card used for booking, it must be prese"
+          },
+          {
+            "rank": 4,
+            "document": "Conditions of Carriage.docx",
+            "chunk_id": "b656f106726ee5b7e6486043571bfdbb87ba7dc98512446a71faaedd6d5c7d6f",
+            "chunk_index": 17,
+            "cosine_similarity": 0.8477649688720703,
+            "dense_rank": null,
+            "lexical_rank": null,
+            "fusion_score": null,
+            "text_preview": "of medical equipment and mobility aids may be accepted on a provisional basis until such clearance is obtained. Requests should generally be made no later than 48–96 hours before scheduled departure, depending on the nature of assistance required. 5.1.4 If, at the time of booking or subsequently, you provide us with false, misleading, or incomplete information that is material to your reservation (including information relating to your identity, travel documents, medical condition, or special as"
+          },
+          {
+            "rank": 5,
+            "document": "Check-in.docx",
+            "chunk_id": "387d08b9fd60495e7a58af6e371cb0f34c0ab5b1763b61ebe8e2bd86bd730b9a",
+            "chunk_index": 1,
+            "cosine_similarity": 0.8458630442619324,
+            "dense_rank": null,
+            "lexical_rank": null,
+            "fusion_score": null,
+            "text_preview": "By optig for online check-in, you're not just saving time; you're ensuring a smooth and stress-free start to your journey. Say goodbye to long lines and hello to an effortless way to prepare for your flight When can I Check in? Online Check-in: With an electronic ticket, online check-in can be performed from 48 hours up until 1 hour before departure. By taking advantage of this service, you can bypass long lines at selected airports and even pick your preferred seat. Once completed, you can prin"
+          }
+        ]
+      },
+      "hybrid": {
+        "ranking_method": "hybrid_rrf",
+        "retrieval_ms": 244.751,
+        "context_ms": 4.412,
+        "context_chars": 5106,
+        "context_tokens": 1278,
+        "first_relevant_rank": 1,
+        "precision_at_k": 0.2,
+        "recall_at_k": 1.0,
+        "reciprocal_rank_at_k": 1.0,
+        "context_precision": 0.25,
+        "context_recall": 1.0,
+        "fallback_correct": true,
+        "context_decision": "context_available",
+        "context_reason": "selected_context",
+        "selected_chunk_ids": [
+          "65bd106b254593394ebf37ebaca07b41c54d771546bcba340c46f0cca1a17a63",
+          "af7748c98137072361d0e5b3851b136802c0002689ece636655c4112ecd9fede",
+          "8e5cf792a3dc59e0cc270af0b4b3b24d3ebeb639c75e89630ab571f6cb242e1a",
+          "b656f106726ee5b7e6486043571bfdbb87ba7dc98512446a71faaedd6d5c7d6f"
+        ],
+        "excluded": [
+          {
+            "chunk_id": "387d08b9fd60495e7a58af6e371cb0f34c0ab5b1763b61ebe8e2bd86bd730b9a",
+            "reason": "document_limit_exceeded",
+            "duplicate_of": null
+          }
+        ],
+        "candidates": [
+          {
+            "rank": 1,
+            "document": "Special Care.docx",
+            "chunk_id": "65bd106b254593394ebf37ebaca07b41c54d771546bcba340c46f0cca1a17a63",
+            "chunk_index": 8,
+            "cosine_similarity": 0.8584249063353022,
+            "dense_rank": 1,
+            "lexical_rank": 1,
+            "fusion_score": 0.03278688524590164,
+            "text_preview": "– Wheelchair Assistance: [List level 1] - Passengers traveling to or from London Heathrow (LHR), London Gatwick (LGW), and Paris Charles de Gaulle (CDG) are kindly advised to request wheelchair assistance at least 48 hours before departure. [List level 1] - Requests submitted within 48 hours of departure cannot be guaranteed, and service availability will be subject to operational constraints at the airport. What Type of Wheelchair can you Bring? [List level 1] - You may bring your own wheelchai"
+          },
+          {
+            "rank": 2,
+            "document": "Conditions of Carriage.docx",
+            "chunk_id": "af7748c98137072361d0e5b3851b136802c0002689ece636655c4112ecd9fede",
+            "chunk_index": 16,
+            "cosine_similarity": 0.8575384137641912,
+            "dense_rank": 2,
+            "lexical_rank": 6,
+            "fusion_score": 0.03128054740957967,
+            "text_preview": "longer apply to you, or a lesser amount is due, you will be entitled to claim a refund. We are not responsible for any omission or error by our agents or by third parties in advising you of, or collecting, such taxes, fees or charges. 4.3 CURRENCY Fares, taxes, fees and charges are payable in the currency of the country in which the Ticket is issued, unless another currency is indicated by us or our Authorized Agent at or before the time payment is made (for example, because of the non-convertib"
+          },
+          {
+            "rank": 3,
+            "document": "Special Care.docx",
+            "chunk_id": "8e5cf792a3dc59e0cc270af0b4b3b24d3ebeb639c75e89630ab571f6cb242e1a",
+            "chunk_index": 7,
+            "cosine_similarity": 0.8453489717047883,
+            "dense_rank": 7,
+            "lexical_rank": 2,
+            "fusion_score": 0.031054405392392875,
+            "text_preview": "committed to making your journey with your infant as smooth and comfortable as possible. We value your trust in us and look forward to serving you and your family on board. Reduced Mobility Passengers with Reduced Mobility General Information [List level 1] - Passengers with reduced mobility are those with a medical or neurodevelopmental disabilities who require individual attention, not given to passengers normally during (dis)embarkation, during the flight, during ground handling and/or in cas"
+          },
+          {
+            "rank": 4,
+            "document": "Check-in.docx",
+            "chunk_id": "387d08b9fd60495e7a58af6e371cb0f34c0ab5b1763b61ebe8e2bd86bd730b9a",
+            "chunk_index": 1,
+            "cosine_similarity": 0.8458629659243962,
+            "dense_rank": 5,
+            "lexical_rank": 4,
+            "fusion_score": 0.031009615384615385,
+            "text_preview": "By optig for online check-in, you're not just saving time; you're ensuring a smooth and stress-free start to your journey. Say goodbye to long lines and hello to an effortless way to prepare for your flight When can I Check in? Online Check-in: With an electronic ticket, online check-in can be performed from 48 hours up until 1 hour before departure. By taking advantage of this service, you can bypass long lines at selected airports and even pick your preferred seat. Once completed, you can prin"
+          },
+          {
+            "rank": 5,
+            "document": "Conditions of Carriage.docx",
+            "chunk_id": "b656f106726ee5b7e6486043571bfdbb87ba7dc98512446a71faaedd6d5c7d6f",
+            "chunk_index": 17,
+            "cosine_similarity": 0.8477647036530861,
+            "dense_rank": 4,
+            "lexical_rank": 8,
+            "fusion_score": 0.030330882352941176,
+            "text_preview": "of medical equipment and mobility aids may be accepted on a provisional basis until such clearance is obtained. Requests should generally be made no later than 48–96 hours before scheduled departure, depending on the nature of assistance required. 5.1.4 If, at the time of booking or subsequently, you provide us with false, misleading, or incomplete information that is material to your reservation (including information relating to your identity, travel documents, medical condition, or special as"
+          }
+        ]
+      }
+    },
+    {
+      "id": "baggage-en",
+      "language": "en",
+      "question": "What is the business class checked baggage allowance between Africa and Europe?",
+      "answerable": true,
+      "labelled_relevant_chunk_ids": [
+        "c98e558acca18cb892616cdf275ce920947e3f4d79bc22b77607530949c96d08"
+      ],
+      "dense": {
+        "ranking_method": "dense_cosine",
+        "retrieval_ms": 83.124,
+        "context_ms": 2.62,
+        "context_chars": 4576,
+        "context_tokens": 1145,
+        "first_relevant_rank": null,
+        "precision_at_k": 0.0,
+        "recall_at_k": 0.0,
+        "reciprocal_rank_at_k": 0,
+        "context_precision": 0.0,
+        "context_recall": 0.0,
+        "fallback_correct": true,
+        "context_decision": "context_available",
+        "context_reason": "selected_context",
+        "selected_chunk_ids": [
+          "b4a045cd6f8b69930dfc1a8e374fd867f1e66c2da2b55accd361d072cef0818e",
+          "cfea193aec0d73f6dde1ada11dcf1a0db832fa824542df513308a4c275d646c2",
+          "31cad70282aceb8596b8e786a6db1ab5da7cae336d86a9cf6c147cf7cd32edc6",
+          "0112dbfe8e254d64f8ee4da022d1775c1c855fa2884cefbbdd9422dac8a3cd4c"
+        ],
+        "excluded": [
+          {
+            "chunk_id": "af900eb57df3a440a1c9000cb8fd07aeb8fa85c481293d7bbd40bc2b274e8583",
+            "reason": "document_limit_exceeded",
+            "duplicate_of": null
+          }
+        ],
+        "candidates": [
+          {
+            "rank": 1,
+            "document": "Baggage Allowance Information.docx",
+            "chunk_id": "b4a045cd6f8b69930dfc1a8e374fd867f1e66c2da2b55accd361d072cef0818e",
+            "chunk_index": 0,
+            "cosine_similarity": 0.8515218496322632,
+            "dense_rank": null,
+            "lexical_rank": null,
+            "fusion_score": null,
+            "text_preview": "Baggage Allowance Link to Baggage Allowance website page: https://www.kenya-airways.com/en-ke/plan/baggage-information/baggage-allowance/ Free Checked Baggage Allowance: Baggage allowance details shown are indications for Kenya Airways-operated flights only and may be subject to change depending on the aircraft operated on the day of travel. Flights operated by other airlines under a Kenya Airways flight number may be subject to other baggage restrictions."
+          },
+          {
+            "rank": 2,
+            "document": "Baggage Allowance Information.docx",
+            "chunk_id": "cfea193aec0d73f6dde1ada11dcf1a0db832fa824542df513308a4c275d646c2",
+            "chunk_index": 3,
+            "cosine_similarity": 0.8477972745895386,
+            "dense_rank": null,
+            "lexical_rank": null,
+            "fusion_score": null,
+            "text_preview": "Preceding paragraph: Reference Table Table (Body/block 11): Opening row (context, not a declared header): Row 1: Column 1: Domestic | Column 2: Kisumu, Mombasa, and Malindi Row 2: Column 1: Africa | Column 2: All Africa points Row 3: Column 1: Middle East/Asia | Column 2: Middle East and Asian points Row 4: Column 1: Europe/America | Column 2: All Europe and American points Row 5: Column 1: 5th freedom Sectors | Column 2: Flights that carry passengers to and from any point without connecting thr"
+          },
+          {
+            "rank": 3,
+            "document": "Flight upgrade.docx",
+            "chunk_id": "31cad70282aceb8596b8e786a6db1ab5da7cae336d86a9cf6c147cf7cd32edc6",
+            "chunk_index": 0,
+            "cosine_similarity": 0.8476824760437012,
+            "dense_rank": null,
+            "lexical_rank": null,
+            "fusion_score": null,
+            "text_preview": "Upgrade Flight Upgrade Flight link: https://www.kenya-airways.com/en-ke/book-manage/manage-booking/upgrade-flight/ Upgrade to Business Class: You now have various options of upgrading to our award-winning business class on Kenya Airways. With an economy class ticket, upgrading to business class and enjoying award-winning amenities is easy. Bid to Upgrade: Holding an economy class ticket? Our Bid to Upgrade Program allows you to quote an amount you would like to pay for the upgrade to Business Cl"
+          },
+          {
+            "rank": 4,
+            "document": "Conditions of Carriage.docx",
+            "chunk_id": "af900eb57df3a440a1c9000cb8fd07aeb8fa85c481293d7bbd40bc2b274e8583",
+            "chunk_index": 1,
+            "cosine_similarity": 0.8454396724700928,
+            "dense_rank": null,
+            "lexical_rank": null,
+            "fusion_score": null,
+            "text_preview": "property accompanying you in connection with your trip. Unless otherwise specified, it consists of both your Checked and Unchecked Baggage. \"BAGGAGE CHECK\" means those portions of the Ticket which relate to the carriage of your Checked Baggage. \"BAGGAGE IDENTIFICATION TAG\" means a document issued solely for identification of Checked Baggage. \"CARRIER\" means an air carrier other than ourselves, whose airline designator code appears on your Ticket or on a Conjunction Ticket. \"CHECKED BAGGAGE\" mean"
+          },
+          {
+            "rank": 5,
+            "document": "Flight upgrade.docx",
+            "chunk_id": "0112dbfe8e254d64f8ee4da022d1775c1c855fa2884cefbbdd9422dac8a3cd4c",
+            "chunk_index": 1,
+            "cosine_similarity": 0.8436133861541748,
+            "dense_rank": null,
+            "lexical_rank": null,
+            "fusion_score": null,
+            "text_preview": "onboard with a wide array of fine wines. [List level 1] - More than 100 movies, documentaries, and radio shows on a 15 inch screen for your in-flight entertainment. [List level 1] - A wide selection of newspapers and international magazines. NOTE: Tickets upgraded to Business class on the basis of a last minute airport upgrade, bid-upgrade, QR Code or on a complimentary basis accrue points on the basis of the original ticket purchased. Do you need to book your ticket first? Book here(Link: https"
+          }
+        ]
+      },
+      "hybrid": {
+        "ranking_method": "hybrid_rrf",
+        "retrieval_ms": 292.68,
+        "context_ms": 1.176,
+        "context_chars": 2595,
+        "context_tokens": 657,
+        "first_relevant_rank": 2,
+        "precision_at_k": 0.2,
+        "recall_at_k": 1.0,
+        "reciprocal_rank_at_k": 0.5,
+        "context_precision": 0.3333333333333333,
+        "context_recall": 1.0,
+        "fallback_correct": true,
+        "context_decision": "context_available",
+        "context_reason": "selected_context",
+        "selected_chunk_ids": [
+          "cfea193aec0d73f6dde1ada11dcf1a0db832fa824542df513308a4c275d646c2",
+          "c98e558acca18cb892616cdf275ce920947e3f4d79bc22b77607530949c96d08",
+          "b4a045cd6f8b69930dfc1a8e374fd867f1e66c2da2b55accd361d072cef0818e"
+        ],
+        "excluded": [
+          {
+            "chunk_id": "53e2c5f1af391099ee23e0bfd24fbbf7382609aab60c057f12517160a6d2937f",
+            "reason": "document_chunk_limit_exceeded",
+            "duplicate_of": null
+          },
+          {
+            "chunk_id": "8cc9a5b8ec30dd8bc41542234ef085070a3be4c57c651546c568f878ec832182",
+            "reason": "document_chunk_limit_exceeded",
+            "duplicate_of": null
+          }
+        ],
+        "candidates": [
+          {
+            "rank": 1,
+            "document": "Baggage Allowance Information.docx",
+            "chunk_id": "cfea193aec0d73f6dde1ada11dcf1a0db832fa824542df513308a4c275d646c2",
+            "chunk_index": 3,
+            "cosine_similarity": 0.8477971621685807,
+            "dense_rank": 2,
+            "lexical_rank": 2,
+            "fusion_score": 0.03225806451612903,
+            "text_preview": "Preceding paragraph: Reference Table Table (Body/block 11): Opening row (context, not a declared header): Row 1: Column 1: Domestic | Column 2: Kisumu, Mombasa, and Malindi Row 2: Column 1: Africa | Column 2: All Africa points Row 3: Column 1: Middle East/Asia | Column 2: Middle East and Asian points Row 4: Column 1: Europe/America | Column 2: All Europe and American points Row 5: Column 1: 5th freedom Sectors | Column 2: Flights that carry passengers to and from any point without connecting thr"
+          },
+          {
+            "rank": 2,
+            "document": "Baggage Allowance Information.docx",
+            "chunk_id": "c98e558acca18cb892616cdf275ce920947e3f4d79bc22b77607530949c96d08",
+            "chunk_index": 1,
+            "cosine_similarity": 0.8396810448234071,
+            "dense_rank": 7,
+            "lexical_rank": 1,
+            "fusion_score": 0.03131881575727918,
+            "text_preview": "Preceding paragraph: Baggage allowance details shown are indications for Kenya Airways-operated flights only and may be subject to change depending on the aircraft operated on the day of travel. Flights operated by other airlines under a Kenya Airways flight number may be subject to other baggage restrictions. Table (Body/block 6): Opening row (context, not a declared header): Row 1: Column 1: ROUTING (<-> FROM/TO) | Column 2: BUSINESS CLASS | Column 3: ECONOMY Row 2: Column 1: Africa <-> Americ"
+          },
+          {
+            "rank": 3,
+            "document": "Baggage Allowance Information.docx",
+            "chunk_id": "b4a045cd6f8b69930dfc1a8e374fd867f1e66c2da2b55accd361d072cef0818e",
+            "chunk_index": 0,
+            "cosine_similarity": 0.8515216458257335,
+            "dense_rank": 1,
+            "lexical_rank": 13,
+            "fusion_score": 0.03009207275993712,
+            "text_preview": "Baggage Allowance Link to Baggage Allowance website page: https://www.kenya-airways.com/en-ke/plan/baggage-information/baggage-allowance/ Free Checked Baggage Allowance: Baggage allowance details shown are indications for Kenya Airways-operated flights only and may be subject to change depending on the aircraft operated on the day of travel. Flights operated by other airlines under a Kenya Airways flight number may be subject to other baggage restrictions."
+          },
+          {
+            "rank": 4,
+            "document": "Baggage Allowance Information.docx",
+            "chunk_id": "53e2c5f1af391099ee23e0bfd24fbbf7382609aab60c057f12517160a6d2937f",
+            "chunk_index": 26,
+            "cosine_similarity": 0.8335132605973099,
+            "dense_rank": 11,
+            "lexical_rank": 6,
+            "fusion_score": 0.029236022193768675,
+            "text_preview": "Preceding paragraph: You may bring hand luggage on board the cabin during your journey with Kenya Airways in addition to the standard checked-in baggage allowance you are permitted to carry: Table (Body/block 196): Opening row (context, not a declared header): Row 1: Column 1: CABIN | Column 2: FLIGHTS TO/FROM EU, US & UK* | Column 3: ALL OTHER ROUTES* | Column 4: PERSONAL ACCESSORIES Row 2: Column 1: Business Class | Column 2: 2 piece (max L55xW25xH35cm each) + 1 Accessory (Total weight max 18k"
+          },
+          {
+            "rank": 5,
+            "document": "Baggage Allowance Information.docx",
+            "chunk_id": "8cc9a5b8ec30dd8bc41542234ef085070a3be4c57c651546c568f878ec832182",
+            "chunk_index": 24,
+            "cosine_similarity": 0.8300224278953311,
+            "dense_rank": 15,
+            "lexical_rank": 3,
+            "fusion_score": 0.029206349206349208,
+            "text_preview": "Preceding paragraph: Below are the KQ Media/Entertainment Baggage Rates: Table (Body/block 182): Opening row (context, not a declared header): Row 1: Column 1: ROUTING | Column 2: EXTRA PIECE @ 23KGS Row 2: Column 1: Africa-America/Europe | Column 2: 125 Row 3: Column 1: Africa-Middle East/Asia | Column 2: 150 Row 4: Column 1: Africa 5th Freedom Sectors | Column 2: 30 Row 5: Column 1: Intra Africa | Column 2: 50 Row 6: Column 1: Intra Domestic | Column 2: 25 Following paragraph: Conditions:"
+          }
+        ]
+      }
+    },
+    {
+      "id": "baggage-sw",
+      "language": "sw",
+      "question": "Ninaruhusiwa kubeba mizigo kiasi gani katika daraja la biashara kati ya Afrika na Ulaya?",
+      "answerable": true,
+      "labelled_relevant_chunk_ids": [
+        "c98e558acca18cb892616cdf275ce920947e3f4d79bc22b77607530949c96d08"
+      ],
+      "dense": {
+        "ranking_method": "dense_cosine",
+        "retrieval_ms": 92.298,
+        "context_ms": 1.679,
+        "context_chars": 2825,
+        "context_tokens": 714,
+        "first_relevant_rank": 2,
+        "precision_at_k": 0.2,
+        "recall_at_k": 1.0,
+        "reciprocal_rank_at_k": 0.5,
+        "context_precision": 0.5,
+        "context_recall": 1.0,
+        "fallback_correct": true,
+        "context_decision": "context_available",
+        "context_reason": "selected_context",
+        "selected_chunk_ids": [
+          "31cad70282aceb8596b8e786a6db1ab5da7cae336d86a9cf6c147cf7cd32edc6",
+          "c98e558acca18cb892616cdf275ce920947e3f4d79bc22b77607530949c96d08"
+        ],
+        "excluded": [
+          {
+            "chunk_id": "c3410f22052696f3d04d251e0980326f8f3996912d21804497ca745d0d0315c3",
+            "reason": "document_limit_exceeded",
+            "duplicate_of": null
+          },
+          {
+            "chunk_id": "383948ddb660af4e3cc7c4928522777638c2ce1e60c7b7411b9ec278ba711aca",
+            "reason": "document_limit_exceeded",
+            "duplicate_of": null
+          },
+          {
+            "chunk_id": "dadd26844495f51dd2eea3787c69b2ff1e1391c8a539be1b3a341ba5c20c6eb2",
+            "reason": "below_similarity_threshold",
+            "duplicate_of": null
+          }
+        ],
+        "candidates": [
+          {
+            "rank": 1,
+            "document": "Flight upgrade.docx",
+            "chunk_id": "31cad70282aceb8596b8e786a6db1ab5da7cae336d86a9cf6c147cf7cd32edc6",
+            "chunk_index": 0,
+            "cosine_similarity": 0.8297226428985596,
+            "dense_rank": null,
+            "lexical_rank": null,
+            "fusion_score": null,
+            "text_preview": "Upgrade Flight Upgrade Flight link: https://www.kenya-airways.com/en-ke/book-manage/manage-booking/upgrade-flight/ Upgrade to Business Class: You now have various options of upgrading to our award-winning business class on Kenya Airways. With an economy class ticket, upgrading to business class and enjoying award-winning amenities is easy. Bid to Upgrade: Holding an economy class ticket? Our Bid to Upgrade Program allows you to quote an amount you would like to pay for the upgrade to Business Cl"
+          },
+          {
+            "rank": 2,
+            "document": "Baggage Allowance Information.docx",
+            "chunk_id": "c98e558acca18cb892616cdf275ce920947e3f4d79bc22b77607530949c96d08",
+            "chunk_index": 1,
+            "cosine_similarity": 0.8243592977523804,
+            "dense_rank": null,
+            "lexical_rank": null,
+            "fusion_score": null,
+            "text_preview": "Preceding paragraph: Baggage allowance details shown are indications for Kenya Airways-operated flights only and may be subject to change depending on the aircraft operated on the day of travel. Flights operated by other airlines under a Kenya Airways flight number may be subject to other baggage restrictions. Table (Body/block 6): Opening row (context, not a declared header): Row 1: Column 1: ROUTING (<-> FROM/TO) | Column 2: BUSINESS CLASS | Column 3: ECONOMY Row 2: Column 1: Africa <-> Americ"
+          },
+          {
+            "rank": 3,
+            "document": "Delayed or Lost or Damaged Baggage.docx",
+            "chunk_id": "c3410f22052696f3d04d251e0980326f8f3996912d21804497ca745d0d0315c3",
+            "chunk_index": 2,
+            "cosine_similarity": 0.8217439651489258,
+            "dense_rank": null,
+            "lexical_rank": null,
+            "fusion_score": null,
+            "text_preview": "limits are: [List level 1] - USD150 for First class and Premier World [List level 1] - USD100 for Economy class passengers [List level 1] - Children between 2-12 yrs. are entitled to 50% of the applicable limits in Economy and Business Class [List level 1] - Children below 2 years are not entitled to First Needs Allowance Payment. [List level 1] - Passengers traveling on award tickets are entitled to First Needs Allowance at the applicable class of ticketing. [List level 1] - Staff on Duty and o"
+          },
+          {
+            "rank": 4,
+            "document": "Conditions of Carriage.docx",
+            "chunk_id": "383948ddb660af4e3cc7c4928522777638c2ce1e60c7b7411b9ec278ba711aca",
+            "chunk_index": 43,
+            "cosine_similarity": 0.8216648101806641,
+            "dense_rank": null,
+            "lexical_rank": null,
+            "fusion_score": null,
+            "text_preview": "damage would probably result, or where you have made a special declaration of interest and paid any fee required by us, our liability in the case of destruction, loss, damage or delay of Baggage shall be limited as provided by the Convention, ie: 15.5.2.1 where the Warsaw Convention applies, the applicable limit is normally taken to be 17 Special Drawing Rights per kilo for checked Baggage and 332 Special Drawing Rights in the case of unchecked Baggage, provided that if in accordance with applic"
+          },
+          {
+            "rank": 5,
+            "document": "Flight upgrade.docx",
+            "chunk_id": "dadd26844495f51dd2eea3787c69b2ff1e1391c8a539be1b3a341ba5c20c6eb2",
+            "chunk_index": 3,
+            "cosine_similarity": 0.8170170783996582,
+            "dense_rank": null,
+            "lexical_rank": null,
+            "fusion_score": null,
+            "text_preview": "shall be entitled to submit only one Offer per flight which corresponds to your Economy Ticket. To make an Offer you shall be required to provide valid Credit Card details. The Credit Card shall be used to make payment for the Offer upon Acceptance. 5. Group bookings are not eligible for bid to upgrade. Passengers booked as a group and would wish to upgrade should contact the nearest Kenya Airways Office or their preferred travel agent. 6. Infants – Guest travelling with infants(children up to 2"
+          }
+        ]
+      },
+      "hybrid": {
+        "ranking_method": "hybrid_rrf",
+        "retrieval_ms": 283.992,
+        "context_ms": 1.086,
+        "context_chars": 2825,
+        "context_tokens": 714,
+        "first_relevant_rank": 1,
+        "precision_at_k": 0.2,
+        "recall_at_k": 1.0,
+        "reciprocal_rank_at_k": 1.0,
+        "context_precision": 0.5,
+        "context_recall": 1.0,
+        "fallback_correct": true,
+        "context_decision": "context_available",
+        "context_reason": "selected_context",
+        "selected_chunk_ids": [
+          "c98e558acca18cb892616cdf275ce920947e3f4d79bc22b77607530949c96d08",
+          "31cad70282aceb8596b8e786a6db1ab5da7cae336d86a9cf6c147cf7cd32edc6"
+        ],
+        "excluded": [
+          {
+            "chunk_id": "cfea193aec0d73f6dde1ada11dcf1a0db832fa824542df513308a4c275d646c2",
+            "reason": "below_similarity_threshold",
+            "duplicate_of": null
+          },
+          {
+            "chunk_id": "8cc9a5b8ec30dd8bc41542234ef085070a3be4c57c651546c568f878ec832182",
+            "reason": "below_similarity_threshold",
+            "duplicate_of": null
+          },
+          {
+            "chunk_id": "ba578b8a0651172461b83436afec06f75e56701d61ed0f491ee7ed491b564224",
+            "reason": "below_similarity_threshold",
+            "duplicate_of": null
+          }
+        ],
+        "candidates": [
+          {
+            "rank": 1,
+            "document": "Baggage Allowance Information.docx",
+            "chunk_id": "c98e558acca18cb892616cdf275ce920947e3f4d79bc22b77607530949c96d08",
+            "chunk_index": 1,
+            "cosine_similarity": 0.8243592628856055,
+            "dense_rank": 2,
+            "lexical_rank": 1,
+            "fusion_score": 0.03252247488101534,
+            "text_preview": "Preceding paragraph: Baggage allowance details shown are indications for Kenya Airways-operated flights only and may be subject to change depending on the aircraft operated on the day of travel. Flights operated by other airlines under a Kenya Airways flight number may be subject to other baggage restrictions. Table (Body/block 6): Opening row (context, not a declared header): Row 1: Column 1: ROUTING (<-> FROM/TO) | Column 2: BUSINESS CLASS | Column 3: ECONOMY Row 2: Column 1: Africa <-> Americ"
+          },
+          {
+            "rank": 2,
+            "document": "Baggage Allowance Information.docx",
+            "chunk_id": "cfea193aec0d73f6dde1ada11dcf1a0db832fa824542df513308a4c275d646c2",
+            "chunk_index": 3,
+            "cosine_similarity": 0.8168952934187704,
+            "dense_rank": 6,
+            "lexical_rank": 3,
+            "fusion_score": 0.031024531024531024,
+            "text_preview": "Preceding paragraph: Reference Table Table (Body/block 11): Opening row (context, not a declared header): Row 1: Column 1: Domestic | Column 2: Kisumu, Mombasa, and Malindi Row 2: Column 1: Africa | Column 2: All Africa points Row 3: Column 1: Middle East/Asia | Column 2: Middle East and Asian points Row 4: Column 1: Europe/America | Column 2: All Europe and American points Row 5: Column 1: 5th freedom Sectors | Column 2: Flights that carry passengers to and from any point without connecting thr"
+          },
+          {
+            "rank": 3,
+            "document": "Baggage Allowance Information.docx",
+            "chunk_id": "8cc9a5b8ec30dd8bc41542234ef085070a3be4c57c651546c568f878ec832182",
+            "chunk_index": 24,
+            "cosine_similarity": 0.8154740820159351,
+            "dense_rank": 11,
+            "lexical_rank": 4,
+            "fusion_score": 0.029709507042253523,
+            "text_preview": "Preceding paragraph: Below are the KQ Media/Entertainment Baggage Rates: Table (Body/block 182): Opening row (context, not a declared header): Row 1: Column 1: ROUTING | Column 2: EXTRA PIECE @ 23KGS Row 2: Column 1: Africa-America/Europe | Column 2: 125 Row 3: Column 1: Africa-Middle East/Asia | Column 2: 150 Row 4: Column 1: Africa 5th Freedom Sectors | Column 2: 30 Row 5: Column 1: Intra Africa | Column 2: 50 Row 6: Column 1: Intra Domestic | Column 2: 25 Following paragraph: Conditions:"
+          },
+          {
+            "rank": 4,
+            "document": "Baggage Allowance Information.docx",
+            "chunk_id": "ba578b8a0651172461b83436afec06f75e56701d61ed0f491ee7ed491b564224",
+            "chunk_index": 23,
+            "cosine_similarity": 0.808951104091213,
+            "dense_rank": 14,
+            "lexical_rank": 8,
+            "fusion_score": 0.02821939586645469,
+            "text_preview": "are considered as a standard piece of baggage, but with maximum sum dimensions of 300cm. The maximum piece and weight according to class of travel will apply. Conditions: [List level 2] - They must be identified with “SPEQ HOCKEY OR LACROSSE” [List level 2] - Sticks checked in separately shall be packed in a bag or else be tapped together. However, if taped together KQ does not accept liability for damage. [List level 1] - Other Sports Equipment: The following equipment is accepted as a standard"
+          },
+          {
+            "rank": 5,
+            "document": "Flight upgrade.docx",
+            "chunk_id": "31cad70282aceb8596b8e786a6db1ab5da7cae336d86a9cf6c147cf7cd32edc6",
+            "chunk_index": 0,
+            "cosine_similarity": 0.8297225438076175,
+            "dense_rank": 1,
+            "lexical_rank": null,
+            "fusion_score": 0.01639344262295082,
+            "text_preview": "Upgrade Flight Upgrade Flight link: https://www.kenya-airways.com/en-ke/book-manage/manage-booking/upgrade-flight/ Upgrade to Business Class: You now have various options of upgrading to our award-winning business class on Kenya Airways. With an economy class ticket, upgrading to business class and enjoying award-winning amenities is easy. Bid to Upgrade: Holding an economy class ticket? Our Bid to Upgrade Program allows you to quote an amount you would like to pay for the upgrade to Business Cl"
+          }
+        ]
+      }
+    },
+    {
+      "id": "baggage-mixed",
+      "language": "mixed",
+      "question": "Business class Africa to Europe checked baggage allowance ni kiasi gani?",
+      "answerable": true,
+      "labelled_relevant_chunk_ids": [
+        "c98e558acca18cb892616cdf275ce920947e3f4d79bc22b77607530949c96d08"
+      ],
+      "dense": {
+        "ranking_method": "dense_cosine",
+        "retrieval_ms": 78.055,
+        "context_ms": 3.373,
+        "context_chars": 4808,
+        "context_tokens": 1209,
+        "first_relevant_rank": 3,
+        "precision_at_k": 0.2,
+        "recall_at_k": 1.0,
+        "reciprocal_rank_at_k": 0.3333333333333333,
+        "context_precision": 0.25,
+        "context_recall": 1.0,
+        "fallback_correct": true,
+        "context_decision": "context_available",
+        "context_reason": "selected_context",
+        "selected_chunk_ids": [
+          "b4a045cd6f8b69930dfc1a8e374fd867f1e66c2da2b55accd361d072cef0818e",
+          "9f5d7f883cc4ed42cf7c1419d3d663c88e535c44bd8c54e8011f0f38429040e5",
+          "c98e558acca18cb892616cdf275ce920947e3f4d79bc22b77607530949c96d08",
+          "c3410f22052696f3d04d251e0980326f8f3996912d21804497ca745d0d0315c3"
+        ],
+        "excluded": [
+          {
+            "chunk_id": "31cad70282aceb8596b8e786a6db1ab5da7cae336d86a9cf6c147cf7cd32edc6",
+            "reason": "document_limit_exceeded",
+            "duplicate_of": null
+          }
+        ],
+        "candidates": [
+          {
+            "rank": 1,
+            "document": "Baggage Allowance Information.docx",
+            "chunk_id": "b4a045cd6f8b69930dfc1a8e374fd867f1e66c2da2b55accd361d072cef0818e",
+            "chunk_index": 0,
+            "cosine_similarity": 0.8465423583984375,
+            "dense_rank": null,
+            "lexical_rank": null,
+            "fusion_score": null,
+            "text_preview": "Baggage Allowance Link to Baggage Allowance website page: https://www.kenya-airways.com/en-ke/plan/baggage-information/baggage-allowance/ Free Checked Baggage Allowance: Baggage allowance details shown are indications for Kenya Airways-operated flights only and may be subject to change depending on the aircraft operated on the day of travel. Flights operated by other airlines under a Kenya Airways flight number may be subject to other baggage restrictions."
+          },
+          {
+            "rank": 2,
+            "document": "Delayed or Lost or Damaged Baggage.docx",
+            "chunk_id": "9f5d7f883cc4ed42cf7c1419d3d663c88e535c44bd8c54e8011f0f38429040e5",
+            "chunk_index": 1,
+            "cosine_similarity": 0.8434329032897949,
+            "dense_rank": null,
+            "lexical_rank": null,
+            "fusion_score": null,
+            "text_preview": "Kenya Airways airport office or you should contact your insurance company. [List level 1] - To help us process your claim quickly, please quote the reference given to you when you reported your baggage as delayed or damaged. More Information First Needs Allowance (FNA) Payment: Payment may be made to passengers who arrive at destinations other than their domicile country of residence without their checked baggage. It shall be noted that not all such passengers may need payment. NOTE: Persons who"
+          },
+          {
+            "rank": 3,
+            "document": "Baggage Allowance Information.docx",
+            "chunk_id": "c98e558acca18cb892616cdf275ce920947e3f4d79bc22b77607530949c96d08",
+            "chunk_index": 1,
+            "cosine_similarity": 0.8410706520080566,
+            "dense_rank": null,
+            "lexical_rank": null,
+            "fusion_score": null,
+            "text_preview": "Preceding paragraph: Baggage allowance details shown are indications for Kenya Airways-operated flights only and may be subject to change depending on the aircraft operated on the day of travel. Flights operated by other airlines under a Kenya Airways flight number may be subject to other baggage restrictions. Table (Body/block 6): Opening row (context, not a declared header): Row 1: Column 1: ROUTING (<-> FROM/TO) | Column 2: BUSINESS CLASS | Column 3: ECONOMY Row 2: Column 1: Africa <-> Americ"
+          },
+          {
+            "rank": 4,
+            "document": "Delayed or Lost or Damaged Baggage.docx",
+            "chunk_id": "c3410f22052696f3d04d251e0980326f8f3996912d21804497ca745d0d0315c3",
+            "chunk_index": 2,
+            "cosine_similarity": 0.8402639031410217,
+            "dense_rank": null,
+            "lexical_rank": null,
+            "fusion_score": null,
+            "text_preview": "limits are: [List level 1] - USD150 for First class and Premier World [List level 1] - USD100 for Economy class passengers [List level 1] - Children between 2-12 yrs. are entitled to 50% of the applicable limits in Economy and Business Class [List level 1] - Children below 2 years are not entitled to First Needs Allowance Payment. [List level 1] - Passengers traveling on award tickets are entitled to First Needs Allowance at the applicable class of ticketing. [List level 1] - Staff on Duty and o"
+          },
+          {
+            "rank": 5,
+            "document": "Flight upgrade.docx",
+            "chunk_id": "31cad70282aceb8596b8e786a6db1ab5da7cae336d86a9cf6c147cf7cd32edc6",
+            "chunk_index": 0,
+            "cosine_similarity": 0.8402071595191956,
+            "dense_rank": null,
+            "lexical_rank": null,
+            "fusion_score": null,
+            "text_preview": "Upgrade Flight Upgrade Flight link: https://www.kenya-airways.com/en-ke/book-manage/manage-booking/upgrade-flight/ Upgrade to Business Class: You now have various options of upgrading to our award-winning business class on Kenya Airways. With an economy class ticket, upgrading to business class and enjoying award-winning amenities is easy. Bid to Upgrade: Holding an economy class ticket? Our Bid to Upgrade Program allows you to quote an amount you would like to pay for the upgrade to Business Cl"
+          }
+        ]
+      },
+      "hybrid": {
+        "ranking_method": "hybrid_rrf",
+        "retrieval_ms": 249.966,
+        "context_ms": 1.57,
+        "context_chars": 2595,
+        "context_tokens": 657,
+        "first_relevant_rank": 1,
+        "precision_at_k": 0.2,
+        "recall_at_k": 1.0,
+        "reciprocal_rank_at_k": 1.0,
+        "context_precision": 0.3333333333333333,
+        "context_recall": 1.0,
+        "fallback_correct": true,
+        "context_decision": "context_available",
+        "context_reason": "selected_context",
+        "selected_chunk_ids": [
+          "c98e558acca18cb892616cdf275ce920947e3f4d79bc22b77607530949c96d08",
+          "cfea193aec0d73f6dde1ada11dcf1a0db832fa824542df513308a4c275d646c2",
+          "b4a045cd6f8b69930dfc1a8e374fd867f1e66c2da2b55accd361d072cef0818e"
+        ],
+        "excluded": [
+          {
+            "chunk_id": "004ed66ee7e0df7bd8af766287c326b1644f6970ef34d9b3b28a83549347cde6",
+            "reason": "document_chunk_limit_exceeded",
+            "duplicate_of": null
+          },
+          {
+            "chunk_id": "53e2c5f1af391099ee23e0bfd24fbbf7382609aab60c057f12517160a6d2937f",
+            "reason": "document_chunk_limit_exceeded",
+            "duplicate_of": null
+          }
+        ],
+        "candidates": [
+          {
+            "rank": 1,
+            "document": "Baggage Allowance Information.docx",
+            "chunk_id": "c98e558acca18cb892616cdf275ce920947e3f4d79bc22b77607530949c96d08",
+            "chunk_index": 1,
+            "cosine_similarity": 0.841070699094998,
+            "dense_rank": 3,
+            "lexical_rank": 1,
+            "fusion_score": 0.032266458495966696,
+            "text_preview": "Preceding paragraph: Baggage allowance details shown are indications for Kenya Airways-operated flights only and may be subject to change depending on the aircraft operated on the day of travel. Flights operated by other airlines under a Kenya Airways flight number may be subject to other baggage restrictions. Table (Body/block 6): Opening row (context, not a declared header): Row 1: Column 1: ROUTING (<-> FROM/TO) | Column 2: BUSINESS CLASS | Column 3: ECONOMY Row 2: Column 1: Africa <-> Americ"
+          },
+          {
+            "rank": 2,
+            "document": "Baggage Allowance Information.docx",
+            "chunk_id": "cfea193aec0d73f6dde1ada11dcf1a0db832fa824542df513308a4c275d646c2",
+            "chunk_index": 3,
+            "cosine_similarity": 0.8313447966992865,
+            "dense_rank": 7,
+            "lexical_rank": 2,
+            "fusion_score": 0.031054405392392875,
+            "text_preview": "Preceding paragraph: Reference Table Table (Body/block 11): Opening row (context, not a declared header): Row 1: Column 1: Domestic | Column 2: Kisumu, Mombasa, and Malindi Row 2: Column 1: Africa | Column 2: All Africa points Row 3: Column 1: Middle East/Asia | Column 2: Middle East and Asian points Row 4: Column 1: Europe/America | Column 2: All Europe and American points Row 5: Column 1: 5th freedom Sectors | Column 2: Flights that carry passengers to and from any point without connecting thr"
+          },
+          {
+            "rank": 3,
+            "document": "Baggage Allowance Information.docx",
+            "chunk_id": "b4a045cd6f8b69930dfc1a8e374fd867f1e66c2da2b55accd361d072cef0818e",
+            "chunk_index": 0,
+            "cosine_similarity": 0.8465423251962619,
+            "dense_rank": 1,
+            "lexical_rank": 11,
+            "fusion_score": 0.03047794966520434,
+            "text_preview": "Baggage Allowance Link to Baggage Allowance website page: https://www.kenya-airways.com/en-ke/plan/baggage-information/baggage-allowance/ Free Checked Baggage Allowance: Baggage allowance details shown are indications for Kenya Airways-operated flights only and may be subject to change depending on the aircraft operated on the day of travel. Flights operated by other airlines under a Kenya Airways flight number may be subject to other baggage restrictions."
+          },
+          {
+            "rank": 4,
+            "document": "Baggage Allowance Information.docx",
+            "chunk_id": "004ed66ee7e0df7bd8af766287c326b1644f6970ef34d9b3b28a83549347cde6",
+            "chunk_index": 20,
+            "cosine_similarity": 0.8281271975155602,
+            "dense_rank": 12,
+            "lexical_rank": 7,
+            "fusion_score": 0.028814262023217248,
+            "text_preview": "but with maximum sum dimensions of 300cm. The maximum piece and weight according to class of travel/route will apply. A charge applies when the free baggage allowance is exceeded per route. For round trip the charges will be doubled Conditions: [List level 2] - Golf Equipment must be identified with the “SPEQ GOLF” remark. [List level 1] - Ski Equipment: Ski equipment is considered as regular checked baggage which can be part of the free baggage allowance. It consists of the following: [List lev"
+          },
+          {
+            "rank": 5,
+            "document": "Baggage Allowance Information.docx",
+            "chunk_id": "53e2c5f1af391099ee23e0bfd24fbbf7382609aab60c057f12517160a6d2937f",
+            "chunk_index": 26,
+            "cosine_similarity": 0.8258848317561122,
+            "dense_rank": 14,
+            "lexical_rank": 6,
+            "fusion_score": 0.028665028665028666,
+            "text_preview": "Preceding paragraph: You may bring hand luggage on board the cabin during your journey with Kenya Airways in addition to the standard checked-in baggage allowance you are permitted to carry: Table (Body/block 196): Opening row (context, not a declared header): Row 1: Column 1: CABIN | Column 2: FLIGHTS TO/FROM EU, US & UK* | Column 3: ALL OTHER ROUTES* | Column 4: PERSONAL ACCESSORIES Row 2: Column 1: Business Class | Column 2: 2 piece (max L55xW25xH35cm each) + 1 Accessory (Total weight max 18k"
+          }
+        ]
+      }
+    },
+    {
+      "id": "upgrade-en",
+      "language": "en",
+      "question": "If my upgrade refund is approved, will it go back to the credit card used to pay?",
+      "answerable": true,
+      "labelled_relevant_chunk_ids": [
+        "5b66f238b7d458c5516d483599ab3beabfaa2101f76eceff3b982db7e107ddd4",
+        "8a7e89a73c55a5d5fc425341756214ab8d19bc041f147644ab99e1103c0a4a79"
+      ],
+      "dense": {
+        "ranking_method": "dense_cosine",
+        "retrieval_ms": 101.344,
+        "context_ms": 5.356,
+        "context_chars": 6123,
+        "context_tokens": 1533,
+        "first_relevant_rank": 1,
+        "precision_at_k": 0.4,
+        "recall_at_k": 1.0,
+        "reciprocal_rank_at_k": 1.0,
+        "context_precision": 0.5,
+        "context_recall": 1.0,
+        "fallback_correct": true,
+        "context_decision": "context_available",
+        "context_reason": "selected_context",
+        "selected_chunk_ids": [
+          "5b66f238b7d458c5516d483599ab3beabfaa2101f76eceff3b982db7e107ddd4",
+          "8a7e89a73c55a5d5fc425341756214ab8d19bc041f147644ab99e1103c0a4a79",
+          "9fe66089494a750cb2e8b6e5c976e978cfdda6c48dc0d186b98eb7510834ff8d",
+          "15957459e1b35e57f794cf2bd903a35815a5c36fdf21728dd11f13744cb9d389"
+        ],
+        "excluded": [
+          {
+            "chunk_id": "4229de60ab77305d0491068a4c108358595f627555db155a8f339f944bf401be",
+            "reason": "document_limit_exceeded",
+            "duplicate_of": null
+          }
+        ],
+        "candidates": [
+          {
+            "rank": 1,
+            "document": "Flight upgrade.docx",
+            "chunk_id": "5b66f238b7d458c5516d483599ab3beabfaa2101f76eceff3b982db7e107ddd4",
+            "chunk_index": 4,
+            "cosine_similarity": 0.897903323173523,
+            "dense_rank": null,
+            "lexical_rank": null,
+            "fusion_score": null,
+            "text_preview": "revise or cancel your Offer as long as your Offer has not already been accepted by the Airline. 10. You shall not be entitled to withdraw the Offer after acceptance by the Airline, except and to the extent described in these Terms and Conditions. 11. Upon acceptance of the Offer by the Airline, your credit card shall be charged the full amount of the Offer and the Airline will issue a new ticket reflecting your Upgrade. The total amount charged shall also include all applicable pre-payable taxes"
+          },
+          {
+            "rank": 2,
+            "document": "Flight upgrade.docx",
+            "chunk_id": "8a7e89a73c55a5d5fc425341756214ab8d19bc041f147644ab99e1103c0a4a79",
+            "chunk_index": 5,
+            "cosine_similarity": 0.8811327219009399,
+            "dense_rank": null,
+            "lexical_rank": null,
+            "fusion_score": null,
+            "text_preview": "in your missing the connection on which you were upgraded, but excluding reasons attributable to your actions. d) If the refund is approved, the amount paid for the Upgrade will be refunded to the credit card that was used to pay for the Upgrade. 13. For a refund of the Offer amount, subject to the terms of Clause 10 above, you shall be required to present (i) the business class ticket or boarding pass for the flight in question and (ii) copy of email notifying you that you have been Upgraded. S"
+          },
+          {
+            "rank": 3,
+            "document": "Flight upgrade.docx",
+            "chunk_id": "9fe66089494a750cb2e8b6e5c976e978cfdda6c48dc0d186b98eb7510834ff8d",
+            "chunk_index": 6,
+            "cosine_similarity": 0.8762019872665405,
+            "dense_rank": null,
+            "lexical_rank": null,
+            "fusion_score": null,
+            "text_preview": "takes about ten (10) working days to reflect in your account. 15. An Upgrade that has been issued by the Airline cannot be assigned or transferred, in whole or in part to another person or flight except as specified by these Terms and Conditions. 16. In the event that the Airline cancels a flight and re-accommodates you on to another flight, any Offer you made in relation to the original booking may be transferred to the new flight(s) subject always to availability of seats in Business Class. If"
+          },
+          {
+            "rank": 4,
+            "document": "FAQs.docx",
+            "chunk_id": "15957459e1b35e57f794cf2bd903a35815a5c36fdf21728dd11f13744cb9d389",
+            "chunk_index": 9,
+            "cosine_similarity": 0.8745334148406982,
+            "dense_rank": null,
+            "lexical_rank": null,
+            "fusion_score": null,
+            "text_preview": "the strength of your bid but does not guarantee its success. Can I offer different amounts for the Upgrade for each segment of my journey? Yes, you can offer different amounts for each eligible segment. How much does it cost to make an offer? The offer is free of charge. Only if you receive the Upgrade, your credit card will be debited with the amount of your offer. Please, we still need your credit card details at the time of making your offer for standard verification purposes. Can I change my"
+          },
+          {
+            "rank": 5,
+            "document": "Online Refunds.docx",
+            "chunk_id": "4229de60ab77305d0491068a4c108358595f627555db155a8f339f944bf401be",
+            "chunk_index": 0,
+            "cosine_similarity": 0.8481302261352539,
+            "dense_rank": null,
+            "lexical_rank": null,
+            "fusion_score": null,
+            "text_preview": "Online Refunds Online refunds web page: https://www.kenya-airways.com/en-ke/book-manage/manage-booking/online-refunds/ You may be eligible for a refund on unused or partially unused Kenya Airways tickets, depending on the type of ticket you purchased: Taxes, Fees and Charges: [List level 1] - Applicable taxes, fees and charges imposed by government or other authority, or by the operator of an airport, shall be payable by you. At the time you purchase your Ticket, you will be advised of taxes, fe"
+          }
+        ]
+      },
+      "hybrid": {
+        "ranking_method": "hybrid_rrf",
+        "retrieval_ms": 438.872,
+        "context_ms": 4.079,
+        "context_chars": 6123,
+        "context_tokens": 1533,
+        "first_relevant_rank": 1,
+        "precision_at_k": 0.4,
+        "recall_at_k": 1.0,
+        "reciprocal_rank_at_k": 1.0,
+        "context_precision": 0.5,
+        "context_recall": 1.0,
+        "fallback_correct": true,
+        "context_decision": "context_available",
+        "context_reason": "selected_context",
+        "selected_chunk_ids": [
+          "5b66f238b7d458c5516d483599ab3beabfaa2101f76eceff3b982db7e107ddd4",
+          "8a7e89a73c55a5d5fc425341756214ab8d19bc041f147644ab99e1103c0a4a79",
+          "9fe66089494a750cb2e8b6e5c976e978cfdda6c48dc0d186b98eb7510834ff8d",
+          "15957459e1b35e57f794cf2bd903a35815a5c36fdf21728dd11f13744cb9d389"
+        ],
+        "excluded": [
+          {
+            "chunk_id": "dadd26844495f51dd2eea3787c69b2ff1e1391c8a539be1b3a341ba5c20c6eb2",
+            "reason": "document_chunk_limit_exceeded",
+            "duplicate_of": null
+          }
+        ],
+        "candidates": [
+          {
+            "rank": 1,
+            "document": "Flight upgrade.docx",
+            "chunk_id": "5b66f238b7d458c5516d483599ab3beabfaa2101f76eceff3b982db7e107ddd4",
+            "chunk_index": 4,
+            "cosine_similarity": 0.8979031368382501,
+            "dense_rank": 1,
+            "lexical_rank": 2,
+            "fusion_score": 0.03252247488101534,
+            "text_preview": "revise or cancel your Offer as long as your Offer has not already been accepted by the Airline. 10. You shall not be entitled to withdraw the Offer after acceptance by the Airline, except and to the extent described in these Terms and Conditions. 11. Upon acceptance of the Offer by the Airline, your credit card shall be charged the full amount of the Offer and the Airline will issue a new ticket reflecting your Upgrade. The total amount charged shall also include all applicable pre-payable taxes"
+          },
+          {
+            "rank": 2,
+            "document": "Flight upgrade.docx",
+            "chunk_id": "8a7e89a73c55a5d5fc425341756214ab8d19bc041f147644ab99e1103c0a4a79",
+            "chunk_index": 5,
+            "cosine_similarity": 0.8811327768291024,
+            "dense_rank": 2,
+            "lexical_rank": 1,
+            "fusion_score": 0.03252247488101534,
+            "text_preview": "in your missing the connection on which you were upgraded, but excluding reasons attributable to your actions. d) If the refund is approved, the amount paid for the Upgrade will be refunded to the credit card that was used to pay for the Upgrade. 13. For a refund of the Offer amount, subject to the terms of Clause 10 above, you shall be required to present (i) the business class ticket or boarding pass for the flight in question and (ii) copy of email notifying you that you have been Upgraded. S"
+          },
+          {
+            "rank": 3,
+            "document": "Flight upgrade.docx",
+            "chunk_id": "9fe66089494a750cb2e8b6e5c976e978cfdda6c48dc0d186b98eb7510834ff8d",
+            "chunk_index": 6,
+            "cosine_similarity": 0.876202268779495,
+            "dense_rank": 3,
+            "lexical_rank": 4,
+            "fusion_score": 0.03149801587301587,
+            "text_preview": "takes about ten (10) working days to reflect in your account. 15. An Upgrade that has been issued by the Airline cannot be assigned or transferred, in whole or in part to another person or flight except as specified by these Terms and Conditions. 16. In the event that the Airline cancels a flight and re-accommodates you on to another flight, any Offer you made in relation to the original booking may be transferred to the new flight(s) subject always to availability of seats in Business Class. If"
+          },
+          {
+            "rank": 4,
+            "document": "FAQs.docx",
+            "chunk_id": "15957459e1b35e57f794cf2bd903a35815a5c36fdf21728dd11f13744cb9d389",
+            "chunk_index": 9,
+            "cosine_similarity": 0.8745333856656994,
+            "dense_rank": 4,
+            "lexical_rank": 5,
+            "fusion_score": 0.031009615384615385,
+            "text_preview": "the strength of your bid but does not guarantee its success. Can I offer different amounts for the Upgrade for each segment of my journey? Yes, you can offer different amounts for each eligible segment. How much does it cost to make an offer? The offer is free of charge. Only if you receive the Upgrade, your credit card will be debited with the amount of your offer. Please, we still need your credit card details at the time of making your offer for standard verification purposes. Can I change my"
+          },
+          {
+            "rank": 5,
+            "document": "Flight upgrade.docx",
+            "chunk_id": "dadd26844495f51dd2eea3787c69b2ff1e1391c8a539be1b3a341ba5c20c6eb2",
+            "chunk_index": 3,
+            "cosine_similarity": 0.8394190772526778,
+            "dense_rank": 10,
+            "lexical_rank": 6,
+            "fusion_score": 0.029437229437229435,
+            "text_preview": "shall be entitled to submit only one Offer per flight which corresponds to your Economy Ticket. To make an Offer you shall be required to provide valid Credit Card details. The Credit Card shall be used to make payment for the Offer upon Acceptance. 5. Group bookings are not eligible for bid to upgrade. Passengers booked as a group and would wish to upgrade should contact the nearest Kenya Airways Office or their preferred travel agent. 6. Infants – Guest travelling with infants(children up to 2"
+          }
+        ]
+      }
+    },
+    {
+      "id": "upgrade-sw",
+      "language": "sw",
+      "question": "Marejesho ya pesa za kuboresha daraja la safari yakikubaliwa, zitarudishwa kwenye kadi niliyotumia kulipa?",
+      "answerable": true,
+      "labelled_relevant_chunk_ids": [
+        "5b66f238b7d458c5516d483599ab3beabfaa2101f76eceff3b982db7e107ddd4",
+        "8a7e89a73c55a5d5fc425341756214ab8d19bc041f147644ab99e1103c0a4a79"
+      ],
+      "dense": {
+        "ranking_method": "dense_cosine",
+        "retrieval_ms": 144.596,
+        "context_ms": 10.126,
+        "context_chars": 7407,
+        "context_tokens": 1853,
+        "first_relevant_rank": 2,
+        "precision_at_k": 0.4,
+        "recall_at_k": 1.0,
+        "reciprocal_rank_at_k": 0.5,
+        "context_precision": 0.4,
+        "context_recall": 1.0,
+        "fallback_correct": true,
+        "context_decision": "context_available",
+        "context_reason": "selected_context",
+        "selected_chunk_ids": [
+          "64d5b752d09760edc28abe0d07e6605eca5e501655f50be35393a90a3f6dae2a",
+          "5b66f238b7d458c5516d483599ab3beabfaa2101f76eceff3b982db7e107ddd4",
+          "6197c7f0fbba5bdaf1d4d36e56c38e8f7d776e0309e4f41fed1957cec863b5cb",
+          "960f0028dbf42f0cc60e398d98dcb34018c61da5f3c22b1f78e4a8c165c587f3",
+          "8a7e89a73c55a5d5fc425341756214ab8d19bc041f147644ab99e1103c0a4a79"
+        ],
+        "excluded": [],
+        "candidates": [
+          {
+            "rank": 1,
+            "document": "Conditions of Carriage.docx",
+            "chunk_id": "64d5b752d09760edc28abe0d07e6605eca5e501655f50be35393a90a3f6dae2a",
+            "chunk_index": 12,
+            "cosine_similarity": 0.8386937379837036,
+            "dense_rank": null,
+            "lexical_rank": null,
+            "fusion_score": null,
+            "text_preview": "our Tariff and is for the transportation as shown on the Ticket. It forms an essential part of our contract with you. The Ticket will not be honored and will lose its validity if all the Coupons are not used in the sequence provided in the Ticket. 3.3.2 Should you wish to change any aspect of your transportation you must contact us in advance. The fare for your new transportation will be calculated and you will be given the option of accepting the new price or maintaining your original transport"
+          },
+          {
+            "rank": 2,
+            "document": "Flight upgrade.docx",
+            "chunk_id": "5b66f238b7d458c5516d483599ab3beabfaa2101f76eceff3b982db7e107ddd4",
+            "chunk_index": 4,
+            "cosine_similarity": 0.8338502645492554,
+            "dense_rank": null,
+            "lexical_rank": null,
+            "fusion_score": null,
+            "text_preview": "revise or cancel your Offer as long as your Offer has not already been accepted by the Airline. 10. You shall not be entitled to withdraw the Offer after acceptance by the Airline, except and to the extent described in these Terms and Conditions. 11. Upon acceptance of the Offer by the Airline, your credit card shall be charged the full amount of the Offer and the Airline will issue a new ticket reflecting your Upgrade. The total amount charged shall also include all applicable pre-payable taxes"
+          },
+          {
+            "rank": 3,
+            "document": "Conditions of Carriage.docx",
+            "chunk_id": "6197c7f0fbba5bdaf1d4d36e56c38e8f7d776e0309e4f41fed1957cec863b5cb",
+            "chunk_index": 8,
+            "cosine_similarity": 0.8288492560386658,
+            "dense_rank": null,
+            "lexical_rank": null,
+            "fusion_score": null,
+            "text_preview": "The name on the Ticket must exactly match the name in the Passenger’s valid passport or travel document. Travel may be denied if the names do not match. 3.1.2 A Ticket is not transferable, except as required by any locally applicable laws. 3.1.3 Some Tickets are sold at discounted fares which may be partially or completely non-refundable. You should choose the fare best suited to your needs. You may also wish to ensure that you have appropriate insurance to cover instances where you have to canc"
+          },
+          {
+            "rank": 4,
+            "document": "Conditions of Carriage.docx",
+            "chunk_id": "960f0028dbf42f0cc60e398d98dcb34018c61da5f3c22b1f78e4a8c165c587f3",
+            "chunk_index": 33,
+            "cosine_similarity": 0.8288267850875854,
+            "dense_rank": null,
+            "lexical_rank": null,
+            "fusion_score": null,
+            "text_preview": "and the Ticket indicates that there is a restriction on refund, we shall make a refund only to the person who paid for the Ticket, or to that person's order. 10.1.3 Refunds will only be made Subject to the ticket rules. 10.2 INVOLUNTARY REFUNDS 10.2.1 If we cancel a flight, fail to operate a flight reasonably according to schedule, fail to stop at your destination or Stopover, or cause you to miss a connecting flight on which you hold a reservation, the amount of the refund shall be: 10.2.1.1 if"
+          },
+          {
+            "rank": 5,
+            "document": "Flight upgrade.docx",
+            "chunk_id": "8a7e89a73c55a5d5fc425341756214ab8d19bc041f147644ab99e1103c0a4a79",
+            "chunk_index": 5,
+            "cosine_similarity": 0.8287834525108337,
+            "dense_rank": null,
+            "lexical_rank": null,
+            "fusion_score": null,
+            "text_preview": "in your missing the connection on which you were upgraded, but excluding reasons attributable to your actions. d) If the refund is approved, the amount paid for the Upgrade will be refunded to the credit card that was used to pay for the Upgrade. 13. For a refund of the Offer amount, subject to the terms of Clause 10 above, you shall be required to present (i) the business class ticket or boarding pass for the flight in question and (ii) copy of email notifying you that you have been Upgraded. S"
+          }
+        ]
+      },
+      "hybrid": {
+        "ranking_method": "hybrid_rrf",
+        "retrieval_ms": 345.499,
+        "context_ms": 1.808,
+        "context_chars": 4437,
+        "context_tokens": 1110,
+        "first_relevant_rank": 3,
+        "precision_at_k": 0.2,
+        "recall_at_k": 0.5,
+        "reciprocal_rank_at_k": 0.3333333333333333,
+        "context_precision": 0.3333333333333333,
+        "context_recall": 0.5,
+        "fallback_correct": true,
+        "context_decision": "context_available",
+        "context_reason": "selected_context",
+        "selected_chunk_ids": [
+          "64d5b752d09760edc28abe0d07e6605eca5e501655f50be35393a90a3f6dae2a",
+          "5b66f238b7d458c5516d483599ab3beabfaa2101f76eceff3b982db7e107ddd4",
+          "6197c7f0fbba5bdaf1d4d36e56c38e8f7d776e0309e4f41fed1957cec863b5cb"
+        ],
+        "excluded": [
+          {
+            "chunk_id": "98c4c2d60038366b52286a8e5f236437224f065c85c056260e07534065793511",
+            "reason": "below_similarity_threshold",
+            "duplicate_of": null
+          },
+          {
+            "chunk_id": "7651ae8e3e3c539afcc1185b040b36acfd4c2cec7b106137d62ed6af43019025",
+            "reason": "below_similarity_threshold",
+            "duplicate_of": null
+          }
+        ],
+        "candidates": [
+          {
+            "rank": 1,
+            "document": "Conditions of Carriage.docx",
+            "chunk_id": "64d5b752d09760edc28abe0d07e6605eca5e501655f50be35393a90a3f6dae2a",
+            "chunk_index": 12,
+            "cosine_similarity": 0.8386938464205049,
+            "dense_rank": 1,
+            "lexical_rank": null,
+            "fusion_score": 0.01639344262295082,
+            "text_preview": "our Tariff and is for the transportation as shown on the Ticket. It forms an essential part of our contract with you. The Ticket will not be honored and will lose its validity if all the Coupons are not used in the sequence provided in the Ticket. 3.3.2 Should you wish to change any aspect of your transportation you must contact us in advance. The fare for your new transportation will be calculated and you will be given the option of accepting the new price or maintaining your original transport"
+          },
+          {
+            "rank": 2,
+            "document": "Payments.docx",
+            "chunk_id": "98c4c2d60038366b52286a8e5f236437224f065c85c056260e07534065793511",
+            "chunk_index": 2,
+            "cosine_similarity": 0.7972108147506929,
+            "dense_rank": null,
+            "lexical_rank": 1,
+            "fusion_score": 0.01639344262295082,
+            "text_preview": "easier. These Include: Mpesa M-Pesa (M for mobile, pesa is Swahili for money) is a mobile phone-based money transfer service. Operating in Kenya and Tanzania. Once payment has been made, we will send your e-ticket to you by e-mail. Airtel Money This is a mobile money transfer service. Operating in Kenya, Tanzania and other countries. Once payment has been made, we will send your e-ticket to you by e-mail. Equitel Equitel is a mobile payment option from Kenya. Once payment has been made, we will "
+          },
+          {
+            "rank": 3,
+            "document": "Flight upgrade.docx",
+            "chunk_id": "5b66f238b7d458c5516d483599ab3beabfaa2101f76eceff3b982db7e107ddd4",
+            "chunk_index": 4,
+            "cosine_similarity": 0.8338500754397518,
+            "dense_rank": 2,
+            "lexical_rank": null,
+            "fusion_score": 0.016129032258064516,
+            "text_preview": "revise or cancel your Offer as long as your Offer has not already been accepted by the Airline. 10. You shall not be entitled to withdraw the Offer after acceptance by the Airline, except and to the extent described in these Terms and Conditions. 11. Upon acceptance of the Offer by the Airline, your credit card shall be charged the full amount of the Offer and the Airline will issue a new ticket reflecting your Upgrade. The total amount charged shall also include all applicable pre-payable taxes"
+          },
+          {
+            "rank": 4,
+            "document": "FAQs.docx",
+            "chunk_id": "7651ae8e3e3c539afcc1185b040b36acfd4c2cec7b106137d62ed6af43019025",
+            "chunk_index": 13,
+            "cosine_similarity": 0.8092971025745866,
+            "dense_rank": null,
+            "lexical_rank": 2,
+            "fusion_score": 0.016129032258064516,
+            "text_preview": "use Msafiriconnect? Any KQ customer that has: [List level 1] - Filled in the Registration Form [List level 1] - Registration Request approved by KQ or a KQ Customer Contact [List level 1] - Undergone End User Training Which flights are eligible? All KQ flights are eligible inclusive of Codeshares and Interline How do I access Msafiriconnect site? You will need to have: [List level 1] - Internet connection – minimum 512kbps [List level 1] - Internet browser [List level 1] - Firefox version 32 [Li"
+          },
+          {
+            "rank": 5,
+            "document": "Conditions of Carriage.docx",
+            "chunk_id": "6197c7f0fbba5bdaf1d4d36e56c38e8f7d776e0309e4f41fed1957cec863b5cb",
+            "chunk_index": 8,
+            "cosine_similarity": 0.8288491184623155,
+            "dense_rank": 3,
+            "lexical_rank": null,
+            "fusion_score": 0.015873015873015872,
+            "text_preview": "The name on the Ticket must exactly match the name in the Passenger’s valid passport or travel document. Travel may be denied if the names do not match. 3.1.2 A Ticket is not transferable, except as required by any locally applicable laws. 3.1.3 Some Tickets are sold at discounted fares which may be partially or completely non-refundable. You should choose the fare best suited to your needs. You may also wish to ensure that you have appropriate insurance to cover instances where you have to canc"
+          }
+        ]
+      }
+    },
+    {
+      "id": "upgrade-mixed",
+      "language": "mixed",
+      "question": "Upgrade refund ikiapproved, pesa zinarudi kwa original credit card?",
+      "answerable": true,
+      "labelled_relevant_chunk_ids": [
+        "5b66f238b7d458c5516d483599ab3beabfaa2101f76eceff3b982db7e107ddd4",
+        "8a7e89a73c55a5d5fc425341756214ab8d19bc041f147644ab99e1103c0a4a79"
+      ],
+      "dense": {
+        "ranking_method": "dense_cosine",
+        "retrieval_ms": 88.284,
+        "context_ms": 5.555,
+        "context_chars": 6123,
+        "context_tokens": 1533,
+        "first_relevant_rank": 1,
+        "precision_at_k": 0.4,
+        "recall_at_k": 1.0,
+        "reciprocal_rank_at_k": 1.0,
+        "context_precision": 0.5,
+        "context_recall": 1.0,
+        "fallback_correct": true,
+        "context_decision": "context_available",
+        "context_reason": "selected_context",
+        "selected_chunk_ids": [
+          "5b66f238b7d458c5516d483599ab3beabfaa2101f76eceff3b982db7e107ddd4",
+          "15957459e1b35e57f794cf2bd903a35815a5c36fdf21728dd11f13744cb9d389",
+          "8a7e89a73c55a5d5fc425341756214ab8d19bc041f147644ab99e1103c0a4a79",
+          "9fe66089494a750cb2e8b6e5c976e978cfdda6c48dc0d186b98eb7510834ff8d"
+        ],
+        "excluded": [
+          {
+            "chunk_id": "1e9946ec182c28c2c1107c68822358ffbc1ada62a419b4c2748cee4c6b0e982b",
+            "reason": "document_chunk_limit_exceeded",
+            "duplicate_of": null
+          }
+        ],
+        "candidates": [
+          {
+            "rank": 1,
+            "document": "Flight upgrade.docx",
+            "chunk_id": "5b66f238b7d458c5516d483599ab3beabfaa2101f76eceff3b982db7e107ddd4",
+            "chunk_index": 4,
+            "cosine_similarity": 0.8539289832115173,
+            "dense_rank": null,
+            "lexical_rank": null,
+            "fusion_score": null,
+            "text_preview": "revise or cancel your Offer as long as your Offer has not already been accepted by the Airline. 10. You shall not be entitled to withdraw the Offer after acceptance by the Airline, except and to the extent described in these Terms and Conditions. 11. Upon acceptance of the Offer by the Airline, your credit card shall be charged the full amount of the Offer and the Airline will issue a new ticket reflecting your Upgrade. The total amount charged shall also include all applicable pre-payable taxes"
+          },
+          {
+            "rank": 2,
+            "document": "FAQs.docx",
+            "chunk_id": "15957459e1b35e57f794cf2bd903a35815a5c36fdf21728dd11f13744cb9d389",
+            "chunk_index": 9,
+            "cosine_similarity": 0.8469319939613342,
+            "dense_rank": null,
+            "lexical_rank": null,
+            "fusion_score": null,
+            "text_preview": "the strength of your bid but does not guarantee its success. Can I offer different amounts for the Upgrade for each segment of my journey? Yes, you can offer different amounts for each eligible segment. How much does it cost to make an offer? The offer is free of charge. Only if you receive the Upgrade, your credit card will be debited with the amount of your offer. Please, we still need your credit card details at the time of making your offer for standard verification purposes. Can I change my"
+          },
+          {
+            "rank": 3,
+            "document": "Flight upgrade.docx",
+            "chunk_id": "8a7e89a73c55a5d5fc425341756214ab8d19bc041f147644ab99e1103c0a4a79",
+            "chunk_index": 5,
+            "cosine_similarity": 0.8427945971488953,
+            "dense_rank": null,
+            "lexical_rank": null,
+            "fusion_score": null,
+            "text_preview": "in your missing the connection on which you were upgraded, but excluding reasons attributable to your actions. d) If the refund is approved, the amount paid for the Upgrade will be refunded to the credit card that was used to pay for the Upgrade. 13. For a refund of the Offer amount, subject to the terms of Clause 10 above, you shall be required to present (i) the business class ticket or boarding pass for the flight in question and (ii) copy of email notifying you that you have been Upgraded. S"
+          },
+          {
+            "rank": 4,
+            "document": "Flight upgrade.docx",
+            "chunk_id": "9fe66089494a750cb2e8b6e5c976e978cfdda6c48dc0d186b98eb7510834ff8d",
+            "chunk_index": 6,
+            "cosine_similarity": 0.8400525450706482,
+            "dense_rank": null,
+            "lexical_rank": null,
+            "fusion_score": null,
+            "text_preview": "takes about ten (10) working days to reflect in your account. 15. An Upgrade that has been issued by the Airline cannot be assigned or transferred, in whole or in part to another person or flight except as specified by these Terms and Conditions. 16. In the event that the Airline cancels a flight and re-accommodates you on to another flight, any Offer you made in relation to the original booking may be transferred to the new flight(s) subject always to availability of seats in Business Class. If"
+          },
+          {
+            "rank": 5,
+            "document": "Flight upgrade.docx",
+            "chunk_id": "1e9946ec182c28c2c1107c68822358ffbc1ada62a419b4c2748cee4c6b0e982b",
+            "chunk_index": 8,
+            "cosine_similarity": 0.8213369250297546,
+            "dense_rank": null,
+            "lexical_rank": null,
+            "fusion_score": null,
+            "text_preview": "be binding on the Airline unless made in writing and signed by an authorized officer of the Airline. These modifications or changes shall not impact material provisions of the Terms and Conditions, nor the Offers that have already been accepted. 24. These Terms and Conditions constitute the entire and only understanding between the parties, and replace any prior understandings or agreements (whether oral or written) relating to the subject matter hereof. The Airline shall not archive nor make ac"
+          }
+        ]
+      },
+      "hybrid": {
+        "ranking_method": "hybrid_rrf",
+        "retrieval_ms": 326.128,
+        "context_ms": 4.125,
+        "context_chars": 6123,
+        "context_tokens": 1532,
+        "first_relevant_rank": 1,
+        "precision_at_k": 0.4,
+        "recall_at_k": 1.0,
+        "reciprocal_rank_at_k": 1.0,
+        "context_precision": 0.5,
+        "context_recall": 1.0,
+        "fallback_correct": true,
+        "context_decision": "context_available",
+        "context_reason": "selected_context",
+        "selected_chunk_ids": [
+          "8a7e89a73c55a5d5fc425341756214ab8d19bc041f147644ab99e1103c0a4a79",
+          "5b66f238b7d458c5516d483599ab3beabfaa2101f76eceff3b982db7e107ddd4",
+          "9fe66089494a750cb2e8b6e5c976e978cfdda6c48dc0d186b98eb7510834ff8d",
+          "15957459e1b35e57f794cf2bd903a35815a5c36fdf21728dd11f13744cb9d389"
+        ],
+        "excluded": [
+          {
+            "chunk_id": "dadd26844495f51dd2eea3787c69b2ff1e1391c8a539be1b3a341ba5c20c6eb2",
+            "reason": "document_chunk_limit_exceeded",
+            "duplicate_of": null
+          }
+        ],
+        "candidates": [
+          {
+            "rank": 1,
+            "document": "Flight upgrade.docx",
+            "chunk_id": "8a7e89a73c55a5d5fc425341756214ab8d19bc041f147644ab99e1103c0a4a79",
+            "chunk_index": 5,
+            "cosine_similarity": 0.8427948771250797,
+            "dense_rank": 3,
+            "lexical_rank": 1,
+            "fusion_score": 0.032266458495966696,
+            "text_preview": "in your missing the connection on which you were upgraded, but excluding reasons attributable to your actions. d) If the refund is approved, the amount paid for the Upgrade will be refunded to the credit card that was used to pay for the Upgrade. 13. For a refund of the Offer amount, subject to the terms of Clause 10 above, you shall be required to present (i) the business class ticket or boarding pass for the flight in question and (ii) copy of email notifying you that you have been Upgraded. S"
+          },
+          {
+            "rank": 2,
+            "document": "Flight upgrade.docx",
+            "chunk_id": "5b66f238b7d458c5516d483599ab3beabfaa2101f76eceff3b982db7e107ddd4",
+            "chunk_index": 4,
+            "cosine_similarity": 0.8539289522375131,
+            "dense_rank": 1,
+            "lexical_rank": 4,
+            "fusion_score": 0.032018442622950824,
+            "text_preview": "revise or cancel your Offer as long as your Offer has not already been accepted by the Airline. 10. You shall not be entitled to withdraw the Offer after acceptance by the Airline, except and to the extent described in these Terms and Conditions. 11. Upon acceptance of the Offer by the Airline, your credit card shall be charged the full amount of the Offer and the Airline will issue a new ticket reflecting your Upgrade. The total amount charged shall also include all applicable pre-payable taxes"
+          },
+          {
+            "rank": 3,
+            "document": "Flight upgrade.docx",
+            "chunk_id": "9fe66089494a750cb2e8b6e5c976e978cfdda6c48dc0d186b98eb7510834ff8d",
+            "chunk_index": 6,
+            "cosine_similarity": 0.8400529090188804,
+            "dense_rank": 4,
+            "lexical_rank": 2,
+            "fusion_score": 0.031754032258064516,
+            "text_preview": "takes about ten (10) working days to reflect in your account. 15. An Upgrade that has been issued by the Airline cannot be assigned or transferred, in whole or in part to another person or flight except as specified by these Terms and Conditions. 16. In the event that the Airline cancels a flight and re-accommodates you on to another flight, any Offer you made in relation to the original booking may be transferred to the new flight(s) subject always to availability of seats in Business Class. If"
+          },
+          {
+            "rank": 4,
+            "document": "FAQs.docx",
+            "chunk_id": "15957459e1b35e57f794cf2bd903a35815a5c36fdf21728dd11f13744cb9d389",
+            "chunk_index": 9,
+            "cosine_similarity": 0.8469322186207303,
+            "dense_rank": 2,
+            "lexical_rank": 8,
+            "fusion_score": 0.030834914611005692,
+            "text_preview": "the strength of your bid but does not guarantee its success. Can I offer different amounts for the Upgrade for each segment of my journey? Yes, you can offer different amounts for each eligible segment. How much does it cost to make an offer? The offer is free of charge. Only if you receive the Upgrade, your credit card will be debited with the amount of your offer. Please, we still need your credit card details at the time of making your offer for standard verification purposes. Can I change my"
+          },
+          {
+            "rank": 5,
+            "document": "Flight upgrade.docx",
+            "chunk_id": "dadd26844495f51dd2eea3787c69b2ff1e1391c8a539be1b3a341ba5c20c6eb2",
+            "chunk_index": 3,
+            "cosine_similarity": 0.8207978372720125,
+            "dense_rank": 7,
+            "lexical_rank": 3,
+            "fusion_score": 0.030798389007344232,
+            "text_preview": "shall be entitled to submit only one Offer per flight which corresponds to your Economy Ticket. To make an Offer you shall be required to provide valid Credit Card details. The Credit Card shall be used to make payment for the Offer upon Acceptance. 5. Group bookings are not eligible for bid to upgrade. Passengers booked as a group and would wish to upgrade should contact the nearest Kenya Airways Office or their preferred travel agent. 6. Infants – Guest travelling with infants(children up to 2"
+          }
+        ]
+      }
+    },
+    {
+      "id": "unanswerable-en",
+      "language": "en",
+      "question": "What is the current departure gate for my flight today?",
+      "answerable": false,
+      "labelled_relevant_chunk_ids": [],
+      "dense": {
+        "ranking_method": "dense_cosine",
+        "retrieval_ms": 95.497,
+        "context_ms": 0.149,
+        "context_chars": 0,
+        "context_tokens": 0,
+        "first_relevant_rank": null,
+        "precision_at_k": null,
+        "recall_at_k": null,
+        "reciprocal_rank_at_k": null,
+        "context_precision": null,
+        "context_recall": null,
+        "fallback_correct": true,
+        "context_decision": "fallback",
+        "context_reason": "unsupported_query",
+        "selected_chunk_ids": [],
+        "excluded": [],
+        "candidates": [
+          {
+            "rank": 1,
+            "document": "Bookings and Self-Rebooking.docx",
+            "chunk_id": "39699f097fc1a0d3599ab613a02c2436b37ffcc0eaff0ba675f35da2ed7427e5",
+            "chunk_index": 3,
+            "cosine_similarity": 0.8612386584281921,
+            "dense_rank": null,
+            "lexical_rank": null,
+            "fusion_score": null,
+            "text_preview": "allowances. What do I need to rebook myself? You only need your booking reference or e-ticket number. Where do I go to rebook my flight? Simply visit the Kenya Airways website(Link: https://www.kenya-airways.com/en-ke/ ), select “Manage Booking” You will find the rebooking link at the top marked “Click here. Where do I find the flight options available for rebooking? Once you log in, you will be redirected to a page that has all available flight options and timings. *Flight timings available for"
+          },
+          {
+            "rank": 2,
+            "document": "Check-in.docx",
+            "chunk_id": "387d08b9fd60495e7a58af6e371cb0f34c0ab5b1763b61ebe8e2bd86bd730b9a",
+            "chunk_index": 1,
+            "cosine_similarity": 0.8576613664627075,
+            "dense_rank": null,
+            "lexical_rank": null,
+            "fusion_score": null,
+            "text_preview": "By optig for online check-in, you're not just saving time; you're ensuring a smooth and stress-free start to your journey. Say goodbye to long lines and hello to an effortless way to prepare for your flight When can I Check in? Online Check-in: With an electronic ticket, online check-in can be performed from 48 hours up until 1 hour before departure. By taking advantage of this service, you can bypass long lines at selected airports and even pick your preferred seat. Once completed, you can prin"
+          },
+          {
+            "rank": 3,
+            "document": "Bookings and Self-Rebooking.docx",
+            "chunk_id": "7c1085add8651d36fe8b0b9aaf74b87cf6abcf5cf2c2665ce7a52e827c3fe50e",
+            "chunk_index": 1,
+            "cosine_similarity": 0.8540674448013306,
+            "dense_rank": null,
+            "lexical_rank": null,
+            "fusion_score": null,
+            "text_preview": "such as weather conditions, air traffic control restrictions, or technical challenges, some flights may experience delays or cancellations. We sincerely apologize for any inconvenience this may cause. Convenient Self-Rebooking at No Extra Cost To minimize the impact on your travel plans, you can now easily rebook yourself to the next available or most convenient flight at no extra cost. Our online self-rebooking system allows you to manage your travel directly on our website or via the KQ mobile"
+          },
+          {
+            "rank": 4,
+            "document": "FAQs.docx",
+            "chunk_id": "15957459e1b35e57f794cf2bd903a35815a5c36fdf21728dd11f13744cb9d389",
+            "chunk_index": 9,
+            "cosine_similarity": 0.8522506356239319,
+            "dense_rank": null,
+            "lexical_rank": null,
+            "fusion_score": null,
+            "text_preview": "the strength of your bid but does not guarantee its success. Can I offer different amounts for the Upgrade for each segment of my journey? Yes, you can offer different amounts for each eligible segment. How much does it cost to make an offer? The offer is free of charge. Only if you receive the Upgrade, your credit card will be debited with the amount of your offer. Please, we still need your credit card details at the time of making your offer for standard verification purposes. Can I change my"
+          },
+          {
+            "rank": 5,
+            "document": "Special Care.docx",
+            "chunk_id": "8e5cf792a3dc59e0cc270af0b4b3b24d3ebeb639c75e89630ab571f6cb242e1a",
+            "chunk_index": 7,
+            "cosine_similarity": 0.8495815992355347,
+            "dense_rank": null,
+            "lexical_rank": null,
+            "fusion_score": null,
+            "text_preview": "committed to making your journey with your infant as smooth and comfortable as possible. We value your trust in us and look forward to serving you and your family on board. Reduced Mobility Passengers with Reduced Mobility General Information [List level 1] - Passengers with reduced mobility are those with a medical or neurodevelopmental disabilities who require individual attention, not given to passengers normally during (dis)embarkation, during the flight, during ground handling and/or in cas"
+          }
+        ]
+      },
+      "hybrid": {
+        "ranking_method": "hybrid_rrf",
+        "retrieval_ms": 270.889,
+        "context_ms": 0.099,
+        "context_chars": 0,
+        "context_tokens": 0,
+        "first_relevant_rank": null,
+        "precision_at_k": null,
+        "recall_at_k": null,
+        "reciprocal_rank_at_k": null,
+        "context_precision": null,
+        "context_recall": null,
+        "fallback_correct": true,
+        "context_decision": "fallback",
+        "context_reason": "unsupported_query",
+        "selected_chunk_ids": [],
+        "excluded": [],
+        "candidates": [
+          {
+            "rank": 1,
+            "document": "FAQs.docx",
+            "chunk_id": "15957459e1b35e57f794cf2bd903a35815a5c36fdf21728dd11f13744cb9d389",
+            "chunk_index": 9,
+            "cosine_similarity": 0.8522505706086388,
+            "dense_rank": 4,
+            "lexical_rank": 1,
+            "fusion_score": 0.032018442622950824,
+            "text_preview": "the strength of your bid but does not guarantee its success. Can I offer different amounts for the Upgrade for each segment of my journey? Yes, you can offer different amounts for each eligible segment. How much does it cost to make an offer? The offer is free of charge. Only if you receive the Upgrade, your credit card will be debited with the amount of your offer. Please, we still need your credit card details at the time of making your offer for standard verification purposes. Can I change my"
+          },
+          {
+            "rank": 2,
+            "document": "Bookings and Self-Rebooking.docx",
+            "chunk_id": "39699f097fc1a0d3599ab613a02c2436b37ffcc0eaff0ba675f35da2ed7427e5",
+            "chunk_index": 3,
+            "cosine_similarity": 0.8612382956414222,
+            "dense_rank": 1,
+            "lexical_rank": 5,
+            "fusion_score": 0.03177805800756621,
+            "text_preview": "allowances. What do I need to rebook myself? You only need your booking reference or e-ticket number. Where do I go to rebook my flight? Simply visit the Kenya Airways website(Link: https://www.kenya-airways.com/en-ke/ ), select “Manage Booking” You will find the rebooking link at the top marked “Click here. Where do I find the flight options available for rebooking? Once you log in, you will be redirected to a page that has all available flight options and timings. *Flight timings available for"
+          },
+          {
+            "rank": 3,
+            "document": "Check-in.docx",
+            "chunk_id": "387d08b9fd60495e7a58af6e371cb0f34c0ab5b1763b61ebe8e2bd86bd730b9a",
+            "chunk_index": 1,
+            "cosine_similarity": 0.8576612801383318,
+            "dense_rank": 2,
+            "lexical_rank": 11,
+            "fusion_score": 0.03021353930031804,
+            "text_preview": "By optig for online check-in, you're not just saving time; you're ensuring a smooth and stress-free start to your journey. Say goodbye to long lines and hello to an effortless way to prepare for your flight When can I Check in? Online Check-in: With an electronic ticket, online check-in can be performed from 48 hours up until 1 hour before departure. By taking advantage of this service, you can bypass long lines at selected airports and even pick your preferred seat. Once completed, you can prin"
+          },
+          {
+            "rank": 4,
+            "document": "Bookings and Self-Rebooking.docx",
+            "chunk_id": "b868f96f8d62391500c2be94d8d12ab41d1a56c397cee37aa1d6d076e08345de",
+            "chunk_index": 4,
+            "cosine_similarity": 0.8484791736734346,
+            "dense_rank": 7,
+            "lexical_rank": 10,
+            "fusion_score": 0.029211087420042643,
+            "text_preview": "my flight has been canceled/rescheduled. Does that mean I have been rebooked? The system will automatically rebook you on the next available flight. If you are happy with the new flight details highlighted on the email, click on “ACCEPT CHANGES” However, if you would like to see more flight options, go to the Kenya Airways website and click on Manage my booking where you will have the option to rebook yourself on your preferred flight. DO NOT CLICK ON DECLINE CHANGES as this will automatically d"
+          },
+          {
+            "rank": 5,
+            "document": "Special Care.docx",
+            "chunk_id": "a6acc24617ffb226c20ead03fcb9d8708d624e16a63d670ad5f6206dd5f64fcc",
+            "chunk_index": 2,
+            "cosine_similarity": 0.8434823239688357,
+            "dense_rank": 14,
+            "lexical_rank": 4,
+            "fusion_score": 0.029138513513513514,
+            "text_preview": "[List level 1] - Transition at International Airports: For passengers with separate documents and onward domestic sectors on other airlines, our unaccompanied minor service concludes at the international airport. This ensures a seamless transition. [List level 1] - Overnight Connections: For safety reasons, overnight connections are not permitted for unaccompanied minors. Please plan their journey accordingly. [List level 1] - Efficient Check-In: To streamline the process, our staff assists with"
+          }
+        ]
+      }
+    },
+    {
+      "id": "unanswerable-sw",
+      "language": "sw",
+      "question": "Salio la akaunti yangu ya benki ni kiasi gani sasa?",
+      "answerable": false,
+      "labelled_relevant_chunk_ids": [],
+      "dense": {
+        "ranking_method": "dense_cosine",
+        "retrieval_ms": 91.537,
+        "context_ms": 0.135,
+        "context_chars": 0,
+        "context_tokens": 0,
+        "first_relevant_rank": null,
+        "precision_at_k": null,
+        "recall_at_k": null,
+        "reciprocal_rank_at_k": null,
+        "context_precision": null,
+        "context_recall": null,
+        "fallback_correct": true,
+        "context_decision": "fallback",
+        "context_reason": "unsupported_query",
+        "selected_chunk_ids": [],
+        "excluded": [],
+        "candidates": [
+          {
+            "rank": 1,
+            "document": "FAQs.docx",
+            "chunk_id": "4b5f3a65d6adc07340d93247e2c4f7c8d3c3afeecc0b25ee912a2786a3dcdd0d",
+            "chunk_index": 0,
+            "cosine_similarity": 0.8153708577156067,
+            "dense_rank": null,
+            "lexical_rank": null,
+            "fusion_score": null,
+            "text_preview": "FAQS FAQs link: https://www.kenya-airways.com/en-ke/help/faqs/ Booking & Payment FAQs What are my payment options? Pay quickly and efficiently through any of our payment options: credit and debit cards, eWallet , mobile payment or real-time bank transfer. Read more about our payments options.(Link: https://www.kenya-airways.com/en-ke/book-manage/booking-online/payment-methods/ ) Can I make an online payment in a currency of my choice? Our prices are automatically displayed based on the country y"
+          },
+          {
+            "rank": 2,
+            "document": "Payments.docx",
+            "chunk_id": "51e0152b2bc5e6e92b96b35de6adc40ec786ab442aab10105ef46db9f4f32ea6",
+            "chunk_index": 13,
+            "cosine_similarity": 0.8145478963851929,
+            "dense_rank": null,
+            "lexical_rank": null,
+            "fusion_score": null,
+            "text_preview": "First Needs Expense (FNE):"
+          },
+          {
+            "rank": 3,
+            "document": "Payments.docx",
+            "chunk_id": "b4d187fd7277e037674ef5d4bd16b128f902f08086cbc2bbe19bfc7f58439384",
+            "chunk_index": 17,
+            "cosine_similarity": 0.8106790781021118,
+            "dense_rank": null,
+            "lexical_rank": null,
+            "fusion_score": null,
+            "text_preview": "Heavy Bag Charges:"
+          },
+          {
+            "rank": 4,
+            "document": "Payments.docx",
+            "chunk_id": "942b296f5cb1e3fb34ab2b809cb36167d47e721774ea249b612ffea8d6a38c3a",
+            "chunk_index": 3,
+            "cosine_similarity": 0.8082747459411621,
+            "dense_rank": null,
+            "lexical_rank": null,
+            "fusion_score": null,
+            "text_preview": "money, buy airtime, pay bills, pay for goods and services from their mobile phones. Once the guest opts to make a payment via Tigo pesa, the e-ticket is sent to their email address. Other Methods of Payment (AMOPs) Mobile Banking or Bank Transfer This form of payment is currently available in the Kenya, Nigeria and a few selected African countries. It is a real time 24-hour digital payment solution that allows for bank-to-bank transfers at a low cost. it is easy to use, fast, convenient, secure "
+          },
+          {
+            "rank": 5,
+            "document": "Payments.docx",
+            "chunk_id": "27b63102f7bbc440d5f889b6e42e5a90044a344b069b8117441a4d6e11912950",
+            "chunk_index": 1,
+            "cosine_similarity": 0.8068978786468506,
+            "dense_rank": null,
+            "lexical_rank": null,
+            "fusion_score": null,
+            "text_preview": "page choose payment options, next select the organization that issued the credit card. Enter all necessary details and confirm your booking. Once your payment has been authorized, you will be sent an e-ticket and payment confirmation by e-mail. Visa Visa is the largest card scheme network in the world .It facilitates electronic funds transfers throughout the world, most commonly through Visa-branded credit cards, debit cards and prepaid cards. On pay page choose payment options, next select the "
+          }
+        ]
+      },
+      "hybrid": {
+        "ranking_method": "hybrid_rrf",
+        "retrieval_ms": 264.714,
+        "context_ms": 0.212,
+        "context_chars": 0,
+        "context_tokens": 0,
+        "first_relevant_rank": null,
+        "precision_at_k": null,
+        "recall_at_k": null,
+        "reciprocal_rank_at_k": null,
+        "context_precision": null,
+        "context_recall": null,
+        "fallback_correct": true,
+        "context_decision": "fallback",
+        "context_reason": "unsupported_query",
+        "selected_chunk_ids": [],
+        "excluded": [],
+        "candidates": [
+          {
+            "rank": 1,
+            "document": "FAQs.docx",
+            "chunk_id": "4b5f3a65d6adc07340d93247e2c4f7c8d3c3afeecc0b25ee912a2786a3dcdd0d",
+            "chunk_index": 0,
+            "cosine_similarity": 0.8153707384637191,
+            "dense_rank": 1,
+            "lexical_rank": null,
+            "fusion_score": 0.01639344262295082,
+            "text_preview": "FAQS FAQs link: https://www.kenya-airways.com/en-ke/help/faqs/ Booking & Payment FAQs What are my payment options? Pay quickly and efficiently through any of our payment options: credit and debit cards, eWallet , mobile payment or real-time bank transfer. Read more about our payments options.(Link: https://www.kenya-airways.com/en-ke/book-manage/booking-online/payment-methods/ ) Can I make an online payment in a currency of my choice? Our prices are automatically displayed based on the country y"
+          },
+          {
+            "rank": 2,
+            "document": "Payments.docx",
+            "chunk_id": "51e0152b2bc5e6e92b96b35de6adc40ec786ab442aab10105ef46db9f4f32ea6",
+            "chunk_index": 13,
+            "cosine_similarity": 0.8145478475431908,
+            "dense_rank": 2,
+            "lexical_rank": null,
+            "fusion_score": 0.016129032258064516,
+            "text_preview": "First Needs Expense (FNE):"
+          },
+          {
+            "rank": 3,
+            "document": "Payments.docx",
+            "chunk_id": "b4d187fd7277e037674ef5d4bd16b128f902f08086cbc2bbe19bfc7f58439384",
+            "chunk_index": 17,
+            "cosine_similarity": 0.8106788837970541,
+            "dense_rank": 3,
+            "lexical_rank": null,
+            "fusion_score": 0.015873015873015872,
+            "text_preview": "Heavy Bag Charges:"
+          },
+          {
+            "rank": 4,
+            "document": "Payments.docx",
+            "chunk_id": "942b296f5cb1e3fb34ab2b809cb36167d47e721774ea249b612ffea8d6a38c3a",
+            "chunk_index": 3,
+            "cosine_similarity": 0.8082746703303973,
+            "dense_rank": 4,
+            "lexical_rank": null,
+            "fusion_score": 0.015625,
+            "text_preview": "money, buy airtime, pay bills, pay for goods and services from their mobile phones. Once the guest opts to make a payment via Tigo pesa, the e-ticket is sent to their email address. Other Methods of Payment (AMOPs) Mobile Banking or Bank Transfer This form of payment is currently available in the Kenya, Nigeria and a few selected African countries. It is a real time 24-hour digital payment solution that allows for bank-to-bank transfers at a low cost. it is easy to use, fast, convenient, secure "
+          },
+          {
+            "rank": 5,
+            "document": "Payments.docx",
+            "chunk_id": "27b63102f7bbc440d5f889b6e42e5a90044a344b069b8117441a4d6e11912950",
+            "chunk_index": 1,
+            "cosine_similarity": 0.8068978287245498,
+            "dense_rank": 5,
+            "lexical_rank": null,
+            "fusion_score": 0.015384615384615385,
+            "text_preview": "page choose payment options, next select the organization that issued the credit card. Enter all necessary details and confirm your booking. Once your payment has been authorized, you will be sent an e-ticket and payment confirmation by e-mail. Visa Visa is the largest card scheme network in the world .It facilitates electronic funds transfers throughout the world, most commonly through Visa-branded credit cards, debit cards and prepaid cards. On pay page choose payment options, next select the "
+          }
+        ]
+      }
+    },
+    {
+      "id": "unanswerable-mixed",
+      "language": "mixed",
+      "question": "My booking ABC123 iko seat gani right now?",
+      "answerable": false,
+      "labelled_relevant_chunk_ids": [],
+      "dense": {
+        "ranking_method": "dense_cosine",
+        "retrieval_ms": 81.16,
+        "context_ms": 0.139,
+        "context_chars": 0,
+        "context_tokens": 0,
+        "first_relevant_rank": null,
+        "precision_at_k": null,
+        "recall_at_k": null,
+        "reciprocal_rank_at_k": null,
+        "context_precision": null,
+        "context_recall": null,
+        "fallback_correct": true,
+        "context_decision": "fallback",
+        "context_reason": "unsupported_query",
+        "selected_chunk_ids": [],
+        "excluded": [],
+        "candidates": [
+          {
+            "rank": 1,
+            "document": "FAQs.docx",
+            "chunk_id": "71995436b1d12fe055841c0456e90af344d052a77be0342b12a3f257b5e64af1",
+            "chunk_index": 3,
+            "cosine_similarity": 0.8301219940185547,
+            "dense_rank": null,
+            "lexical_rank": null,
+            "fusion_score": null,
+            "text_preview": "meet the exit row seat safety requirements, we strongly recommend you to book early as seats are available on a first-come, first-served basis. Extra Legroom Seats are subject to availability, terms & conditions, and other eligibility requirements. What should I do if my Promotional Code is not working? Use the feedback icon hanging on the right side of your browsing window Where do I present my credit/debit card? If Kenya Airways advise you to present the card used for booking, it must be prese"
+          },
+          {
+            "rank": 2,
+            "document": "FAQs.docx",
+            "chunk_id": "cdbce02fc752171a3baa2b309aeeec424e5f1d085ff63730183ff3987eaf9a6c",
+            "chunk_index": 5,
+            "cosine_similarity": 0.8288593292236328,
+            "dense_rank": null,
+            "lexical_rank": null,
+            "fusion_score": null,
+            "text_preview": "of payment and will be widely accepted as a receipt. After booking your flight on Kenya-airways.com you will receive your ticket via e-mail as soon as we have received the payment. Can I pay for a ticket for another person travelling from abroad? Yes, you can book for another person travelling from abroad. However, if you choose to pay with credit or debit cards you may be required to present the card used for booking, it must be presented while checking into your flight at the commencement of t"
+          },
+          {
+            "rank": 3,
+            "document": "FAQs.docx",
+            "chunk_id": "5d0e3a91b8fefe4c341095e005f222167175d8f96eda2ca77bf3a961483c81ad",
+            "chunk_index": 2,
+            "cosine_similarity": 0.8277396559715271,
+            "dense_rank": null,
+            "lexical_rank": null,
+            "fusion_score": null,
+            "text_preview": "names or transfer your ticket to a friend or a family member. Do I need to call Kenya Airways to reconfirm my flight? If your booking is successful, there is no need to call us. You can check in online or at the airport on the day of departure. What is an Extra Legroom Seat? The extra Legroom Seats are located in Economy Class exit rows with a generous space for you to stretch out. It is offered only on Kenya Airways-operated flights and is not available on flights operated by our partner airlin"
+          },
+          {
+            "rank": 4,
+            "document": "FAQs.docx",
+            "chunk_id": "d191fb0ac3653c4c08a0bc7db685baf8fa180ad8921381b5348ceecf6b2c16e4",
+            "chunk_index": 11,
+            "cosine_similarity": 0.8267946243286133,
+            "dense_rank": null,
+            "lexical_rank": null,
+            "fusion_score": null,
+            "text_preview": "modify Multicity bookings online? No, It is not possible for any changes to be made on multi-city bookings. Can one make changes online to bookings that have been affected by schedule change? No, one has to call our Contact center for Assistance. When one is a no show can they make any changes to their booking online? No this is not possible, one has to call our contact center for Assistance. What happens to bookings that have been cancelled? One cannot access any bookings that have been cancell"
+          },
+          {
+            "rank": 5,
+            "document": "FAQs.docx",
+            "chunk_id": "1346c76983fd6d874478f20b3716fdc3829e7d044d90af47e16be8560257885d",
+            "chunk_index": 6,
+            "cosine_similarity": 0.8260460495948792,
+            "dense_rank": null,
+            "lexical_rank": null,
+            "fusion_score": null,
+            "text_preview": "has to call our Contact center for Assistance. When one is a no show can they make any changes to their booking online? No this is not possible, one has to call our contact center for Assistance. What happens to bookings that have been cancelled? One cannot access any bookings that have been cancelled online. Is it possible for one to modify bookings online that have already been modified offline? No,once changes have been made to a booking offline they cannot be modified online. Can one change "
+          }
+        ]
+      },
+      "hybrid": {
+        "ranking_method": "hybrid_rrf",
+        "retrieval_ms": 256.466,
+        "context_ms": 0.123,
+        "context_chars": 0,
+        "context_tokens": 0,
+        "first_relevant_rank": null,
+        "precision_at_k": null,
+        "recall_at_k": null,
+        "reciprocal_rank_at_k": null,
+        "context_precision": null,
+        "context_recall": null,
+        "fallback_correct": true,
+        "context_decision": "fallback",
+        "context_reason": "unsupported_query",
+        "selected_chunk_ids": [],
+        "excluded": [],
+        "candidates": [
+          {
+            "rank": 1,
+            "document": "FAQs.docx",
+            "chunk_id": "71995436b1d12fe055841c0456e90af344d052a77be0342b12a3f257b5e64af1",
+            "chunk_index": 3,
+            "cosine_similarity": 0.8301219358988848,
+            "dense_rank": 1,
+            "lexical_rank": 1,
+            "fusion_score": 0.03278688524590164,
+            "text_preview": "meet the exit row seat safety requirements, we strongly recommend you to book early as seats are available on a first-come, first-served basis. Extra Legroom Seats are subject to availability, terms & conditions, and other eligibility requirements. What should I do if my Promotional Code is not working? Use the feedback icon hanging on the right side of your browsing window Where do I present my credit/debit card? If Kenya Airways advise you to present the card used for booking, it must be prese"
+          },
+          {
+            "rank": 2,
+            "document": "FAQs.docx",
+            "chunk_id": "5d0e3a91b8fefe4c341095e005f222167175d8f96eda2ca77bf3a961483c81ad",
+            "chunk_index": 2,
+            "cosine_similarity": 0.8277395163523107,
+            "dense_rank": 3,
+            "lexical_rank": 5,
+            "fusion_score": 0.03125763125763126,
+            "text_preview": "names or transfer your ticket to a friend or a family member. Do I need to call Kenya Airways to reconfirm my flight? If your booking is successful, there is no need to call us. You can check in online or at the airport on the day of departure. What is an Extra Legroom Seat? The extra Legroom Seats are located in Economy Class exit rows with a generous space for you to stretch out. It is offered only on Kenya Airways-operated flights and is not available on flights operated by our partner airlin"
+          },
+          {
+            "rank": 3,
+            "document": "FAQs.docx",
+            "chunk_id": "4b5f3a65d6adc07340d93247e2c4f7c8d3c3afeecc0b25ee912a2786a3dcdd0d",
+            "chunk_index": 0,
+            "cosine_similarity": 0.8240226299984137,
+            "dense_rank": 8,
+            "lexical_rank": 3,
+            "fusion_score": 0.03057889822595705,
+            "text_preview": "FAQS FAQs link: https://www.kenya-airways.com/en-ke/help/faqs/ Booking & Payment FAQs What are my payment options? Pay quickly and efficiently through any of our payment options: credit and debit cards, eWallet , mobile payment or real-time bank transfer. Read more about our payments options.(Link: https://www.kenya-airways.com/en-ke/book-manage/booking-online/payment-methods/ ) Can I make an online payment in a currency of my choice? Our prices are automatically displayed based on the country y"
+          },
+          {
+            "rank": 4,
+            "document": "Flight upgrade.docx",
+            "chunk_id": "31cad70282aceb8596b8e786a6db1ab5da7cae336d86a9cf6c147cf7cd32edc6",
+            "chunk_index": 0,
+            "cosine_similarity": 0.8218670578171141,
+            "dense_rank": 10,
+            "lexical_rank": 4,
+            "fusion_score": 0.029910714285714284,
+            "text_preview": "Upgrade Flight Upgrade Flight link: https://www.kenya-airways.com/en-ke/book-manage/manage-booking/upgrade-flight/ Upgrade to Business Class: You now have various options of upgrading to our award-winning business class on Kenya Airways. With an economy class ticket, upgrading to business class and enjoying award-winning amenities is easy. Bid to Upgrade: Holding an economy class ticket? Our Bid to Upgrade Program allows you to quote an amount you would like to pay for the upgrade to Business Cl"
+          },
+          {
+            "rank": 5,
+            "document": "Bookings and Self-Rebooking.docx",
+            "chunk_id": "39699f097fc1a0d3599ab613a02c2436b37ffcc0eaff0ba675f35da2ed7427e5",
+            "chunk_index": 3,
+            "cosine_similarity": 0.8254186438488547,
+            "dense_rank": 7,
+            "lexical_rank": 8,
+            "fusion_score": 0.029631255487269532,
+            "text_preview": "allowances. What do I need to rebook myself? You only need your booking reference or e-ticket number. Where do I go to rebook my flight? Simply visit the Kenya Airways website(Link: https://www.kenya-airways.com/en-ke/ ), select “Manage Booking” You will find the rebooking link at the top marked “Click here. Where do I find the flight options available for rebooking? Once you log in, you will be redirected to a page that has all available flight options and timings. *Flight timings available for"
+          }
+        ]
+      }
+    }
+  ]
+}

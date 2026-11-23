@@ -20,7 +20,10 @@ class RetrievalTests(unittest.TestCase):
         self.index.search.return_value = [
             SearchHit(chunk=chunk(), score=0.85), SearchHit(chunk=chunk("second"), score=0.71),
         ]
-        self.settings = Settings(retrieval_top_k=7)
+        self.settings = Settings(
+            retrieval_top_k=7,
+            hybrid_retrieval_enabled=False,
+        )
         self.service = RetrievalService(self.index, self.settings)
 
     def test_original_question_language_and_normalized_embedding_query(self):
@@ -79,6 +82,58 @@ class RetrievalTests(unittest.TestCase):
         self.assertEqual(result.evidence_status, "not_assessed")
         self.assertEqual(result.results[0].score, 0.85)
         self.assertGreaterEqual(result.retrieval_ms, 0)
+
+    def test_hybrid_retrieval_preserves_cosine_and_rank_metadata(self):
+        self.settings.hybrid_retrieval_enabled = True
+        self.index.search_hybrid.return_value = [
+            SearchHit(
+                chunk=chunk(),
+                score=0.84,
+                dense_rank=3,
+                lexical_rank=1,
+                fusion_score=0.032,
+            ),
+        ]
+
+        result = self.service.retrieve(
+            RetrievalRequest(
+                question="Economy baggage allowance",
+                language="en",
+                top_k=1,
+            ),
+        )
+
+        self.index.search_hybrid.assert_called_once_with(
+            "Economy baggage allowance",
+            1,
+            dense_candidates=20,
+            lexical_candidates=20,
+            rrf_k=self.settings.hybrid_rrf_k,
+        )
+        self.assertEqual(result.ranking_method, "hybrid_rrf")
+        self.assertEqual(result.results[0].score, 0.84)
+        self.assertEqual(result.results[0].dense_rank, 3)
+        self.assertEqual(result.results[0].lexical_rank, 1)
+        self.assertEqual(result.results[0].fusion_score, 0.032)
+
+    def test_kiswahili_wheelchair_terms_are_expanded(self):
+        self.settings.hybrid_retrieval_enabled = True
+        self.index.search_hybrid.return_value = []
+
+        result = self.service.retrieve(RetrievalRequest(
+            question=(
+                "Ninaweza kuleta kiti changu cha magurudumu bila malipo "
+                "na niweke nafasi saa ngapi kabla ya safari?"
+            ),
+            language="sw",
+            top_k=5,
+        ))
+
+        query = self.index.search_hybrid.call_args.args[0]
+        self.assertIn("wheelchair mobility aid", query)
+        self.assertIn("free of charge", query)
+        self.assertIn("hours before departure", query)
+        self.assertEqual(result.normalized_query, query)
 
     def test_empty_index_is_not_a_storage_error_or_answerability_claim(self):
         self.index.search.return_value = []

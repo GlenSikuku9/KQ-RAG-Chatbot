@@ -15,6 +15,18 @@ chroma_db/
 model_cache/
 backend/data/processed/kq_ingestion_report.json
 
+# Local multilingual reranker experiments
+/backend/experiments/local_reranker/
+/backend/data/evaluation/reranker-evaluation/
+/backend/models/reranker/
+
+# Private evaluation annotation artefacts and reviewed datasets
+backend/data/evaluation/retrieval-evaluation-*.xlsx
+backend/data/evaluation/retrieval-evaluation-*-reviewed.json
+backend/data/evaluation/automated-*.json
+backend/data/evaluation/automated-*.csv
+backend/data/evaluation/*-checkpoint.json
+
 # docs
 docs/
 

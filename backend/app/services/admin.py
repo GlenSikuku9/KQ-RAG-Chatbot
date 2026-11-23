@@ -41,7 +41,12 @@ from app.models.database import encode_document_id, utc_now
 from app.models.ingestion import DocumentRecord
 from app.models.user import AuthenticatedUser
 from app.services.conversations import ConversationStore, conversation_title_from_question
-from app.services.firestore_client import FIRESTORE_READ_TIMEOUT, firestore_operation, get_firestore_client
+from app.services.firestore_client import (
+    FIRESTORE_BULK_READ_TIMEOUT,
+    FIRESTORE_READ_TIMEOUT,
+    firestore_operation,
+    get_firestore_client,
+)
 from app.services.knowledge_base import KnowledgeBaseStore
 from app.security.document_upload import (
     UnsafeDocumentError,
@@ -51,6 +56,19 @@ from app.rag.ingestion import publish_document, remove_document
 
 
 logger = logging.getLogger(__name__)
+
+
+def _uploader_email(value: object) -> str | None:
+    """Resolve stored Firebase UIDs while also supporting imported email metadata."""
+    if not value:
+        return None
+    text = str(value).strip()
+    if "@" in text:
+        return text
+    try:
+        return auth.get_user(text).email or "Administrator"
+    except Exception:
+        return "Administrator"
 
 
 def sync_vector_index() -> dict:
@@ -136,7 +154,13 @@ def list_admin_models() -> list[AdminModel]:
             continue
         if raw.get("event_type") == "chat_completed":
             stats[model_id]["success"] += 1
-            stats[model_id]["durations"].append(float(raw.get("duration_ms", 0)))
+            # A missing duration represents a deliberately reset historical
+            # timing. Request counts remain intact while averages restart from
+            # the next completed response that records a fresh duration.
+            if raw.get("duration_ms") is not None:
+                stats[model_id]["durations"].append(
+                    float(raw["duration_ms"]),
+                )
         elif raw.get("event_type") == "chat_failed":
             stats[model_id]["failed"] += 1
     total = sum(item["success"] for item in stats.values())
@@ -687,20 +711,19 @@ def list_documents() -> list[AdminDocument]:
     client = get_firestore_client()
     metadata = {}
     with firestore_operation():
-        snapshots = client.collection("documents").stream(timeout=FIRESTORE_READ_TIMEOUT)
-        for snapshot in client.collection("admin_document_metadata").stream(timeout=FIRESTORE_READ_TIMEOUT):
+        snapshots = client.collection("documents").stream(
+            timeout=FIRESTORE_BULK_READ_TIMEOUT
+        )
+        for snapshot in client.collection("admin_document_metadata").stream(
+            timeout=FIRESTORE_BULK_READ_TIMEOUT
+        ):
             metadata[snapshot.id] = snapshot.to_dict() or {}
     result: list[AdminDocument] = []
     for snapshot in snapshots:
         record = DocumentRecord.model_validate(snapshot.to_dict())
         extra = metadata.get(record.document_id, {})
         filename = extra.get("original_filename") or record.source.replace("\\", "/").rsplit("/", 1)[-1]
-        uploader_email = extra.get("uploaded_by")
-        if uploader_email:
-            try:
-                uploader_email = auth.get_user(str(uploader_email)).email or "Administrator"
-            except Exception:
-                uploader_email = "Administrator"
+        uploader_email = _uploader_email(extra.get("uploaded_by"))
         file_path = settings.raw_data_dir / record.source
         file_hash = extra.get("file_hash")
         if not file_hash and file_path.is_file():
@@ -718,6 +741,8 @@ def list_documents() -> list[AdminDocument]:
             source=record.source,
             chunk_count=record.active.chunk_count if record.active else 0,
             uploaded_by=uploader_email,
+            language=extra.get("language"),
+            related_document_id=extra.get("related_document_id"),
             file_hash=file_hash,
             version_count=int(extra.get("version_count", 1)),
         ))
@@ -907,14 +932,9 @@ def list_document_versions(document_id: str) -> list[AdminDocumentVersion]:
     versions = []
     for snapshot in snapshots:
         raw = snapshot.to_dict() or {}
-        uploader = raw.get("uploaded_by")
-        email = None
-        if uploader:
-            try:
-                email = auth.get_user(str(uploader)).email
-            except Exception:
-                email = "Administrator"
-        raw["uploaded_by"] = email or uploader
+        raw["uploaded_by"] = _uploader_email(raw.get("uploaded_by"))
+        if document.status == "removed":
+            raw["is_current"] = False
         versions.append(AdminDocumentVersion.model_validate(raw))
     if not versions:
         # Backfill a readable v1 entry for documents uploaded before I24 versioning.
@@ -922,7 +942,8 @@ def list_document_versions(document_id: str) -> list[AdminDocumentVersion]:
             version_id=f"{document_id}:v1", document_id=document_id, version_number=1,
             version="v1", file_hash=document.file_hash or "unknown", uploaded_at=document.uploaded_at,
             uploaded_by=document.uploaded_by, file_reference=document.source, source=document.source,
-            status=document.status, is_current=True, title=document.title, category=document.category,
+            status=document.status, is_current=document.status != "removed",
+            title=document.title, category=document.category,
         ))
     return sorted(versions, key=lambda item: item.version_number, reverse=True)
 
@@ -935,25 +956,40 @@ def restore_document_version(admin: AuthenticatedUser, document_id: str, version
     if selected is None:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "Document version not found.")
     current_number = document.version_count
-    if selected.version_number == current_number:
+    if selected.version_number == current_number and document.status != "removed":
         raise HTTPException(status.HTTP_409_CONFLICT, "That version is already current.")
     selected_path = Path(selected.file_reference)
+    if not selected_path.is_absolute():
+        selected_path = get_settings().raw_data_dir / selected_path
     if not selected_path.is_file():
         raise HTTPException(status.HTTP_404_NOT_FOUND, "The archived document file is unavailable.")
     settings = get_settings()
     destination = settings.raw_data_dir / document.source
     now = utc_now()
-    # Preserve the currently active bytes before replacing them with the selected version.
+    # Preserve the currently active bytes before replacing them with the selected
+    # version. A removed document has no active bytes in the index, so its current
+    # version may be republished directly to make Restore useful after deletion.
     current_archive = settings.raw_data_dir.parent / _version_reference(document_id, current_number)
     current_archive.parent.mkdir(parents=True, exist_ok=True)
-    if destination.is_file():
+    restoring_removed_current = (
+        document.status == "removed"
+        and selected.version_number == current_number
+    )
+    if destination.is_file() and not restoring_removed_current:
         shutil.copy2(destination, current_archive)
     _mark_previous_versions(document_id)
     client = get_firestore_client()
     client.collection("document_versions").document(f"{document_id}:v{current_number}").set({
-        "file_reference": str(current_archive), "status": "archived", "is_current": False,
+        "file_reference": (
+            selected.file_reference
+            if restoring_removed_current
+            else str(current_archive)
+        ),
+        "status": "archived",
+        "is_current": False,
     }, merge=True)
-    shutil.copy2(selected_path, destination)
+    if selected_path.resolve() != destination.resolve():
+        shutil.copy2(selected_path, destination)
     result = publish_document(destination, settings, KnowledgeBaseStore(client))
     if not result.persisted or result.status not in {"processed", "unchanged"}:
         raise HTTPException(status.HTTP_422_UNPROCESSABLE_ENTITY, result.error or "Document restoration failed during processing.")
@@ -1683,6 +1719,9 @@ def analytics(period_days: int = 30) -> AdminAnalytics:
     model_counts = Counter(item.model_id for item in events if item.model_id)
     daily_counts = Counter(item.started_at.date().isoformat() for item in conversations)
     completed = [item for item in events if item.event_type == "chat_completed"]
+    timed_completed = [
+        item for item in completed if item.duration_ms is not None
+    ]
     tracked_oag_api_calls = sum(
         1
         for item in events
@@ -1821,7 +1860,18 @@ def analytics(period_days: int = 30) -> AdminAnalytics:
         languages=dict(sorted(language_counts.items())),
         models=dict(sorted(model_counts.items())),
         feedback={"count": len(feedback), "average_rating": round(average_rating, 2), "distribution": dict(sorted(ratings.items()))},
-        performance={"completed_count": len(completed), "average_response_ms": round(sum(item.duration_ms for item in completed) / len(completed), 2) if completed else 0.0},
+        performance={
+            "completed_count": len(completed),
+            "average_response_ms": (
+                round(
+                    sum(item.duration_ms for item in timed_completed)
+                    / len(timed_completed),
+                    2,
+                )
+                if timed_completed
+                else None
+            ),
+        },
         responses=dict(Counter(item.response_source for item in events if item.response_source)),
         failures=dict(Counter(item.failure_category for item in events if item.failure_category)),
         rating_distribution=dict(sorted(ratings.items())),

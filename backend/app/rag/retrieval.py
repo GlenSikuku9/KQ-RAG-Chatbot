@@ -28,6 +28,31 @@ _SWAHILI_QUERY_CONCEPTS = (
     (re.compile(r"\bkimataifa\b", re.IGNORECASE), "international"),
     (re.compile(r"\bkubadilisha nafasi\b", re.IGNORECASE), "change booking"),
     (re.compile(r"\b(?:hati|nyaraka) za safari\b", re.IGNORECASE), "travel documents passport visa"),
+    (
+        re.compile(
+            r"\bkiti (?:changu )?cha magurudumu\b",
+            re.IGNORECASE,
+        ),
+        "wheelchair mobility aid",
+    ),
+    (
+        re.compile(r"\bbila malipo\b", re.IGNORECASE),
+        "free of charge",
+    ),
+    (
+        re.compile(
+            r"\b(?:niweke nafasi|kuweka nafasi)\b",
+            re.IGNORECASE,
+        ),
+        "make reservation request assistance",
+    ),
+    (
+        re.compile(
+            r"\bsaa (?:ngapi|\d+) kabla ya safari\b",
+            re.IGNORECASE,
+        ),
+        "hours before departure",
+    ),
 )
 
 
@@ -62,7 +87,24 @@ class RetrievalService:
         limit = request.top_k if request.top_k is not None else self.settings.retrieval_top_k
         start = perf_counter()
         try:
-            hits = self.index.search(normalized, limit)
+            if self.settings.hybrid_retrieval_enabled:
+                hits = self.index.search_hybrid(
+                    normalized,
+                    limit,
+                    dense_candidates=max(
+                        limit,
+                        self.settings.hybrid_dense_candidates,
+                    ),
+                    lexical_candidates=max(
+                        limit,
+                        self.settings.hybrid_lexical_candidates,
+                    ),
+                    rrf_k=self.settings.hybrid_rrf_k,
+                )
+                ranking_method = "hybrid_rrf"
+            else:
+                hits = self.index.search(normalized, limit)
+                ranking_method = "dense_cosine"
         except EmbeddingInputError as exc:
             logger.warning("Retrieval question exceeds model input constraints.")
             raise HTTPException(422, "Question exceeds the embedding model input limit; shorten it and retry.") from exc
@@ -78,8 +120,18 @@ class RetrievalService:
                 else "unspecified"
             ),
             top_k=limit, returned_count=len(hits),
-            results=[RankedChunk(rank=index, score=hit.score, chunk=hit.chunk)
-                     for index, hit in enumerate(hits, 1)],
+            results=[
+                RankedChunk(
+                    rank=index,
+                    score=hit.score,
+                    chunk=hit.chunk,
+                    dense_rank=hit.dense_rank,
+                    lexical_rank=hit.lexical_rank,
+                    fusion_score=hit.fusion_score,
+                )
+                for index, hit in enumerate(hits, 1)
+            ],
+            ranking_method=ranking_method,
             retrieval_ms=round((perf_counter() - start) * 1000, 3),
         )
 

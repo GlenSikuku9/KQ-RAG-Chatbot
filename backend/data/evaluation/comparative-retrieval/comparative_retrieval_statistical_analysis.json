@@ -1,0 +1,4462 @@
+{
+  "seed": 20261119,
+  "bootstrap_samples": 2000,
+  "confidence_intervals": {
+    "E01": {
+      "overall": {
+        "mrr_at_5": {
+          "difference_percentage_points": 48.56481481481482,
+          "ci_95": [
+            42.182539682539684,
+            55.07894736842105
+          ],
+          "clusters": 140,
+          "samples": 2000
+        },
+        "recall_at_1": {
+          "difference_percentage_points": 41.66666666666667,
+          "ci_95": [
+            34.226190476190474,
+            48.68421052631579
+          ],
+          "clusters": 140,
+          "samples": 2000
+        },
+        "recall_at_5": {
+          "difference_percentage_points": 59.166666666666664,
+          "ci_95": [
+            52.29885057471264,
+            65.93406593406593
+          ],
+          "clusters": 140,
+          "samples": 2000
+        },
+        "hit_rate_at_5": {
+          "difference_percentage_points": 59.44444444444444,
+          "ci_95": [
+            52.71739130434783,
+            66.27906976744185
+          ],
+          "clusters": 140,
+          "samples": 2000
+        },
+        "context_recall": {
+          "difference_percentage_points": 54.166666666666664,
+          "ci_95": [
+            47.383720930232556,
+            61.23595505617978
+          ],
+          "clusters": 140,
+          "samples": 2000
+        }
+      },
+      "en": {
+        "mrr_at_5": {
+          "difference_percentage_points": 62.69444444444444,
+          "ci_95": [
+            50.97222222222222,
+            73.52777777777779
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_1": {
+          "difference_percentage_points": 56.666666666666664,
+          "ci_95": [
+            43.333333333333336,
+            68.33333333333333
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_5": {
+          "difference_percentage_points": 75.0,
+          "ci_95": [
+            63.33333333333333,
+            85.0
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "hit_rate_at_5": {
+          "difference_percentage_points": 75.0,
+          "ci_95": [
+            63.33333333333333,
+            85.0
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "context_recall": {
+          "difference_percentage_points": 70.0,
+          "ci_95": [
+            58.333333333333336,
+            81.66666666666667
+          ],
+          "clusters": 60,
+          "samples": 2000
+        }
+      },
+      "sw": {
+        "mrr_at_5": {
+          "difference_percentage_points": 10.416666666666668,
+          "ci_95": [
+            3.75,
+            18.333333333333332
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_1": {
+          "difference_percentage_points": 10.0,
+          "ci_95": [
+            3.3333333333333335,
+            18.333333333333332
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_5": {
+          "difference_percentage_points": 11.666666666666666,
+          "ci_95": [
+            5.0,
+            20.0
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "hit_rate_at_5": {
+          "difference_percentage_points": 11.666666666666666,
+          "ci_95": [
+            5.0,
+            20.0
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "context_recall": {
+          "difference_percentage_points": 10.0,
+          "ci_95": [
+            3.3333333333333335,
+            18.333333333333332
+          ],
+          "clusters": 60,
+          "samples": 2000
+        }
+      },
+      "mixed": {
+        "mrr_at_5": {
+          "difference_percentage_points": 72.58333333333333,
+          "ci_95": [
+            63.55555555555556,
+            81.55555555555556
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_1": {
+          "difference_percentage_points": 58.333333333333336,
+          "ci_95": [
+            45.83333333333333,
+            70.0
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_5": {
+          "difference_percentage_points": 90.83333333333333,
+          "ci_95": [
+            83.33333333333334,
+            97.5
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "hit_rate_at_5": {
+          "difference_percentage_points": 91.66666666666666,
+          "ci_95": [
+            85.0,
+            98.33333333333333
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "context_recall": {
+          "difference_percentage_points": 82.5,
+          "ci_95": [
+            72.5,
+            91.66666666666666
+          ],
+          "clusters": 60,
+          "samples": 2000
+        }
+      }
+    },
+    "E02": {
+      "overall": {
+        "mrr_at_5": {
+          "difference_percentage_points": 54.648148148148145,
+          "ci_95": [
+            47.5,
+            61.53558052434457
+          ],
+          "clusters": 140,
+          "samples": 2000
+        },
+        "recall_at_1": {
+          "difference_percentage_points": 46.111111111111114,
+          "ci_95": [
+            38.48314606741573,
+            53.93258426966292
+          ],
+          "clusters": 140,
+          "samples": 2000
+        },
+        "recall_at_5": {
+          "difference_percentage_points": 66.94444444444444,
+          "ci_95": [
+            59.8314606741573,
+            73.59550561797754
+          ],
+          "clusters": 140,
+          "samples": 2000
+        },
+        "hit_rate_at_5": {
+          "difference_percentage_points": 67.22222222222223,
+          "ci_95": [
+            60.1123595505618,
+            74.09638554216868
+          ],
+          "clusters": 140,
+          "samples": 2000
+        },
+        "context_recall": {
+          "difference_percentage_points": 63.05555555555556,
+          "ci_95": [
+            55.61797752808989,
+            70.1086956521739
+          ],
+          "clusters": 140,
+          "samples": 2000
+        }
+      },
+      "en": {
+        "mrr_at_5": {
+          "difference_percentage_points": 60.47222222222223,
+          "ci_95": [
+            49.27777777777778,
+            72.13888888888889
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_1": {
+          "difference_percentage_points": 55.00000000000001,
+          "ci_95": [
+            43.333333333333336,
+            68.33333333333333
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_5": {
+          "difference_percentage_points": 70.0,
+          "ci_95": [
+            58.333333333333336,
+            81.66666666666667
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "hit_rate_at_5": {
+          "difference_percentage_points": 70.0,
+          "ci_95": [
+            58.333333333333336,
+            81.66666666666667
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "context_recall": {
+          "difference_percentage_points": 68.33333333333333,
+          "ci_95": [
+            56.666666666666664,
+            80.0
+          ],
+          "clusters": 60,
+          "samples": 2000
+        }
+      },
+      "sw": {
+        "mrr_at_5": {
+          "difference_percentage_points": 35.80555555555556,
+          "ci_95": [
+            24.75,
+            46.52777777777778
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_1": {
+          "difference_percentage_points": 28.333333333333332,
+          "ci_95": [
+            16.666666666666664,
+            40.0
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_5": {
+          "difference_percentage_points": 46.666666666666664,
+          "ci_95": [
+            33.33333333333333,
+            60.0
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "hit_rate_at_5": {
+          "difference_percentage_points": 46.666666666666664,
+          "ci_95": [
+            33.33333333333333,
+            60.0
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "context_recall": {
+          "difference_percentage_points": 41.66666666666667,
+          "ci_95": [
+            28.333333333333332,
+            53.333333333333336
+          ],
+          "clusters": 60,
+          "samples": 2000
+        }
+      },
+      "mixed": {
+        "mrr_at_5": {
+          "difference_percentage_points": 67.66666666666666,
+          "ci_95": [
+            57.25,
+            77.30555555555556
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_1": {
+          "difference_percentage_points": 55.00000000000001,
+          "ci_95": [
+            42.5,
+            66.66666666666666
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_5": {
+          "difference_percentage_points": 84.16666666666667,
+          "ci_95": [
+            75.0,
+            92.5
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "hit_rate_at_5": {
+          "difference_percentage_points": 85.0,
+          "ci_95": [
+            75.0,
+            93.33333333333333
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "context_recall": {
+          "difference_percentage_points": 79.16666666666666,
+          "ci_95": [
+            68.33333333333333,
+            89.16666666666667
+          ],
+          "clusters": 60,
+          "samples": 2000
+        }
+      }
+    },
+    "E03": {
+      "overall": {
+        "mrr_at_5": {
+          "difference_percentage_points": 57.51851851851851,
+          "ci_95": [
+            50.47872340425532,
+            64.45970695970696
+          ],
+          "clusters": 140,
+          "samples": 2000
+        },
+        "recall_at_1": {
+          "difference_percentage_points": 47.77777777777778,
+          "ci_95": [
+            40.243902439024396,
+            55.64516129032258
+          ],
+          "clusters": 140,
+          "samples": 2000
+        },
+        "recall_at_5": {
+          "difference_percentage_points": 70.55555555555556,
+          "ci_95": [
+            63.33333333333333,
+            77.45098039215686
+          ],
+          "clusters": 140,
+          "samples": 2000
+        },
+        "hit_rate_at_5": {
+          "difference_percentage_points": 70.55555555555556,
+          "ci_95": [
+            63.33333333333333,
+            77.45098039215686
+          ],
+          "clusters": 140,
+          "samples": 2000
+        },
+        "context_recall": {
+          "difference_percentage_points": 67.77777777777779,
+          "ci_95": [
+            60.51136363636363,
+            74.72826086956522
+          ],
+          "clusters": 140,
+          "samples": 2000
+        }
+      },
+      "en": {
+        "mrr_at_5": {
+          "difference_percentage_points": 70.05555555555556,
+          "ci_95": [
+            59.72222222222222,
+            79.5
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_1": {
+          "difference_percentage_points": 61.66666666666667,
+          "ci_95": [
+            48.333333333333336,
+            73.33333333333333
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_5": {
+          "difference_percentage_points": 80.0,
+          "ci_95": [
+            70.0,
+            88.33333333333333
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "hit_rate_at_5": {
+          "difference_percentage_points": 80.0,
+          "ci_95": [
+            70.0,
+            88.33333333333333
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "context_recall": {
+          "difference_percentage_points": 80.0,
+          "ci_95": [
+            70.0,
+            88.33333333333333
+          ],
+          "clusters": 60,
+          "samples": 2000
+        }
+      },
+      "sw": {
+        "mrr_at_5": {
+          "difference_percentage_points": 25.305555555555554,
+          "ci_95": [
+            15.972222222222221,
+            34.91666666666667
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_1": {
+          "difference_percentage_points": 18.333333333333332,
+          "ci_95": [
+            10.0,
+            28.333333333333332
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_5": {
+          "difference_percentage_points": 38.333333333333336,
+          "ci_95": [
+            26.666666666666668,
+            50.0
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "hit_rate_at_5": {
+          "difference_percentage_points": 38.333333333333336,
+          "ci_95": [
+            26.666666666666668,
+            50.0
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "context_recall": {
+          "difference_percentage_points": 35.0,
+          "ci_95": [
+            23.333333333333332,
+            46.666666666666664
+          ],
+          "clusters": 60,
+          "samples": 2000
+        }
+      },
+      "mixed": {
+        "mrr_at_5": {
+          "difference_percentage_points": 77.19444444444444,
+          "ci_95": [
+            68.33333333333333,
+            85.11111111111111
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_1": {
+          "difference_percentage_points": 63.33333333333333,
+          "ci_95": [
+            50.83333333333333,
+            75.0
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_5": {
+          "difference_percentage_points": 93.33333333333333,
+          "ci_95": [
+            86.66666666666667,
+            98.33333333333333
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "hit_rate_at_5": {
+          "difference_percentage_points": 93.33333333333333,
+          "ci_95": [
+            86.66666666666667,
+            98.33333333333333
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "context_recall": {
+          "difference_percentage_points": 88.33333333333333,
+          "ci_95": [
+            80.83333333333333,
+            95.83333333333334
+          ],
+          "clusters": 60,
+          "samples": 2000
+        }
+      }
+    },
+    "E04": {
+      "overall": {
+        "mrr_at_5": {
+          "difference_percentage_points": 62.61111111111111,
+          "ci_95": [
+            55.90996168582375,
+            69.21195652173913
+          ],
+          "clusters": 140,
+          "samples": 2000
+        },
+        "recall_at_1": {
+          "difference_percentage_points": 53.333333333333336,
+          "ci_95": [
+            45.45454545454545,
+            61.07594936708861
+          ],
+          "clusters": 140,
+          "samples": 2000
+        },
+        "recall_at_5": {
+          "difference_percentage_points": 76.94444444444444,
+          "ci_95": [
+            70.32967032967034,
+            83.24175824175825
+          ],
+          "clusters": 140,
+          "samples": 2000
+        },
+        "hit_rate_at_5": {
+          "difference_percentage_points": 77.22222222222223,
+          "ci_95": [
+            70.6896551724138,
+            83.51648351648352
+          ],
+          "clusters": 140,
+          "samples": 2000
+        },
+        "context_recall": {
+          "difference_percentage_points": 72.77777777777777,
+          "ci_95": [
+            65.625,
+            79.65116279069767
+          ],
+          "clusters": 140,
+          "samples": 2000
+        }
+      },
+      "en": {
+        "mrr_at_5": {
+          "difference_percentage_points": 62.69444444444444,
+          "ci_95": [
+            50.97222222222222,
+            73.52777777777779
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_1": {
+          "difference_percentage_points": 56.666666666666664,
+          "ci_95": [
+            43.333333333333336,
+            68.33333333333333
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_5": {
+          "difference_percentage_points": 75.0,
+          "ci_95": [
+            63.33333333333333,
+            85.0
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "hit_rate_at_5": {
+          "difference_percentage_points": 75.0,
+          "ci_95": [
+            63.33333333333333,
+            85.0
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "context_recall": {
+          "difference_percentage_points": 70.0,
+          "ci_95": [
+            58.333333333333336,
+            81.66666666666667
+          ],
+          "clusters": 60,
+          "samples": 2000
+        }
+      },
+      "sw": {
+        "mrr_at_5": {
+          "difference_percentage_points": 55.222222222222214,
+          "ci_95": [
+            44.05555555555555,
+            66.05555555555556
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_1": {
+          "difference_percentage_points": 46.666666666666664,
+          "ci_95": [
+            35.0,
+            60.0
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_5": {
+          "difference_percentage_points": 71.66666666666667,
+          "ci_95": [
+            60.0,
+            83.33333333333334
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "hit_rate_at_5": {
+          "difference_percentage_points": 71.66666666666667,
+          "ci_95": [
+            60.0,
+            83.33333333333334
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "context_recall": {
+          "difference_percentage_points": 68.33333333333333,
+          "ci_95": [
+            56.666666666666664,
+            80.0
+          ],
+          "clusters": 60,
+          "samples": 2000
+        }
+      },
+      "mixed": {
+        "mrr_at_5": {
+          "difference_percentage_points": 69.91666666666667,
+          "ci_95": [
+            60.05555555555555,
+            79.30555555555556
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_1": {
+          "difference_percentage_points": 56.666666666666664,
+          "ci_95": [
+            44.166666666666664,
+            69.16666666666667
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_5": {
+          "difference_percentage_points": 84.16666666666667,
+          "ci_95": [
+            74.16666666666667,
+            92.5
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "hit_rate_at_5": {
+          "difference_percentage_points": 85.0,
+          "ci_95": [
+            75.0,
+            93.33333333333333
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "context_recall": {
+          "difference_percentage_points": 80.0,
+          "ci_95": [
+            69.16666666666667,
+            89.16666666666667
+          ],
+          "clusters": 60,
+          "samples": 2000
+        }
+      }
+    },
+    "E05": {
+      "overall": {
+        "mrr_at_5": {
+          "difference_percentage_points": 53.26851851851851,
+          "ci_95": [
+            45.83333333333333,
+            60.46099290780141
+          ],
+          "clusters": 140,
+          "samples": 2000
+        },
+        "recall_at_1": {
+          "difference_percentage_points": 44.166666666666664,
+          "ci_95": [
+            36.144578313253014,
+            51.902173913043484
+          ],
+          "clusters": 140,
+          "samples": 2000
+        },
+        "recall_at_5": {
+          "difference_percentage_points": 66.38888888888889,
+          "ci_95": [
+            58.42696629213483,
+            73.88888888888889
+          ],
+          "clusters": 140,
+          "samples": 2000
+        },
+        "hit_rate_at_5": {
+          "difference_percentage_points": 66.66666666666666,
+          "ci_95": [
+            58.620689655172406,
+            74.17582417582418
+          ],
+          "clusters": 140,
+          "samples": 2000
+        },
+        "context_recall": {
+          "difference_percentage_points": 63.33333333333333,
+          "ci_95": [
+            55.434782608695656,
+            70.87912087912088
+          ],
+          "clusters": 140,
+          "samples": 2000
+        }
+      },
+      "en": {
+        "mrr_at_5": {
+          "difference_percentage_points": 60.47222222222223,
+          "ci_95": [
+            49.27777777777778,
+            72.13888888888889
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_1": {
+          "difference_percentage_points": 55.00000000000001,
+          "ci_95": [
+            43.333333333333336,
+            68.33333333333333
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_5": {
+          "difference_percentage_points": 70.0,
+          "ci_95": [
+            58.333333333333336,
+            81.66666666666667
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "hit_rate_at_5": {
+          "difference_percentage_points": 70.0,
+          "ci_95": [
+            58.333333333333336,
+            81.66666666666667
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "context_recall": {
+          "difference_percentage_points": 68.33333333333333,
+          "ci_95": [
+            56.666666666666664,
+            80.0
+          ],
+          "clusters": 60,
+          "samples": 2000
+        }
+      },
+      "sw": {
+        "mrr_at_5": {
+          "difference_percentage_points": 43.44444444444445,
+          "ci_95": [
+            32.88888888888889,
+            54.19444444444444
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_1": {
+          "difference_percentage_points": 31.666666666666664,
+          "ci_95": [
+            20.0,
+            43.333333333333336
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_5": {
+          "difference_percentage_points": 60.0,
+          "ci_95": [
+            48.333333333333336,
+            71.66666666666667
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "hit_rate_at_5": {
+          "difference_percentage_points": 60.0,
+          "ci_95": [
+            48.333333333333336,
+            71.66666666666667
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "context_recall": {
+          "difference_percentage_points": 56.666666666666664,
+          "ci_95": [
+            45.0,
+            68.33333333333333
+          ],
+          "clusters": 60,
+          "samples": 2000
+        }
+      },
+      "mixed": {
+        "mrr_at_5": {
+          "difference_percentage_points": 55.888888888888886,
+          "ci_95": [
+            45.08333333333333,
+            67.08333333333333
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_1": {
+          "difference_percentage_points": 45.83333333333333,
+          "ci_95": [
+            33.33333333333333,
+            58.333333333333336
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_5": {
+          "difference_percentage_points": 69.16666666666667,
+          "ci_95": [
+            57.49999999999999,
+            80.83333333333333
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "hit_rate_at_5": {
+          "difference_percentage_points": 70.0,
+          "ci_95": [
+            58.333333333333336,
+            81.66666666666667
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "context_recall": {
+          "difference_percentage_points": 65.0,
+          "ci_95": [
+            53.333333333333336,
+            76.66666666666667
+          ],
+          "clusters": 60,
+          "samples": 2000
+        }
+      }
+    },
+    "E06": {
+      "overall": {
+        "mrr_at_5": {
+          "difference_percentage_points": 66.08333333333334,
+          "ci_95": [
+            58.916666666666664,
+            73.03113553113553
+          ],
+          "clusters": 140,
+          "samples": 2000
+        },
+        "recall_at_1": {
+          "difference_percentage_points": 56.666666666666664,
+          "ci_95": [
+            48.40425531914894,
+            64.77272727272727
+          ],
+          "clusters": 140,
+          "samples": 2000
+        },
+        "recall_at_5": {
+          "difference_percentage_points": 78.88888888888889,
+          "ci_95": [
+            72.28260869565217,
+            85.16483516483517
+          ],
+          "clusters": 140,
+          "samples": 2000
+        },
+        "hit_rate_at_5": {
+          "difference_percentage_points": 78.88888888888889,
+          "ci_95": [
+            72.28260869565217,
+            85.16483516483517
+          ],
+          "clusters": 140,
+          "samples": 2000
+        },
+        "context_recall": {
+          "difference_percentage_points": 75.0,
+          "ci_95": [
+            67.96875,
+            81.76470588235294
+          ],
+          "clusters": 140,
+          "samples": 2000
+        }
+      },
+      "en": {
+        "mrr_at_5": {
+          "difference_percentage_points": 70.05555555555556,
+          "ci_95": [
+            59.72222222222222,
+            79.5
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_1": {
+          "difference_percentage_points": 61.66666666666667,
+          "ci_95": [
+            48.333333333333336,
+            73.33333333333333
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_5": {
+          "difference_percentage_points": 80.0,
+          "ci_95": [
+            70.0,
+            88.33333333333333
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "hit_rate_at_5": {
+          "difference_percentage_points": 80.0,
+          "ci_95": [
+            70.0,
+            88.33333333333333
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "context_recall": {
+          "difference_percentage_points": 80.0,
+          "ci_95": [
+            70.0,
+            88.33333333333333
+          ],
+          "clusters": 60,
+          "samples": 2000
+        }
+      },
+      "sw": {
+        "mrr_at_5": {
+          "difference_percentage_points": 56.08333333333333,
+          "ci_95": [
+            45.30555555555556,
+            67.27777777777779
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_1": {
+          "difference_percentage_points": 48.333333333333336,
+          "ci_95": [
+            36.666666666666664,
+            61.66666666666667
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_5": {
+          "difference_percentage_points": 68.33333333333333,
+          "ci_95": [
+            56.666666666666664,
+            80.0
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "hit_rate_at_5": {
+          "difference_percentage_points": 68.33333333333333,
+          "ci_95": [
+            56.666666666666664,
+            80.0
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "context_recall": {
+          "difference_percentage_points": 65.0,
+          "ci_95": [
+            53.333333333333336,
+            76.66666666666667
+          ],
+          "clusters": 60,
+          "samples": 2000
+        }
+      },
+      "mixed": {
+        "mrr_at_5": {
+          "difference_percentage_points": 72.11111111111111,
+          "ci_95": [
+            62.44444444444445,
+            81.16666666666667
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_1": {
+          "difference_percentage_points": 60.0,
+          "ci_95": [
+            48.333333333333336,
+            71.66666666666667
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_5": {
+          "difference_percentage_points": 88.33333333333333,
+          "ci_95": [
+            80.0,
+            96.66666666666667
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "hit_rate_at_5": {
+          "difference_percentage_points": 88.33333333333333,
+          "ci_95": [
+            80.0,
+            96.66666666666667
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "context_recall": {
+          "difference_percentage_points": 80.0,
+          "ci_95": [
+            70.0,
+            89.16666666666667
+          ],
+          "clusters": 60,
+          "samples": 2000
+        }
+      }
+    },
+    "E07": {
+      "overall": {
+        "mrr_at_5": {
+          "difference_percentage_points": 51.09259259259259,
+          "ci_95": [
+            44.786821705426355,
+            57.399267399267394
+          ],
+          "clusters": 140,
+          "samples": 2000
+        },
+        "recall_at_1": {
+          "difference_percentage_points": 43.611111111111114,
+          "ci_95": [
+            36.44578313253012,
+            50.53191489361703
+          ],
+          "clusters": 140,
+          "samples": 2000
+        },
+        "recall_at_5": {
+          "difference_percentage_points": 60.27777777777777,
+          "ci_95": [
+            53.53260869565217,
+            66.86746987951807
+          ],
+          "clusters": 140,
+          "samples": 2000
+        },
+        "hit_rate_at_5": {
+          "difference_percentage_points": 60.55555555555555,
+          "ci_95": [
+            53.888888888888886,
+            67.24137931034483
+          ],
+          "clusters": 140,
+          "samples": 2000
+        },
+        "context_recall": {
+          "difference_percentage_points": 56.666666666666664,
+          "ci_95": [
+            49.734042553191486,
+            63.421052631578945
+          ],
+          "clusters": 140,
+          "samples": 2000
+        }
+      },
+      "en": {
+        "mrr_at_5": {
+          "difference_percentage_points": 65.11111111111111,
+          "ci_95": [
+            53.61111111111111,
+            75.94444444444444
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_1": {
+          "difference_percentage_points": 58.333333333333336,
+          "ci_95": [
+            45.0,
+            71.66666666666667
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_5": {
+          "difference_percentage_points": 75.0,
+          "ci_95": [
+            63.33333333333333,
+            85.0
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "hit_rate_at_5": {
+          "difference_percentage_points": 75.0,
+          "ci_95": [
+            63.33333333333333,
+            85.0
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "context_recall": {
+          "difference_percentage_points": 71.66666666666667,
+          "ci_95": [
+            60.0,
+            83.33333333333334
+          ],
+          "clusters": 60,
+          "samples": 2000
+        }
+      },
+      "sw": {
+        "mrr_at_5": {
+          "difference_percentage_points": 10.0,
+          "ci_95": [
+            3.3333333333333335,
+            17.5
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_1": {
+          "difference_percentage_points": 8.333333333333332,
+          "ci_95": [
+            1.6666666666666667,
+            15.0
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_5": {
+          "difference_percentage_points": 11.666666666666666,
+          "ci_95": [
+            5.0,
+            20.0
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "hit_rate_at_5": {
+          "difference_percentage_points": 11.666666666666666,
+          "ci_95": [
+            5.0,
+            20.0
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "context_recall": {
+          "difference_percentage_points": 11.666666666666666,
+          "ci_95": [
+            5.0,
+            20.0
+          ],
+          "clusters": 60,
+          "samples": 2000
+        }
+      },
+      "mixed": {
+        "mrr_at_5": {
+          "difference_percentage_points": 78.16666666666666,
+          "ci_95": [
+            69.75,
+            85.97222222222223
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_1": {
+          "difference_percentage_points": 64.16666666666667,
+          "ci_95": [
+            52.5,
+            75.83333333333333
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_5": {
+          "difference_percentage_points": 94.16666666666667,
+          "ci_95": [
+            88.33333333333333,
+            99.16666666666667
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "hit_rate_at_5": {
+          "difference_percentage_points": 95.0,
+          "ci_95": [
+            88.33333333333333,
+            100.0
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "context_recall": {
+          "difference_percentage_points": 86.66666666666667,
+          "ci_95": [
+            77.5,
+            94.16666666666667
+          ],
+          "clusters": 60,
+          "samples": 2000
+        }
+      }
+    },
+    "E08": {
+      "overall": {
+        "mrr_at_5": {
+          "difference_percentage_points": 52.44444444444445,
+          "ci_95": [
+            45.101851851851855,
+            59.679487179487175
+          ],
+          "clusters": 140,
+          "samples": 2000
+        },
+        "recall_at_1": {
+          "difference_percentage_points": 43.888888888888886,
+          "ci_95": [
+            35.79545454545455,
+            52.02020202020202
+          ],
+          "clusters": 140,
+          "samples": 2000
+        },
+        "recall_at_5": {
+          "difference_percentage_points": 66.38888888888889,
+          "ci_95": [
+            59.34065934065934,
+            73.52941176470588
+          ],
+          "clusters": 140,
+          "samples": 2000
+        },
+        "hit_rate_at_5": {
+          "difference_percentage_points": 66.66666666666666,
+          "ci_95": [
+            59.473684210526315,
+            73.59550561797754
+          ],
+          "clusters": 140,
+          "samples": 2000
+        },
+        "context_recall": {
+          "difference_percentage_points": 59.72222222222222,
+          "ci_95": [
+            51.902173913043484,
+            67.22222222222223
+          ],
+          "clusters": 140,
+          "samples": 2000
+        }
+      },
+      "en": {
+        "mrr_at_5": {
+          "difference_percentage_points": 55.44444444444444,
+          "ci_95": [
+            44.861111111111114,
+            66.02777777777777
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_1": {
+          "difference_percentage_points": 45.0,
+          "ci_95": [
+            31.666666666666664,
+            56.666666666666664
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_5": {
+          "difference_percentage_points": 75.0,
+          "ci_95": [
+            63.33333333333333,
+            85.0
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "hit_rate_at_5": {
+          "difference_percentage_points": 75.0,
+          "ci_95": [
+            63.33333333333333,
+            85.0
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "context_recall": {
+          "difference_percentage_points": 66.66666666666666,
+          "ci_95": [
+            55.00000000000001,
+            78.33333333333333
+          ],
+          "clusters": 60,
+          "samples": 2000
+        }
+      },
+      "sw": {
+        "mrr_at_5": {
+          "difference_percentage_points": 34.55555555555556,
+          "ci_95": [
+            23.25,
+            46.02777777777778
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_1": {
+          "difference_percentage_points": 30.0,
+          "ci_95": [
+            18.333333333333332,
+            41.66666666666667
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_5": {
+          "difference_percentage_points": 45.0,
+          "ci_95": [
+            31.666666666666664,
+            58.333333333333336
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "hit_rate_at_5": {
+          "difference_percentage_points": 45.0,
+          "ci_95": [
+            31.666666666666664,
+            58.333333333333336
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "context_recall": {
+          "difference_percentage_points": 38.333333333333336,
+          "ci_95": [
+            25.0,
+            50.0
+          ],
+          "clusters": 60,
+          "samples": 2000
+        }
+      },
+      "mixed": {
+        "mrr_at_5": {
+          "difference_percentage_points": 67.33333333333333,
+          "ci_95": [
+            56.00000000000001,
+            77.08333333333334
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_1": {
+          "difference_percentage_points": 56.666666666666664,
+          "ci_95": [
+            44.166666666666664,
+            68.33333333333333
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_5": {
+          "difference_percentage_points": 79.16666666666666,
+          "ci_95": [
+            68.33333333333333,
+            88.33333333333333
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "hit_rate_at_5": {
+          "difference_percentage_points": 80.0,
+          "ci_95": [
+            70.0,
+            90.0
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "context_recall": {
+          "difference_percentage_points": 74.16666666666667,
+          "ci_95": [
+            62.5,
+            84.16666666666667
+          ],
+          "clusters": 60,
+          "samples": 2000
+        }
+      }
+    },
+    "E09": {
+      "overall": {
+        "mrr_at_5": {
+          "difference_percentage_points": 58.12037037037037,
+          "ci_95": [
+            51.15310077519379,
+            65.16493055555556
+          ],
+          "clusters": 140,
+          "samples": 2000
+        },
+        "recall_at_1": {
+          "difference_percentage_points": 49.166666666666664,
+          "ci_95": [
+            41.47727272727273,
+            56.98924731182796
+          ],
+          "clusters": 140,
+          "samples": 2000
+        },
+        "recall_at_5": {
+          "difference_percentage_points": 70.0,
+          "ci_95": [
+            62.878787878787875,
+            76.84210526315789
+          ],
+          "clusters": 140,
+          "samples": 2000
+        },
+        "hit_rate_at_5": {
+          "difference_percentage_points": 70.55555555555556,
+          "ci_95": [
+            63.372093023255815,
+            77.52808988764045
+          ],
+          "clusters": 140,
+          "samples": 2000
+        },
+        "context_recall": {
+          "difference_percentage_points": 67.22222222222223,
+          "ci_95": [
+            60.1123595505618,
+            73.93617021276596
+          ],
+          "clusters": 140,
+          "samples": 2000
+        }
+      },
+      "en": {
+        "mrr_at_5": {
+          "difference_percentage_points": 70.25,
+          "ci_95": [
+            59.611111111111114,
+            80.0
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_1": {
+          "difference_percentage_points": 61.66666666666667,
+          "ci_95": [
+            50.0,
+            73.33333333333333
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_5": {
+          "difference_percentage_points": 83.33333333333334,
+          "ci_95": [
+            73.33333333333333,
+            91.66666666666666
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "hit_rate_at_5": {
+          "difference_percentage_points": 83.33333333333334,
+          "ci_95": [
+            73.33333333333333,
+            91.66666666666666
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "context_recall": {
+          "difference_percentage_points": 81.66666666666667,
+          "ci_95": [
+            71.66666666666667,
+            91.66666666666666
+          ],
+          "clusters": 60,
+          "samples": 2000
+        }
+      },
+      "sw": {
+        "mrr_at_5": {
+          "difference_percentage_points": 26.97222222222222,
+          "ci_95": [
+            17.333333333333336,
+            37.72222222222222
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_1": {
+          "difference_percentage_points": 21.666666666666668,
+          "ci_95": [
+            11.666666666666666,
+            33.33333333333333
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_5": {
+          "difference_percentage_points": 36.666666666666664,
+          "ci_95": [
+            25.0,
+            48.333333333333336
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "hit_rate_at_5": {
+          "difference_percentage_points": 36.666666666666664,
+          "ci_95": [
+            25.0,
+            48.333333333333336
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "context_recall": {
+          "difference_percentage_points": 31.666666666666664,
+          "ci_95": [
+            20.0,
+            43.333333333333336
+          ],
+          "clusters": 60,
+          "samples": 2000
+        }
+      },
+      "mixed": {
+        "mrr_at_5": {
+          "difference_percentage_points": 77.13888888888889,
+          "ci_95": [
+            68.02777777777777,
+            85.55555555555556
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_1": {
+          "difference_percentage_points": 64.16666666666667,
+          "ci_95": [
+            52.5,
+            75.0
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_5": {
+          "difference_percentage_points": 90.0,
+          "ci_95": [
+            82.5,
+            96.66666666666667
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "hit_rate_at_5": {
+          "difference_percentage_points": 91.66666666666666,
+          "ci_95": [
+            83.33333333333334,
+            98.33333333333333
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "context_recall": {
+          "difference_percentage_points": 88.33333333333333,
+          "ci_95": [
+            80.0,
+            95.83333333333334
+          ],
+          "clusters": 60,
+          "samples": 2000
+        }
+      }
+    },
+    "E10": {
+      "overall": {
+        "mrr_at_5": {
+          "difference_percentage_points": 66.2962962962963,
+          "ci_95": [
+            59.865900383141756,
+            72.54340277777777
+          ],
+          "clusters": 140,
+          "samples": 2000
+        },
+        "recall_at_1": {
+          "difference_percentage_points": 57.49999999999999,
+          "ci_95": [
+            50.26315789473684,
+            64.67391304347827
+          ],
+          "clusters": 140,
+          "samples": 2000
+        },
+        "recall_at_5": {
+          "difference_percentage_points": 78.33333333333333,
+          "ci_95": [
+            71.94444444444444,
+            84.30851063829788
+          ],
+          "clusters": 140,
+          "samples": 2000
+        },
+        "hit_rate_at_5": {
+          "difference_percentage_points": 78.88888888888889,
+          "ci_95": [
+            72.52747252747253,
+            85.0
+          ],
+          "clusters": 140,
+          "samples": 2000
+        },
+        "context_recall": {
+          "difference_percentage_points": 74.44444444444444,
+          "ci_95": [
+            67.73255813953489,
+            80.76923076923077
+          ],
+          "clusters": 140,
+          "samples": 2000
+        }
+      },
+      "en": {
+        "mrr_at_5": {
+          "difference_percentage_points": 65.11111111111111,
+          "ci_95": [
+            53.61111111111111,
+            75.94444444444444
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_1": {
+          "difference_percentage_points": 58.333333333333336,
+          "ci_95": [
+            45.0,
+            71.66666666666667
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_5": {
+          "difference_percentage_points": 75.0,
+          "ci_95": [
+            63.33333333333333,
+            85.0
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "hit_rate_at_5": {
+          "difference_percentage_points": 75.0,
+          "ci_95": [
+            63.33333333333333,
+            85.0
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "context_recall": {
+          "difference_percentage_points": 71.66666666666667,
+          "ci_95": [
+            60.0,
+            83.33333333333334
+          ],
+          "clusters": 60,
+          "samples": 2000
+        }
+      },
+      "sw": {
+        "mrr_at_5": {
+          "difference_percentage_points": 58.88888888888889,
+          "ci_95": [
+            47.22222222222222,
+            70.0
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_1": {
+          "difference_percentage_points": 51.66666666666667,
+          "ci_95": [
+            38.333333333333336,
+            63.33333333333333
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_5": {
+          "difference_percentage_points": 68.33333333333333,
+          "ci_95": [
+            56.666666666666664,
+            80.0
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "hit_rate_at_5": {
+          "difference_percentage_points": 68.33333333333333,
+          "ci_95": [
+            56.666666666666664,
+            80.0
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "context_recall": {
+          "difference_percentage_points": 66.66666666666666,
+          "ci_95": [
+            55.00000000000001,
+            78.33333333333333
+          ],
+          "clusters": 60,
+          "samples": 2000
+        }
+      },
+      "mixed": {
+        "mrr_at_5": {
+          "difference_percentage_points": 74.8888888888889,
+          "ci_95": [
+            66.02777777777777,
+            83.52777777777777
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_1": {
+          "difference_percentage_points": 62.5,
+          "ci_95": [
+            50.83333333333333,
+            74.16666666666667
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_5": {
+          "difference_percentage_points": 91.66666666666666,
+          "ci_95": [
+            85.0,
+            97.5
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "hit_rate_at_5": {
+          "difference_percentage_points": 93.33333333333333,
+          "ci_95": [
+            86.66666666666667,
+            98.33333333333333
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "context_recall": {
+          "difference_percentage_points": 85.0,
+          "ci_95": [
+            75.83333333333333,
+            92.5
+          ],
+          "clusters": 60,
+          "samples": 2000
+        }
+      }
+    },
+    "E11": {
+      "overall": {
+        "mrr_at_5": {
+          "difference_percentage_points": 51.66666666666667,
+          "ci_95": [
+            44.22348484848485,
+            59.30107526881721
+          ],
+          "clusters": 140,
+          "samples": 2000
+        },
+        "recall_at_1": {
+          "difference_percentage_points": 41.94444444444444,
+          "ci_95": [
+            33.76288659793815,
+            50.26881720430107
+          ],
+          "clusters": 140,
+          "samples": 2000
+        },
+        "recall_at_5": {
+          "difference_percentage_points": 67.5,
+          "ci_95": [
+            60.22727272727273,
+            74.71910112359551
+          ],
+          "clusters": 140,
+          "samples": 2000
+        },
+        "hit_rate_at_5": {
+          "difference_percentage_points": 67.77777777777779,
+          "ci_95": [
+            60.588235294117645,
+            75.0
+          ],
+          "clusters": 140,
+          "samples": 2000
+        },
+        "context_recall": {
+          "difference_percentage_points": 60.83333333333333,
+          "ci_95": [
+            52.68817204301075,
+            68.81720430107528
+          ],
+          "clusters": 140,
+          "samples": 2000
+        }
+      },
+      "en": {
+        "mrr_at_5": {
+          "difference_percentage_points": 55.44444444444444,
+          "ci_95": [
+            44.861111111111114,
+            66.02777777777777
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_1": {
+          "difference_percentage_points": 45.0,
+          "ci_95": [
+            31.666666666666664,
+            56.666666666666664
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_5": {
+          "difference_percentage_points": 75.0,
+          "ci_95": [
+            63.33333333333333,
+            85.0
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "hit_rate_at_5": {
+          "difference_percentage_points": 75.0,
+          "ci_95": [
+            63.33333333333333,
+            85.0
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "context_recall": {
+          "difference_percentage_points": 66.66666666666666,
+          "ci_95": [
+            55.00000000000001,
+            78.33333333333333
+          ],
+          "clusters": 60,
+          "samples": 2000
+        }
+      },
+      "sw": {
+        "mrr_at_5": {
+          "difference_percentage_points": 45.916666666666664,
+          "ci_95": [
+            34.583333333333336,
+            56.91666666666667
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_1": {
+          "difference_percentage_points": 38.333333333333336,
+          "ci_95": [
+            26.666666666666668,
+            50.0
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_5": {
+          "difference_percentage_points": 60.0,
+          "ci_95": [
+            46.666666666666664,
+            71.66666666666667
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "hit_rate_at_5": {
+          "difference_percentage_points": 60.0,
+          "ci_95": [
+            46.666666666666664,
+            71.66666666666667
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "context_recall": {
+          "difference_percentage_points": 53.333333333333336,
+          "ci_95": [
+            40.0,
+            65.0
+          ],
+          "clusters": 60,
+          "samples": 2000
+        }
+      },
+      "mixed": {
+        "mrr_at_5": {
+          "difference_percentage_points": 53.63888888888889,
+          "ci_95": [
+            42.638888888888886,
+            64.72222222222223
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_1": {
+          "difference_percentage_points": 42.5,
+          "ci_95": [
+            30.833333333333336,
+            55.00000000000001
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_5": {
+          "difference_percentage_points": 67.5,
+          "ci_95": [
+            55.833333333333336,
+            78.33333333333333
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "hit_rate_at_5": {
+          "difference_percentage_points": 68.33333333333333,
+          "ci_95": [
+            56.666666666666664,
+            80.0
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "context_recall": {
+          "difference_percentage_points": 62.5,
+          "ci_95": [
+            50.0,
+            74.16666666666667
+          ],
+          "clusters": 60,
+          "samples": 2000
+        }
+      }
+    },
+    "E12": {
+      "overall": {
+        "mrr_at_5": {
+          "difference_percentage_points": 65.99074074074073,
+          "ci_95": [
+            59.518072289156635,
+            72.41666666666666
+          ],
+          "clusters": 140,
+          "samples": 2000
+        },
+        "recall_at_1": {
+          "difference_percentage_points": 55.27777777777778,
+          "ci_95": [
+            47.701149425287355,
+            62.643678160919535
+          ],
+          "clusters": 140,
+          "samples": 2000
+        },
+        "recall_at_5": {
+          "difference_percentage_points": 81.11111111111111,
+          "ci_95": [
+            74.71910112359551,
+            86.93181818181817
+          ],
+          "clusters": 140,
+          "samples": 2000
+        },
+        "hit_rate_at_5": {
+          "difference_percentage_points": 81.66666666666667,
+          "ci_95": [
+            75.27472527472527,
+            87.36263736263736
+          ],
+          "clusters": 140,
+          "samples": 2000
+        },
+        "context_recall": {
+          "difference_percentage_points": 77.22222222222223,
+          "ci_95": [
+            70.74468085106383,
+            83.33333333333334
+          ],
+          "clusters": 140,
+          "samples": 2000
+        }
+      },
+      "en": {
+        "mrr_at_5": {
+          "difference_percentage_points": 70.25,
+          "ci_95": [
+            59.611111111111114,
+            80.0
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_1": {
+          "difference_percentage_points": 61.66666666666667,
+          "ci_95": [
+            50.0,
+            73.33333333333333
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_5": {
+          "difference_percentage_points": 83.33333333333334,
+          "ci_95": [
+            73.33333333333333,
+            91.66666666666666
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "hit_rate_at_5": {
+          "difference_percentage_points": 83.33333333333334,
+          "ci_95": [
+            73.33333333333333,
+            91.66666666666666
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "context_recall": {
+          "difference_percentage_points": 81.66666666666667,
+          "ci_95": [
+            71.66666666666667,
+            91.66666666666666
+          ],
+          "clusters": 60,
+          "samples": 2000
+        }
+      },
+      "sw": {
+        "mrr_at_5": {
+          "difference_percentage_points": 57.19444444444445,
+          "ci_95": [
+            46.52777777777778,
+            68.30555555555556
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_1": {
+          "difference_percentage_points": 46.666666666666664,
+          "ci_95": [
+            33.33333333333333,
+            60.0
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_5": {
+          "difference_percentage_points": 73.33333333333333,
+          "ci_95": [
+            61.66666666666667,
+            83.33333333333334
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "hit_rate_at_5": {
+          "difference_percentage_points": 73.33333333333333,
+          "ci_95": [
+            61.66666666666667,
+            83.33333333333334
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "context_recall": {
+          "difference_percentage_points": 68.33333333333333,
+          "ci_95": [
+            56.666666666666664,
+            80.0
+          ],
+          "clusters": 60,
+          "samples": 2000
+        }
+      },
+      "mixed": {
+        "mrr_at_5": {
+          "difference_percentage_points": 70.52777777777777,
+          "ci_95": [
+            60.86111111111111,
+            79.66666666666666
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_1": {
+          "difference_percentage_points": 57.49999999999999,
+          "ci_95": [
+            45.0,
+            68.33333333333333
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_5": {
+          "difference_percentage_points": 86.66666666666667,
+          "ci_95": [
+            78.33333333333333,
+            94.16666666666667
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "hit_rate_at_5": {
+          "difference_percentage_points": 88.33333333333333,
+          "ci_95": [
+            80.0,
+            95.0
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "context_recall": {
+          "difference_percentage_points": 81.66666666666667,
+          "ci_95": [
+            71.66666666666667,
+            90.0
+          ],
+          "clusters": 60,
+          "samples": 2000
+        }
+      }
+    },
+    "E13": {
+      "overall": {
+        "mrr_at_5": {
+          "difference_percentage_points": 51.083333333333336,
+          "ci_95": [
+            44.138888888888886,
+            57.934397163120565
+          ],
+          "clusters": 140,
+          "samples": 2000
+        },
+        "recall_at_1": {
+          "difference_percentage_points": 46.38888888888889,
+          "ci_95": [
+            38.662790697674424,
+            53.72340425531915
+          ],
+          "clusters": 140,
+          "samples": 2000
+        },
+        "recall_at_5": {
+          "difference_percentage_points": 58.05555555555556,
+          "ci_95": [
+            50.99009900990099,
+            65.1685393258427
+          ],
+          "clusters": 140,
+          "samples": 2000
+        },
+        "hit_rate_at_5": {
+          "difference_percentage_points": 58.333333333333336,
+          "ci_95": [
+            51.17647058823529,
+            65.38461538461539
+          ],
+          "clusters": 140,
+          "samples": 2000
+        },
+        "context_recall": {
+          "difference_percentage_points": 53.888888888888886,
+          "ci_95": [
+            46.62921348314607,
+            60.95505617977528
+          ],
+          "clusters": 140,
+          "samples": 2000
+        }
+      },
+      "en": {
+        "mrr_at_5": {
+          "difference_percentage_points": 65.75,
+          "ci_95": [
+            54.166666666666664,
+            77.41666666666667
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_1": {
+          "difference_percentage_points": 61.66666666666667,
+          "ci_95": [
+            50.0,
+            75.0
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_5": {
+          "difference_percentage_points": 71.66666666666667,
+          "ci_95": [
+            60.0,
+            83.33333333333334
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "hit_rate_at_5": {
+          "difference_percentage_points": 71.66666666666667,
+          "ci_95": [
+            60.0,
+            83.33333333333334
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "context_recall": {
+          "difference_percentage_points": 70.0,
+          "ci_95": [
+            58.333333333333336,
+            81.66666666666667
+          ],
+          "clusters": 60,
+          "samples": 2000
+        }
+      },
+      "sw": {
+        "mrr_at_5": {
+          "difference_percentage_points": 10.555555555555555,
+          "ci_95": [
+            3.888888888888889,
+            18.333333333333332
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_1": {
+          "difference_percentage_points": 10.0,
+          "ci_95": [
+            3.3333333333333335,
+            18.333333333333332
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_5": {
+          "difference_percentage_points": 11.666666666666666,
+          "ci_95": [
+            5.0,
+            20.0
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "hit_rate_at_5": {
+          "difference_percentage_points": 11.666666666666666,
+          "ci_95": [
+            5.0,
+            20.0
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "context_recall": {
+          "difference_percentage_points": 11.666666666666666,
+          "ci_95": [
+            5.0,
+            20.0
+          ],
+          "clusters": 60,
+          "samples": 2000
+        }
+      },
+      "mixed": {
+        "mrr_at_5": {
+          "difference_percentage_points": 76.94444444444444,
+          "ci_95": [
+            67.63888888888889,
+            85.83333333333333
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_1": {
+          "difference_percentage_points": 67.5,
+          "ci_95": [
+            55.833333333333336,
+            78.33333333333333
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_5": {
+          "difference_percentage_points": 90.83333333333333,
+          "ci_95": [
+            83.33333333333334,
+            97.5
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "hit_rate_at_5": {
+          "difference_percentage_points": 91.66666666666666,
+          "ci_95": [
+            85.0,
+            98.33333333333333
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "context_recall": {
+          "difference_percentage_points": 80.0,
+          "ci_95": [
+            70.0,
+            90.0
+          ],
+          "clusters": 60,
+          "samples": 2000
+        }
+      }
+    },
+    "E14": {
+      "overall": {
+        "mrr_at_5": {
+          "difference_percentage_points": 52.157407407407405,
+          "ci_95": [
+            44.84848484848485,
+            59.29924242424243
+          ],
+          "clusters": 140,
+          "samples": 2000
+        },
+        "recall_at_1": {
+          "difference_percentage_points": 43.333333333333336,
+          "ci_95": [
+            35.43956043956044,
+            50.86206896551724
+          ],
+          "clusters": 140,
+          "samples": 2000
+        },
+        "recall_at_5": {
+          "difference_percentage_points": 65.55555555555556,
+          "ci_95": [
+            58.03571428571429,
+            73.25581395348837
+          ],
+          "clusters": 140,
+          "samples": 2000
+        },
+        "hit_rate_at_5": {
+          "difference_percentage_points": 66.11111111111111,
+          "ci_95": [
+            58.51063829787234,
+            73.65591397849462
+          ],
+          "clusters": 140,
+          "samples": 2000
+        },
+        "context_recall": {
+          "difference_percentage_points": 59.44444444444444,
+          "ci_95": [
+            51.68539325842697,
+            67.04545454545455
+          ],
+          "clusters": 140,
+          "samples": 2000
+        }
+      },
+      "en": {
+        "mrr_at_5": {
+          "difference_percentage_points": 57.138888888888886,
+          "ci_95": [
+            45.44444444444444,
+            68.66666666666667
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_1": {
+          "difference_percentage_points": 51.66666666666667,
+          "ci_95": [
+            38.333333333333336,
+            65.0
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_5": {
+          "difference_percentage_points": 68.33333333333333,
+          "ci_95": [
+            56.666666666666664,
+            80.0
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "hit_rate_at_5": {
+          "difference_percentage_points": 68.33333333333333,
+          "ci_95": [
+            56.666666666666664,
+            80.0
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "context_recall": {
+          "difference_percentage_points": 63.33333333333333,
+          "ci_95": [
+            51.66666666666667,
+            75.0
+          ],
+          "clusters": 60,
+          "samples": 2000
+        }
+      },
+      "sw": {
+        "mrr_at_5": {
+          "difference_percentage_points": 30.194444444444446,
+          "ci_95": [
+            20.25,
+            40.27777777777778
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_1": {
+          "difference_percentage_points": 20.0,
+          "ci_95": [
+            10.0,
+            30.0
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_5": {
+          "difference_percentage_points": 46.666666666666664,
+          "ci_95": [
+            33.33333333333333,
+            60.0
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "hit_rate_at_5": {
+          "difference_percentage_points": 46.666666666666664,
+          "ci_95": [
+            33.33333333333333,
+            60.0
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "context_recall": {
+          "difference_percentage_points": 38.333333333333336,
+          "ci_95": [
+            25.0,
+            50.0
+          ],
+          "clusters": 60,
+          "samples": 2000
+        }
+      },
+      "mixed": {
+        "mrr_at_5": {
+          "difference_percentage_points": 69.1388888888889,
+          "ci_95": [
+            58.94444444444444,
+            79.30555555555556
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_1": {
+          "difference_percentage_points": 58.333333333333336,
+          "ci_95": [
+            45.83333333333333,
+            70.83333333333334
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_5": {
+          "difference_percentage_points": 81.66666666666667,
+          "ci_95": [
+            71.66666666666667,
+            90.83333333333333
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "hit_rate_at_5": {
+          "difference_percentage_points": 83.33333333333334,
+          "ci_95": [
+            73.33333333333333,
+            91.66666666666666
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "context_recall": {
+          "difference_percentage_points": 76.66666666666667,
+          "ci_95": [
+            65.83333333333333,
+            86.66666666666667
+          ],
+          "clusters": 60,
+          "samples": 2000
+        }
+      }
+    },
+    "E15": {
+      "overall": {
+        "mrr_at_5": {
+          "difference_percentage_points": 56.60185185185185,
+          "ci_95": [
+            49.26315789473684,
+            63.96586345381527
+          ],
+          "clusters": 140,
+          "samples": 2000
+        },
+        "recall_at_1": {
+          "difference_percentage_points": 47.5,
+          "ci_95": [
+            39.60674157303371,
+            55.35714285714286
+          ],
+          "clusters": 140,
+          "samples": 2000
+        },
+        "recall_at_5": {
+          "difference_percentage_points": 69.16666666666667,
+          "ci_95": [
+            61.81318681318682,
+            76.12359550561798
+          ],
+          "clusters": 140,
+          "samples": 2000
+        },
+        "hit_rate_at_5": {
+          "difference_percentage_points": 69.44444444444444,
+          "ci_95": [
+            62.08791208791209,
+            76.50602409638554
+          ],
+          "clusters": 140,
+          "samples": 2000
+        },
+        "context_recall": {
+          "difference_percentage_points": 64.16666666666667,
+          "ci_95": [
+            56.53409090909091,
+            71.51162790697676
+          ],
+          "clusters": 140,
+          "samples": 2000
+        }
+      },
+      "en": {
+        "mrr_at_5": {
+          "difference_percentage_points": 71.02777777777777,
+          "ci_95": [
+            60.83333333333333,
+            80.75
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_1": {
+          "difference_percentage_points": 63.33333333333333,
+          "ci_95": [
+            51.66666666666667,
+            75.0
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_5": {
+          "difference_percentage_points": 81.66666666666667,
+          "ci_95": [
+            71.66666666666667,
+            90.0
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "hit_rate_at_5": {
+          "difference_percentage_points": 81.66666666666667,
+          "ci_95": [
+            71.66666666666667,
+            90.0
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "context_recall": {
+          "difference_percentage_points": 80.0,
+          "ci_95": [
+            70.0,
+            90.0
+          ],
+          "clusters": 60,
+          "samples": 2000
+        }
+      },
+      "sw": {
+        "mrr_at_5": {
+          "difference_percentage_points": 21.02777777777778,
+          "ci_95": [
+            12.777777777777777,
+            29.916666666666668
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_1": {
+          "difference_percentage_points": 13.333333333333334,
+          "ci_95": [
+            5.0,
+            23.333333333333332
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_5": {
+          "difference_percentage_points": 35.0,
+          "ci_95": [
+            23.333333333333332,
+            46.666666666666664
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "hit_rate_at_5": {
+          "difference_percentage_points": 35.0,
+          "ci_95": [
+            23.333333333333332,
+            46.666666666666664
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "context_recall": {
+          "difference_percentage_points": 26.666666666666668,
+          "ci_95": [
+            16.666666666666664,
+            38.333333333333336
+          ],
+          "clusters": 60,
+          "samples": 2000
+        }
+      },
+      "mixed": {
+        "mrr_at_5": {
+          "difference_percentage_points": 77.75,
+          "ci_95": [
+            69.0,
+            86.22222222222223
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_1": {
+          "difference_percentage_points": 65.83333333333333,
+          "ci_95": [
+            54.166666666666664,
+            77.5
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_5": {
+          "difference_percentage_points": 90.83333333333333,
+          "ci_95": [
+            83.33333333333334,
+            97.5
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "hit_rate_at_5": {
+          "difference_percentage_points": 91.66666666666666,
+          "ci_95": [
+            85.0,
+            98.33333333333333
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "context_recall": {
+          "difference_percentage_points": 85.83333333333333,
+          "ci_95": [
+            76.66666666666667,
+            94.16666666666667
+          ],
+          "clusters": 60,
+          "samples": 2000
+        }
+      }
+    },
+    "E16": {
+      "overall": {
+        "mrr_at_5": {
+          "difference_percentage_points": 65.10185185185186,
+          "ci_95": [
+            58.046875,
+            72.16666666666667
+          ],
+          "clusters": 140,
+          "samples": 2000
+        },
+        "recall_at_1": {
+          "difference_percentage_points": 56.94444444444444,
+          "ci_95": [
+            49.127906976744185,
+            64.84375
+          ],
+          "clusters": 140,
+          "samples": 2000
+        },
+        "recall_at_5": {
+          "difference_percentage_points": 76.38888888888889,
+          "ci_95": [
+            69.11764705882352,
+            83.15789473684211
+          ],
+          "clusters": 140,
+          "samples": 2000
+        },
+        "hit_rate_at_5": {
+          "difference_percentage_points": 76.66666666666667,
+          "ci_95": [
+            69.54022988505747,
+            83.51648351648352
+          ],
+          "clusters": 140,
+          "samples": 2000
+        },
+        "context_recall": {
+          "difference_percentage_points": 71.11111111111111,
+          "ci_95": [
+            63.52941176470588,
+            78.53260869565217
+          ],
+          "clusters": 140,
+          "samples": 2000
+        }
+      },
+      "en": {
+        "mrr_at_5": {
+          "difference_percentage_points": 65.75,
+          "ci_95": [
+            54.166666666666664,
+            77.41666666666667
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_1": {
+          "difference_percentage_points": 61.66666666666667,
+          "ci_95": [
+            50.0,
+            75.0
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_5": {
+          "difference_percentage_points": 71.66666666666667,
+          "ci_95": [
+            60.0,
+            83.33333333333334
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "hit_rate_at_5": {
+          "difference_percentage_points": 71.66666666666667,
+          "ci_95": [
+            60.0,
+            83.33333333333334
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "context_recall": {
+          "difference_percentage_points": 70.0,
+          "ci_95": [
+            58.333333333333336,
+            81.66666666666667
+          ],
+          "clusters": 60,
+          "samples": 2000
+        }
+      },
+      "sw": {
+        "mrr_at_5": {
+          "difference_percentage_points": 54.08333333333333,
+          "ci_95": [
+            43.388888888888886,
+            65.05555555555556
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_1": {
+          "difference_percentage_points": 41.66666666666667,
+          "ci_95": [
+            28.333333333333332,
+            55.00000000000001
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_5": {
+          "difference_percentage_points": 71.66666666666667,
+          "ci_95": [
+            60.0,
+            83.33333333333334
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "hit_rate_at_5": {
+          "difference_percentage_points": 71.66666666666667,
+          "ci_95": [
+            60.0,
+            83.33333333333334
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "context_recall": {
+          "difference_percentage_points": 65.0,
+          "ci_95": [
+            53.333333333333336,
+            76.66666666666667
+          ],
+          "clusters": 60,
+          "samples": 2000
+        }
+      },
+      "mixed": {
+        "mrr_at_5": {
+          "difference_percentage_points": 75.47222222222221,
+          "ci_95": [
+            65.55555555555556,
+            84.44444444444444
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_1": {
+          "difference_percentage_points": 67.5,
+          "ci_95": [
+            55.833333333333336,
+            78.33333333333333
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_5": {
+          "difference_percentage_points": 85.83333333333333,
+          "ci_95": [
+            76.66666666666667,
+            94.16666666666667
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "hit_rate_at_5": {
+          "difference_percentage_points": 86.66666666666667,
+          "ci_95": [
+            76.66666666666667,
+            95.0
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "context_recall": {
+          "difference_percentage_points": 78.33333333333333,
+          "ci_95": [
+            67.5,
+            87.5
+          ],
+          "clusters": 60,
+          "samples": 2000
+        }
+      }
+    },
+    "E17": {
+      "overall": {
+        "mrr_at_5": {
+          "difference_percentage_points": 54.91666666666667,
+          "ci_95": [
+            47.34313725490196,
+            62.16666666666667
+          ],
+          "clusters": 140,
+          "samples": 2000
+        },
+        "recall_at_1": {
+          "difference_percentage_points": 46.666666666666664,
+          "ci_95": [
+            38.50574712643678,
+            54.49438202247191
+          ],
+          "clusters": 140,
+          "samples": 2000
+        },
+        "recall_at_5": {
+          "difference_percentage_points": 66.11111111111111,
+          "ci_95": [
+            58.152173913043484,
+            73.62637362637363
+          ],
+          "clusters": 140,
+          "samples": 2000
+        },
+        "hit_rate_at_5": {
+          "difference_percentage_points": 66.66666666666666,
+          "ci_95": [
+            58.82352941176471,
+            74.39024390243902
+          ],
+          "clusters": 140,
+          "samples": 2000
+        },
+        "context_recall": {
+          "difference_percentage_points": 62.22222222222222,
+          "ci_95": [
+            54.12087912087912,
+            70.2247191011236
+          ],
+          "clusters": 140,
+          "samples": 2000
+        }
+      },
+      "en": {
+        "mrr_at_5": {
+          "difference_percentage_points": 57.138888888888886,
+          "ci_95": [
+            45.44444444444444,
+            68.66666666666667
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_1": {
+          "difference_percentage_points": 51.66666666666667,
+          "ci_95": [
+            38.333333333333336,
+            65.0
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_5": {
+          "difference_percentage_points": 68.33333333333333,
+          "ci_95": [
+            56.666666666666664,
+            80.0
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "hit_rate_at_5": {
+          "difference_percentage_points": 68.33333333333333,
+          "ci_95": [
+            56.666666666666664,
+            80.0
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "context_recall": {
+          "difference_percentage_points": 63.33333333333333,
+          "ci_95": [
+            51.66666666666667,
+            75.0
+          ],
+          "clusters": 60,
+          "samples": 2000
+        }
+      },
+      "sw": {
+        "mrr_at_5": {
+          "difference_percentage_points": 44.361111111111114,
+          "ci_95": [
+            33.5,
+            55.888888888888886
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_1": {
+          "difference_percentage_points": 35.0,
+          "ci_95": [
+            23.333333333333332,
+            48.333333333333336
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_5": {
+          "difference_percentage_points": 58.333333333333336,
+          "ci_95": [
+            46.666666666666664,
+            71.66666666666667
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "hit_rate_at_5": {
+          "difference_percentage_points": 58.333333333333336,
+          "ci_95": [
+            46.666666666666664,
+            71.66666666666667
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "context_recall": {
+          "difference_percentage_points": 53.333333333333336,
+          "ci_95": [
+            41.66666666666667,
+            66.66666666666666
+          ],
+          "clusters": 60,
+          "samples": 2000
+        }
+      },
+      "mixed": {
+        "mrr_at_5": {
+          "difference_percentage_points": 63.24999999999999,
+          "ci_95": [
+            51.5,
+            74.08333333333333
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_1": {
+          "difference_percentage_points": 53.333333333333336,
+          "ci_95": [
+            40.0,
+            66.66666666666666
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_5": {
+          "difference_percentage_points": 71.66666666666667,
+          "ci_95": [
+            60.0,
+            83.33333333333334
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "hit_rate_at_5": {
+          "difference_percentage_points": 73.33333333333333,
+          "ci_95": [
+            61.66666666666667,
+            85.0
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "context_recall": {
+          "difference_percentage_points": 70.0,
+          "ci_95": [
+            58.333333333333336,
+            81.66666666666667
+          ],
+          "clusters": 60,
+          "samples": 2000
+        }
+      }
+    },
+    "E18": {
+      "overall": {
+        "mrr_at_5": {
+          "difference_percentage_points": 67.23148148148148,
+          "ci_95": [
+            60.17241379310345,
+            74.17525773195877
+          ],
+          "clusters": 140,
+          "samples": 2000
+        },
+        "recall_at_1": {
+          "difference_percentage_points": 58.05555555555556,
+          "ci_95": [
+            49.7093023255814,
+            65.97938144329896
+          ],
+          "clusters": 140,
+          "samples": 2000
+        },
+        "recall_at_5": {
+          "difference_percentage_points": 79.16666666666666,
+          "ci_95": [
+            72.47191011235955,
+            85.39325842696628
+          ],
+          "clusters": 140,
+          "samples": 2000
+        },
+        "hit_rate_at_5": {
+          "difference_percentage_points": 79.44444444444444,
+          "ci_95": [
+            72.72727272727273,
+            85.71428571428571
+          ],
+          "clusters": 140,
+          "samples": 2000
+        },
+        "context_recall": {
+          "difference_percentage_points": 74.72222222222223,
+          "ci_95": [
+            67.74193548387096,
+            81.51041666666666
+          ],
+          "clusters": 140,
+          "samples": 2000
+        }
+      },
+      "en": {
+        "mrr_at_5": {
+          "difference_percentage_points": 71.02777777777777,
+          "ci_95": [
+            60.83333333333333,
+            80.75
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_1": {
+          "difference_percentage_points": 63.33333333333333,
+          "ci_95": [
+            51.66666666666667,
+            75.0
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_5": {
+          "difference_percentage_points": 81.66666666666667,
+          "ci_95": [
+            71.66666666666667,
+            90.0
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "hit_rate_at_5": {
+          "difference_percentage_points": 81.66666666666667,
+          "ci_95": [
+            71.66666666666667,
+            90.0
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "context_recall": {
+          "difference_percentage_points": 80.0,
+          "ci_95": [
+            70.0,
+            90.0
+          ],
+          "clusters": 60,
+          "samples": 2000
+        }
+      },
+      "sw": {
+        "mrr_at_5": {
+          "difference_percentage_points": 55.55555555555556,
+          "ci_95": [
+            44.30555555555556,
+            66.80555555555556
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_1": {
+          "difference_percentage_points": 46.666666666666664,
+          "ci_95": [
+            33.33333333333333,
+            60.0
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_5": {
+          "difference_percentage_points": 68.33333333333333,
+          "ci_95": [
+            56.666666666666664,
+            80.0
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "hit_rate_at_5": {
+          "difference_percentage_points": 68.33333333333333,
+          "ci_95": [
+            56.666666666666664,
+            80.0
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "context_recall": {
+          "difference_percentage_points": 63.33333333333333,
+          "ci_95": [
+            51.66666666666667,
+            75.0
+          ],
+          "clusters": 60,
+          "samples": 2000
+        }
+      },
+      "mixed": {
+        "mrr_at_5": {
+          "difference_percentage_points": 75.1111111111111,
+          "ci_95": [
+            65.16666666666666,
+            84.55555555555556
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_1": {
+          "difference_percentage_points": 64.16666666666667,
+          "ci_95": [
+            52.5,
+            75.83333333333333
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "recall_at_5": {
+          "difference_percentage_points": 87.5,
+          "ci_95": [
+            79.16666666666666,
+            95.0
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "hit_rate_at_5": {
+          "difference_percentage_points": 88.33333333333333,
+          "ci_95": [
+            80.0,
+            96.66666666666667
+          ],
+          "clusters": 60,
+          "samples": 2000
+        },
+        "context_recall": {
+          "difference_percentage_points": 80.83333333333333,
+          "ci_95": [
+            70.83333333333334,
+            90.83333333333333
+          ],
+          "clusters": 60,
+          "samples": 2000
+        }
+      }
+    }
+  },
+  "paired_comparisons": {
+    "E01_vs_E02": {
+      "mrr_at_5": {
+        "difference_percentage_points": 6.083333333333334,
+        "ci_95": [
+          -1.1050724637681162,
+          13.277777777777777
+        ],
+        "clusters": 140,
+        "samples": 2000
+      },
+      "recall_at_1": {
+        "difference_percentage_points": 4.444444444444445,
+        "ci_95": [
+          -4.022988505747127,
+          12.921348314606742
+        ],
+        "clusters": 140,
+        "samples": 2000
+      },
+      "recall_at_5": {
+        "difference_percentage_points": 7.777777777777778,
+        "ci_95": [
+          0.2631578947368421,
+          14.945652173913043
+        ],
+        "clusters": 140,
+        "samples": 2000
+      },
+      "hit_rate_at_5": {
+        "difference_percentage_points": 7.777777777777778,
+        "ci_95": [
+          0.5208333333333333,
+          15.0
+        ],
+        "clusters": 140,
+        "samples": 2000
+      },
+      "context_recall": {
+        "difference_percentage_points": 8.88888888888889,
+        "ci_95": [
+          1.4367816091954022,
+          16.292134831460675
+        ],
+        "clusters": 140,
+        "samples": 2000
+      }
+    },
+    "E01_vs_E03": {
+      "mrr_at_5": {
+        "difference_percentage_points": 8.953703703703704,
+        "ci_95": [
+          4.226190476190476,
+          14.279026217228463
+        ],
+        "clusters": 140,
+        "samples": 2000
+      },
+      "recall_at_1": {
+        "difference_percentage_points": 6.111111111111111,
+        "ci_95": [
+          -0.5376344086021506,
+          12.941176470588237
+        ],
+        "clusters": 140,
+        "samples": 2000
+      },
+      "recall_at_5": {
+        "difference_percentage_points": 11.38888888888889,
+        "ci_95": [
+          5.952380952380952,
+          16.954022988505745
+        ],
+        "clusters": 140,
+        "samples": 2000
+      },
+      "hit_rate_at_5": {
+        "difference_percentage_points": 11.11111111111111,
+        "ci_95": [
+          5.681818181818182,
+          16.666666666666664
+        ],
+        "clusters": 140,
+        "samples": 2000
+      },
+      "context_recall": {
+        "difference_percentage_points": 13.61111111111111,
+        "ci_95": [
+          8.132530120481928,
+          19.35483870967742
+        ],
+        "clusters": 140,
+        "samples": 2000
+      }
+    },
+    "E01_vs_E04": {
+      "mrr_at_5": {
+        "difference_percentage_points": 14.046296296296296,
+        "ci_95": [
+          9.176029962546817,
+          18.913043478260867
+        ],
+        "clusters": 140,
+        "samples": 2000
+      },
+      "recall_at_1": {
+        "difference_percentage_points": 11.666666666666666,
+        "ci_95": [
+          6.593406593406594,
+          17.032967032967033
+        ],
+        "clusters": 140,
+        "samples": 2000
+      },
+      "recall_at_5": {
+        "difference_percentage_points": 17.77777777777778,
+        "ci_95": [
+          11.76470588235294,
+          23.863636363636363
+        ],
+        "clusters": 140,
+        "samples": 2000
+      },
+      "hit_rate_at_5": {
+        "difference_percentage_points": 17.77777777777778,
+        "ci_95": [
+          11.76470588235294,
+          23.863636363636363
+        ],
+        "clusters": 140,
+        "samples": 2000
+      },
+      "context_recall": {
+        "difference_percentage_points": 18.61111111111111,
+        "ci_95": [
+          12.894736842105264,
+          24.210526315789473
+        ],
+        "clusters": 140,
+        "samples": 2000
+      }
+    },
+    "E01_vs_E05": {
+      "mrr_at_5": {
+        "difference_percentage_points": 4.703703703703703,
+        "ci_95": [
+          -3.166666666666666,
+          12.46376811594203
+        ],
+        "clusters": 140,
+        "samples": 2000
+      },
+      "recall_at_1": {
+        "difference_percentage_points": 2.5,
+        "ci_95": [
+          -6.7934782608695645,
+          11.206896551724139
+        ],
+        "clusters": 140,
+        "samples": 2000
+      },
+      "recall_at_5": {
+        "difference_percentage_points": 7.222222222222221,
+        "ci_95": [
+          -1.1111111111111112,
+          15.277777777777779
+        ],
+        "clusters": 140,
+        "samples": 2000
+      },
+      "hit_rate_at_5": {
+        "difference_percentage_points": 7.222222222222221,
+        "ci_95": [
+          -1.098901098901099,
+          15.217391304347828
+        ],
+        "clusters": 140,
+        "samples": 2000
+      },
+      "context_recall": {
+        "difference_percentage_points": 9.166666666666666,
+        "ci_95": [
+          0.8152173913043478,
+          17.16867469879518
+        ],
+        "clusters": 140,
+        "samples": 2000
+      }
+    },
+    "E01_vs_E06": {
+      "mrr_at_5": {
+        "difference_percentage_points": 17.51851851851852,
+        "ci_95": [
+          10.74561403508772,
+          24.33139534883721
+        ],
+        "clusters": 140,
+        "samples": 2000
+      },
+      "recall_at_1": {
+        "difference_percentage_points": 15.0,
+        "ci_95": [
+          6.896551724137931,
+          23.333333333333332
+        ],
+        "clusters": 140,
+        "samples": 2000
+      },
+      "recall_at_5": {
+        "difference_percentage_points": 19.72222222222222,
+        "ci_95": [
+          12.921348314606742,
+          26.344086021505376
+        ],
+        "clusters": 140,
+        "samples": 2000
+      },
+      "hit_rate_at_5": {
+        "difference_percentage_points": 19.444444444444446,
+        "ci_95": [
+          12.5,
+          26.041666666666668
+        ],
+        "clusters": 140,
+        "samples": 2000
+      },
+      "context_recall": {
+        "difference_percentage_points": 20.833333333333336,
+        "ci_95": [
+          13.218390804597702,
+          27.941176470588236
+        ],
+        "clusters": 140,
+        "samples": 2000
+      }
+    },
+    "E01_vs_E07": {
+      "mrr_at_5": {
+        "difference_percentage_points": 2.5277777777777777,
+        "ci_95": [
+          -0.0896057347670251,
+          5.176470588235294
+        ],
+        "clusters": 140,
+        "samples": 2000
+      },
+      "recall_at_1": {
+        "difference_percentage_points": 1.9444444444444444,
+        "ci_95": [
+          -2.197802197802198,
+          5.88235294117647
+        ],
+        "clusters": 140,
+        "samples": 2000
+      },
+      "recall_at_5": {
+        "difference_percentage_points": 1.1111111111111112,
+        "ci_95": [
+          -1.0638297872340425,
+          3.571428571428571
+        ],
+        "clusters": 140,
+        "samples": 2000
+      },
+      "hit_rate_at_5": {
+        "difference_percentage_points": 1.1111111111111112,
+        "ci_95": [
+          -1.0638297872340425,
+          3.571428571428571
+        ],
+        "clusters": 140,
+        "samples": 2000
+      },
+      "context_recall": {
+        "difference_percentage_points": 2.5,
+        "ci_95": [
+          0.2808988764044944,
+          5.0
+        ],
+        "clusters": 140,
+        "samples": 2000
+      }
+    },
+    "E01_vs_E08": {
+      "mrr_at_5": {
+        "difference_percentage_points": 3.8796296296296293,
+        "ci_95": [
+          -3.573883161512028,
+          11.27906976744186
+        ],
+        "clusters": 140,
+        "samples": 2000
+      },
+      "recall_at_1": {
+        "difference_percentage_points": 2.2222222222222223,
+        "ci_95": [
+          -6.451612903225806,
+          10.75268817204301
+        ],
+        "clusters": 140,
+        "samples": 2000
+      },
+      "recall_at_5": {
+        "difference_percentage_points": 7.222222222222221,
+        "ci_95": [
+          -0.7575757575757576,
+          15.229885057471265
+        ],
+        "clusters": 140,
+        "samples": 2000
+      },
+      "hit_rate_at_5": {
+        "difference_percentage_points": 7.222222222222221,
+        "ci_95": [
+          -0.6097560975609756,
+          15.294117647058824
+        ],
+        "clusters": 140,
+        "samples": 2000
+      },
+      "context_recall": {
+        "difference_percentage_points": 5.555555555555555,
+        "ci_95": [
+          -2.528089887640449,
+          13.461538461538462
+        ],
+        "clusters": 140,
+        "samples": 2000
+      }
+    },
+    "E01_vs_E09": {
+      "mrr_at_5": {
+        "difference_percentage_points": 9.555555555555555,
+        "ci_95": [
+          3.900709219858156,
+          14.867424242424242
+        ],
+        "clusters": 140,
+        "samples": 2000
+      },
+      "recall_at_1": {
+        "difference_percentage_points": 7.5,
+        "ci_95": [
+          0.25773195876288657,
+          14.560439560439562
+        ],
+        "clusters": 140,
+        "samples": 2000
+      },
+      "recall_at_5": {
+        "difference_percentage_points": 10.833333333333334,
+        "ci_95": [
+          5.851063829787234,
+          15.625
+        ],
+        "clusters": 140,
+        "samples": 2000
+      },
+      "hit_rate_at_5": {
+        "difference_percentage_points": 11.11111111111111,
+        "ci_95": [
+          6.315789473684211,
+          15.760869565217392
+        ],
+        "clusters": 140,
+        "samples": 2000
+      },
+      "context_recall": {
+        "difference_percentage_points": 13.055555555555557,
+        "ci_95": [
+          7.731958762886598,
+          18.313953488372093
+        ],
+        "clusters": 140,
+        "samples": 2000
+      }
+    },
+    "E01_vs_E10": {
+      "mrr_at_5": {
+        "difference_percentage_points": 17.73148148148148,
+        "ci_95": [
+          11.908333333333333,
+          23.428819444444446
+        ],
+        "clusters": 140,
+        "samples": 2000
+      },
+      "recall_at_1": {
+        "difference_percentage_points": 15.833333333333332,
+        "ci_95": [
+          9.239130434782608,
+          22.530864197530864
+        ],
+        "clusters": 140,
+        "samples": 2000
+      },
+      "recall_at_5": {
+        "difference_percentage_points": 19.166666666666668,
+        "ci_95": [
+          13.218390804597702,
+          25.0
+        ],
+        "clusters": 140,
+        "samples": 2000
+      },
+      "hit_rate_at_5": {
+        "difference_percentage_points": 19.444444444444446,
+        "ci_95": [
+          13.636363636363635,
+          25.268817204301076
+        ],
+        "clusters": 140,
+        "samples": 2000
+      },
+      "context_recall": {
+        "difference_percentage_points": 20.27777777777778,
+        "ci_95": [
+          14.655172413793101,
+          25.757575757575758
+        ],
+        "clusters": 140,
+        "samples": 2000
+      }
+    },
+    "E01_vs_E11": {
+      "mrr_at_5": {
+        "difference_percentage_points": 3.1018518518518516,
+        "ci_95": [
+          -5.069444444444445,
+          11.521317829457365
+        ],
+        "clusters": 140,
+        "samples": 2000
+      },
+      "recall_at_1": {
+        "difference_percentage_points": 0.2777777777777778,
+        "ci_95": [
+          -9.065934065934066,
+          9.67741935483871
+        ],
+        "clusters": 140,
+        "samples": 2000
+      },
+      "recall_at_5": {
+        "difference_percentage_points": 8.333333333333332,
+        "ci_95": [
+          0.0,
+          16.758241758241756
+        ],
+        "clusters": 140,
+        "samples": 2000
+      },
+      "hit_rate_at_5": {
+        "difference_percentage_points": 8.333333333333332,
+        "ci_95": [
+          0.0,
+          16.666666666666664
+        ],
+        "clusters": 140,
+        "samples": 2000
+      },
+      "context_recall": {
+        "difference_percentage_points": 6.666666666666667,
+        "ci_95": [
+          -2.528089887640449,
+          15.340909090909092
+        ],
+        "clusters": 140,
+        "samples": 2000
+      }
+    },
+    "E01_vs_E12": {
+      "mrr_at_5": {
+        "difference_percentage_points": 17.425925925925924,
+        "ci_95": [
+          10.507246376811594,
+          24.229166666666664
+        ],
+        "clusters": 140,
+        "samples": 2000
+      },
+      "recall_at_1": {
+        "difference_percentage_points": 13.61111111111111,
+        "ci_95": [
+          5.172413793103448,
+          22.126436781609197
+        ],
+        "clusters": 140,
+        "samples": 2000
+      },
+      "recall_at_5": {
+        "difference_percentage_points": 21.944444444444443,
+        "ci_95": [
+          15.384615384615385,
+          28.08988764044944
+        ],
+        "clusters": 140,
+        "samples": 2000
+      },
+      "hit_rate_at_5": {
+        "difference_percentage_points": 22.22222222222222,
+        "ci_95": [
+          15.760869565217392,
+          28.26086956521739
+        ],
+        "clusters": 140,
+        "samples": 2000
+      },
+      "context_recall": {
+        "difference_percentage_points": 23.055555555555557,
+        "ci_95": [
+          16.208791208791208,
+          29.411764705882355
+        ],
+        "clusters": 140,
+        "samples": 2000
+      }
+    },
+    "E01_vs_E13": {
+      "mrr_at_5": {
+        "difference_percentage_points": 2.5185185185185186,
+        "ci_95": [
+          -0.7978723404255319,
+          5.913654618473895
+        ],
+        "clusters": 140,
+        "samples": 2000
+      },
+      "recall_at_1": {
+        "difference_percentage_points": 4.722222222222222,
+        "ci_95": [
+          0.0,
+          9.75609756097561
+        ],
+        "clusters": 140,
+        "samples": 2000
+      },
+      "recall_at_5": {
+        "difference_percentage_points": -1.1111111111111112,
+        "ci_95": [
+          -5.163043478260869,
+          2.6470588235294117
+        ],
+        "clusters": 140,
+        "samples": 2000
+      },
+      "hit_rate_at_5": {
+        "difference_percentage_points": -1.1111111111111112,
+        "ci_95": [
+          -5.0,
+          2.5773195876288657
+        ],
+        "clusters": 140,
+        "samples": 2000
+      },
+      "context_recall": {
+        "difference_percentage_points": -0.2777777777777778,
+        "ci_95": [
+          -3.571428571428571,
+          2.5
+        ],
+        "clusters": 140,
+        "samples": 2000
+      }
+    },
+    "E01_vs_E14": {
+      "mrr_at_5": {
+        "difference_percentage_points": 3.5925925925925926,
+        "ci_95": [
+          -3.9629629629629632,
+          10.975378787878789
+        ],
+        "clusters": 140,
+        "samples": 2000
+      },
+      "recall_at_1": {
+        "difference_percentage_points": 1.6666666666666667,
+        "ci_95": [
+          -7.386363636363637,
+          10.326086956521738
+        ],
+        "clusters": 140,
+        "samples": 2000
+      },
+      "recall_at_5": {
+        "difference_percentage_points": 6.388888888888888,
+        "ci_95": [
+          -1.1235955056179776,
+          14.010989010989011
+        ],
+        "clusters": 140,
+        "samples": 2000
+      },
+      "hit_rate_at_5": {
+        "difference_percentage_points": 6.666666666666667,
+        "ci_95": [
+          -1.0638297872340425,
+          14.285714285714285
+        ],
+        "clusters": 140,
+        "samples": 2000
+      },
+      "context_recall": {
+        "difference_percentage_points": 5.277777777777778,
+        "ci_95": [
+          -2.864583333333333,
+          13.095238095238097
+        ],
+        "clusters": 140,
+        "samples": 2000
+      }
+    },
+    "E01_vs_E15": {
+      "mrr_at_5": {
+        "difference_percentage_points": 8.037037037037036,
+        "ci_95": [
+          2.5,
+          13.430851063829788
+        ],
+        "clusters": 140,
+        "samples": 2000
+      },
+      "recall_at_1": {
+        "difference_percentage_points": 5.833333333333333,
+        "ci_95": [
+          -1.6483516483516485,
+          13.461538461538462
+        ],
+        "clusters": 140,
+        "samples": 2000
+      },
+      "recall_at_5": {
+        "difference_percentage_points": 10.0,
+        "ci_95": [
+          4.261363636363636,
+          15.406976744186046
+        ],
+        "clusters": 140,
+        "samples": 2000
+      },
+      "hit_rate_at_5": {
+        "difference_percentage_points": 10.0,
+        "ci_95": [
+          4.320987654320987,
+          15.24390243902439
+        ],
+        "clusters": 140,
+        "samples": 2000
+      },
+      "context_recall": {
+        "difference_percentage_points": 10.0,
+        "ci_95": [
+          4.25531914893617,
+          15.489130434782608
+        ],
+        "clusters": 140,
+        "samples": 2000
+      }
+    },
+    "E01_vs_E16": {
+      "mrr_at_5": {
+        "difference_percentage_points": 16.537037037037035,
+        "ci_95": [
+          10.246212121212121,
+          22.56554307116105
+        ],
+        "clusters": 140,
+        "samples": 2000
+      },
+      "recall_at_1": {
+        "difference_percentage_points": 15.277777777777779,
+        "ci_95": [
+          7.954545454545454,
+          22.77777777777778
+        ],
+        "clusters": 140,
+        "samples": 2000
+      },
+      "recall_at_5": {
+        "difference_percentage_points": 17.22222222222222,
+        "ci_95": [
+          10.0,
+          24.096385542168676
+        ],
+        "clusters": 140,
+        "samples": 2000
+      },
+      "hit_rate_at_5": {
+        "difference_percentage_points": 17.22222222222222,
+        "ci_95": [
+          10.0,
+          24.096385542168676
+        ],
+        "clusters": 140,
+        "samples": 2000
+      },
+      "context_recall": {
+        "difference_percentage_points": 16.944444444444446,
+        "ci_95": [
+          10.904255319148938,
+          22.52747252747253
+        ],
+        "clusters": 140,
+        "samples": 2000
+      }
+    },
+    "E01_vs_E17": {
+      "mrr_at_5": {
+        "difference_percentage_points": 6.351851851851851,
+        "ci_95": [
+          -1.6941391941391941,
+          14.549019607843135
+        ],
+        "clusters": 140,
+        "samples": 2000
+      },
+      "recall_at_1": {
+        "difference_percentage_points": 5.0,
+        "ci_95": [
+          -5.0,
+          14.673913043478262
+        ],
+        "clusters": 140,
+        "samples": 2000
+      },
+      "recall_at_5": {
+        "difference_percentage_points": 6.944444444444445,
+        "ci_95": [
+          -1.0869565217391304,
+          15.32258064516129
+        ],
+        "clusters": 140,
+        "samples": 2000
+      },
+      "hit_rate_at_5": {
+        "difference_percentage_points": 7.222222222222221,
+        "ci_95": [
+          -0.5747126436781609,
+          15.730337078651685
+        ],
+        "clusters": 140,
+        "samples": 2000
+      },
+      "context_recall": {
+        "difference_percentage_points": 8.055555555555555,
+        "ci_95": [
+          0.0,
+          16.573033707865168
+        ],
+        "clusters": 140,
+        "samples": 2000
+      }
+    },
+    "E01_vs_E18": {
+      "mrr_at_5": {
+        "difference_percentage_points": 18.666666666666668,
+        "ci_95": [
+          11.41941391941392,
+          25.71022727272727
+        ],
+        "clusters": 140,
+        "samples": 2000
+      },
+      "recall_at_1": {
+        "difference_percentage_points": 16.38888888888889,
+        "ci_95": [
+          7.065217391304348,
+          25.56179775280899
+        ],
+        "clusters": 140,
+        "samples": 2000
+      },
+      "recall_at_5": {
+        "difference_percentage_points": 20.0,
+        "ci_95": [
+          13.352272727272727,
+          26.14942528735632
+        ],
+        "clusters": 140,
+        "samples": 2000
+      },
+      "hit_rate_at_5": {
+        "difference_percentage_points": 20.0,
+        "ci_95": [
+          13.297872340425531,
+          25.862068965517242
+        ],
+        "clusters": 140,
+        "samples": 2000
+      },
+      "context_recall": {
+        "difference_percentage_points": 20.555555555555554,
+        "ci_95": [
+          14.402173913043478,
+          26.685393258426966
+        ],
+        "clusters": 140,
+        "samples": 2000
+      }
+    },
+    "E03_vs_E06": {
+      "mrr_at_5": {
+        "difference_percentage_points": 8.564814814814815,
+        "ci_95": [
+          3.0776515151515147,
+          13.586142322097377
+        ],
+        "clusters": 140,
+        "samples": 2000
+      },
+      "recall_at_1": {
+        "difference_percentage_points": 8.88888888888889,
+        "ci_95": [
+          3.260869565217391,
+          14.534883720930234
+        ],
+        "clusters": 140,
+        "samples": 2000
+      },
+      "recall_at_5": {
+        "difference_percentage_points": 8.333333333333332,
+        "ci_95": [
+          2.7472527472527473,
+          13.636363636363635
+        ],
+        "clusters": 140,
+        "samples": 2000
+      },
+      "hit_rate_at_5": {
+        "difference_percentage_points": 8.333333333333332,
+        "ci_95": [
+          2.7472527472527473,
+          13.636363636363635
+        ],
+        "clusters": 140,
+        "samples": 2000
+      },
+      "context_recall": {
+        "difference_percentage_points": 7.222222222222221,
+        "ci_95": [
+          0.5494505494505495,
+          13.157894736842104
+        ],
+        "clusters": 140,
+        "samples": 2000
+      }
+    },
+    "E09_vs_E12": {
+      "mrr_at_5": {
+        "difference_percentage_points": 7.87037037037037,
+        "ci_95": [
+          3.2903780068728525,
+          12.835249042145595
+        ],
+        "clusters": 140,
+        "samples": 2000
+      },
+      "recall_at_1": {
+        "difference_percentage_points": 6.111111111111111,
+        "ci_95": [
+          0.5617977528089888,
+          11.956521739130435
+        ],
+        "clusters": 140,
+        "samples": 2000
+      },
+      "recall_at_5": {
+        "difference_percentage_points": 11.11111111111111,
+        "ci_95": [
+          5.913978494623656,
+          16.292134831460675
+        ],
+        "clusters": 140,
+        "samples": 2000
+      },
+      "hit_rate_at_5": {
+        "difference_percentage_points": 11.11111111111111,
+        "ci_95": [
+          5.913978494623656,
+          16.292134831460675
+        ],
+        "clusters": 140,
+        "samples": 2000
+      },
+      "context_recall": {
+        "difference_percentage_points": 10.0,
+        "ci_95": [
+          4.49438202247191,
+          15.340909090909092
+        ],
+        "clusters": 140,
+        "samples": 2000
+      }
+    },
+    "E15_vs_E18": {
+      "mrr_at_5": {
+        "difference_percentage_points": 10.62962962962963,
+        "ci_95": [
+          5.959302325581396,
+          15.335249042145593
+        ],
+        "clusters": 140,
+        "samples": 2000
+      },
+      "recall_at_1": {
+        "difference_percentage_points": 10.555555555555555,
+        "ci_95": [
+          5.113636363636364,
+          16.304347826086957
+        ],
+        "clusters": 140,
+        "samples": 2000
+      },
+      "recall_at_5": {
+        "difference_percentage_points": 10.0,
+        "ci_95": [
+          5.056179775280898,
+          14.942528735632186
+        ],
+        "clusters": 140,
+        "samples": 2000
+      },
+      "hit_rate_at_5": {
+        "difference_percentage_points": 10.0,
+        "ci_95": [
+          5.056179775280898,
+          14.942528735632186
+        ],
+        "clusters": 140,
+        "samples": 2000
+      },
+      "context_recall": {
+        "difference_percentage_points": 10.555555555555555,
+        "ci_95": [
+          5.208333333333334,
+          16.091954022988507
+        ],
+        "clusters": 140,
+        "samples": 2000
+      }
+    },
+    "E06_vs_E12": {
+      "mrr_at_5": {
+        "difference_percentage_points": -0.0925925925925928,
+        "ci_95": [
+          -4.337121212121212,
+          4.285714285714286
+        ],
+        "clusters": 140,
+        "samples": 2000
+      },
+      "recall_at_1": {
+        "difference_percentage_points": -1.3888888888888888,
+        "ci_95": [
+          -7.368421052631578,
+          4.838709677419355
+        ],
+        "clusters": 140,
+        "samples": 2000
+      },
+      "recall_at_5": {
+        "difference_percentage_points": 2.2222222222222223,
+        "ci_95": [
+          -1.8421052631578945,
+          6.593406593406594
+        ],
+        "clusters": 140,
+        "samples": 2000
+      },
+      "hit_rate_at_5": {
+        "difference_percentage_points": 2.7777777777777777,
+        "ci_95": [
+          -1.1235955056179776,
+          7.142857142857142
+        ],
+        "clusters": 140,
+        "samples": 2000
+      },
+      "context_recall": {
+        "difference_percentage_points": 2.2222222222222223,
+        "ci_95": [
+          -2.5,
+          7.4074074074074066
+        ],
+        "clusters": 140,
+        "samples": 2000
+      }
+    },
+    "E12_vs_E18": {
+      "mrr_at_5": {
+        "difference_percentage_points": 1.240740740740741,
+        "ci_95": [
+          -2.2796934865900385,
+          5.027472527472527
+        ],
+        "clusters": 140,
+        "samples": 2000
+      },
+      "recall_at_1": {
+        "difference_percentage_points": 2.7777777777777777,
+        "ci_95": [
+          -2.5773195876288657,
+          8.333333333333332
+        ],
+        "clusters": 140,
+        "samples": 2000
+      },
+      "recall_at_5": {
+        "difference_percentage_points": -1.9444444444444444,
+        "ci_95": [
+          -5.747126436781609,
+          1.804123711340206
+        ],
+        "clusters": 140,
+        "samples": 2000
+      },
+      "hit_rate_at_5": {
+        "difference_percentage_points": -2.2222222222222223,
+        "ci_95": [
+          -6.024096385542169,
+          1.5957446808510638
+        ],
+        "clusters": 140,
+        "samples": 2000
+      },
+      "context_recall": {
+        "difference_percentage_points": -2.5,
+        "ci_95": [
+          -6.914893617021277,
+          1.9021739130434785
+        ],
+        "clusters": 140,
+        "samples": 2000
+      }
+    }
+  }
+}

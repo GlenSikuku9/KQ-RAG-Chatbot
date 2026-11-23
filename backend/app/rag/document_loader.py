@@ -58,6 +58,13 @@ def discover_documents(raw_data_dir: Path) -> list[Path]:
     for file_path in sorted(raw_data_dir.rglob("*")):
         if not file_path.is_file():
             continue
+        relative = file_path.relative_to(raw_data_dir)
+        # Administrator uploads are processed individually through their
+        # protected workflow. Excluding that managed area keeps bulk corpus
+        # jobs scoped to the original policy set and prevents pending uploads
+        # from being published without an explicit administrator action.
+        if relative.parts and relative.parts[0].casefold() == "admin":
+            continue
         if file_path.name.startswith("~$"):
             logger.warning("Skipping Word lock file %s.", file_path.name)
         elif file_path.suffix.lower() in SUPPORTED_EXTENSIONS:

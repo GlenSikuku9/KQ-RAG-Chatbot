@@ -86,8 +86,10 @@
 }
 
 .flight-location-display {
-  display: inline-flex;
+  display: flex;
   align-items: center;
+  width: 100%;
+  min-width: 0;
   gap: 0.3rem;
 }
 
@@ -97,23 +99,34 @@
 }
 
 .flight-location-display strong {
+  display: block;
+  width: 100%;
+  min-width: 0;
   padding: 0.08rem 0.3rem;
   border: 1px solid #f3b7bb;
   border-radius: 0.35rem;
   background: #fff1f2;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
 }
 
 .flight-route-display {
-  display: inline-flex;
+  display: grid;
   align-items: center;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  width: 100%;
+  min-width: 0;
   gap: 0.35rem;
 }
 
 .flight-route-display strong {
+  min-width: 0;
   padding: 0.18rem 0.42rem;
   border: 1px solid #f3b7bb;
   border-radius: 0.42rem;
   background: #fff1f2;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
 }
 
 .flight-route-display > span {
@@ -128,6 +141,30 @@
   border-bottom: 1px solid #e2e8f0;
 }
 
+.flight-overview-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.flight-travel-date {
+  display: grid;
+  flex: 0 0 auto;
+  gap: 0.08rem;
+  text-align: right;
+}
+
+.flight-travel-date small {
+  color: #64748b;
+  font-size: 0.66rem;
+}
+
+.flight-travel-date strong {
+  color: #102f70;
+  font-size: 0.76rem;
+}
+
 .flight-detail-section dl {
   display: grid;
   gap: 0.48rem;
@@ -135,7 +172,11 @@
 }
 
 .flight-detail-section .flight-overview-grid {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.flight-overview-grid > div:first-child {
+  min-width: 0;
 }
 
 .flight-detail-section dl div {
@@ -191,14 +232,23 @@
   font-size: 0.72rem;
 }
 
-@media (max-width: 520px) {
+@media (max-width: 700px) {
   .flight-detail-sections,
   .flight-detail-section .flight-overview-grid {
     grid-template-columns: 1fr;
   }
 
   .flight-detail-section:last-child {
-    margin-top: 0.75rem;
+    margin-top: 0;
+  }
+
+  .flight-route-display {
+    grid-template-columns: 1fr;
+  }
+
+  .flight-route-display > span {
+    justify-self: center;
+    transform: rotate(90deg);
   }
 
   .flight-information-card footer {

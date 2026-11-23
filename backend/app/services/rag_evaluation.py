@@ -1,4 +1,4 @@
-"""Read persisted offline RAG evaluations and aggregate live RAG operations.
+"""Read retrieval evaluations and aggregate live RAG operations.
 
 Offline evaluation is intentionally separate from passenger requests. This
 module never calls a generator, retrieval model, or external evaluation API.
@@ -151,11 +151,6 @@ def evaluation_metrics(
                 timeout=FIRESTORE_READ_TIMEOUT,
             )
         )
-        ragas_snapshots = list(
-            client.collection("ragas_evaluations").stream(
-                timeout=FIRESTORE_READ_TIMEOUT,
-            )
-        )
         event_snapshots = list(
             client.collection("operational_events").stream(
                 timeout=FIRESTORE_READ_TIMEOUT,
@@ -165,11 +160,10 @@ def evaluation_metrics(
     retrieval_records = _records_in_period(retrieval_snapshots, started)
     model_records = _records_in_period(model_snapshots, started)
     context_records = _records_in_period(context_snapshots, started)
-    ragas_records = _records_in_period(ragas_snapshots, started)
     available_models = sorted(
         {
             str(item["model_id"])
-            for item in model_records + ragas_records
+            for item in model_records
             if item.get("model_id")
         }
     )
@@ -180,7 +174,6 @@ def evaluation_metrics(
                 retrieval_records
                 + model_records
                 + context_records
-                + ragas_records
             )
             if item.get("language") and item.get("language") != "all"
         }
@@ -189,14 +182,12 @@ def evaluation_metrics(
     retrieval = _latest_retrieval(retrieval_records, language)
     response_records = _latest_model_run(model_records, model_id, language)
     context_record = _latest_context(context_records, language)
-    ragas = _latest_ragas_run(ragas_records, model_id, language)
     evaluated_times = [
         item.get("evaluated_at")
         for item in (
             ([retrieval] if retrieval else [])
             + ([context_record] if context_record else [])
             + response_records
-            + ragas
         )
         if isinstance(item.get("evaluated_at"), datetime)
     ]
@@ -251,26 +242,6 @@ def evaluation_metrics(
             "custom_document_source_overlap_unique_questions",
         ),
     }
-    ragas_metrics = {}
-    for metric_name in (
-        "context_precision",
-        "context_recall",
-        "faithfulness",
-        "answer_relevance",
-    ):
-        record = next(
-            (item for item in ragas if item.get("metric_name") == metric_name),
-            None,
-        )
-        ragas_metrics[metric_name] = _metric(
-            (record or {}).get("score"),
-            int((record or {}).get("sample_size", 0)),
-            (record or {}).get(
-                "evaluation_method",
-                "requires_explicit_ragas_evaluation",
-            ),
-        )
-
     return RAGEvaluationMetrics(
         period_days=period_days,
         model_id=model_id,
@@ -297,17 +268,6 @@ def evaluation_metrics(
             ),
         },
         document_retrieval=document_metrics,
-        ragas=ragas_metrics,
-        response_quality={
-            # Compatibility keys keep older clients working without presenting
-            # these custom values as official RAGAS context metrics.
-            "context_precision": document_metrics[
-                "document_source_precision"
-            ],
-            "context_recall": document_metrics["document_source_recall"],
-            "faithfulness": ragas_metrics["faithfulness"],
-            "answer_relevance": ragas_metrics["answer_relevance"],
-        },
         fallback={
             "fallback_accuracy": _metric(
                 fallback_accuracy,
@@ -389,32 +349,3 @@ def _latest_model_run(
     )
     run_id = newest.get("run_id")
     return [item for item in matches if item.get("run_id") == run_id]
-
-
-def _latest_ragas_run(
-    records: list[dict],
-    model_id: str | None,
-    language: str,
-) -> list[dict]:
-    """Select one RAGAS run while retaining model-independent context rows."""
-
-    aggregates = [
-        item
-        for item in records
-        if item.get("record_type") == "aggregate"
-        and item.get("language") == language
-        and (
-            item.get("metric_name") in {"context_precision", "context_recall"}
-            or item.get("model_id") == model_id
-        )
-    ]
-    if not aggregates:
-        return []
-    newest = max(
-        aggregates,
-        key=lambda item: item.get("evaluated_at")
-        or datetime.min.replace(tzinfo=timezone.utc),
-    )
-    return [
-        item for item in aggregates if item.get("run_id") == newest.get("run_id")
-    ]

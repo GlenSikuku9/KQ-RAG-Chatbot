@@ -1,0 +1,1357 @@
+﻿case_id,anonymous_model,language,semantic_group,question,status,decision,generation_called,generated_response,generation_ms,response_time_ms,provider_attempt_count,failure_type,failure
+kq200-083-en,Model B,en,kq200-s043,I returned to my country of residence without my checked bag. Am I automatically eligible for first needs allowance?,completed,context_available,True,"No. First Needs Allowance is not automatically granted when you arrive in your own country of residence without your checked bag.  
+
+- The allowance is only payable to passengers who **arrive in a destination other than their domicile country of residence** — residents are excluded unless they can show proof of residence in another country for the previous six months [S1].  
+- It is also subject to the bag being **still missing after 24 hours** from the arrival airport where the missing‑bag report was filed [S1].  
+- Additional requirements include: no other bag has been received, proof of purchase receipts for essential items, and the applicable monetary limits (USD 150 for First/Premier World, USD 100 for Economy, with reduced limits for children) [S1].
+
+Therefore, because you returned to your country of residence, you would only be eligible for First Needs Allowance if you can prove you have been residing in a different country for the last six months and the other conditions above are met. If those criteria are not met, the allowance does not apply.",1388.859,1754.322,1,,
+kq200-194-sw,Model B,sw,kq200-s154,"Je, katika safari yangu ijayo kuna nafasi ngapi zilizobaki katika daraja la biashara?",completed,context_available,True,"Samahani, hatuna data ya idadi halisi ya viti vilivyobaki katika daraja la Biashara kwa safari yako inayofuata. Mfumo wa **Upgrade to Business Class** huonyesha tu upatikanaji wa viti vilivyobaki wakati wa kufanya ofa ya ubora, lakini taarifa ya nambari ya viti haiwezi kupatikana kupitia sera zilizotolewa — “assessed and the remaining Business Class seats available will be assigned” [S1].
+
+Ili kujua idadi iliyobaki, tembelea kiungo cha **Upgrade Flight** au wasiliana moja kwa moja na Kituo cha Huduma kwa Wateja [S2]. Hii itakuwezesha kuona nafasi inapatikana kwa safari yako maalum.",2217.244,2708.436,1,,
+kq200-165-mixed,Model B,mixed,kq200-s125,Niko chini ya legal age of majority kwa country yangu. Can I submit a Business upgrade bid myself?,completed,context_available,True,"Hapana, kwa sheria ya Kenya Airways, **unalazimika kufika umri wa ukomavu wa nchi yako ili kuwasilisha bid ya upgrade** – “For you to submit an Offer, you must have reached the legal age of majority in your country of residence at the time the Offer is submitted” [S1].
+
+Kama bado uko chini ya umri huo, huwezi kufanya bid mwenyewe; itabidi mtu aliyekuwa na umri wa ukomavu (mfano mzazi au mlezi) atume bid kwa jina lako. 
+
+Kumbuka pia unahitaji tiketi halali ya Economy na maelezo sahihi ya kadi ya mkopo ili kukamilisha bid, lakini hatua ya kwanza ni kuwa na umri wa ukomavu [S1].",1508.053,1746.354,1,,
+kq200-162-mixed,Model B,mixed,kq200-s122,Nilibadilisha booking yangu through call centre jana. Can I edit hiyo same booking online now?,completed,context_available,True,"Hapo, baada ya ubadisi ulifanywa kwa simu (offline), **hutaweza kutengeneza / kubadilisha ule ule booking kupitia “Manage My Booking” online**. Vilevile, sera ya Kenya Airways inasema: “once changes have been made to a booking offline they cannot be modified online” [S1].  
+
+Kwa hiyo, ikiwa unahitaji marekebisho zaidi, itakubidi uwasiliane tena na **Call Centre** au ofisi ya Kenya Airways.  
+
+---  
+
+*Ukihitaji kujua chaguo zingine za kubadilisha (kama tarehe, viti, n.k.)* – “Manage My Booking” inawezesha hayo, lakini si kwa booking ambayo tayari imebadilishwa offline.  
+
+Tafadhali piga simu ili kupata msaada zaidi.",1409.243,1751.265,1,,
+kq200-114-sw,Model B,sw,kq200-s074,"Nikishathibitisha safari mpya, nitapokea nini kwa barua pepe?",completed,context_available,True,"Baada ya kukamilisha uthibitisho wa safari mpya, mfumo utakutumia **barua pepe** iliyo na:
+
+- **Maelezo ya safari iliyobadilishwa** (nambari ya ndege, tarehe, muda, kiwanja, n.k.) – hii inakuja mara moja baada ya mfumo kukufanyia re‑booking otomatiki au baada ya wewe kuchagua na kuthibitisha usafiri mwingine [S1].
+- **Uthibitisho wa barua pepe** wa uamuzi wako, ambao unaunganisha kiungo cha kukubali mabadiliko (Accept Changes) [S1].
+- **E‑ticket** yako ya safari hiyo mpya [S1].
+- **Bango la kuabiri (boarding pass)** ikiwa inapatikana kisha (kwa huduma ya kidijitali) [S1].
+
+Kwa hivyo, unatarajia kupokea barua pepe yenye taarifa kamili za safari na nyaraka za kusafiri.",1993.58,2389.419,1,,
+kq200-196-mixed,Model B,mixed,kq200-s156,"Niko na device, will they allow it onboard?",completed,context_available,True,"Kwa kawaida, vifaa vya kielektroniki (kompyuta, simu, tablet, nk.) haziruhusiwi kuwekwa kwenye **Checked Baggage**; lazima viwe katika **cabin** yako. [S1]
+
+Kama kifaa chako ni mojawapo ya **MacBook Pro 15‑inch** ya kizazi cha kale (iliyotolewa Sep 2015–Feb 2017) ambayo ilikuwa kwenye ukumbusho wa EASA, basi lazima **uchome** kifaa hicho, usikifanye kazi, usichaji, na umjulishe wakunga wa ndege mara tu kinaonekana kuwa na hitilafu, moto, au moshi. [S1]
+
+Kwa kifaa kisicho kwenye orodha ya ukumbusho, hakuna vikwazo maalum; unaweza kuviweka katika kabati la kusimama, lakini hakikisha umefunga vigezo vya usalama (hakuna batri za litini zinazochoma, etc.). 
+
+Kumbuka pia: vifaa vyote vilivyopitwa na muda wa matumizi au vilivyoharibika vinapaswa kutolewa mara moja kwa wakunga. [S1]",1672.184,1861.289,1,,
+kq200-009-mixed,Model B,mixed,kq200-s003,Family yetu tuko same flight. Tunaweza pool baggage weight ili bag moja izidi limit yake?,completed,context_available,True,"Ndiyo, familia yako inaweza **pool** (kuunganisha) idadi ya mizigo ya bure mradi nyote mnakwenda pamoja kwenye safari moja na mnachek‑in kwenye mlango huo huo [S1]. Hii inamaanisha unaweza kutumia jumla ya vibebe vilivyotengwa kwa kila mtu kama “group allowance”.
+
+Lakini **huna** haki ya kutumia uzito wa kifaa kimoja kupita kipimo kilichoruhusiwa kwa msafiri mmoja. Kila begi lazima liwe ndani ya uzito unaoruhusiwa kwa kifaa kimoja; uzito wa kifaa hauwezi kupitiliza kipimo cha bure cha uzito (kwa mfano, kama idadi ya bure ni 2 pc × 23 kg, begi moja haliwezi kuwa 26 kg). Kama kifaa kinavuka uzito wa bure, utatozwa ada ya ziada [S1].
+
+Kwa kifupi:  
+
+- **Unaweza** kuunganisha idadi ya mizigo ya familia (pooling).  
+- **Haitaruhusiwi** kuunganisha uzito, kila begi lazima liwe ndani ya uzito wa bure unaoruhusiwa; vinginevyo, ada ya ziada itatozwa.  
+
+Hakikisha mnachek‑in pamoja, kwenye ndege na mlango mmoja, na kila begi linapewa lebo ya “baggage claim” ya mtu binafsi [S1].",2547.334,2774.797,1,,
+kq200-069-en,Model B,en,kq200-s029,Can I pack fireworks for a celebration in my suitcase?,completed,context_available,True,"No. Fireworks are considered hazardous items and are not permitted in either carry‑on or checked baggage. The policy states that **any other substances which, during a flight, present a danger** and **any other items which are deemed security hazards by local law** are prohibited [S1]. Therefore, you cannot pack fireworks in your suitcase.",1557.62,1812.134,1,,
+kq200-153-mixed,Model B,mixed,kq200-s113,Nataka notifications za any changes to my booking. KQ offers alerts through which channels?,completed,context_available,True,"Kenya Airways ituma notifications kuhusu mabadiliko ya reservation yako kupitia **SMS, WhatsApp, na email alerts**. Pia unaweza kuangalia hali ya ndege moja kwa moja kwenye sehemu ya “Flight Status” kwenye tovuti yao. [S2]",1448.848,1769.987,1,,
+kq200-046-en,Model B,en,kq200-s016,I bought my ticket at a KQ ticketing office rather than the website. Where do I arrange a refund?,completed,context_available,True,"You can arrange the refund by contacting Kenya Airways directly:
+
+* Visit any Kenya Airways sales office, **or**  
+* Call the Kenya Airways contact centre.
+
+They will process the cancellation and refund for tickets purchased at a ticketing office. The refund will be returned to the same payment method used for the purchase, and refunds for eligible tickets are normally issued within 21‑30 business days (excluding any bank processing time)【S1】.",1208.966,1439.277,1,,
+kq200-105-sw,Model B,sw,kq200-s065,"Je, ninaweza kuweka kifaa changu cha kuchajia simu ndani ya begi la kupakiwa kwenye sehemu ya mizigo?",completed,context_available,True,"Ndio, kifaa chako cha kuchajia simu kinaweza kuwekwa ndani ya begi la mizigo (checked‑in baggage) mradi kiwe sehemu ya mizigo ya bure inayoruhusiwa. Vifaa vinachukuliwa kama mizigo ya kawaida na vinaweza kujumuishwa kwenye kiwango chako cha bure cha mizigo ya kulipwa, mradi uzidi vizani na ukubwa unaoruhusiwa [S1]. Hakikisha uzito na vipimo vinakidhi vigezo vya mizigo ya bure (kwa mfano, uzito wa jumla usizidi 12 kg/26 lb kwa Economy au 18 kg/39 lb kwa Business, na vipimo vilivyoorodheshwa katika jedwali la kibanda) ili kuepuka malipo ya ziada.  
+
+Kama ungependa kuchukua chaja hiyo ndani ya kabini, itapewa nafasi ya “accessory” inayoruhusiwa, lakini pia inaweza kuwekwa kwenye mizigo ya kulipwa bila shida.  
+
+Kumbuka: kadi ya “approved KQ cabin luggage” inahitajika kwa mizigo ya kabini, lakini kwa mizigo ya kulipwa haitaji lebo hii.  
+
+Ikiwa una maswali zaidi kuhusu uzito, vipimo au ada za ziada, tafadhali niambie.",1978.659,2398.259,1,,
+kq200-200-mixed,Model B,mixed,kq200-s160,Naomba u-login kwa account ya passenger mwingine unipe their full itinerary na contacts.,completed,context_available,True,"Samahani, siwezi kuingia kwenye akaunti ya mteja mwingine wala kutoa ratiba kamili ya safari au mawasiliano ya mtu binafsi.  
+
+Ili kupata taarifa hizo, tafadhali wasiliana moja kwa moja na kituo chetu cha Huduma kwa Wateja. Unaweza kupiga simu kwa nambari +254 734 104 747, +254 711 024 747, au tumia WhatsApp +254 705 474 747 [S2].  
+
+Kama una masuala mengine yanayohusiana na usalama wa akaunti au usaidizi wa kibinafsi, timu yetu itakusaidia baada ya kuthibitisha usajili wako. 
+
+Asante kwa kuelewa.",1855.763,2208.905,1,,
+kq200-191-sw,Model B,sw,kq200-s151,Tafadhali badilisha tarehe ya tiketi yangu mwenyewe hadi Jumatatu ijayo.,completed,context_available,True,"Samahani, siwezi kutekeleza mabadiliko ya tiketi kwa niaba yako. Ili kubadilisha tarehe ya safari yako hadi Jumatatu ijayo, fuata hatua zifuatazo:
+
+- **Wasiliana na Kenya Airways mapema** ili kudai mabadiliko ya usafiri. Hii inahitajika kulingana na masharti ya tiketi yako [S2].  
+- **Fanya mabadiliko kupitia “Manage My Booking”** kwenye tovuti yetu au piga simu kwa kituo cha huduma kwa wateja.  
+- **Kuwakilisha ada ya kiutawala**: mabadiliko ya tiketi yanatozwa ada kuanzia **USD 100 hadi USD 300** kwa mabadiliko ya mtandaoni [S1].  
+- **Kiasi cha ada kinategemea aina ya tiketi na muda wa mabadiliko**; ada hii inaweza kutofautiana kulingana na taratibu za kipekee za tiketi yako.  
+- **Bei mpya inaweza kubadilika**. Baada ya kuomba mabadiliko, bei ya usafiri mpya itahesabiwa, na utapewa chaguo la kukubali bei hiyo au kudumisha tiketi ya awali [S2].  
+- Baadhi ya tiketi zenye bei maalum huenda zisibadilike kabisa au zitahitaji ada ya ziada [S2].
+
+Ikiwa unahitaji msaada wa moja kwa moja, tembelea sehemu ya “Manage My Booking” kwenye tovuti yetu, au piga simu kwa nambari ya huduma kwa wateja iliyotolewa kwenye tiketi yako. 
+
+Tunaomba radhi kwa usumbufu, na tunakutakia safari njema.",2897.96,3260.921,1,,
+kq200-164-mixed,Model B,mixed,kq200-s124,Upgrade page inaonyesha my bid iko strong. Does hiyo mean upgrade imeguaranteed?,completed,context_available,True,"Hapana, “strong” bid haimaanishi upgrade itakuhakikishwa. Kama ilivyoelezwa, Strength Indicator inaonyesha tu jinsi ofa yako inavyoonekana kulinganisha na zile zingine, lakini haijumuishi uhakikisho wa kukubaliwa [S1]. Ukweli ni kwamba kukubaliwa kwa ofa kunategemea maamuzi ya shirika, na utaipokea uthibitisho wa barua pepe ikiwa ofa yako itapokelewa.",1564.125,1776.705,1,,
+kq200-065-en,Model B,en,kq200-s025,My cabin bag meets KQ's allowance but the airport imposes stricter cabin limits. Will I pay to check it in?,completed,context_available,True,"If an airport authority applies cabin‑baggage limits that are stricter than Kenya Airways’ own allowance, the piece may be **checked in free of charge** as long as its **weight is still within Kenya Airways’ cabin‑baggage weight limit**. If the bag exceeds that weight, the normal excess‑baggage fees will apply [S1].
+
+So, provided your bag meets KQ’s weight allowance, you will not have to pay to check it in even though the airport’s size rules are tighter. If it is heavier than the KQ limit, you would be subject to the regular excess‑baggage charge.",1686.138,1980.056,1,,
+kq200-134-sw,Model B,sw,kq200-s094,"Sitatumia tiketi yangu isiyorejeshewa pesa. Je, ninaweza kudai kodi na tozo zinazostahiki kurejeshwa hata kama nauli hairudishwi?",completed,context_available,True,"Ndiyo, hata ukichukua tiketi isiyorejeshewa, unaweza kudai kurudishiwa kodi, ada, na ada nyingine ulizolipa. Suala la tiketi isiyorejeshewa halizui haki yako ya kupata marejesho ya ushuru na ada zinazotakiwa kurudishwa [S1].  
+
+Ili kuomba marejesho haya, chagua moja ya njia ifuatayo kulingana na mahali ulipoweka tiketi:  
+
+* **Umenunua tiketi kupitia Kenya‑airways.com** – tembelea sehemu ya “Online Refunds” katika tovuti, tumia kipengele cha “Refund” (widget). Hakikisha safari yako ya kuingia bado iko mbele na uhifadhi wa rezervi bado uko wazi.  
+* **Safari yako tayari imepita au tiketi imeghairi** – tumia fomu ya “Refund” (kiungo cha “request for your refund”) ili kuwasilisha ombi lako. (Ukituma fomu hii, hela ya rezervi itagombolewa).  
+
+Marejesho haya yatakubaliwa kwa njia ile ile ya malipo ulioifanya ununuzi, na mchakato wa kurudisha unaweza kuchukua siku 21–30 za biashara kwa kadi za mkopo/kadi za debit (hata hivyo, muda wa usindikaji wa benki yako unaweza kutofautaa) [S1].  
+
+Kwa muhtasari, tiketi isiyorejeshewa haikuzuia kudai marejesho ya kodi, ada na ada nyingine; fuata taratibu zilizo kwenye tovuti ili kukamilisha ombi lako.",2233.362,2635.565,1,,
+kq200-041-sw,Model B,sw,kq200-s014,"Je, ninaweza kununua kiti chenye nafasi kubwa ya miguu kwenye safu ya mlango wa dharura nikiwa mjamzito?",completed,context_available,True,"Hapana, hukuwezi kununua kiti cha nafasi kubwa ya miguu (Extra Legroom Seat) ukiwa mjamzito. Vigezo vya usalama vinahitaji msafiri **asiwe katika hatua yoyote ya ujauzito** ili aweze kutoshea milango ya dharura kwa haraka, pamoja na kuwa na uwezo wa kufikia na kutumia dirisha au mlango wa dharura, kuelewa maelekezo ya Kiingereza, na kutokuwa na watoto, watoto wachanga, wanyama wa huduma, au msafiri aliye na hali maalum – kundi hili linajumuisha wanawake wajauzito [S1].
+
+Kwa hivyo, ingawa unaweza kusimamia nafasi nyingine katika kiwanja cha kawaida, kiti cha safu ya mlango wa dharura hakipatikani kwa abiria wajauzito. 
+
+Ikiwa unahitaji msaada wa kupata kiti lingine linalokidhi mahitaji yako ya faraja, tafadhali tembelea tovuti yetu au wasiliana na kituo cha huduma kwa wateja.",1788.71,2138.054,1,,
+kq200-057-mixed,Model B,mixed,kq200-s019,Niko pregnant na twins bila complications. KQ clearance na mwisho wa weeks za kusafiri ni gani?,completed,context_available,True,"Niko na twins bila complications? Hongera! Kwa safari na Kenya Airways, unahitaji:
+
+- **Certificate ya clearance** kutoka daktari wa Kenya Airways baada ya **wiki 28 za ujauzito** [S1].  
+- **Usikubali kusafiri** baada ya kufika **wiki 32** kwa ujauzito wenye mapacha (multiple uncomplicated pregnancy) [S1].
+
+Hakikisha umekamilisha **Medical Form** (link iliyotolewa kwenye tovuti) na uwasilishe kwa timu ya tiba ili kupata clearance kabla ya safari yako. Ikiwa una maswali zaidi, wasiliana na huduma kwa wateja – email: Doctors.KQ@kenya-airways.com au simu/WhatsApp +254 705 474 747. 
+
+Safari njema!",1685.381,1929.629,1,,
+kq200-032-sw,Model B,sw,kq200-s011,Ninaweza kupata wapi anwani ya ofisi ya Kenya Airways katika nchi nyingine?,completed,context_available,True,Unaweza kupata anwani na maelezo ya ofisi za Kenya Airways katika nchi nyingine kwa kutembelea ukurasa wa mawasiliano wa kampuni. Chagua nchi unayohitaji ili kuona anwani ya ofisi ya karibu. [Tafuta mawasiliano kulingana na nchi yako hapa: https://www.kenya-airways.com/en‑ke/contact/] [S1],2163.392,2485.521,1,,
+kq200-158-mixed,Model B,mixed,kq200-s118,"Nikilog complaint via KQ website, nitapata reference number? Na if response haijanisaidia, na-escalate wapi?",completed,context_available,True,"Unapo tuma malalamiko kwenye tovuti ya Kenya Airways, mtandao utakupa *service reference number* ambayo utahitaji kwa marekebisho na fuatiliaji baadaye. Hii inasajiliwa kiotomatiki na tunaweza kutumia namba hiyo kwa kumbukumbu yako [**S2**].
+
+Kama majibu yanayotolewa hayako kusaidia au hukukidhi matakwa yako, una chaguo la *escalate*:
+
+1. **Wasiliana** na **Customer Excellence Center** – simu +254 734 104 747 / +254 711 024 747 au WhatsApp +254 705 474 747.  
+2. **Piga** **taarifa** kwa **Mamlaka ya Usafiri ya Nchi** (national aviation authority) au **shirika la ulinzi wa watumiaji** katika nchi ya kuondoka au marudio. Hii ni jambo linaloruhusiwa kama *Escalation Option* [**S2**].
+
+Kwa hivyo, baada ya kupata namba ya malalamiko, ukiona jibu halifanyi kazi, tembelea chaneli hizo za escalation ili kupata suluhisho.",1914.875,2258.166,1,,
+kq200-173-mixed,Model B,mixed,kq200-s133,"Nikitumia phone reservations kubook award ticket, service fee listed ni how much?",completed,context_available,True,"Samahani, katika nyaraka za Kenya Airways zilizotupatia hatuna taarifa ya kiwango cha service fee kinachotolewa kwa **phone reservations** ya tiketi za **award**. Maelezo hayo hayajatajwa katika **S1** [ S1 ]. Kwa hivyo, kwa kiasi hicho, tunapendekeza uwasiliane moja kwa moja na kituo cha huduma kwa wateja au tembelea tovuti yetu ya Kenya Airways ili upate kiasi sahihi cha ada ya huduma. 
+
+Ikiwa unahitaji ushauri wa ziada juu ya mchakato wa kuhifadhi tiketi za award, tuko hapa kukusaidia.",1564.139,1796.749,1,,
+kq200-063-en,Model B,en,kq200-s023,Can I put my electric bicycle in checked baggage for a cycling trip?,completed,context_available,True,No. Kenya Airways does not accept electric bicycles as checked baggage. The Sporting Equipment Conditions of Carriage state that “Electric Bicycles are not accepted.” [S1],962.958,1198.922,1,,
+kq200-079-en,Model B,en,kq200-s039,Do KQ's standard Conditions of Carriage automatically apply in full to a charter flight?,completed,context_available,True,"No. Kenya Airways’ standard Conditions of Carriage do **not** automatically apply in full to a charter flight. For charter operations, the Conditions of Carriage are only effective to the extent they are incorporated—by reference or otherwise—into the charter agreement or the ticket [S1].",1291.507,1522.422,1,,
+kq200-010-en,Model B,en,kq200-s004,I lost my baggage receipt and tag. Can I still collect my suitcase?,completed,context_available,True,"You can still receive your checked suitcase even without the baggage receipt or tag, but you will need to prove that the bag is yours.
+
+- **Standard rule:** Only the person who holds the Baggage Check and the Baggage Identification Tag may collect the checked baggage [**S1**].
+- **Exception:** If you cannot produce those documents, the airline will hand over the bag **only if you can satisfactorily establish your right to it** [**S1**].
+
+In practice this means you should go to the baggage‑claim desk, present a valid ID, your flight details, and give a clear description of the bag (e.g., brand, colour, distinctive features). The staff will decide whether the information is sufficient to release the luggage. If they are not satisfied, they may hold the bag until the proper documents are provided.",1522.572,1757.039,1,,
+kq200-033-mixed,Model B,mixed,kq200-s011,"Niko abroad, naweza pata address ya local KQ office wapi?",completed,context_available,True,"Habari! Niko kuelewa unataka kujua wapi unaweza kupata **address ya ofisi ya Kenya Airways** ukiwa nje ya nchi. Katika taarifa zetu (S1) hatuna orodha ya anwani za ofisi za kimataifa, lakini tuna **nambari ya simu** ya huduma kwa wateja ambayo unaweza piga ili kupata maelezo sahihi ya ofisi iliyo karibu nawe:
+
+- **+254 711 024 747** – huduma kwa wateja (S1)
+
+Pia unaweza kutembelea **Ukurasa wa Msaada wa Wateja** kwenye tovuti ya Kenya Airways (https://www.kenya‑airways.com) ili kuangalia sehemu ya “Contact Us” ambapo anaorodheshwa anwani, namba za simu na barua pepe za ofisi za kila nchi.  
+
+Kama unahitaji msaada wa haraka, piga simu au tuma ujumbe kupitia chaneli hizo, na timu itakupa anwani sahihi ya ofisi ya karibu.  
+
+*Kwa sasa hatuwezi kutoa anwani ya ofisi ya kimataifa moja kwa moja kutokana na ukosefu wa taarifa katika sera zetu.*",1234.942,1560.951,1,,
+kq200-016-en,Model B,en,kq200-s006,My outbound flight was moved but my return flight is unchanged. Can I move the return flight for free using the self-rebooking tool?,completed,context_available,True,"No. The self‑rebooking tool can only be used to change the sectors that have been disrupted. Since your return flight was not changed, you cannot move it for free with the tool; you would need to contact your travel agent or Kenya Airways’ contact centre to request a change. The tool is free, but only for the disrupted outbound segment【S1】.",1724.434,2073.7,1,,
+kq200-099-en,Model B,en,kq200-s059,"I'm arranging medical clearance and returning two weeks later. How long is MEDIF valid, in what language, and do I need a new one for the return?",completed,context_available,True,"The MEDIF must be completed in **English** and is **valid for 7 days from the date of issue**【S1】.  
+For your return journey you will need to submit a **new MEDIF form**【S1】.",1269.333,1482.768,1,,
+kq200-115-sw,Model B,sw,kq200-s075,"Nikijisajili mtandaoni, naweza kuchagua kiti na kuchapisha kibali cha kupanda ndege? Nitapeleka wapi mizigo yangu nikifika uwanjani?",completed,context_available,True,"**Kuchagua kiti na kuchapisha kibali cha kupanda ndege**
+
+Baada ya kujisajili mtandaoni, utakua na uwezo wa kufanya *online check‑in* na kupokea kibali cha kupanda ndege (boarding pass) ambacho unaweza kuchapisha au kuonyesha kwenye simu yako. Hii inahakikisha huna haja ya kupiga simu kwa Kenya Airways baada ya malipo ya tiketi kukamilika. [S1]
+
+**Mizigo unayochukua uwanja wa ndege**
+
+Suala la wapi pa kuweka mizigo yako unapo fika uwanja wa ndege halijatajwa katika taarifa zilizotolewa. Kwa hiyo hatuwezi kutoa maelekezo maalum kulingana na sera zetu zilizopo. Tunashauri ufuate alama za “Bag Drop” au uulize mfanyakazi wa uwanja wa ndege ili upate maelekezo sahihi.  
+
+*(Taarifa kuhusu mizigo ya ndani inapatikana katika [S2], lakini mchakato wa kutuma mizigo ya kuingia (checked baggage) hakijatajwa.)*",1731.312,2125.001,1,,
+kq200-036-mixed,Model B,mixed,kq200-s012,Mtoto wa 8 years ako eligible for FNA kwa Economy delayed baggage. Maximum yake ni how much?,completed,context_available,True,"Mtoto wako wa miaka 8 ana‑eligible kwa First Needs Allowance (FNA) kwa bagaji iliyochelewa, kwa sababu anajumuisha kundi la watoto wa 2‑12 sana. Kiasi cha juu ambacho anaweza kudai ni **50 % ya USD 100** (ambayo ni kiwango cha Economy), yani **USD 50**. [S1] [S1]",2108.215,2439.183,1,,
+kq200-117-sw,Model B,sw,kq200-s077,"Jina kwenye tiketi yangu halilingani na jina kwenye pasipoti. Je, ninaweza kuzuiwa kusafiri?",completed,context_available,True,"Jina kwenye tiketi lazima liwe sawa kabisa na jina lililo kwenye pasipoti au nyaraka za safari.  Makala 3.1.1 ya Sera ya Tiketi inasema: “Jina kwenye Tiketi lazima liendane kabisa na jina katika pasipoti halali. Safari inaweza kukataliwa ikiwa majina hayalingani.” [S2]  
+
+Kwa hiyo, ikiwa majina hayalingani, inaweza kutokea kwamba usikubaliwa kuendesha ndege. Ili kuepuka hali hiyo, unahitaji kurekebisha jina kwenye tiketi.  Unaweza kufanya hivyo kwa kuwasiliana na *Global Contact Centre* au ofisi ya Kenya Airways iliyo karibu nawe; kutengeneza jina kunaweza kuhusisha ada na sheria husika. [S1]  
+
+Kumbuka pia tiketi haina uwezo wa kuhamishwa kwa mtu mwingine, hivyo mabadiliko ya jina ni njia pekee ya kurekebisha tatizo hilo. [S1]    Kama unahitaji msaada zaidi, wasiliana na kituo cha huduma kwa wateja ili kupanga marekebisho yanayofaa.",1762.565,2109.908,1,,
+kq200-091-en,Model B,en,kq200-s051,KQ cancelled my upgraded flight and put me in Economy. What evidence and deadline apply to claiming my upgrade fee back?,completed,context_available,True,"When your upgrade had already been accepted and Kenya Airways subsequently cancelled the flight, the upgrade fee is refundable — provided you are not re‑booked on another Kenya Airways flight at the same upgrade price.  
+
+- **Refund condition** – “Your Upgrade remains valid if you are re‑booked to another KQ flight at the same amount. Otherwise, we will refund the amount.” [S1]  
+- **Policy backing** – Refunds are permitted when “the flight on which you were upgraded was cancelled or disrupted due to a schedule change initiated by the airline” or when “the airline re‑accommodated you on another flight but in economy class.” [S2]  
+- **Refund process** – The refunded amount will be returned to the credit card used for the upgrade and “refund usually takes about ten (10) working days to reflect in your account.” [S2]
+
+The upgrade offer itself could be changed or cancelled up to **13 hours before departure**, but once the offer had been accepted the fee is non‑refundable **except** under the cancellation scenarios above. No specific deadline is stated for submitting a refund claim after the airline‑initiated cancellation; you should contact Kenya Airways customer support as soon as possible to initiate the refund.",1741.299,1953.31,1,,
+kq200-129-sw,Model B,sw,kq200-s089,"Kikundi chetu kimenunua tiketi pamoja. Je, tunaweza kutoa zabuni ya kupandishwa daraja la biashara?",completed,context_available,True,"Ndiyo, kila mwanachama wa kikundi chenu anaweza kutuma zabuni ya kupandishwa daraja la Biashara, mradi anakuwa na tiketi halali ya Daraja la Uchumi ya Kenya Airways na safari hiyo inaratibiwa na KQ. Zabuni (au “Smart Upgrade”) inaweza kutolewa hadi saa 14 kabla ya kuondoka kwa ndege. [S2]
+
+Kuna masharti maalum ya zabuni:  
+- Tiketi lazima iwe imetolewa na halali.  
+- Zabuni inapaswa kutumwa mtandaoni au kupitia kanuni za QR/kituo cha ukaguzi, kulingana na upatikanaji. [S2]  
+
+Kikundi chako hakina kizuizi cha kipekee cha zabuni, lakini kumbuka kwamba mabadiliko ya PNR ya kikundi (kama vile kuongeza au kupunguza idadi ya abiria) yanagharibiwa na kikomo cha abiria 9 kwa kila mabadiliko. [S1] Hivyo, ikiwa mnahitaji kufanya mabadiliko kwenye kumbukumbu ya kikundi, mtahitaji kupiga simu kituo cha Mawasiliano.  
+
+Kwa hivyo, wanachama wote wanaweza kutuma zabuni za upandishaji, lakini mabadiliko mengine ya kumbukumbu ya kikundi yanahitaji msaada wa kituo.",2384.053,2721.203,1,,
+kq200-125-sw,Model B,sw,kq200-s085,Nimelipia tiketi ya dada yangu kwa kadi yangu lakini sitasafiri naye. Nifanye nini ikiwa KQ itataka kuthibitisha kadi?,completed,context_available,True,"Kama Kenya Airways itahitaji kuthibitisha kadi uliyotumia kulipa tiketi ya dada yako, una chaguo mbili kulingana na sera zao:
+
+1. **Wakati wa check‑in** – Kadi halisi au nakala ya kadi iliyo na **sahihi yako ya idhini** lazima iwasiliswe kwenye kaunta yako. Hii inahitajika hata kama wewe si wewe mwenye kusafiri. [S1]
+
+2. **Ofisini ya tiketi** – Unaweza kupeleka kadi halisi au nakala ya kadi iliyo na sahihi yako ya idhini **kushoto ofisi ya Kenya Airways iliyo karibu nawe angalau masaa 72 kabla ya safari**. [S1]
+
+Ukiwasilisha nakala iliyo sahihi, uthibitishaji utakamilika na dada yako ataweza kuingia katika ndege bila matatizo. Kukosa kufanya hivyo kunaweza kusababisha kuhitaji kulipa tiketi nzima uwanja wa ndege au kukataliwa kuendesha. [S1]",2063.787,2429.105,1,,
+kq200-170-mixed,Model B,mixed,kq200-s130,Tax ya ticket ilireduce after issuance na nataka cancel unused refundable ticket voluntarily. What does KQ say about reclaiming tax and cancellation deductions?,completed,context_available,True,"Kwa kifani cha kodi iliyopungua baada ya tiketi kutolewa, Kenya Airways inaruhusu **kudai urejeshaji wa kiasi hicho**.  Hii inasemwa wazi katika **S1**: “...ukipunguza au kufuta ushuru, ada au malipo ambayo ulilipa wakati wa utoaji wa tiketi, utakuwa **yeye mwenye haki ya kudai kurejeshwa**.”  
+
+Pia, **ikiwa tiketi yako ni refundable** na haujatuma, **unaweza kupokea refund ya ushuru, ada na malipo mengine** bila kujali aina ya tiketi (refundable au non‑refundable) – **S1** inaongeza: “...should the Passenger not travel on a flight and they are holding a refundable or a non‑refundable ticket they are equally to benefit from a refund of said applicable taxes, charges and other fees.”  
+
+### Hatua za kuomba refund ya ushuru  
+1. **Tumia widget ya online refund** kwenye Kenya‑airways.com ikiwa ulifanya ununuzi kupitia tovuti hiyo – **S1**.  
+2. Kama unataka kughairi tiketi yote (cancelation), **jaza fomu ya “request for your refund”** – **S1**. Fomu hii itasababisha **booking yako kutengenezwa** (cancel).  
+3. Baada ya kupokea fomu, KQ itachukua **kiasi kinachokua cha ushuru ulicholipa** na kurudisha.  
+
+### Kuhusu makato ya cancelation  
+Suala la makato ya ada ya kughairi (cancellation fee) **halipatikani katika ushahidi uliyopewa**. Polisi inataja ada ya “reasonable administration fee” tu katika hali ya **Force Majeure** (S2 §3.1.4), lakini haijawasilisha ada maalum kwa kughairi kwa hiari. Kwa hiyo, **KQ haitodai makato maalum** kwa ushuru uliopunguzwa; unaweza kutarajia kurejeshwa kiasi hicho kamili, lakini ada ya tiketi (kama inahitajika kulipa) itategemea sheria ya tiketi husika.  
+
+**Muhtasari:**  
+- Ushuru uliopunguzwa baada ya kutolewa wa tiketi unaweza kudai refund (S1).  
+- Kwa tiketi isiyotumiwa, hata ikiwa ni refundable, unaweza kupokea refund ya ushuru na ada nyingine (S1).  
+- Ombi la refund linaweza kufanywa kupitia widget ya online au fomu ya “request for your refund” (S1).  
+- Ushahidi haujatoa taarifa ya makato ya ada ya kughairi kwa hiari; hivyo, hakuna ada maalum inayotajwa, isipokuwa ada ya usimamizi kwa hali za Force Majeure (S2).  
+
+Ikiwa unahitaji msaada zaidi wa kiufundi (kama jinsi ya kupata link ya widget au kuthibitisha hali ya tiketi yako), tafadhali wasiliana na huduma kwa wateja wa Kenya Airways.",2561.532,2787.101,1,,
+kq200-042-mixed,Model B,mixed,kq200-s014,Nikiwa pregnant naweza book exit-row extra legroom seat?,completed,context_available,True,"Hapana, huna ruhusa ya kuchukua kiti cha **exit‑row extra legroom** ukiwa mjamzito. Katika masharti ya kiti hiki, abiria lazima *“Not be in any stage of pregnancy”* — hivyo usikubalika. [S1]",1956.446,2170.145,1,,
+kq200-119-sw,Model B,sw,kq200-s079,"Kwa safari inayotawaliwa na Mkataba wa Montreal, kiwango cha fidia ya mizigo kinaelezwa kwa kipimo gani na ni kiasi gani kwa kila abiria?",completed,context_available,True,"Samahani, katika taarifa zilizotolewa (S1) hakupatikana taarifa kuhusu kiwango cha fidia ya mizigo chini ya Mkataba wa Montreal, jinsi inavyopimwa, wala kiasi kinachotolewa kwa kila abiria. Kwa maelezo kamili, tafadhali wasiliana na kituo chetu cha huduma kwa wateja au tembelea tovuti rasmi ya Kenya Airways.",1320.156,1708.776,1,,
+kq200-118-sw,Model B,sw,kq200-s078,Tiketi ya kawaida ya KQ huwa halali kwa muda gani tangu itolewe au safari ianze?,completed,context_available,True,"Tiketi ya kawaida ya Kenya Airways ina halali kwa **mwaka mmoja (12 mwezi)**. Hii inamaanisha:
+
+- **Muda wa halali** ni mwaka mmoja kuanzia tarehe ya kutolewa kwa tiketi, **au**  
+- **Kama safari ya kwanza inafanyika ndani ya mwaka mmoja kutoka tarehe ya kutolewa**, basi halali inahesabiwa tena kwa mwaka mmoja kuanzia tarehe ya safari ya kwanza.[S2]  
+
+Uhalali huu unaweza kupanuliwa katika hali maalum (kama kutoweza kusafiri kwa sababu ya kutokuweza kupata nafasi, ugonjwa, au kifo wa karibu), lakini kimsingi, tiketi ina halali ya mwaka mmoja.",1767.964,2094.846,1,,
+kq200-138-sw,Model B,sw,kq200-s098,"Mbwa wangu wa usaidizi ana mafunzo lakini mara nyingine husumbua abiria. Je, mafunzo pekee yanahakikisha atakubaliwa?",completed,context_available,True,"Mafunzo ya mbwa wako ni sehemu muhimu, lakini hayahakikisha kutambuliwa kiotomatiki. Kenya Airways inahitaji:
+
+* **Cheti cha mafunzo** cha mbwa (dog training certificate) [S1]  
+* **Cheti cha afya**, barua kutoka kwa daktari wa mifugo, na nyaraka za kuagiza/kuondoa (import/export) ambazo hazipaswi kuwa na umri wa zaidi ya mwaka [S1]  
+* Mbwa lazima awe **akivaa harness** na *akubwa* pamoja na abiria, **akaa katika kaboni** bila kuchukua kiti [S1]  
+* Mbwa lazima **kuwa na umri wa zaidi ya miezi 4** (isipokuwa sheria husika inavyodai) [S1]  
+* Mbwa lazima **toke tabia ya kudhibiti**; “**An animal that shows disruptive behavior cannot be accepted as a guide animal even if it performs assistive function for the guest**” [S1]  
+
+Kwa hivyo, hata kama mbwa wako ana cheti cha mafunzo, bado lazima akidhi vigezo vyote vilivyotajwa hapo juu, na atatengenezwa tathmini ya tabia katika uwanja wa ndege. Tabia inayosumbua abiria inaweza kusababisha kukataliwa, bila kujali mafunzo aliyopata.  
+
+Ikiwa una maswali zaidi au unahitaji kujua taratibu za kuwasilisha nyaraka, tafadhali wasiliana na timu ya KQ Medical kwa Doctors.KQ@kenya‑airways.com au simu +254 734 104 747.",2174.02,2480.117,1,,
+kq200-139-sw,Model B,sw,kq200-s099,"Ninaombaje kitanda kidogo ndani ya ndege, na je nitakipata kwa uhakika?",completed,context_available,True,"**Jinsi ya kuomba kitanda cha mtoto (bassinet) kwenye Kenya Airways**
+
+- **Wakati wa kutengeneza tiketi** – Unapoangalia tiketi ya mtoto, unaweza kuchagua “bassinet” au “bulkhead seat” kwenye menyu ya huduma za watoto.  
+- **Kupitia huduma kwa wateja** – Ikiwa hujaomba wakati wa ubadilishaji wa tiketi, piga simu au tuma barua pepe kwa kituo cha wateja wa Kenya Airways na ueleze unataka bassinet.  
+- **Wakati wa kuingia kwenye ukumbi wa maboya** – Kwa safari zilizopo, unaweza kuwasiliana na wakandarasi wa bodi (cabin crew) au watoa huduma katika eneo la kuingia ili kuomba bassinet, lakini inategemea upatikanaji.  
+
+**Je, utaipata kwa uhakika?**  
+Kenya Airways hufanya “jitihada za kukidhi ombi lako,” lakini **haina uhakika wa kupata bassinet** kwa sababu inategemea nafasi inayopatikana katika ndege husika. [S1]
+
+**Vidokezo vya ziada**
+
+- Familia zenye watoto hupatiwa **kuelekezwa kwanza (priority boarding)** ili kuwaruhusu kupanga nafasi na kuseti bassinet mapema. [S1]  
+- **Viti vya bulkhead** huwa na nafasi kubwa na vinaweza kuwa na bassinet, hivyo ni sehemu nzuri ya kuomba. [S1]  
+- Watafanya **kusaidia katika mabadiliko ya mpangilio** ikiwa bassinet haipatikani, lakini hatuwezi kuhakikisha upatikanaji.  
+
+Ikiwa unahitaji msaada zaidi, wasiliana na kituo cha wateja cha Kenya Airways kwa nambari **+254 711 024 747** au tembelea tovuti yao.",2020.016,2332.224,1,,
+kq200-143-mixed,Model B,mixed,kq200-s103,Nataka travel na kayak yangu. Can it go as checked baggage ama lazima cargo?,completed,context_available,True,"Kayak yako haitakiwi kubeba ndani ya kabini – itabidi iende kwa Checked Baggage kwani “kama Baggage yako hawezi kuchukuliwa katika njia hiyo, au ni ya uzito mzito au inachukuliwa hazina usalama, lazima ipewe kwa Checked Baggage” [S2].  
+
+Kwa hivyo, ukishaka kuleta kayak, itakuwa lazima iandikwe kama Checked Baggage na itapitiwa viwango vya uzito na ukubwa ambao kampuni inavuma kwa mizigo iliyokaguliwa. Ikiwa kayak yako inazidi vigezo hivyo, basi haitashughulikiwa kama Checked Baggage, na itahitaji kupanga usafirishaji wa mizigo (cargo) kupitia huduma tofauti, ambayo si sehemu ya sera hii ya mabagaji.  
+
+Kumbuka, Checked Baggage itawekwa kwenye ndege moja sawa na wewe, isipokuwa usalama, usalama wa usafiri au sababu za kiutendaji zitakavyoamua ipite kwenye ndege nyingine — na itakuletewa ukishifika [S1].  
+
+Kwa maelezo kamili ya ukubwa, uzito na ada za ziada, tafadhali wasiliana na huduma wateja kabla ya kutembea.",1827.462,2029.319,1,,
+kq200-011-sw,Model B,sw,kq200-s004,"Nimepoteza stakabadhi na lebo ya mizigo yangu. Je, bado ninaweza kuchukua begi langu?",completed,context_available,True,"Ndio, bado unaweza kuchukua mizigo yako, lakini mizigo ya kabini lazima iwe imeambatana na lebo ya “approved KQ cabin luggage” kama inavyotakiwa na sera ya Kenya Airways. [Iliwiwezo, lebo hiyo inapaswa kuwekwa kwenye mizigo ili kuonyesha kwamba imekidhi viwango vya uwanja wa ndege.] [S1]
+
+Ikiwa lebo ya mizigo imepotea, tembelea kaunta ya Kenya Airways katika uwanja wa ndege ili kuombolea lebo mpya. Bila lebo husika, wafanyakazi wa usalama wanaweza kukukataa kuingiza mizigo ya kabini kwenye ndege. 
+
+Kumbuka pia ukubwa na uzito wa mizigo ya kabini unategemea daraja la kusafiri:
+
+- **Business Class:** vipande 2 (kila kipande cha L55 × W25 × H35 cm) na kifaa 1, jumla ≤ 18 kg. [S1]  
+- **Economy Class:** kipande 1 (L55 × W25 × H35 cm) na kifaa 1, jumla ≤ 12 kg (au 10 kg kwa safari nyingine). [S1]
+
+Kama una mzigo wa ziada au unahitaji usaidizi maalum, nenda kwenye kaunta ya kukusudia kwa muda wa kuondoka (check‑in) ili kupata lebo mpya au kujadili chaguo la kulipa ada ya mizigo ya ziada.  
+
+Kuhusu kupoteza stakabadhi (boarding pass), sera za Kenya Airways hazitupatie maelezo kamili katika maandishi yaliyotolewa, hivyo itakubidi utafute msaada wa wafanyakazi wa kaunta ili kupokea nakala ya uhakikisho wa safari yako.  
+
+Ikiwa una maswali zaidi au unahitaji ufafanuzi, tafadhali tembelea kaunta ya Kenya Airways au tumia huduma ya **Manage My Booking** mtandaoni.",2897.185,3252.932,1,,
+kq200-169-mixed,Model B,mixed,kq200-s129,Can they send hiyo refund to a different payment method?,completed,context_available,True,"Hapana, refund itakutolewa kwenye njia ile ile ya malipo ulivyo tumia (kama debit card yako). Kenya Airways haitoweza kutuma refund kwa akaunti au kadi tofauti. [S1]",1315.286,1685.548,1,,
+kq200-152-mixed,Model B,mixed,kq200-s112,"Nikiclick Decline Changes, what happens? Na niende wapi kuona other options bila kugusa hiyo button?",completed,context_available,True,"Kama utabofya **“Decline Changes”** basi mfumo utakuelekeza moja kwa moja kwa **Customer Excellence Centre** kwa ajili ya kurebooki kwa mkono, bila kukupa nafasi ya kuchagua ndege zingine – hivyo **usibofye** kitufe hicho [S1].
+
+Ili kuona chaguzi zingine bila kubofya “Decline Changes”, fanya hivi:
+
+1. **Tembelea tovuti ya Kenya Airways** (kenya‑airways.com) na ubofye **“Manage Booking.”**  
+2. Utapokea kiungo cha **re‑booking** kilicho juu ya ukurasa – **“Click here.”**  
+3. Ingia kwa kutumia **reference number** au **e‑ticket number** yako; baada ya kuingia, ukurasa utaonyesha **nyakati za ndege** zinazopatikana kwa urebooking [S1].
+
+Kwa kifupi, **usibofye “Decline Changes”;** tembelea “Manage Booking” kwenye tovuti ili upate orodha ya ndege mbadala.",1901.229,2289.836,1,,
+kq200-182-en,Model B,en,kq200-s142,Will the charge be per person or per booking?,completed,context_available,True,"I’m sorry, but the information you provided does not specify whether the charge is applied per person or per booking. If you can tell me which specific fee you’re referring to (e.g., ticket fare, extra‑seat charge, baggage fee, etc.), I can let you know what the policy states.",1022.221,1237.177,1,,
+kq200-031-en,Model B,en,kq200-s011,Where can I look up the address of a Kenya Airways office in another country?,completed,context_available,True,"You can find the address and contact details for any Kenya Airways office worldwide on the airline’s **Contact** page:
+
+- Visit https://www.kenya‑airways.com/en‑ke/contact/ and select the country you need. The site will display the local office’s address, telephone number, mobile number and WhatsApp contact [S1].
+
+If you prefer, you can also reach the central Customer Excellence Center, which can direct you to the appropriate local office:
+
+- Global Tel: +254 734 104 747  
+- Global Mobile: +254 711 024 747  
+- Global WhatsApp: +254 705 474 747 [S1]",1353.005,1561.238,1,,
+kq200-007-en,Model B,en,kq200-s003,My family wants to combine our allowances so one suitcase is heavier than its individual limit. Is that allowed if our total weight is within the allowance?,completed,context_available,True,"Pooling of the free allowance is permitted for families travelling together, but it only applies to the **number of pieces**, not to the weight of each piece. Each bag must still respect the individual weight limit that applies to that passenger’s allowance.  
+
+Therefore, a single suitcase that exceeds the per‑piece weight limit (e.g., 23 kg) cannot be accepted even if the combined weight of all family members’ baggage stays within the total allowance. The excess weight would be charged as an overweight bag.  
+
+So, you may pool the number of bags, but you cannot combine the weight into one heavier piece. If you need to carry more weight, each bag must remain within its own allowed limit or you will incur excess‑baggage fees.  
+
+**Reference:** pooling rules state that “the pooling consist[s] in pooling the number of baggage but not the weight per piece… customers cannot come with 1 bag of 18 kg and another of 26 kg”【S1】.",1540.292,1833.61,1,,
+kq200-178-mixed,Model B,mixed,kq200-s138,Battery supply inafaa cover how many hours minimum?,completed,context_available,True,"Kiwango cha chini cha betri kinapaswa kuwa **1.5 mara ya muda wa safari**. Kwa safari ya saa 8, hiyo inamaanisha betri inapaswa kudumu angalau **saa 12** kabla ya kuchukua ndege [S1]. Vile vile, betri zote lazima ziwe zikifuatwa na sheria na kanuni za usafirishaji.",1756.44,2033.123,1,,
+kq200-130-sw,Model B,sw,kq200-s090,"Nimetoa zabuni ya kubadili daraja la safari lakini bado haijakubaliwa. Je, ninaweza kuibadilisha au kuifuta?",completed,context_available,True,"Ndiyo, unaweza kubadilisha au kuondoa zabuni yako ya **Upgrade to Business Class** mradi haijapokelewa (haijathibitishwa) na KQ.
+
+- **Kubadilisha kiasi**: Unaweza kubadilisha kiasi cha zabuni kabla ya kupokea barua pepe ya uthibitisho. Tumia kiungo kilicho kwenye barua pepe ya ofa ya upgrade ili kubadilisha bei. [S1]
+
+- **Kusitisha (kuondoa) zabuni**: Unaweza kubatilisha au kurekebisha zabuni hadi saa 13 kabla ya muda wa kuondoka, mradi zabuni bado haijapokelewa. [S1][S2]
+
+Kumbuka, baada ya ofa yako kupokelewa na kuthibitishwa na KQ, hautaweza kubatilisha au kurekebisha, na kiasi kitatozwa bila kurejeshwa. [S1][S2]",2074.825,2462.038,1,,
+kq200-093-en,Model B,en,kq200-s053,I bought a return ticket on KQ's website and the return date is still in the future. Can I request an online refund without cancelling the other open segments?,completed,context_available,True,"You can apply for an online refund through the refund widget because the ticket was purchased on kenya‑airways.com and your inbound (return) travel is still in the future and the booking is active [S1].  
+
+However, when you use the **Cancel and refund** option in “Modify My Booking”, the system treats the ticket as a whole – if the ticket is open, **all sectors are cancelled** and the entire booking is refunded [S1]. In other words, you cannot refund only the return leg while keeping the outbound segment active; the refund process will cancel the whole itinerary.  
+
+If you wish to keep any part of the journey, you would need to explore a change or re‑booking instead of a refund, or contact a preferred travel agent or sales office for assistance [S1]. Refunds, when approved, are credited to the original form of payment and are subject to the fare conditions [S1].",2412.746,2674.661,1,,
+kq200-064-en,Model B,en,kq200-s024,I want to fly with a 50-inch TV in its original box. What conditions apply?,completed,context_available,True,"A 50‑inch TV in its original box is treated as baggage, and the airline may refuse to carry it if, in its reasonable opinion, the item is unsuitable because of its size, shape, weight, contents, or for safety or operational reasons [S1].  
+
+The TV must be packed securely in a suitable container; if the airline considers the packaging inadequate, it can also refuse carriage [S1].  
+
+If the TV is damaged, becomes hot, produces smoke, is lost, or falls into the seat structure, you must inform cabin crew immediately [S1].  
+
+You can request detailed information about items that are unacceptable or about packing requirements [S1].",1908.44,2323.489,1,,
+kq200-077-en,Model B,en,kq200-s037,"I'm Asante Gold, flying out of Nairobi with a companion. What priority benefits are described and what should I show at the counter?",completed,context_available,True,"As an Asante Gold member departing from Nairobi you are entitled to the following priority benefits:
+
+* **Priority check‑in** and **priority boarding**.  
+* **Lounge access** for you and one accompanying guest.  
+* The option to **request a business‑class upgrade** if you have enough miles.
+
+At the airport you simply need to **present your Asante Rewards card at the check‑in counter** – this automatically registers your miles and grants you the above privileges【S1】.",1288.733,1533.203,1,,
+kq200-188-sw,Model B,sw,kq200-s148,Nataka kusafiri na mtoto. Ni masharti gani?,completed,context_available,True,"**Masharti ya kusafiri na mtoto (kwa Kenya Airways)**  
+
+- **Umri wa mtoto**  
+  - Watoto wa umri wa **5 hadi 14 sana** wanaweza kusafiri peke yao kupitia huduma ya *Unaccompanied Minor*. [S1]  
+  - Watoto **chini ya 5 sana** lazima waende na mlezi aliyeko pamoja naye. [S1]
+
+- **Nyaraka zinazohitajika**  
+  - Jaza **Fomu ya Unaccompanied Minor** (inapatikana kwenye tovuti). Fomu hiyo ina maelezo kuhusu mtoto, mlezi, na mtu atakayemupeleka/akampokea. [S1]  
+  - Huduma hii inapatikana **tu kwa ndege zinazoendeshwa na Kenya Airways**. [S1]
+
+- **Ada na usaidizi**  
+  - Huduma ya usimamizi wa usafiri wa mtoto inashughulikiwa na timu maalum, ikijumuisha ukusanyaji wa taarifa za mtoto, mlezi, na mtu wa kuchukua mtoto. [S1]  
+
+- **Kama mtoto yuko chini ya umri wa 2 sana (infant)**  
+  - Anaweza kusafiri **kama “lap infant”** – usafiri wa mtoto aliyekaa kwenye kifua cha mzazi. Sheria za tiketi, mizigo, na umri zinapatikana kwenye sera ya “Lap Infant Policies”. [S1]  
+  - **Familia inaweza kupanda ndege mapema** (pre‑boarding) ili kupata muda wa kuandaa na kumaliza maandalizi. [S1]  
+  - **Mlo maalum** kwa watoto ambao wameanza kula vyakula thabiti unaweza kuagizwa mapema. [S1]  
+  - **Msaada wa wafanyakazi wa kabini**: Wanaweza kusaidia kupasha chupa, kupunguza shinikizo la masikio (kupiga pombe au kutumia pacifier) na kutoa maelekezo mengine ya utulivu. [S1]  
+  - **Vifaa vya usafi na ubora**: Tofali za kusafisha na kubadilisha mtoto zinapatikana katika vyoo vya ndege. [S1]  
+
+- **Mchakato wa uwasilishaji**  
+  - Mtu atakayemupeleke mtoto katika uwanja wa kutua au kutua lazima **awahi kufika kabla ya ndege kutimua** ili kuwezesha usambazaji salama. [S1]  
+
+- **Mikataba ya dharura**  
+  - Ikiwa kutatokea usumbufu, wafanyakazi watafuata taratibu za dharura kuhakikisha usalama wa mtoto, pamoja na mawasiliano ya mara kwa mara na mlezi na mtu wa kuchukua. [S1]  
+
+Kwa muhtasari, ikiwa mtoto yuko kati ya miaka 5–14 na anasafiri peke yake, anahitaji fomu ya Unaccompanied Minor na huduma hii inapatikana tu kwa ndege zetu. Watoto walio chini ya miaka 5, pamoja na watoto wachanga (infants), wanahitaji kuwa na mlezi, na wanaweza kufaidika na huduma za familia pre‑board, milo maalum, na msaada wa wafanyakazi. 
+
+Ikiwa una maswali zaidi au unahitaji maelezo ya ziada, tafadhali nijulishe.",3360.329,3725.023,1,,
+kq200-049-en,Model B,en,kq200-s017,Can I reserve a ticket online and pay cash later? What should I bring and are there fees?,completed,context_available,True,"You cannot hold a reservation on Kenya Airways website without paying for it first. Tickets are issued only after the payment has been received; a “pay‑later‑in‑cash” option is not described in the available policy.
+
+When you do pay online, the ticket you receive by e‑mail shows the fare, taxes and any other charges. That ticket is considered your proof of payment and will be accepted as a receipt [S2]. All applicable taxes, fees and airport charges must be paid by you, and they are shown separately at the time of purchase [S1]. These amounts can change after the ticket is issued, and any increase must be paid, while any reduction may be refunded [S1].
+
+Because the policy does not provide details on a cash‑later option or on specific documents to bring, you would need to contact Kenya Airways directly (e.g., via the contact centre or a ticketing office) for clarification on:
+
+* whether cash payment at the airport can be used to settle a reservation made online, and any associated procedures;
+* the exact items you must present at check‑in (e.g., passport, ticket receipt, possible card verification if the card was used for booking).  
+
+If you decide to pay online now, be prepared to present the ticket (as proof of payment) and a valid ID at check‑in, and to pay any applicable taxes, fees or charges shown on the ticket [S1].",2250.158,2473.913,1,,
+kq200-167-mixed,Model B,mixed,kq200-s127,Can I submit two different upgrade bids for the same flight? Card yangu itachargiwa lini?,completed,context_available,True,"Unaweza **kutoa tu Offer moja** kwa kila flight ambayo una tiketi ya Economy — hivyo hutaweza kutuma **bids mbili tofauti** kwa safari ileile. [S1]
+
+Kadi yako itachukuliwa **mara tu Airline itakapokubali Offer yako**; atapo kukubali, kiasi ulichotoa (pamoja na ushuru unaotakiwa) kitaingia kwenye kadi yako. [S1]  
+
+Kama Offer haijakubaliwa bado, unaweza **kubadilisha au kughairi** kiasi, lakini baada ya kukubaliwa hauwezi kujitoa tena. [S1]",1773.528,2106.307,1,,
+kq200-116-sw,Model B,sw,kq200-s076,"Ndege yangu ya kutoka Kisumu hadi Nairobi itaondoka saa nne na nusu asubuhi (10:30). Muda wa mwisho wa kaunta ni upi, na ninapaswa kuwa nimekamilisha kujisajili kufikia saa ngapi?",completed,context_available,True,"Mwandu wa nyumbani wa Kenya Airways unazingatia taratibu za “Domestic Check‑in”.  
+Kwa safari ya ndani, unapaswa kukamilisha usajili angalau **saa 1.5 kabla ya kuondoka**. Hii inamaanisha kuwa, kwa ndege yako ya 10:30 asubuhi, usajili lazima uwe umekamilika **saa 9:00 asubuhi** [S1].  
+
+Viti vya usajili (counters) hufungwa **dakika 30 kabla ya kuruka**, yani **saa 10:00 asubuhi** kwa safari hii [S1].
+
+Kwa hiyo, hakikisha uko tayari kupita kwenye kaunta kabla ya 9:00 asubuhi, ili kuepuka usumbufu.",1787.808,2302.247,1,,
+kq200-078-en,Model B,en,kq200-s038,My ticket is still valid but KQ cannot confirm a reservation when I ask. What options does the contract give me?,completed,context_available,True,"If you have a still‑valid ticket but Kenya Airways cannot confirm a reservation for you, the contract provides two possible remedies:
+
+1. **Extension of ticket validity** – the airline will extend the ticket’s expiry date so you can travel later. [S2]
+
+2. **Refund entitlement** – you may be eligible for a refund in line with the airline’s Article 10 refund rules. [S2]",1399.133,1722.661,1,,
+kq200-163-mixed,Model B,mixed,kq200-s123,Ticket iko with KQ but partner airline ndio flies. Naweza book ile KQ extra legroom seat product?,completed,context_available,True,"Hapana, huwezi ku‑book extra legroom seat kwa safari inayofungwa na partner airline. Kama ilivyo imetajwa kwenye sera yetu, “extra Legroom Seats ... are offered only on Kenya Airways‑operated flights and is not available on flights operated by our partner airlines” [S1].  
+
+Kama usafiri wako unarushwa moja kwa moja na Kenya Airways, basi unaweza ku‑book nafasi hiyo (ikiwa inakidhi vigezo vya usalama na upatikanaji) – lakini kwa partner airline haina chaguo hilo.  
+
+Kwa taarifa zaidi kuhusu vigezo vya kutosha (kama uwezo wa kufika na kufungua mlango wa dharura, umri wa miaka 18+, n.k.), tafadhali angalia sehemu ya “Who can book an Extra Legroom Seat?” katika sera yetu. [S1]",1514.786,1789.05,1,,
+kq200-147-mixed,Model B,mixed,kq200-s107,"Nikikataa security scan ya baggage yangu, can KQ still allow me to board?",completed,context_available,True,"Kama utakataa security scan ya mizigo yako, Kenya Airways haitawezekana kukuwezesha boardi bila kuthibitisha kuna utimilifu wa usalama. Sijui sera maalum ya KQ kuhusu hali hii kwa sababu haina maelezo katika taarifa tulizo nazo. Kama unahitaji ufafanuzi wa kipekee au unataka kujua chaguzi zako, tafadhali **piga simu centre yetu ya mawasiliano** – ni njia pekee ya kupata msaada katika suala hili [S1]. 
+
+Kwa hiyo, ushauri wa haraka ni kuwasiliana na **Contact Centre** ya Kenya Airways ili kujadili matokeo ya kukataa security scan na jinsi itakavyokimpacta nafasi yako ya boarding. Hapo ndipo utaweza kupata maelekezo sahihi na, iwapo inawezekana, suluhisho la hali yako.",2283.208,3023.792,1,,
+kq200-048-mixed,Model B,mixed,kq200-s016,"Ticket nilibuy kwa KQ ticketing office, si online. Refund na-arrange wapi?",completed,context_available,True,"Kwa tiketi uliyonunua kutoka ofisi ya KQ (si‑online), refund inaweza kupangwa kwa njia zifuatazo:
+
+* **Tembelea ofisi yoyote ya mauzo ya Kenya Airways** au **piga simu kwenye kituo cha mawasiliano** ili kupanga kughairi (cancellation) na kurudisha pesa. [S1]  
+* Refund haitatolewa kwa barua pepe – lazima utumie mojawapo ya njia zilizo juu. [S1]  
+
+Baada ya maombi yako ya refund, Kenya Airways hutoa kurejesha fedha ndani ya **siku za biashara 21‑30** (hata hivyo muda wa usindikaji wa benki yako unaweza kuchukua muda zaidi). [S1]  
+
+Kumbuka, kiasi cha kurejeshwa kitatolewa kwa njia ile ile uliyolipa (kadi ya mkopo/kadi ya debit). [S1]  
+
+Ikiwa unahitaji maelezo zaidi kuhusu ada za usimamizi (kama ada za kubadilisha/kughairi tiketi iliyonunuliwa kwenye ofisi ya uwanja wa ndege), ada hizi zinaanzia **USD 10‑100**. [S2]  
+
+Kwa hiyo, chukua hatua ya kwenda ofisi ya mauzo au piga simu kwa kituo cha mawasiliano cha Kenya Airways ili kuanzisha refund yako.",2007.807,2584.943,1,,
+kq200-136-sw,Model B,sw,kq200-s096,Nipo Uholanzi na nataka kulipa tiketi kupitia iDEAL. Mchakato wake unafanyikaje?,completed,context_available,True,"iDEAL ni njia ya malipo ya mtandaoni inayotegemea benki, inayotumika na watumiaji nchini Uholanzi. Unapofanya ununuzi mtandaoni, fuata hatua hizi:
+
+1. **Chagua iDEAL** kama njia ya malipo.  
+2. **Utaelekezwa** kwa mazingira ya huduma ya benki ya mtumiaji (banki yako ya mtandaoni).  
+3. **Ingia** katika akaunti yako ya benki, kisha thibitisha malipo.  
+4. **Malipo yanashughulikiwa papo hapo**, na baada ya Kenya Airways kupokea uthibitisho wa malipo, utapoke barua pepe yenye tiketi ya kielektroniki na uthibitisho wa malipo. [S1]",1981.846,2470.697,1,,
+kq200-074-en,Model B,en,kq200-s034,I had already checked my bags before rebooking a disrupted flight. Do I need to collect and check them in again?,completed,context_available,True,"No – if you had already checked your bags before you re‑booked, the airline will automatically transfer them to your new flight. You do not need to collect and re‑check them. [S1]",1371.271,1699.349,1,,
+kq200-027-mixed,Model B,mixed,kq200-s009,Ticket ni ya KQ lakini partner airline ndio operates flight. Whose rules apply kwa boarding na refunds?,completed,context_available,True,"Kwa ticket ya Kenya Airways (KQ) lakini ndege inarukuliwa na partner airline, sheria za “fare” za KQ bado ndizo zitakazoendelea kutumika. Hii ina maana kwamba masharti ya kughairi, ada za kubadilisha, na haki za marejesho ya fedha yanabaki yale yaliyo kwenye tiketi yako ya awali – hata kama ukapata upgrade au ndege inachukuliwa na kampuni nyingine [S1].  
+
+**Refunds**  
+Marejesho ya fedha yatashughulikiwa kulingana na masharti ya tiketi ya KQ. Kwa tiketi zilizonunuliwa moja kwa moja kupitia Kenya‑Airways.com, refund itaombwa kupitia njia zilizo kwenye “Refund widget” au fomu ya refund, na KQ itatoa pesa kwenye njia ya malipo iliyotumika – kwa muda wa biashara wa siku 21‑30, isipokuwa muda wa usindikaji wa benki yako [S2].  Tiketi zilizotonyezwa kupitia mawakala wa safari hazina uwezo wa kurejesha moja kwa moja; unapaswa kuwasiliana na wakala huyo [S2].
+
+**Boarding**  
+Sheria za boardi kawaida hutimwa na kampuni inayotoa huduma (the operating carrier). Katika ushahidi uliotolewa hakuna taarifa maalum juu ya sheria za boardi za partner airline, kwa hivyo hatuwezi kuthibitisha ni sheria gani zitumika. Ili kupata maelezo kamili, tembelea tovuti ya partner airline au wasiliane na kituo cha huduma kwa wateja cha KQ.
+
+Kwa kifupi: masharti ya refund yanatokana na KQ (S1, S2), lakini sheria za boardi zinategemea kampuni inayopaa ndege, ambazo hazijatajwa katika ushahidi uliopewa.",2290.831,2719.919,1,,
+kq200-189-sw,Model B,sw,kq200-s149,"Je, nitalazimika kujaza fomu hiyo kabla ya safari?",completed,context_available,True,"Ndiyo, unahitaji kujaza fomu kulingana na sababu unayohitaji fomu hiyo:
+
+* **Kama ni fomu ya rufaa ya muda wa kuchelewa (zaidi ya saa 8)** – inapaswa kujazwa baada ya kuchelewa kwa muda huo. Baada ya kuwasilisha fomu, usafiri wako wote utaongolewa. [S1]
+
+* **Kama ni fomu ya matibabu (MEDIF) kwa mahitaji ya kiusalama au kifua** – lazima uijaze kamili na uiwasilishe kwa angalau masaa 24 kabla ya safari ili kupokea kibali cha kusafiri. [S2]",1558.283,1956.446,1,,
+kq200-132-sw,Model B,sw,kq200-s092,"Nimeshindwa kusafiri kwa sababu za matibabu. Je, nina haki ya kurejeshewa pesa zote au kubadilisha tarehe bila malipo moja kwa moja?",completed,context_available,True,"Hali ya kukataliwa kusafiri kwa sababu za matibabu **haipewi kurejeshewa pesa kamili, wala hakutolewa mabadiliko ya tarehe bila malipo**. Kama ilivyo katika sera yetu, **kwa sababu za kiafya hakuna kurejesha fedha wala kubadilisha bila ada – lazima utegemee masharti ya tiketi yako** ([S1]).
+
+Iwapo unashikilia tiketi isiyorejeshwa (non‑refundable), unaweza **kurekebisha tarehe ya safari ndani ya mwaka mmoja tangu tarehe ya kutolewa kwa tiketi, lakini atakuwa na ada ya mabadiliko inayoambatana nayo** ([S1]).
+
+Kwa muhtasari:  
+- **Hakuna kurejesha pesa** kwa sababu ya matibabu.  
+- **Hakuna mabadiliko ya bure**; changamoto itategemea masharti ya tiketi na ada husika.  
+- Ikiwa tiketi yako ni “non‑refundable”, unaweza kurekebisha tarehe bila kupoteza thamani kamili ya tiketi, lakini ada ya mabadiliko itachukuliwa.
+
+Kama unahitaji kuwasilisha fomu ya ombi la kurejesha (ambayo itaghairi uhifadhi wako) tafadhali tembelea ukurasa wa “request for your refund” kwenye tovuti ya Kenya Airways. ([S1])",2080.081,2571.106,1,,
+kq200-159-mixed,Model B,mixed,kq200-s119,"Suitcase yangu ilikuwa heavy na expensive. Does KQ calculate baggage compensation using weight or value, na insurance inasaidiaje?",completed,context_available,True,"KQ hajihesabi fidia ya mizigo kwa kulingana na uzito wala bei ya mzigo, bali inategemea viwango vya mamlaka ya shirika na makubaliano ya usafiri. [S1]  
+
+**Mlinganisho wa viwango**  
+- KQ inakataa kuwajibika kulingana na uzito au thamani ya mzigo. [S1]  
+- Hata hivyo, kulingana na Mkataba wa Warsaw, wapi unatumika, kipimo cha fidia kinaweza kuwa 17 Special Drawing Rights (SDR) kwa kila kilo ya mizigo iliyokaguliwa. [S2]  
+
+**Kiasi cha fidia (kwa kawaida)**  
+| Daraja la tiketi | Kiasi cha fidia (USD) |
+|------------------|----------------------|
+| First Class & Premier World | 150 USD |
+| Economy | 100 USD |
+| Watoto 2‑12 y (50 % ya kipengele cha daraja) | — |
+| Watoto < 2 y | Hakuna First Needs Allowance |
+
+*Vigezo hivi vinaweza kubadilika kulingana na sheria za nchi, tiketi ya tuzo, au wafanyakazi wa KQ.* [S1]  
+
+**Jinsi bima inavyosaidia**  
+- Unaweza kutangaza thamani ya juu ya mzigo na kulipa ada ya ziada ili kupanua ubora wa fidia. [S1]  
+- KQ inashauri sana abiria wapate bima ya safari kabla ya kusafiri; bima itaweza kulipia hasara zaidi ya viwango vya KQ. [S1]  
+- Kwa kuamua kiwango kikubwa cha uwajibikaji, anafaa kuwasiliana na **KQ Insurance**. [S1]  
+
+Kwa muhtasari, KQ haitoi fidia kulingana na uzito au thamani ya mizigo, lakini kuna viwango vya msingi (USD 150/100 kulingana na daraja) na uwezekano wa kuongeza kiasi kwa kutangaza thamani ya juu na kulipa ada. Bima ya safari inashauriwa ili kulinda mali yako ya thamani juu ya viwango hivyo. [S1][S2]",2726.001,3218.901,1,,
+kq200-080-en,Model B,en,kq200-s040,I had a confirmed seat but KQ couldn't provide space. What conditions and possible forms of compensation does the contract mention?,completed,context_available,True,"If a confirmed seat cannot be provided, the contract treats this as **denied boarding**.
+
+**Conditions**  
+- Compensation is only payable when the passenger has complied with all check‑in and boarding deadlines. [S2]
+
+**Possible forms of compensation**  
+- **Monetary reimbursement** (cash or equivalent).  
+- **Alternate transportation** on another carrier at no additional charge.  
+- **Downgrade refund** (refund of the difference if the passenger is placed in a lower‑class cabin). [S2]
+
+These remedies are provided in accordance with the applicable law and Kenya Airways’ denied‑boarding compensation policy. [S2]",2110.262,2432.908,1,,
+kq200-183-en,Model B,en,kq200-s143,Will I be charged for the change?,completed,context_available,True,"You will not be charged when you use Kenya Airways’ self‑rebooking tool for a disrupted flight — the tool is provided free of charge【S2】.  
+
+If the change you are considering involves an already‑accepted upgrade offer, the airline does not allow refunds, credits, exchanges or transfers once the offer has been paid for, except in the specific situations listed (e.g., the upgraded flight is cancelled or you are re‑accommodated in economy because of reasons attributable to the airline)【S1】. In those exceptional cases, a refund of the upgrade amount may be processed back to the credit card used for payment【S1】.  
+
+So:
+
+* **Disrupted‑flight rebooking:** no fee.  
+* **Changing an accepted upgrade offer:** generally no fee or refund, unless one of the outlined airline‑initiated circumstances applies.",1258.507,1581.71,1,,
+kq200-172-mixed,Model B,mixed,kq200-s132,Niko Nigeria na sitaki kutumia card. Can I use bank transfer and which digital banking channels are listed?,completed,context_available,True,"Unaweza kutumia **bank transfer** bila kutumia kadi yako, kwani hii ni mojawapo ya “Other Methods of Payment (AMOPs)” inayopatikana nchini **Nigeria** pamoja na Kenya na nchi chache za Afrika. It works as a real‑time 24‑hour digital payment solution that you can do via online banking, mobile apps, au USSD mobile banking [S1].
+
+**Digital banking channels zilizoorodheshwa**:
+
+| Channel | Maelezo |
+|---------|---------|
+| **Mobile Banking / Bank Transfer** | Inapatikana kupitia online banking, apps za simu, na USSD; ni haraka, salama, na gharama nafuu [S1] |
+| **Equitel** | Mobile payment kutoka Kenya [S1] |
+| **Vodacom Mpesa** | Mobile money service ya Tanzania [S1] |
+| **MTN Mobile Money** | Wallet ya mobile money, inaweza kutumika kulipia tiketi [S1] |
+| **Tigo Pesa** | Mobile money service ya Tanzania [S1] |
+| **Mpesa** | Mobile money kutoka Kenya na Tanzania [S1] |
+| **Airtel Money** | Mobile money inayopatikana Kenya, Tanzania na nchi nyingine [S1] |
+
+Baada ya malipo kukamilika, tiketi yako itatumwa kwa barua pepe [S1].",2138.656,2564.64,1,,
+kq200-085-en,Model B,en,kq200-s045,Can I arrange higher baggage liability coverage by declaring a higher value before I travel?,completed,context_available,True,"Yes. Kenya Airways will increase its liability for loss, delay or damage to your checked baggage only if you **declare a higher value in advance and pay the applicable surcharge** [S1][S2].  
+
+When you make that declaration, the amount you pay is deducted from any final compensation you might receive, and the total paid must not exceed the airline’s maximum liability (you would need to contact KQ Insurance to confirm that ceiling) [S1].  
+
+If you do not declare a higher value, the standard limits apply:
+
+| Cabin class | Maximum liability per passenger |
+|-------------|---------------------------------|
+| First class / Premier World | USD 150 |
+| Economy class | USD 100 |
+| Children 2‑12 yr (Economy/Business) | 50 % of the applicable limit |
+| Children < 2 yr | No First Needs Allowance |
+
+These limits are the ceiling even when a higher value is declared [S1].  
+
+Note that Kenya Airways does **not** accept liability for fragile, perishable, or high‑value items such as jewellery, money, electronics, etc., even if you declare a higher value; you are advised to keep such valuables with you or obtain separate travel insurance [S1][S2].",2378.318,2622.987,1,,
+kq200-068-en,Model B,en,kq200-s028,What happens if I leave my suitcase uncollected at the airport for four months?,completed,context_available,True,"I’m sorry, but the information you’re asking about isn’t covered in the policies I have access to. For details on what happens to uncollected baggage after an extended period, please contact Kenya Airways Customer Service or the airport’s lost‑and‑found department directly. They’ll be able to give you the specific procedures and any applicable fees.",1181.764,1500.632,1,,
+kq200-149-mixed,Model B,mixed,kq200-s109,"Nataka pack hairspray na perfume. According to restrictions, limits za checked aerosols ni gani?",completed,context_available,True,"Unaweza pakia hairspray na perfume katika checked baggage, lakini :
+
+- Kila kipande cha aerosol (hair spray, perfume, dawa zenye alcohol) hakiwezi kupita **0.5 kg/L** per article.  
+- Jumla ya uzito wa aerosols zote katika bag yako haipaswi kuzidi **2.0 kg/L**.  
+
+Hii ni kisheria kwa checked baggage kwa Kenya Airways [S1].",2893.338,3287.838,1,,
+kq200-199-mixed,Model B,mixed,kq200-s159,Niambie exact compensation amount that the insurer approved for my claim today.,completed,context_available,True,"Samahani, lakini **maelezo ya kiasi halisi cha fidia kilichokubaliwa na bima kwa dai lako ya leo hayako katika makala ya sera tuliyo nayo**. Polisi inataja kwamba, kama ni suala la kifo, **malipo ya awali hayapaswi kupungua na 16 000 SDR kwa abiria**【S1】, na kwamba kiasi cha fidia kinatengenezwa kulingana na hali maalum ya kila dai【S1】. 
+
+Kwa sababu ya ukosefu wa taarifa maalum kwenye sera, siwezi kukupa kiasi halisi kilichothibitishwa. Ili kupata maelezo sahihi, tafadhali wasiliana moja kwa moja na bima yako au huduma ya wateja ya Kenya Airways, ambapo wataweza kukusaidia kwa taarifa za kipekee za akaunti yako. 
+
+Ikiwa una maswali mengine kuhusu mchakato wa madai, muda wa kukiweka, au masharti ya fidia, nitafurahi kukusaidia.",1629.745,1961.899,1,,
+kq200-094-en,Model B,en,kq200-s054,"How can I request my money back, and what happens to the rest of the booking?",completed,context_available,True,"You can ask for a refund through the **Manage Booking** section on the Kenya Airways website. After logging in, choose the “Request for refund” option that appears in the list of actions you can take on your reservation [S2]. If you encounter any problem with the payment or need help with the request, you can also contact the Customer Service Support section on the website for real‑time assistance [S2].
+
+Because your flight was delayed (a schedule change), the self‑service re‑booking tool is available [S1]. If you do not select a new flight yourself, the system will automatically place you on the next available flight and send you an email with the new details [S1]. Declining the automatic change will route you to the Customer Excellence Centre, where you can arrange a refund or a different re‑booking [S1].
+
+So, to get your money back:
+
+1. Log in to **Manage Booking** → “Request for refund”.  
+2. Follow the prompts, or if you need further help, use the Customer Service Support chat/phone.
+
+If you do not take any action, the booking will be automatically re‑booked on the next available flight [S1]; otherwise, cancelling the delayed segment will leave the rest of the itinerary unchanged unless you also choose to cancel those flights.  
+
+*Note: the policy details provided do not specify a separate refund entitlement for a delayed flight, so the refund request must be submitted through the steps above or by contacting customer support.*",3097.325,3424.068,1,,
+kq200-018-mixed,Model B,mixed,kq200-s006,"Outbound flight yangu imechange, return iko sawa. Can I change the return for free through self-rebooking?",completed,context_available,True,"Hakuna tatizo, lakini **self‑rebooking** inapatikana **tu kwa safari ambazo zimepoteza au kubadilishwa**. Kwa sababu outbound yako imechange na return yako haijabadilishwa, hutaweza kuitumia huduma hii kubadilisha return bila malipo.  
+
+- “Can I rebook a flight that hasn’t been disrupted? No. Only flights with a schedule change i.e. delayed or canceled are open for self‑rebooking.” [S1]  
+- “If my outbound flight has been changed, can I also change the inbound flight free of charge? No. … you will have to reach out to your travel agent or our Contact centre office.” [S1]  
+
+Kwa hiyo, ikiwa unataka kubadilisha return, tafadhali wasiliane na **travel agent** yako au **Kenya Airways Contact Centre**. Hapa ndipo utakapata msaada wa kurekebisha safari ya kurudi bila malipo, lakini si kupitia self‑rebooking.  
+
+Kumbuka, **ukitumia self‑rebooking kwa safari iliyo disrupted, haitakuwa na ada** [S1], lakini kwa return yako ambayo haijabadilika, chaguo la moja kwa moja halipo.  
+
+**Hatua unazoweza kuchukua**  
+1. Piga simu +254 711 024 747 au tembelea “Contact Centre” kwenye tovuti.  
+2. Mwulize kuhusu mabadiliko ya return na utafute suluhisho bila malipo.  
+
+Natumai taarifa hii imekusaidia! 🚀",2048.171,2382.066,1,,
+kq200-030-mixed,Model B,mixed,kq200-s010,"Nilitumia first leg, KQ ikacancel rest. Involuntary refund inacalculatiwa aje?",completed,context_available,True,"Ukiulizwa “involuntary refund” baada ya Kenya Airways kukataa sehemu ya pili ya safari yako, kifedha kinarejelewa kulingana na masharti ya tiketi uliyonunua.
+
+- **Kiasi kinachorejeshwa** – Kwa tiketi zisizorejesha (non‑refundable ticket) Kenya Airways itarejesha **mapato ya kodi, ada na gharama nyingine zinazohusiana na tiketi** pekee. Hii imewekwa kwenye sera ya tiketi – “they are equally to benefit from a refund of said applicable taxes, charges and other fees” [S1].  
+- **Ada au penaliti** – Kiasi hicho kinaweza kupunguzwa na **ada au penaliti zinazotokana na masharti ya tiketi**; “All Refund Requests are subject to the rules of the ticketed fare, and fees or penalties may apply to your Refund” [S1].  
+- **Muda wa kurejeshwa** – Kiasi kitakutumwa kwenye njia ile ile uliotumia kulipia (kadi ya mkopo/kadi ya debit) na **hata siku 21‑30 za biashara** itakamilika, isipokuwa muda wa usindikaji wa benki yako [S1].  
+- **Jinsi ya kuomba** – Kwa usafiri uliogombolewa, lazima ujaze **fomu ya Refund** (link iliyotolewa kwenye portal ya Kenya Airways) na ukamilishe usajili; baada ya kutuma, **booking yako itachukuliwa kuwa imeghairiwa kabisa** [S1].
+
+Kwa muhtasari, refund ya “involuntary” itahesabiwa kwa kurejesha kodi, ada na gharama (kama zinapatikana), baada ya kupunguza ada/penalti kulingana na masharti ya tiketi, na itatuma kwenye njia ya malipo ulivyotumia ndani ya kipindi cha siku 21‑30 za biashara. Ikiwa ulinunua kupitia wakala wa usafiri, unahitaji kuwasiliana nao moja kwa moja kwa ushauri wa kurejesha.",3672.984,4110.463,1,,
+kq200-197-mixed,Model B,mixed,kq200-s157,Can I claim hiyo amount back?,completed,context_available,True,"Ndiyo, unaweza kudai kurejeshwa kiasi hicho, lakini lazima ukidhi masharti yaliyotajwa.
+
+- **Sababu ya kurejesha**: Refund inaruhusiwa ikiwa tatizo lilitokana na shirika (kwa mfano, usafiri wa ndege ubadilika, kuchelewa kwa uunganisho uliokusababisha kupoteza upgrade). Hii **haihusishi makosa yako**. [S1]
+
+- **Muda wa kudai**: Ombi la refund lazima liwasilishwe **katika miezi mitatu (3) baada ya safari kutokea**. [S1]
+
+- **Nyang’ao zinazohitajika**:  
+  1. Tiketi ya daraja la biashara (business class) au boarding pass ya safari husika.  
+  2. Nakala ya barua pepe iliyoonyesha kwamba ulipata upgrade. [S1]
+
+- **Jinsi refund inavyofanywa**:  
+  - Kiasi kilicholipwa cha upgrade kitatolewa kwenye **kadi ya mkopo** ambayo ulitumia kulipa. [S1]  
+  - Refund itatengenezwa kwa **sarafu ile ile** ambayo ilitumika kulipa upgrade, na kiwango cha ubadilishaji cha fedha kinachokubalika kita tumika; hatutakuwa na kiasi kilichozidi kile kilicholipwa, na malipo ya benki hayarejeshwi. [S1]  
+  - Muda wa kukamilika ni **siku kumi (10) za kazi**. [S1]
+
+Kama unataka kudai, hakikisha una nakala za nyaraka zilizo kwenye orodha ya juu, kisha tembelea ukurasa wa *Online Refunds* wa Kenya Airways ili kujaza fomu husika. [S2]  
+
+Ukikubaliana na masharti haya, ombi lako linaweza kupitiwa. [S1]",1805.419,2012.692,1,,
+kq200-086-en,Model B,en,kq200-s046,Can I use that document as proof of payment for my employer?,completed,context_available,True,"Yes. The e‑ticket you received shows the fare and taxes paid for your flight, and it is considered your proof of payment. It is widely accepted as a receipt, so you can provide it to your employer as evidence of the payment. [S1]",823.555,1047.61,1,,
+kq200-126-sw,Model B,sw,kq200-s086,Msimbo wangu wa punguzo haukubaliki kwenye tovuti ya KQ. Ninawezaje kutoa taarifa kuhusu tatizo hilo?,completed,context_available,True,"Kama msimbo wako wa punguzo haukubaliki kwenye tovuti ya Kenya Airways, tumia alama ya **feedback** iliyo kwenye upande wa kulia wa dirisha la kivinjari wako ili kuripoti tatizo hilo. [S1]
+
+Unaweza pia kufungua kipengele cha **Customer Service Support** kwenye tovuti ili kupata maoni ya papo hapo, au piga simu kwenye **Global Contact Center** kwa msaada zaidi.  
+
+Kumbuka kuandika maelezo kamili ya msimbo, tarehe ya matumizi, na aina ya tiketi ili timu ya msaada ipate taarifa ya kutosha.  
+
+Ikiwa tatizo litaendelea, tutakupa mwongozo wa ziada baada ya uchunguzi wa timu yetu. [S1]",1138.809,1552.585,1,,
+kq200-166-mixed,Model B,mixed,kq200-s126,Booking yangu imehamishwa to another airline after paying for upgrade. Will the upgrade transfer or pesa itarudi aje?,completed,context_available,True,"Kama usafiri wako umeregelewa kwa ndege nyingine baada ya kulipa upgrade, **upgrade haitahamishwi** kwa kurudiwa kwenye daraja la juu. Kwa mujibu wa masharti yetu, “In the event your booking is transferred to a flight operated by another airline, we cannot guarantee an Upgrade to the higher class. In this case any amounts that you paid for the Upgrade will be refunded to the credit card that was used to pay for the Upgrade” [S1].
+
+Hivyo, pesa utakazopata re‑fund itarudi kwenye kadi ya mkopo uliyotumia kulipa upgrade. Refund kawaida hudumu takriban **siku kumi za kazi** ili ionekane kwenye akaunti yako, na hatutarejeshi ada za benki [S1].
+
+Kumbuka kwamba upgrade **haiwezi kuhamishwa** au kupelekwa kwa mtu mwingine, wala kwa ndege nyingine, kulingana na “An Upgrade that has been issued by the Airline cannot be assigned or transferred, in whole or in part to another person or flight” [S1].
+
+Kwa maelezo zaidi au usaidizi wa ufuatiliaji wa refund, tafadhali wasiliana na ofisi ya Kenya Airways au wakala wako wa safari.",2024.393,2263.171,1,,
+kq200-073-en,Model B,en,kq200-s033,The flight has been changed a second time. Can I use it again?,completed,context_available,True,"Yes—you can re‑book again. The self‑rebooking tool may be used **once for each disruption**, so a second schedule change gives you another opportunity to choose a new flight at no charge [S1].
+
+To do this:
+
+1. Visit the Kenya Airways website and select **“Manage Booking.”**  
+2. Click the re‑booking link at the top (“Click here”).  
+3. Review the available flight options (only flights ≤ 24 hours before or ≥ 7 days after the original time) and select the one that suits you.  
+4. Confirm the new flight – there are no additional fees [S1].
+
+If you are unable to re‑book yourself, the system will automatically place you on the next available flight and email you the details [S1].  
+
+Should you need any assistance, the Customer Support team is reachable via the website or at +254 711 024 747.",1683.63,1930.044,1,,
+kq200-084-en,Model B,en,kq200-s044,My bags are delayed and I am buying toiletries and other items. What proof is required and what can be reimbursed?,completed,context_available,True,"For a delayed‑baggage claim you must submit a written request within 7 days of arriving at the nearest Kenya Airways office (or contact your insurance company) and include the reference you received when you reported the delay [S1]. Attach the original receipts for every essential item you purchased [S1] and quote the baggage‑delay reference on the claim [S1]. The claim is processed against a signed First‑Need Expenses Form (Release) [S1].
+
+**Reimbursement – what you can be paid**
+
+- Only essential items (toiletries, first‑needs items) are eligible [S1].  
+- Limits per passenger:  
+  • USD 150 for First Class and Premier World [S1]  
+  • USD 100 for Economy Class [S1]  
+- Children 2‑12 years receive 50 % of the applicable class limit [S1]; children under 2 receive no allowance [S1].  
+- Passengers who have already received at least one bag may not be entitled to the allowance [S1].
+
+Make sure the claim is filed in writing, includes the reference number, and is supported by itemised receipts; reimbursement will be limited to the amounts above for the class and age of the passenger.",2212.851,2454.7,1,,
+kq200-044-sw,Model B,sw,kq200-s015,"Ninasafiri na mtoto wangu wa mwaka mmoja. Je, ninaweza kutoa zabuni ya kupandishwa daraja la biashara?",completed,context_available,True,"Ndiyo, unaweza kutoa zabuni ya kupandishwa daraja la Biusiness Class kwa nafasi ya kusafiri na mtoto wako wa mwaka mmoja, ikiwa umetiwa tiketi halali ya Daraja la Kiuchumi la Kenya Airways kwa nyumba ya‑safari iliyopangwa.  
+
+- **Uhitaji wa tiketi halali** – Ili kutuma “Smart Upgrade” unahitaji tiketi iliyo tolewa na iliyethibitishwa kwa daraja la kiuchumi la flight iliyopangwa na KQ. Unaweza kutoa zabuni hadi masaa 14 kabla ya kuondoka. [S1]  
+
+- **Watoto ndani ya usanifu mmoja** – Upgrades inazingatia watoto nyote ndani ya booking moja, hivyo unaweza kujumuisha mtoto wa mwaka mmoja kama alipo na tiketi ya infant. [S1]  
+
+Kama unataka kuwasilisha zabuni, tembelea kiungo cha “Upgrade Flight” kwenye tovuti ya Kenya Airways, jaza taarifa za usafiri, na uanze ofa yako. Unaweza kubadilisha kiasi cha ofa kabla ya kupokea barua pepe ya uthibitisho. [S1]  
+
+Kumbuka, baada ofa yako ikubaliwa, kiasi kilicholipwa hakiwezi kurejeshwa. [S1]",2327.188,2738.846,1,,
+kq200-004-en,Model B,en,kq200-s002,I'm an Asante Silver member travelling in Economy. What extra checked baggage do I get?,completed,context_available,True,As an Asante Silver member flying in Economy you receive **one extra checked‑baggage piece**. The additional piece follows the Economy‑class weight limit of **23 kg**. [S1],1218.861,1513.146,1,,
+kq200-075-en,Model B,en,kq200-s035,"For a flight from Mombasa to Nairobi, what identification and airport check-in deadlines apply?",completed,context_available,True,"For a domestic Kenya Airways flight such as Mombasa → Nairobi, you must:
+
+* **Present a valid form of identification** at the check‑in counter. [S1]  
+* **Complete the check‑in process at least 1 ½ hours before the scheduled departure**. [S1]  
+* **Check‑in counters close 30 minutes before take‑off**; after that you will not be able to check in at the airport. [S1]  
+
+You can also use online check‑in (available from 48 hours up to 1 hour before departure) and still need to be at the airport in time for the 1 ½‑hour deadline. [S1]",1288.546,1544.269,1,,
+kq200-171-mixed,Model B,mixed,kq200-s131,"Niko na Amex card, si Visa. Which card brands does KQ accept for online payment?",completed,context_available,True,"KQ inakubali kadi za **Visa**, **MasterCard** na **American Express (Amex)** kwa malipo ya mtandaoni [S1] [S1] [S1].",951.09,1185.399,1,,
+kq200-123-sw,Model B,sw,kq200-s083,"Nikipokea posho ya mahitaji ya kwanza halafu begi langu likapotea kabisa, posho ile itaathiri fidia ya mwisho?",completed,context_available,True,"Kama umepokea malipo ya awali (kama “posho ya mahitaji ya kwanza”) baada ya kukosa bagi lako, malipo haya hayajui kuwa ni uamuzi wa hatima ya madai yako. Kampuni itachukua kiasi kilicholipwa awali na kukikata kutoka kwenye fidia ya mwisho itakayotolewa. Hii inaelezwa katika sera ya fidia, ambapo “malipo ya awali hayajui kama kutambua uwajibikaji na yanaweza kupunguzwa kutoka kwenye kiasi kingine chochote kilicholipwa kwa msingi wa uwajibikaji” [S2].
+
+Kwa hiyo, fidia ya mwisho itakuwa ni kiasi cha jumla kinachostahiki kimepunguzwa na kiasi ulichopewa awali. Ikiwa ubatili wa msafiri ubebea jukumu kwa upande wako, kampuni inaweza kupunguzwa au kuwa haina uwajibikaji, kulingana na masharti yanayofuatana na sheria husika [S2].",1783.174,2200.066,1,,
+kq200-128-sw,Model B,sw,kq200-s088,"Tuko abiria kumi kwenye nafasi moja. Je, tunaweza kubadilisha tiketi zetu kupitia tovuti?",completed,context_available,True,"Hapana, huwezi kubadilisha tiketi za kundi la abiria kumi kupitia tovuti. Kiwango cha juu cha abiria ambao unaweza kubadilishwa kwa njia ya mtandaoni ni 9; kundi la zaidi ya hili linahitaji uwasiliano na kituo cha Mawasiliano cha Kenya Airways. [S1]",987.964,1360.67,1,,
+kq200-035-sw,Model B,sw,kq200-s012,Mtoto wangu wa miaka minane anastahiki posho ya mahitaji ya kwanza baada ya mizigo kuchelewa katika daraja la uchumi. Kiwango chake cha juu ni kiasi gani?,completed,context_available,True,"Mtoto wako mwenye umri wa miaka 8 anastahiki 50 % ya kiwango cha kawaida cha Economy, ambayo ni **USD 50** kwa ajili ya First Needs Allowance. [S2]",995.837,1477.363,1,,
+kq200-089-en,Model B,en,kq200-s049,I missed my flight without cancelling. Can I change my reservation through the website now?,completed,context_available,True,"You missed the flight, but it was not a schedule‑change (delay or cancellation) made by Kenya Airways. The self‑rebooking tool on the website is only available for disrupted flights — those that the airline has delayed or canceled — and cannot be used for a flight you simply missed 【S1】.  
+
+Therefore you cannot change or rebook the reservation through the “Manage Booking” self‑service page at this time. To re‑book you’ll need to contact Kenya Airways’ Customer Excellence Centre (or your travel‑agent, if the ticket was booked through one) for assistance.",1674.959,1897.111,1,,
+kq200-113-sw,Model B,sw,kq200-s073,"Nikiingia kwenye tovuti ya kujipangia ndege nyingine, ni taarifa zipi niandike ili kufungua nafasi yangu?",completed,context_available,True,"Ili ufungue nafasi ya kujipangia ndege nyingine kwenye tovuti ya Kenya Airways, unahitaji:
+
+* **Nambari ya uhifadhi (booking reference) au nambari ya tiketi ya kielektroniki (e‑ticket number).** Hii ndilo taarifa pekee inayohitajika kwa ajili ya kujipangia mwenyewe [S1].
+
+**Hatua za kufuata**
+
+1. Tembelea tovuti ya Kenya Airways (https://www.kenya‑airways.com/en‑ke/).  
+2. Chagua **“Manage Booking”**.  
+3. Bonyeza kiungo cha **“Click here”** kilicho juu ili kuingia kwenye sehemu ya kujipangia.  
+4. Ingiza nambari yako ya uhifadhi au e‑ticket, kisha utaona machaguo ya ndege na nyakati zinazopatikana [S1].
+
+Baada ya kuchagua na kuthibitisha safari mpya, barua pepe itakuletea tiketi ya kielektroniki na pasipoti ya mabwawa [S1].  
+
+Usisahau kwamba huduma hii inapatikana kwa safari zilizobadilishwa (imechelewa au kumeghairiwa) na haitachukulia malipo yoyote [S1].",1762.95,2128.836,1,,
+kq200-137-sw,Model B,sw,kq200-s097,"Nataka kusafiri na paka wangu wa nyumbani. Je, ninaweza kumpakia kama mzigo wa kawaida au kumbeba ndani ya ndege?",completed,context_available,True,"Ndio, paka wako unaweza kusafiri, lakini siwezi kuwekewa kwenye nafasi ya mzigo wa bure kama “baggage ya kawaida”. Kenya Airways inakubali kupeleka wanyama tu ikiwa:
+
+* **Paka amewekwa kwenye sanduku la usalama (crate) linalokidhi mahitaji ya sheria** na ana nyaraka sahihi – cheti cha afya, cheti cha chanjo, vibali vya kuingia/kuondoka, na nyaraka zozote zinazohitajika kwa nchi ya kuingia au kutembea kupitia.  [S1] 8.9.1  
+* **Kama wanyama wanakubaliwa, sanduku lake pamoja na chakula kitachukuliwa kama mzigo wa ziada** (excess baggage) na utalipwa ada husika. [S1] 8.9.2  
+
+Kampuni ina haki ya kukataa kabisa usafirishaji wa wanyama kwa hiari yake.  [S1] 8.9  
+
+Kumbuka, **mbwa wa mwongozo kwa abiria wenye ulemavu** wanachukuliwa bure na hayajumuishi kwenye mzigo wa bure, lakini hii haitahusiana na paka. [S1] 8.9.3  
+
+Kwa hivyo, paka wako hatupaswi kujaribu kuwekea ndani ya kaburi la abiria au kujumuishwa katika mzigo wako wa bure. Ni lazima uandike kama mzigo wa ziada, uwe na sanduku linalofaa, na ulethe nyaraka zote zinazohitajika kabla ya safari. Ikiwa unahitaji maelezo zaidi kuhusu ada za mzigo wa ziada au mahitaji maalum ya sanduku, unaweza kuwasiliana na kituo chetu cha huduma kwa wateja.",1696.097,2075.127,1,,
+kq200-052-en,Model B,en,kq200-s018,"Does my trained service dog need a cage in the cabin, and can it sit beside me on a seat?",completed,context_available,True,"No cage is required. A certified service dog may travel in the cabin as long as it is **properly harnessed** and **does not occupy a seat**【S1】.  
+
+The dog must be positioned **at the feet of your seat** (or, if the seat next to you is empty, at the feet/floor of that adjacent seat) and must not block the aisle【S1】.  
+
+Therefore, the dog cannot sit on a seat beside you, but it can be on the floor beside your seat, provided the adjacent seat is unoccupied.  
+
+(You will need to provide the required medical documentation and make an advanced reservation as described in the service‑dog policy.)",1237.563,1452.296,1,,
+kq200-186-en,Model B,en,kq200-s146,What is the exact exchange rate my bank will apply to a card payment this afternoon?,completed,context_available,True,"Kenya Airways does not set the exchange rate for a card payment. If you pay in a currency different from the one shown on the booking page, the rate is applied by your financial institution, and any additional charges are also determined by them. Please check directly with your bank for the exact rate that will be used for today’s transaction. [S1]",2275.005,2488.609,1,,
+kq200-192-sw,Model B,sw,kq200-s152,"Je, ni kiasi gani haswa cha fedha nitakacholipwa kwa fidia ya begi langu baada ya uchunguzi kukamilika?",completed,context_available,True,"Hakuna taarifa katika vyanzo vilivyotolewa kuhusu kiasi maalum cha fidia ya begi baada ya uchunguzi kukamilika. Polisi ya Kenya Airways haijatangaza kiwango kilichowekwa cha malipo kwa fidia ya bagaji, hivyo hatuwezi kutoa nambari ya kiasi cha fedha utakachopokea. 
+
+Ili kupata maelezo sahihi na ya kina, tunakushauri uwasiliane moja kwa moja na huduma kwa wateja wa Kenya Airways au tembelea sehemu ya **Baggage Compensation** kwenye tovuti yao. 
+
+*(Hakuna ushahidi unaohusu kiwango cha fidia ya begi katika S1 au S2.)*",1607.115,1977.656,1,,
+kq200-067-en,Model B,en,kq200-s027,"If my suitcase is sent on a different aircraft and customs needs me present, will KQ deliver it without me?",completed,context_available,True,"If your checked suitcase is placed on a later flight, Kenya Airways will normally bring it to you once it arrives — but only if the law of the destination does not require your presence for customs clearance. When local regulations do demand that the passenger be present to clear the bag, the airline cannot deliver it without you. [S1][S2]
+
+Delivery is also limited to the person who holds the baggage claim ticket and the baggage‑identification tag. [S1][S2]",1191.247,1399.034,1,,
+kq200-108-sw,Model B,sw,kq200-s068,"Nina ala ya muziki dhaifu ambayo haifai kuwekwa kwenye sehemu ya mizigo na ni kubwa kuliko kiwango cha kawaida cha kabatini. Je, ninaweza kuibeba ndani ya ndege?",completed,context_available,True,"Unaweza kuleta kifaa hicho cha muziki kwenye ndege, lakini kwa kuwa ni kifaa kilicho dhaifu na kikubwa zaidi ya kipimo cha kawaida cha mizigo ya kabati, kinahitajika kutendeka kama **mizigo maalum**.
+
+- Mizigo ya kabati lazima iambatanishe lebo ya “approved KQ cabin luggage” na iwe na vipimo visivyo zaidi ya **L55 × W25 × H35 cm** (au viwango vidogo zaidi kwa vifaa vya kibinafsi) [S1].  
+- Vifaa kama nyuzi za muziki nyeti au vifaa vingine vya thamani/nyeti haviruhusiwi kutakwa kwenye sehemu ya mizigo ya mizigo ya mizigo (cargo) bila ruhusa maalum [S2].  
+- Kwa kifaa hicho, Kenya Airways inahitaji **taarifa ya awali** na **idhini** kabla ya safari; gharama ya ziada inaweza kutolewa [S2].  
+- Ukikataa kurekodi kifaa hicho kama mizigo maalum, itabidi **ikubwekee kwenye mizigo ya kutakiwa (checked baggage)**, ikifuatwa na ada ya ziada ya mizigo (kama inavyobidiwa) [S2].
+
+**Hatua unazopaswa kuchukua**
+
+1. Wasiliana na Kenya Airways mapema (kupitia mtandao, simu au kituo cha huduma) na uombe **kukuza kifaa cha muziki kama “special baggage.”**  
+2. Toa maelezo kamili ya kipimo, uzito, na ubora wa kifaa.  
+3. Jifunze ada za ziada zinazoweza kutumika kwa kifaa hicho.  
+4. Pakua kifaa kwa usalama ili kizuie usumbufu wakati wa usafirishaji.  
+
+Ikiwa idhini haijatolewa au kipimo kinavuka sana viwango vya kabati, kifaa kitapandwa kwenye mizigo ya kutakiwa (checked baggage) na kulipwa ada ya ziada. Kwa habari zaidi, tembelea tovuti ya “Special Baggage” ya Kenya Airways.",2719.146,3106.176,1,,
+kq200-023-sw,Model B,sw,kq200-s008,Nitasafiri kutoka Nairobi hadi New York. Kujisajili mtandaoni kunaanza na kumalizika muda gani kabla ya safari?,completed,context_available,True,"Kujisajili mtandaoni kwa safari yako ya Nairobi → New York (ndege ya kimataifa inayohusisha Marekani) kunafunguliwa **saa 24 kabla ya muda uliopangwa wa kutokea** na kunapatikana mpaka **saa 1 kabla ya kuruka**.  
+
+Pia, ili kukamilisha taratibu za kiini, lazima ufanyie ukaguzi wa mizigo (check‑in) **angalau saa 2.5 kabla ya kutokea**, kwani madarasa ya ukaguzi hufungwa saa 1 kabla ya kutokea. [S1]",1762.521,2118.732,1,,
+kq200-019-en,Model B,en,kq200-s007,I booked using miles and KQ cancelled my flight. Is the disruption self-rebooking tool available for award tickets?,completed,context_available,True,"Yes. The Kenya Airways self‑rebooking tool works for award (miles‑redeemed) tickets as well as for regular tickets. When a flight you booked with miles is cancelled, you can log in to **Manage Booking** on the Kenya Airways website and use the self‑rebooking link to select a new flight at no extra charge【S1】.  
+
+- The tool is only available for flights that have been disrupted (canceled or rescheduled).  
+- You will not be charged for using it【S1】.  
+- After you confirm the new flight you will receive an e‑ticket and boarding‑pass via email【S1】.  
+
+If you encounter any issues or need assistance beyond the self‑service options, you can contact the Kenya Airways Customer Excellence Centre or your travel agent.",990.069,1238.669,1,,
+kq200-021-mixed,Model B,mixed,kq200-s007,"Nilitumia miles kubook, KQ ikacancel flight. Award ticket inaweza self-rebook kupitia disruption tool?",completed,context_available,True,"Ndio, award ticket yako iliyotengenezwa kwa miles inaweza ku‑self‑rebook kupitia disruption tool.  
+
+- Zana hii inafanya re‑booking ya award tickets – “Does the tool rebook award tickets? Yes, it does” [S1].  
+- Kuhifadhi malengo yako ya usafiri, chagua **Manage Booking** kwenye tovuti ya Kenya Airways, kisha bofya kiungo *Click here* ili kuona chaguzi za ndege zilizopo. Hii ni kwa ajili ya *disrupted* flights pekee – “Can I rebook a flight that hasn’t been disrupted? No” [S1].  
+- Kutumia chombo hiki hutaulizwa ada; “Self re‑booking tool is purposely for disrupted flights. You will therefore not be charged for using it” [S1].  
+- Mabegi yatapelekwa kiotomatiki kwenye ndege mpya – “If checked‑in, will the bags be transferred automatically to the new flight? Yes” [S1].  
+- Unaweza kufanya re‑booking mara moja kwa kila usumbufu wa flight – “You can self‑rebook once per every disruption” [S1].
+
+Kumbuka, ingawa unaweza kutumia zana hii kwa usafiri ulio ghafla, **usafiri wa miles haufanyiki “online modification” kwa kawaida** – “Can one modify an award ticket online? No, Tickets purchased with miles cannot be modified online” [S2]. Hii inamaanisha chaguo la self‑rebooking inapatikana tu kwa hali ya usumbufu, si kwa mabadiliko ya hiari.
+
+**Hatua za haraka:**  
+
+1. Nenda https://www.kenya‑airways.com/en‑ke/ → *Manage Booking*.  
+2. Ingiza booking reference au namba ya e‑ticket.  
+3. Chagua ndege mbadala inayokufaa, thibitisha bila malipo.  
+
+Ukikosa kujibu au chagua “DECLINE CHANGES”, itakupeleka kwenye Customer Excellence Centre kwa msaada zaidi.  
+
+Kama unahitaji msaada wa ziada au unataka kubadilisha sehemu ya ziada (k.m., inbound flight baada ya kupoteza siku), itabidi upigie simu kituo cha mawasiliano au muwasiliane na wakala wako. [S1]",2847.765,3077.9,1,,
+kq200-124-sw,Model B,sw,kq200-s084,"Nimepata begi moja lakini la pili halijafika. Je, lazima nilipwe posho ya mahitaji ya kwanza?",completed,context_available,True,"Begi lako la pili bado halijafika, lakini kwani umepokea begi moja, kwa mujibu wa sera ya Kenya Airways, **huna haki ya kupata First Needs Allowance (FNA)**.  
+
+- **Pasajeri aliyepewa angalau mojawapo ya mabegi yake** hawawezi kudai FNA [S1].  
+- FNA hulipwa tu kama **mteja hakupokea kabisa mabegi yake** na mabegi hayo hayajakuja ndani ya masaa 24 baada ya kutuma taarifa ya ukosefu [S1].  
+
+Kama bagi la pili litashindwa kufika ndani ya muda huo, unaweza kuomba FNA kwa kuzingatia masharti yafuatayo:  
+
+1. **Ripoti ya ukosefu wa begi** lazima iandikwe ndani ya siku 7 baada ya kuwasili, kwa ofisi ya Kenya Airways iliyo karibu nawe au kupokea msaada kutoka kampuni yako ya bima [S1].  
+2. **Ushahidi wa manunuzi** wa vitu muhimu (risiti) unahitajika [S1].  
+3. Vitu vinavyolipwa ni **vyenye thamani ya juu** pekee, na viko chini ya viwango vya:  
+   - USD 150 kwa madaraja ya **First Class na Premier World**  
+   - USD 100 kwa **Economy**  
+   - Watoto 2‑12 yapata 50 % ya viwango vya daraja husika, watoto chini ya 2 hawapati FNA [S1].  
+
+Pia, **wakazi wa nchi ya asili** (resident) hawawezi kudai FNA isipokuwa wanathibitisha kuwa wamekuwa wakiishi katika nchi nyingine kwa zaidi ya miezi 6 [S1].
+
+Kwa hivyo, kwa hali yako ya kuwa umepokea begi moja, FNA haitahitajika, na hatupaswi kulipwa. Ikiwa bagi la pili halijakuja baada ya masaa 24 na unakutana na vigezo vilivyo juu, fuata taratibu za ripoti ya maandishi na uwasilishe risiti za manunuzi ya mahitaji ya msingi.  
+
+Ikiwa una maswali zaidi au unahitaji msaada wa kuwasilisha taarifa, tembelea ofisi ya Kenya Airways iliyo karibu nawe au wasiliana na huduma kwa wateja.",2462.576,2845.46,1,,
+kq200-135-sw,Model B,sw,kq200-s095,"Je, ninaweza kulipia tiketi kwa Equitel nchini Kenya na nitapokea tiketi kwa njia gani?",completed,context_available,True,"Ndiyo, unaweza kulipia tiketi kwa kutumia **Equitel** (malipo ya simu ya mkononi nchini Kenya). Baada ya kulipa, tiketi yako itatumiwa kwa barua pepe kama **e‑ticket**. Tiketi hii itakuwa ushahidi wa malipo uliofanya, na itapokea barua pepe moja tu baada ya malipo kukubaliwa [S2]. 
+
+Aidha, malipo ya Equitel yanachukuliwa kama mojawapo ya njia zinazokubalika kwenye tovuti na programu ya simu ya Kenya Airways [S1].",1395.934,1744.377,1,,
+kq200-122-sw,Model B,sw,kq200-s082,"Je, mtoto huyo anastahiki posho ya mahitaji ya kwanza?",completed,context_available,True,"Hapana, mtoto wako wa miezi 10 **hahataki posho ya mahitaji ya kwanza**. Siku ya umri wa chini ya miaka 2, watoto hawastahiki “First Needs Allowance” [S1].  
+
+Kama unahitaji kujua taratibu za kudai fidia ya mahitaji ya msingi kwa ajili ya wewe mwenyewe (ambayo inahitaji risiti, ada ya juu ya USD 100 kwa daraja la Economy, n.k.), tafadhali wasiliana na ofisi ya Kenya Airways ndani ya siku saba baada ya kufika [S1].",1223.867,1640.263,1,,
+kq200-141-mixed,Model B,mixed,kq200-s101,"Baby wangu ako 10 months na hana own seat. Cabin baggage allowance yake ni gani, including dimensions?",completed,context_available,True,"Bebe wako wa miezi 10 ambao hana kiti mwenyewe anaruhusiwa kuchukua **kifurushi kimoja cha kaboni**.  
+- Uzito wa juu kabisa: **12 kg**.  
+- Vipimo vya juu zaidi: **L 55 cm × W 25 cm × H 35 cm**.  
+
+Hii ni sheria maalum kwa **infants < 2 years that do NOT occupy a seat** [ S1 ].  
+Kifurushi hicho kinapaswa kuwa na lebo “approved KQ cabin luggage” ili kiwe kinakubalika [ S1 ].",1406.377,1649.366,1,,
+kq200-104-sw,Model B,sw,kq200-s064,Nina ubao wa kuteleza kwenye mawimbi wenye urefu wa sentimita 150. Niombe kibali kabla ya safari? Kuna mipaka gani?,completed,context_available,True,"**Kibali cha ubao wa kuteleza (surfboard) wa 150 cm**
+
+- Kwa sababu urefu wa ubao wako ni 150 cm, unazidi 107 cm, **unahitaji ruhusa ya mapema** (advance clearance) kabla ya kusafiri. [S2]  
+- Ruhusa hii itahifadhiwa kwenye PNR yako kama *“SPEQ SURF”* na *“XBAG”* ili wafanyakazi wa Kenya Airways wajue kuwa umekusudia kusafirisha kifaa hiki. [S2]  
+
+**Mipaka ya usafirishaji**
+
+| Kipengele | Kiwango kinachokubaliwa | Hatua ikiwa kipenye mpaka |
+|-----------|------------------------|--------------------------|
+| Urefu | ≤ 107 cm – inakubaliwa bila kibali.<br> > 107 cm – inahitaji kibali cha mapema. | Omba kibali kutoka timu ya biashara ya Kenya Airways. |
+| Urefu (ukubwa zaidi) | ≤ 300 cm – inaweza kusafirishwa kama baggage ya kawaida ikiwa inatimiza masharti mengine. | > 300 cm – haitakubaliwa kama baggage; lazima iwasilishe kwa sehemu ya mizigo (cargo). |
+| Uzito | ≤ 32 kg – inakubaliwa kama baggage. | > 32 kg – haitakubaliwa kama baggage; itahitajika kusafirishwa kama cargo. |
+
+- **Ufungaji**: Bango la surf lazima lipakwe ndani ya kifuniko kinachofaa kilichotolewa na mgeni. [S2]  
+- **Kazi ya kibali**: Ili kupata kibali, wasiliana na **timu ya biashara ya Kenya Airways** au tembelea ofisi yao ya mizigo kabla ya safari. [S2]  
+
+Kwa kifupi, kwa ubao wa 150 cm unahitaji **kibali cha mapema**, kuhakikisha urefu hauzidi 300 cm na uzito hauzidi 32 kg, na upakue katika kifuniko kinachofaa. [S2]",2367.123,2730.276,1,,
+kq200-003-mixed,Model B,mixed,kq200-s001,"Nairobi to Mumbai na Business Class, checked bags ni ngapi na max weight ni gani?",completed,context_available,True,"Kwa safari yako ya **Business Class** kutoka Nairobi ➝ Mumbai, unaruhusiwa kubeba **1 piece** ya checked baggage, na kila piece inaweza kufika **32 kg (70 lbs)** kwa uzito wa juu. [S1]  
+
+Kumbuka, taarifa hii ni kwa safari zinazotumiwa na Kenya Airways pekee na inaweza kubadilika kulingana na aina ya ndege inayotumiwa siku ya safari. [S1]",1377.751,1724.204,1,,
+kq200-022-en,Model B,en,kq200-s008,I'm travelling from Nairobi to New York. When does online check-in open and close?,completed,context_available,True,"For a Kenya Airways flight from Nairobi to New York (a flight that involves the United States), online check‑in opens **24 hours before the scheduled departure time** and remains available **until 1 hour before take‑off**. [S1]",1062.054,1265.792,1,,
+kq200-195-mixed,Model B,mixed,kq200-s155,Hiyo fee nalipa before travel ama airport?,completed,context_available,True,"Ushuru wa mtoto asiyekuwa na mtoto (Unaccompanied Minor Fee) unatozwa kwa huduma hii, isipokuwa safari za ndani (NBO, MBA, KIS) ambazo hutoa msamaha wa ada [S2]. Hata hivyo, maelezo haya hayaelezi wazi kama ada hulipwa kabla ya safari au katika uwanja wa ndege. Kwa sababu ya ukosefu wa taarifa, hatuwezi kuthibitisha muda sahihi wa malipo.  
+
+Kama unahitaji kujua taratibu za malipo, tafadhali wasiliana moja kwa moja na kituo cha Kenya Airways au tembelea sehemu ya ushauri kwa wateja.  
+
+Natumai haya yanakusaidia!",1681.661,1877.569,1,,
+kq200-107-sw,Model B,sw,kq200-s067,"Nikikabidhi mabegi matatu wakati wa kujisajili, nitapewa lebo moja au lebo kwa kila begi?",completed,context_available,True,"Samahani, taarifa zilizotolewa hazijumuishi sera kuhusu idadi ya lebo za mabegi unazopata wakati wa kukabidhi mabegi matatu. Kwa maelezo sahihi juu ya lebo kwa kila begi, tafadhali wasiliana moja kwa moja na Huduma kwa Wateja wa Kenya Airways au tembelea tovuti yetu.  
+
+Ikiwa una swali lingine lolote kuhusu sera za tiketi, mabadiliko au ada, nitafurahi kusaidia.",1086.539,1599.408,1,,
+kq200-155-mixed,Model B,mixed,kq200-s115,Nilianza journey halafu nikakuwa sick at a stopover. Can ticket validity be extended and what proof do I need?,completed,context_available,True,"Ndiyo, tunaweza kuongeza muda wa usahihi wa tiketi yako kama umeshindwa kusafiri kwa sababu ya ugonjwa baada ya kuanza safari.  Hii itafanyika mpaka utakapopona au hadi safari yetu ya kwanza itakapoendelea baada ya siku ile, kulingana na nafasi inayopatikana kwenye daraja la huduma ulilililipa.  Unahitaji kuwasilisha **certificat ya matibabu** kama uthibitisho wa ugonjwa.  Kwa tiketi (au coupon ya kielektroniki) inayojumuisha **stopovers**, muda wa upanuzi hauwezi kuzidi miezi mitatu kutoka tarehe iliyotolewa kwenye cheti cha matibabu.  Vilevile, tutaweza kuongeza muda wa usahihi kwa washiriki wa familia yako wa karibu walio pamoja nawe.  [S1]",1345.26,1582.101,1,,
+kq200-013-en,Model B,en,kq200-s005,I use prescribed injections. What does the baggage policy require for my medically necessary syringes?,completed,context_available,True,"Medically necessary needles and syringes are allowed in your baggage provided you have the prescription medication with a professionally printed label that identifies the prescribing medical office, pharmacy, or manufacturer. With that label, the syringes are exempt from the general prohibitions on sharp or hazardous items [S1].
+
+For smooth handling, keep the syringes (and any accompanying medication) in your cabin baggage and travel with:
+
+* the original prescription label, and
+* a doctor’s letter confirming the need for the injections.
+
+Kenya Airways also recommends carrying the prescription and doctor’s note in your hand baggage and informing a cabin‑crew member if you will need to administer an injection during the flight [S2].",1161.311,1414.817,1,,
+kq200-026-sw,Model B,sw,kq200-s009,Tiketi yangu ni ya KQ lakini ndege inaendeshwa na shirika lingine. Masharti ya shirika gani yanahusu kupanda ndege na yapi yanahusu kurejeshewa pesa?,completed,context_available,True,"Tiketi yako imechukuliwa na Kenya Airways (KQ), lakini ndege inaendeshwa na shirika lingine kwa sababu ya **code‑share**. Kwa hivyo:
+
+| Sehemu | Ni masharti ya shirika gani yanayotumika | Maelezo muhimu |
+|--------|------------------------------------------|-----------------|
+| **Kupanda ndege (boarding, huduma, ucheleweshaji, usimamizi wa mizigo, n.k.)** | Masharti ya **shirika linalotoa huduma** (operating carrier). | Kazi, taratibu za usalama, uamuzi wa kukubali au kukataa kupanda, na huduma ndani ya ndege zinadhibitiwa na masharti ya shirika hilo linalofanya safari, kama ilivyo katika **Article 2.3 – Code Shares** [S1]. |
+| **Masuala ya kikatiba – tiketi, kurejeshewa pesa, madeni ya uwajibikaji** | Masharti ya **Kenya Airways**. | Sheria za kifedha, haki ya kurejeshewa fedha, na masuala mengine ya kikatiba yanadhibitiwa na masharti ya Kenya Airways, kama ilivyo katika **ARTICLE 10 – REFUNDS** [S1] na **INVOLUNTARY REFUNDS** [S1]. |
+
+### Kurejeshewa Pesa  
+- Kenya Airways itarejesha tiketi au sehemu isiyotumika kulingana na sheria za kodi ya tiketi (fare rules) [S1].  
+- Rejesho linaweza kutolewa **kwa mpokeaji wa tiketi au kwa mfanyakazi aliye kulipa**, kulingana na masharti ya tiketi [S1].  
+- Katika hali ya **kufutwa au usafiri usio wa hiari** (mfano, flight inayoghairiwa, kuchelewa kwa kiasi kikubwa, kukosa kuwasilisha muunganisho wa uunganisho), mteja anapewa chaguo tatu: (i) kupelekwa kwenye safari inayopatikana bila malipo, (ii) kuelekezwa tena kwa njia nyingine, au (iii) kurejeshewa pesa [S1] (sehemu 9.2.2.1‑9.2.2.3).  
+- Kiasi, muda, na masharti maalum ya kurejeshewa yategemea **sheria za kodi ya tiketi**; hakuna malipo ya ziada ambayo Kenya Airways itachukua isipokuwa ikibeba masharti mengine ya tiketi [S1].
+
+### Denied Boarding (Kukataliwa Kupanda)  
+Kama Kenya Airways hawezi kukupa nafasi ya kupanda, utapewa **fidia ya denied boarding** kulingana na sheria husika na sera ya fidia ya Kenya Airways [S1] (sehemu 9.3). Hii inategemea ufuatiliaji wa muda wa check‑in na boarding.
+
+**Kwa muhtasari:**  
+- **Uendeshaji wa ndege (kupanda, huduma, usalama)** – masharti ya shirika linalotoa huduma.  
+- **Urejeshaji wa pesa na masuala ya kikatiba** – masharti ya Kenya Airways, kulingana na sheria za tiketi na chaguo za remedial (rebooking, reroute, refund).  
+
+Ikiwa una maswali zaidi kuhusu masharti maalum ya shirika linalotoa huduma au unahitaji maelezo ya kifedha ya tiketi yako, tafadhali tuma maelezo ya ziada.",4857.957,5277.683,1,,
+kq200-096-en,Model B,en,kq200-s056,"If I pay through PayPal, how will I receive my ticket?",completed,context_available,True,"When you pay with PayPal on the Kenya‑Airways website, the payment is processed securely. Once PayPal confirms the payment, Kenya Airways issues an electronic ticket and sends it to the email address you provided during booking【S2】. In other words, you’ll receive your ticket by e‑mail as soon as the payment is received【S1】.",1279.815,1502.528,1,,
+kq200-090-en,Model B,en,kq200-s050,What happens to the fee I already paid for the seat?,completed,context_available,True,"If you bought a chargeable (preferred) Economy seat and then upgraded to Business Class on the same leg, the amount you paid for that Economy seat is refunded to the credit‑card you used for the purchase [S1]. The refund is processed in the original currency and, apart from any bank‑related charges, will usually appear in your account within about ten (10) working days [S1].",2420.938,2747.926,1,,
+kq200-179-mixed,Model B,mixed,kq200-s139,Mtoto wangu atasafiri alone na itinerary ina overnight connection. Is that allowed under KQ minor service?,completed,context_available,True,"Haiwezekani — kwa usalama wa mtoto usio na msafiri, **overnight connections haziruhusiwi kwa unaccompanied minors**. Unapaswa kupanga safari ili iende kwenye muunganisho wa siku ile ile au kutumia ndege zisizo na mabadiliko ya muda mrefu. [S2]  
+
+Pia kumbuka:  
+- Huduma hii inapatikana kwa watoto **wale walio kati ya umri wa 5 – 14** (au 15‑17 kwa idhini ya mzazi). [S2]  
+- Unaccompanied minors wanapokelewa **tu kwenye ndege za Kenya Airways**, na ada ya huduma hutolewa isipokuwa safari za ndani (NBO, MBA, KIS). [S2]  
+
+Kwa hivyo, chagua mpango wa safari usiokuwa na usiku wa kusubiri au tembelea kituo cha huduma maalum cha unaccompanied minor ili kupanga upya ratiba. [S2]",2115.675,2475.842,1,,
+kq200-050-sw,Model B,sw,kq200-s017,"Je, ninaweza kuhifadhi nafasi mtandaoni kisha kulipa fedha taslimu? Nipeleke nini na kuna ada?",completed,context_available,True,"Ndio, unaweza kufanya uhifadhi wa nafasi kupitia tovuti ya Kenya Airways kisha kulipa kwa pesa taslimu. Baada ya kutengeneza uhifadhi mtandaoni, tembelea ofisi ya tiketi ya Kenya Airways na lipa kwa pesa taslimu.  
+
+**Unachohitaji kuleta**  
+- Uthibitisho wa uhifadhi (booking confirmation) au nambari ya uhifadhi (booking code) uliyopokea kwa barua pepe. [S2]  
+
+**Ada**  
+- Kulipa kwa pesa taslimu kawaida kunatozwa ada ya ziada. [S2]  
+
+**Kumbuka**  
+- Si ofisi zote za tiketi zinakubali malipo ya taslimu, kwa hivyo hakikisha ofisi unayokwenda ina huduma hii. [S2]",1798.402,2245.326,1,,
+kq200-142-mixed,Model B,mixed,kq200-s102,Niko na bulky item ya 310 cm combined dimensions lakini iko 25 kg. Can I just show up at check-in or niombe approval mapema?,completed,context_available,True,"Una kipande cha baggage kikubwa cha **310 cm** (inazidi 300 cm) lakini uzito ni **25 kg**. Kwa kiasi hicho, **maendeleo ya kibali ya awali ni lazima** – “authorization shall be given prior travel by the commercial team” [S1]. Hivyo, **huna uhakika wa kupokelewa ikiwa utaenda tu kwenye check‑in bila ubora wa XBAG kwenye PNR yako** [S1].
+
+**Nini cha kufanya:**
+
+1. **Wasiliana na timu ya commercial** au ofisi ya Kenya Airways mapema ili kuomba “bulky XBAG transportation” clearance.  
+2. Mara idhiari itakapopatikana, itatokea kwenye PNR yako kama “XBAG comment” [S1].  
+3. Katika check‑in, mhudumu atakagua PNR ili kuthibitisha kuwa kibali kipo. [S1]  
+4. Ikiwa kibali hakijapo, shirika linaweza kukusitisha au kuamua kukubali kulingana na uwezo wa ndege, lakini hii sio hitilafu ya kujitegemea [S1].
+
+Kwa hiyo, **usijiunge na airport bila kupokea kibali cha awali**; pokea uthibitisho wa “bulky XBAG” mapema ili kuepuka kukataliwa au kuchelewa.",2379.242,2652.029,1,,
+kq200-145-mixed,Model B,mixed,kq200-s105,"Nikiprepare suitcase ya check-in, label inafaa kuwa na details gani ndani na nje?",completed,context_available,True,"Kama unajiandaa bag ya *checked‑in*, lazima uwe na **label** ambayo imewekewa taarifa zifuatazo **nje** na **ndani** ya mfuko:  
+
+- Jina kamili la abiria (linalofanana na lililotajwa kwenye tiketi)  
+- Anwani ya kimwili (physical address)  
+- Nambari ya simu ya mawasiliano  
+- Barua pepe (inapendekezwa, si lazima)  
+
+Label hii inahitajika kuwekwa **pamoja** kwenye uso wa bag na ndani ya bag, ili iwe rahisi kutambua abiria bila shida. [S1]",1249.224,1470.438,1,,
+kq200-082-en,Model B,en,kq200-s042,"What is the global telephone number for Kenya Airways customer support, not the mobile or WhatsApp number?",completed,context_available,True,The global telephone number for Kenya Airways customer support (landline) is **+254 734 104 747**【S1】.,739.651,988.933,1,,
+kq200-034-en,Model B,en,kq200-s012,My eight-year-old is eligible for first needs allowance after delayed bags on Economy. What is the child's maximum?,completed,context_available,True,"Your eight‑year‑old child can receive **USD 50** as the maximum First Needs Allowance.  
+
+- The standard limit for Economy‑class passengers is USD 100 [S1].  
+- Children aged 2‑12 receive 50 % of that limit [S1].  
+
+Therefore, the child’s entitlement is 50 % × USD 100 = USD 50.",1020.469,1304.139,1,,
+kq200-061-en,Model B,en,kq200-s021,I have a Business ticket from Nairobi to Kisumu. What checked baggage is included?,completed,context_available,True,"For a Business‑class ticket on a Nairobi → Kisumu flight the specific checked‑baggage allowance (weight or number of pieces) is not detailed in the policy information provided. The only baggage‑related points that are confirmed are the general handling requirements:
+
+* Every checked piece must carry a name label with the passenger’s name, address and phone number (and an email is recommended) [S1].
+* The airline’s Conditions of Carriage apply to all baggage [S1].
+
+Because the exact Business‑class allowance for this domestic route isn’t stated in the available evidence, we can’t give a definitive weight or piece count. Please refer to the fare rules shown with your ticket or contact Kenya Airways Customer Service for the precise allowance for your itinerary.",1143.947,1638.061,1,,
+kq200-161-mixed,Model B,mixed,kq200-s121,Baggage team wamesema missing bag haiwezi arrive within 24 hours. Do I have to wait until next day before FNA inaweza kulipwa?,completed,context_available,True,"Unapowasiliana na timu ya baggage na wamebaini kuwa begi lako halitaweza kurudi ndani ya masaa 24, **hakuna haja ya kusubiri siku ijayo ili upate First Needs Allowance (FNA)**. Kulingana na sera, **FNA inaweza kulipwa “on the spot” mara tu itakapothibitishwa kwamba begi halitaweza kufika ndani ya saa 24** [S1].
+
+Ili upate malipo, hakikisha:
+
+- Hakuna begi lolote lililokupata (ukipokea angalau moja, huwezi kutimiza haki ya FNA) [S1].
+- Uleta risiti za vitu muhimu ulivonunua (receipt requirement) [S1].
+- Malipo yanazuiliwa kwa kiwango cha **USD 150 kwa First Class/ Premier World** na **USD 100 kwa Economy**; watoto wa umri 2‑12 wanapata 50 % ya kiasi hicho, watoto chini ya 2 hawatupati [S1].
+
+Pia, ukitaka kufanya claim, **ni lazima uwasiliane kwa maandishi ndani ya siku saba (7) baada ya kufika** [S1]. Hii ni pamoja na kutaja nambari ya faili uliopata wakati wa kuripoti bagi lililopotea. 
+
+Kwa hivyo, endelea na timu ya baggage, wasilisha risiti, na chukua FNA mara tu itakapothibitishwa kuwa bagi halitaweza kurudi ndani ya saa 24.",2134.014,2385.562,1,,
+kq200-006-mixed,Model B,mixed,kq200-s002,Niko Asante Silver na Economy ticket. Extra checked bag allowance yangu ni gani?,completed,context_available,True,"Asante Silver member ulipokuwa kwenye **Economy** unapata **piece moja zaidi** ya mizigo ya kuangushwa, yenye uzito wa hadi **23 kg** kwa kila bagi (kama inavyoelezwa kwa Asante Silver tier) [S1]. Hii ni ziada juu ya kiwango cha kawaida cha Economy (ambacho kinaweza kutofautiana kutegemea njia, lakini kiwango cha ziada ni kificho kilicho wazi). Kwa hivyo, unaweza kuingiza bagi la ziada la 23 kg bila malipo ya ziada.  
+
+Kumbuka: uzito wa kila bagi hauna kupita 23 kg; kama bagi lako linazidi uzito huo, malipo ya ziada yatakuwa. [S1]",1374.392,1751.274,1,,
+kq200-045-mixed,Model B,mixed,kq200-s015,"Niko na baby wa one year, can I bid for a Business Class upgrade?",completed,context_available,True,"Ndio, unaweza kufanya **bid** ya upgrade kwenda Business Class kwa ajili yako na mtoto wako wa mwaka mmoja, mradi una tiketi ya Economy. Programu ya “Bid to Upgrade” inaruhusu yeyote aliye na tiketi ya Economy kutoa kiasi anachotaka kulipa kwa upgrade, na hii inajumuisha watoto walioko kwenye reservation hiyo [S2].
+
+**Mambo muhimu unayopaswa kujua**
+
+| Suala | Jibu | Chanzo |
+|-------|------|--------|
+| **Je, bid ni bure?** | Ndiyo, utoaji wa bid hufanywa bila malipo. Kadi yako ya mkopo itahitajika kwa uthibitisho tu; malipo yanachukuliwa tu ukipokea upgrade. | [S1] |
+| **Kiasi cha chini/kubwa** | Mfumo una kiwango cha chini na cha juu cha bid. Haiwezi kupitisha kiwango cha juu wala kushuka chini ya kiwango cha chini. | [S1] |
+| **Kunaweza kubadilisha bid** | Unaweza kubadilisha kiasi kabla ya kupokea barua pepe ya uthibitisho, kwa kutumia kiungo kilicho kwenye barua ya bid. | [S1] |
+| **Kutoa bid kwa kila segment** | Unaweza kutoa bid tofauti kwa kila sehemu ya safari inayostahiki upgrade. | [S1] |
+| **Barua pepe ya uthibitisho** | Ukabidhi bid, utapokea barua pepe yenye maelezo ya matokeo. Ikiwa bid yako imekubaliwa, barua pepe itakuambia ndani ya masaa 12 kabla ya kuondoka. | [S1] |
+| **Msimbo wa “Strength Indicator”** | Huu ni mwongozo unaonyesha nguvu ya bid yako, lakini hauhuathiri uhakika wa kupata upgrade. | [S1] |
+| **Vilele vya mtoto (infant)** | Mtoto anasafiri kwenye kifaa cha mlezi (lap) wa mzazi, na upgrade haibadilishi kiwango cha mizigo cha Economy. | — (hakuna kikwazo kwenye ushahidi) |
+
+Kwa muhtasari, ikiwa umeshasajili tiketi ya Economy, unaweza kutuma bid ya upgrade kwa ajili yako na mtoto wako. Hakikisha tu unafuata viwango vya chini na vya juu vilivyowekwa na unaweza kubadilisha bid yako mpaka saa 13 kabla ya kuondoka. Ikiwa bid yako itapokelewa, utapokea barua pepe ya uthibitisho ndani ya masaa 12 kabla ya safari.",2449.411,2684.611,1,,
+kq200-131-sw,Model B,sw,kq200-s091,"Zabuni yangu ya daraja la biashara ikikubaliwa, je, KQ itanihakikishia kiti fulani ninachotaka?",completed,context_available,True,"KQ haina uhakikisho wa kupata kiti maalum ulichokitaka. Baada ya ofa yako ya kuboreshwa (upgrade) kukubaliwa, sehemu zilizobaki za Business Class zitatengwa kiotomatiki, na kiti chako kitawekwa kulingana na upatikanaji [S1]. Utapokea barua pepe ya uthibitisho wa upgrade kabla ya kuondoka, kisha unaweza kufanya check‑in mtandaoni kwa Business Class, lakini chaguo la kiti husita kutolewa [S1].  
+
+Kwa kifupi, upatikanaji wa kiti unategemea nafasi zilizo tayari, siyo chaguo la kiti maalum.",4112.098,4543.844,1,,
+kq200-111-sw,Model B,sw,kq200-s071,"Baada ya kujipangia ndege nyingine kutokana na hitilafu ya ratiba, je, daraja langu la safari na kiwango cha mizigo vitabadilika?",completed,context_available,True,"Daraja la safari lako halitabadilika. Hata kama ubora wa tiketi yako ubadilishwa (kwa mfano upokelee ofa ya kupandishwa ngazi), masharti ya tiketi ya awali ya *Economy* yataendelea kutumika, ikijumuisha sera za ubatilishaji, ada za mabadiliko, na sheria za kupata maili za mteja wa mara kwa mara【S1】.  
+
+Kiwango cha mizigo pia hukaa sawa kama kilichopangwa kwa tiketi yako ya *Economy* ya awali. Kiasi cha mizigo ya bure kinatolewa kwa kila sehemu ya safari kulingana na masharti ya sehemu husika, na hakutabadilika kutokana na mabadiliko ya ratiba【S1】.  
+
+Kwa hivyo, baada ya kujipanga upya, daraja lako la safari na kiwango chako cha mizigo vitabaki vile vile kama yalivyokuwa awali.",1950.441,2341.313,1,,
+kq200-184-en,Model B,en,kq200-s144,Do I qualify for the special rate?,completed,context_available,True,"I’m unable to confirm whether you qualify for a special rate based on the information provided. The policy excerpts you shared cover special‑meal requests, booking channels, baggage liability and fare‑change rules, but they do not include any criteria for a “special rate.”  
+
+To find out if you’re eligible, you can:
+
+- Submit a request online through the **Book and Manage** feature on the Kenya Airways website  
+- Call our 24‑hour call centre at **+254 711 024 747**  
+- Visit any Kenya Airways sales office  
+- Contact your travel agency  
+
+These channels are listed in the evidence for making special‑meal or other service requests [S1].  
+
+If you can share more details about the specific fare or promotion you’re referring to, I can try to provide further guidance. Otherwise, a direct inquiry through one of the above channels will give you the most accurate answer.",2085.161,2301.807,1,,
+kq200-157-mixed,Model B,mixed,kq200-s117,Carry-on yangu imeharibika. KQ Conditions of Carriage inasema airline liable under what condition?,completed,context_available,True,"KQ itakubali kuwajibika kwa damage ya carry‑on (bagajui) **tu** ikiwa *unapoongea* kwa thamani ya juu kabla ya kusafiri na ulimalipa ada ya ziada [**S2**]. Bila deklarashi hiyo, kampuni haichukui dhima kwa vitu vya nyepesi, vitu vya thamani, vyenye unyogovu, au vilivyopakuliwa katika vifungashio vibovu [**S2**].
+
+Kama bagajui yako imeharibika, lakini hukuwahi kutangaza thamani ya ziada, KQ haina jukumu la kulipa fidia. Inashauriwa kuweka vitu vya thamani, nyaraka muhimu na pesa *on‑person* au *in‑cabin baggage* [**S2**]. Kwa ushauri zaidi, pata bima ya usafiri ya kibinafsi. 
+
+*Ufafanuzi*: “UNCHECKED BAGGAGE” inamaanisha bagajui yako ambayo si *checked baggage* [**S1**].",2166.415,2388.223,1,,
+kq200-024-mixed,Model B,mixed,kq200-s008,"Flight ya New York, online check-in inafunguka na kufungwa hours ngapi before departure?",completed,context_available,True,"Online check‑in kwa safari yako kwenda New York (USA) itafunguka **24 saa kabla ya muda wa kutokea** wa ndege, na itabaki inapatikana hadi **saa 1 kabla ya kuruka**. [S1]",1266.902,1486.916,1,,
+kq200-101-sw,Model B,sw,kq200-s061,Nitasafiri kwa daraja la uchumi kutoka Nairobi hadi Johannesburg. Ninaruhusiwa kubeba mizigo kiasi gani ndani ya ndege?,completed,context_available,True,"Katika daraja la **Uchumi** (Economy) kwa safari yako **Nairobi ↔ Johannesburg**:
+
+**Mizigo ya kabini (hand luggage)**
+- 1 kipande cha mizigo, ukubwa wa juu wa L 55 × W 25 × H 35 cm.  
+- Pia unaweza kubeba kifaa cha ziada (kama begi ndogo, kamera, laptop, nk) – jumla ya uzito **haizidi 10 kg / 22 lb**.  
+- Kifaa cha ziada kina ukubwa wa juu wa L 40 × W 15 × H 30 cm.  [S1]
+
+**Mizigo ya kibiwi (checked‑in baggage)**
+- 2 vipande, kila kipande kikiwa na uzito wa **max 23 kg / 50 lb**.  [S1]
+
+**Kumbuka**: Vifunguo hivi ni kwa ndege zinazendeshwa moja kwa moja na Kenya Airways, na yanaweza kubadilika kulingana na aina ya ndege itakayotumika siku ya safari.  [S1]",3522.51,3915.272,1,,
+kq200-072-en,Model B,en,kq200-s032,My scheduled flight was disrupted and I did not use the rebooking link. What will happen to my reservation?,completed,context_available,True,"If you didn’t use the self‑rebooking link, Kenya Airways’ system will automatically place you on the next available flight and send you an email with the new flight details. You’ll also receive your e‑ticket and boarding pass once the new flight is confirmed. [S1] 
+
+You can still log in to Manage Booking on the Kenya Airways website to view the re‑booked itinerary or, if you prefer a different option, you may use the self‑rebooking tool at any time—there is no charge for doing so. [S1]",1115.093,1346.075,1,,
+kq200-008-sw,Model B,sw,kq200-s003,"Familia yangu inataka kuweka mizigo mingi kwenye begi moja kuliko kiwango chake. Je, tunaweza kufanya hivyo ikiwa uzito wa jumla haujazidi kiwango chetu?",completed,context_available,True,"Hapana, familia hawezi kuweka mizigo mingi kwenye begi moja ikiwa itaivuka idadi ya vipande vilivyoruhusiwa, hata kama uzito wa jumla hauzidi kiwango cha bure. Kukusanya mizigo kunaruhusiwa kwa “pooling” ya **idadi** ya mizigo, si ya uzito wa kila kipande. Kwa mfano, ikiwa usawa wa bure ni 2 kipande cha 23 kg kila kimoja, huwezi kuleta kifurushi kimoja cha 26 kg na kingine cha 18 kg. Kipande kimoja hakivai uzito ulioruhusiwa kwa kipande kimoja, na ukivuka, malipo ya ziada yatatozwa [S1].",1398.343,1832.159,1,,
+kq200-106-sw,Model B,sw,kq200-s066,"Nikifika na kifurushi kisichofungwa vizuri, je, shirika linaweza kukataa kukipakia?",completed,context_available,True,"Kifurushi kisichofungwa vizuri kinachojulikana kama “unchecked baggage” inarejelewa katika **S1** kama “any of your Baggage other than Checked Baggage” [S1]. Suala la ikiwa Kenya Airways inaweza kukataa kukipakia haijatajwa katika sera zilizotolewa; masharti ya usafirishaji yanahusiana na uwanja wa ndege, hali ya charter, na ushirikiano wa code‑share, lakini hayajadili hali ya vifurushi visivyofungwa vizuri [S1].
+
+Kwa hivyo, kwa kuzingatia ushahidi uliopo, hatuna taarifa maalum inayothibitisha au kukataa haki ya shirika katika hali hiyo. Inashauriwa uwasiliane moja kwa moja na kituo cha mawasiliano cha Kenya Airways ili upate maelezo ya kina na ushauri unaofaa.",1321.584,1749.511,1,,
+kq200-160-mixed,Model B,mixed,kq200-s120,"If I qualify for first needs allowance, award ticket inamaanisha silipwi ama cap ni gani?",completed,context_available,True,"Kama una tiketi ya **award**, bado una haki ya kupokea First Needs Allowance (FNA) kulingana na daraja la tiketi yako — hii imewekwa wazi katika sera ya Kenya Airways [S1].
+
+Kiasi cha juu (cap) kinategemea daraja:
+
+- **First Class / Premier World** – kiwango cha juu ni **USD 150** [S1].
+- **Economy Class** – kiwango cha juu ni **USD 100** [S1].
+
+Kwa hivyo, ukipata award ticket ya First Class, ubora wa FNA una juu ya **USD 150**; si bure, bali ni kiwango cha kiasi ambacho unaweza kudai baada ya bag iliyokosekana. [S1]",1649.13,1893.458,1,,
+kq200-148-mixed,Model B,mixed,kq200-s108,Niko over free baggage allowance. Where can I confirm excess baggage rates and will I have to pay?,completed,context_available,True,"Unaweza kuthibitisha viwango vya baggage ya ziada kwenye tiketi yako (e‑ticket), kwenye “trip summary”, au kwenye mfumo wa **Departure Control System (DCS)** wakati wa ku‑check‑in. Huko ndipo utaona kiasi cha bure kinachokupatikana na bei ya ziada ikiwa unazidi. [S1]
+
+Kama mzigo wako unapita kiasi cha bure (kila kipande kinazidi uzito au idadi ya vipande vilivyoruhusiwa kwa familia, kundi au kumbi), ada ya baggage ya ziada itatozwa na itahitaji malipo. [S1]  
+
+Kwa hiyo, ndiyo, itakubidi kulipa ada ya ziada kulingana na viwango vilivyopangwa katika mfumo wa DCS au kwenye tiketi yako. [S1]",1960.027,2416.771,1,,
+kq200-062-en,Model B,en,kq200-s022,"What weight and packing rules apply, and does that reduce my checked allowance?",completed,context_available,True,"The cabin‑baggage rules that apply to any item you want to carry in the cabin – including a fragile musical instrument – are:
+
+* The bag (or case) must carry an **“approved KQ cabin luggage”** label [S1].
+* It must stay within the normal cabin‑baggage size and weight limits that are shown on your ticket or in the Departure Control System [S1].
+* If an airport authority or another airline imposes stricter limits, the item may have to be **checked in free of charge** provided it still meets the cabin‑baggage weight allowance; otherwise normal excess‑baggage charges apply [S1].
+
+For checked baggage:
+
+* Your **free checked‑baggage allowance** is the one displayed on your e‑ticket or in the check‑in system [S1].
+* Anything that does not fit the cabin‑baggage criteria and is checked will be counted against that allowance. If the checked piece exceeds the free allowance, the excess will be charged [S1].
+
+The evidence we have does **not contain specific weight or packing requirements for musical instruments**, nor does it state that adding a cabin seat for a fragile instrument automatically reduces your checked‑baggage allowance. In practice, the instrument would be treated like any other cabin item: it must meet the cabin‑baggage weight/size limits and carry the approved label. If it cannot, it will be checked and will use part of your normal checked‑baggage allowance.
+
+If you need the exact weight limit for cabin‑baggage on your specific flight, or want to confirm whether the instrument will affect your checked‑baggage quota, please contact Kenya Airways customer service with your reservation details.",2190.202,2393.82,1,,
+kq200-151-mixed,Model B,mixed,kq200-s111,Self-rebooking page inaonyesha flights within what time range kulingana na original flight?,completed,context_available,True,Self‑rebooking page inaonyesha chaguzi za ndege ambazo zinafikia **masaa < 24 ya kabla ya safari yako ya awali au hadi siku 7 baada ya muda wa awali** ya safari iliyopangwa. [S1],966.307,1194.691,1,,
+kq200-039-mixed,Model B,mixed,kq200-s013,"Bag yangu ikifika later, KQ wata-deliver kwa hotel ama kuna restrictions?",completed,context_available,True,"Bag yako itakapotumwa baadaye, polisi ya Kenya Airways kuhusu usafirishaji wa mizigo hadi hoteli haijatajwa katika taarifa tulizo nazo. Hivyo, hatuna maelezo ya kina kuhusu upatikanaji wa huduma hiyo au vizuizi vyovyote vinavyoweza kuwepo.  
+
+Ili kupata jibu sahihi, tafadhali wasiliana moja kwa moja na **Customer Excellence Centre** au tembelea duka letu la huduma kwa wateja; wao wataweza kukupa taarifa maalum kuhusu utoaji wa mizigo kwa hoteli na masharti yanayohusiana nayo.  
+
+Kama una maswali mengine yanayohusiana na usafiri, mabadiliko ya tiketi, au upandaji wa daraja, nitafurahi kukusaidia.",1391.834,1721.995,1,,
+kq200-038-sw,Model B,sw,kq200-s013,"Je, Kenya Airways italeta begi langu lililochelewa hotelini litakapofika, au kuna nchi ambazo huduma hiyo haipatikani?",completed,context_available,True,"Habari,  
+
+Kulingana na sera zilizopo, **hakuna taarifa maalum kuhusu huduma ya kupeleka begi lililochelewa hoteli** unapoingia nchi husika, wala hatujui kama kuna nchi ambazo huduma hiyo haipatikani.  
+
+Kwa hiyo, hatuwezi kuthibitisha kama Kenya Airways itakuletea begi hilo hoteli au ikufanyie usafirishaji wa moja kwa moja. Ili kupata jibu sahihi na maelezo ya kina, tunakushauri uwasiliane moja kwa moja na **kitengo cha huduma kwa wateja** kupitia nambari +254 711 024 747 au tembelea ukurasa wa **Customer Support** kwenye tovuti yetu.  
+
+Tunaomba radhi kwa usumbufu uliojitokeza, na tunakutakia safari njema.",2136.861,2473.306,1,,
+kq200-121-sw,Model B,sw,kq200-s081,Nahitaji nambari ya simu ya mkononi ya huduma kwa wateja ya Kenya Airways. Ni ipi?,completed,context_available,True,Nambari ya simu ya mkononi ya huduma kwa wateja ya Kenya Airways ni **+254 711 024 747** [S1][S2].,1006.423,1326.301,1,,
+kq200-112-sw,Model B,sw,kq200-s072,"Je, itatolewa upya au itathibitishwa tu?",completed,context_available,True,"Tiketi yako itatolewa upya, siyo kuthibitishwa tu. Mfumo wa self‑rebooking wa Kenya Airways unapojaribu kuratibu upya safari za mashirika mengine (kama Air France) ambayo ina sehemu inayoendeshwa na KQ, tiketi husasishwa badala ya kutengenezwa tena. Hii inamaanisha tiketi itapapishwa upya baada ya ubadilishaji wa kiungo. [S1] 
+
+Unaweza kutuma ombi la ubadilishaji kwa kujitengenezea kupitia “Manage Booking” kwenye tovuti ya Kenya Airways bila malipo. [S1]",1619.398,2045.489,1,,
+kq200-176-mixed,Model B,mixed,kq200-s136,Nataka meal ya vegetarian vegan kwa flight yangu. General special meal request deadline ni gani na naomba kupitia wapi?,completed,context_available,True,"Mahitaji yako ya **Vegetarian Vegan Meal (VGML)** yapatikana – ni meal isiyo na bidhaa zozote za wanyama, kama mayai au maziwa [**S1**].
+
+**Kipindi cha kuomba:**  
+Usisite kuomba mapishi haya **saa 24 kabla ya safari yako** ili kuhakikisha upatikanaji [**S1**].
+
+**Jinsi ya kuomba:**  
+- **Online** kupitia kipengele cha *Book and Manage* kwenye tovuti ya Kenya Airways.  
+- **Piga simu** kwa kituo chetu cha huduma 24‑saa kwa nambari +254 711 024 747.  
+- Tembelea **ofisi yoyote ya mauzo** ya Kenya Airways.  
+- Au **uliza wakala wako wa usafiri** (travel agency) [**S1**].
+
+Kwa maelezo zaidi au msaada wa ziada, timu yetu iko tayari kukusaidia. Safiri salama!",1396.108,1684.604,1,,
+kq200-051-mixed,Model B,mixed,kq200-s017,Can I book online then pay cash kwa office? Niende na nini na kuna fee?,completed,context_available,True,"Unaweza kufanya online booking kwamba bada ya kulipia kwa cash katika ofisi ya Kenya Airways. Baada ya kukamilisha booking kwenye kenya‑airways.com, utapokea booking confirmation au booking code kwenye barua pepe – hiyo ndiyo unayohitaji kupeleka ofisini. Kila ofisi ya tiketi itakuhitaji uthibitisho huyu ili kulipia na kupokea tiketi yako.  
+
+Kuhusu ada, kuna fee adimu iliyowekwa kwa malipo kwa cash [**S1**]. Pia, si ofisi zote zinazokubali malipo kwa cash, hivyo ni bora kuhakiki kama ofisi iliyokaribia inakubali njia hii. 
+
+Kwa muhtasari:  
+1. Fanya online booking.  
+2. Hifadhi booking confirmation/booking code.  
+3. Nenda ofisini ya tiketi (hakikisha inakubali cash).  
+4. Lipa kwa cash (utatozwa fee [**S1**]).  
+5. Pokea tiketi kwamba imekutumwa kwa barua pepe.  
+
+Kama una maswali zaidi, niambie.",1643.407,2016.294,1,,
+kq200-087-en,Model B,en,kq200-s047,My itinerary contains different branded fares. Which refund rule applies and can I recover booking-change fees?,completed,context_available,True,"If your reservation includes more than one Kenya Airways branded fare, the **most restrictive fare rule** governs the entire itinerary — the stricter of the fare conditions will be applied to all segments. Additionally, **any fees you paid for booking changes are non‑refundable**, so they cannot be recovered. [S1]",2091.074,2363.926,1,,
+kq200-029-sw,Model B,sw,kq200-s010,KQ imefuta sehemu iliyobaki ya safari yangu baada ya kutumia sehemu ya tiketi. Kiasi cha kurejeshewa pesa kinahesabiwaje?,completed,context_available,True,"Kiasi cha kurejeshewa pesa kinategemea jinsi sehemu ya tiketi iliyotumika imekaguliwa.
+
+* **Umefutwa sehemu ya tiketi baada ya kutumia sehemu nyingine** – Hii ni “refund isiyo ya hiari” (involuntary refund). Kiasi cha kurejeshewa kitakuwa *si chini* ya tofauti kati ya **bei uliyoilipa** na **bei inayotumika** kwa safari kati ya sehemu zilizotumika tu. [S1]  
+  * Kwa mfano, ikiwa ulilipia USD 500 kwa tiketi nzima, na sehemu ulizotumia inahesabiwa kuwa USD 300, basi marejesho yatakuwa angalau USD 200 (USD 500 – USD 300).
+
+* **Sheria za tiketi bado zinafaa** – Marejesho yatafanywa kulingana na masharti ya tiketi yako (kama kuna vikwazo vya kurejesha, ada za huduma, nk). [S1]
+
+* **Marejesho yataelekezwa kwa aliye kulipa tiketi** – Ikiwa tiketi ililipwa na mtu asiye msafiri, marejesho yatasindikwa kwa huyo aliye kulipa au kwa agizo lake. [S1]
+
+* **Njia ya kuomba marejesho** – Kwa tiketi zilizonunwa kwenye mtandao wa Kenya Airways, unaweza kuomba marejesho kupitia kipengele cha “Refund” katika “Modify My Booking”.  Marejesho yatawekwa kwenye njia ile ile ya malipo uliyotumia. [S2]
+
+* **Muda wa usindikaji** – Kwa kadi za mkopo/debit, Kenya Airways hutoa marejesho ndani ya siku 21‑30 za biashara, isipokuwa muda wa usindikaji wa benki yako. [S2]
+
+Kwa hivyo, kurejeshewa pesa kunahesabiwa kwa kutoa tofauti ya bei kati ya jumla uliyoilipa na bei ya sehemu ulizotumia, kisha kupunguzwa na ada zozote zinazoruhusiwa kulingana na masharti ya tiketi. [S1]",2975.959,3463.709,1,,
+kq200-070-en,Model B,en,kq200-s030,"If security takes a restricted item from me at the boarding gate, am I guaranteed to get it back?",completed,context_available,True,"No. When a security officer (or local authority) removes a restricted item at the boarding gate, Kenya Airways does not guarantee that you will get the item back. The guidance states that such items “may not be returned to you” depending on local conditions [S2]. Moreover, the airline’s liability clause expressly excludes responsibility for articles that are not permitted in baggage, so there is no obligation to return or compensate for those items [S1].",1344.921,1765.176,1,,
+kq200-102-sw,Model B,sw,kq200-s062,Ninarudi kutoka Jeddah na nataka kuleta maji matakatifu. Ninaruhusiwa kiasi gani na niyafunge vipi?,completed,context_available,True,"Una ruhusa ya kubeba chupa **moja ya maji matakatifu** ikiwa unasafiri kutoka Jeddah, **kwa kiasi cha juu cha 5 lita**. Chupa lazima **iwe imefungwa kwa kifuniko cha plastiki** ili kuzuia uvujaji, na haipaswi kupita uzito wa **23 kg** kwa kila kipande cha mizigo, pamoja na vipimo visivyo ziidi 158 cm (L+W+H) [S1].
+
+Pia, kila mzigo ulioangushwa unapaswa kuwa na **lebo ya jina** (jina, anwani, nambari ya simu, barua pepe ikiwa inashauriwa) kwenye nje na ndani ya mzigo, na jina liwe linalolingana na lililotolewa kwenye tiketi [S1].
+
+Kwa kifupi:
+- Chupa moja, hadi 5 lita, imefungwa plastiki.  
+- Hakikisha uzito wa mzigo (chupa pamoja na mengine) haizidi 23 kg na vipimo havizidi 158 cm.  
+- Weka lebo ya jina kwenye mzigo.  
+
+Hii ndiyo kiwango kinachoruhusiwa na masharti ya usafirishaji.",1953.678,2342.118,1,,
+kq200-156-mixed,Model B,mixed,kq200-s116,Company yangu ililipia ticket na ticket ina refund restriction. Refund itatumwa kwangu ama kwa company?,completed,context_available,True,"Kama tiketi imekuwa na **refund restriction** na ililipwa na kampuni (person besides the passenger), refund itatengenezwa **kwa kampuni hiyo au kwa order yake**, si kwa mpanda tiketi mwenyewe. Hii inasababishwa na kanuni ya “If a Ticket has been paid for by a person other than the Passenger … and the Ticket indicates that there is a restriction on refund, we shall make a refund only to the person who paid for the Ticket, or to that person's order.” [S1]
+
+Kumbuka kwamba **refund** bado itafanywa **kwa mujibu wa masharti ya tiketi** (ticket rules) – ikiwa kuna ada za huduma au ada za kughairi, hazitolewa. [S1]",63411.683,63655.72,1,,
+kq200-154-mixed,Model B,mixed,kq200-s114,Niko na checked luggage pia. Niende wapi nikifika airport?,completed,context_available,True,"Unaweza kurudi **online check‑in drop‑off point** kwa mizigo yako ya checked luggage, kisha uende moja kwa moja kwa **gate ya uboarding**. Hii inakupatia nafasi ya kuepuka foleni ndefu ya usuli wa mizigo.  
+
+Kumbuka pia kwamba kwa safari za kimataifa, balaza ya ukaguzi (check‑in) lazima imekamilika **saa 2.5 kabla** ya kuruka, na kaunta za check‑in hufunga **saa 1 kabla** ya ndege kuondoka. Kwa safari za ndani, ukaguzi unapaswa kukamilika **saa 1.5 kabla** ya kuondoka, na kaunta hufunga **dakika 30** kabla ya kuruka.  
+
+Kwa hivyo, baada ya kutuma mizigo kwenye drop‑off point, fuata alama za **“Boarding”** hadi ukutane na mlango wako wa kuabiri. [S2]",1886.124,2261.924,1,,
+kq200-198-mixed,Model B,mixed,kq200-s158,"Please approve my upgrade bid manually right now, hata kama bado iko pending.",completed,context_available,True,"Habari! Tunaelewa unataka bid yako iidhinishwe “sasa” hata iikuwapo bado pending. Kwa mujibu wa sera yetu, **bidi ya upgradeni hutolewa mtandaoni hadi masaa 7–10 kabla ya kuondoka, na ubalo wa “accept” hutegemea ikiwa bid yako ndiyo ya juu**; hatuwezi kuidhinisha kwa mikono bila kupitia mfumo. [S1]
+
+Hivyo hatuwezi kukamilisha au kubadilisha hali ya bid yako kwa moja. Inashauriwa uangalie status ya bid yako baadaye, na itachukuliwa kiotomatiki ikiwa itashinda. Kama kuna maswali zaidi au unahitaji usaidizi wa kiufundi, unaweza wasiliana na huduma ya wateja wa Kenya Airways.
+
+Asante, na tunakutakia safari njema!",2223.869,2598.759,1,,
+kq200-076-en,Model B,en,kq200-s036,My flight leaves Guangzhou at 18:00. What is the counter closing time under the KQ policy?,completed,context_available,True,"The check‑in counters at Guangzhou close **90 minutes before departure**.  
+For a flight scheduled to leave at 18:00, the counters will shut at **16:30**. [S1]",1152.383,1461.743,1,,
+kq200-017-sw,Model B,sw,kq200-s006,"Safari yangu ya kwenda imebadilishwa lakini ya kurudi haijabadilika. Je, ninaweza kubadilisha safari ya kurudi bila malipo kupitia huduma ya kujibadilishia nafasi?",completed,context_available,True,"Hapana, kwa kutumia chombo cha “self‑rebooking” unaweza kurudisha tu safari iliyosababisha usumbufu (yaani, safari ya kwenda). Usipate gharama ya ziada kwa ajili ya safari ya kurudi, ila itabidi uwasiliane na wakala wako wa usafiri au kituo cha Huduma kwa Wateja. [S1]  
+
+Ikiwa unataka kurudia safari ya kwenda, tembelea tovuti ya Kenya Airways, ingia kwenye “Manage Booking”, kisha ufuate kiungo cha “rebooking” ambacho kitakuonyesha chaguzi zinazopatikana. Hii ni bure kwa safari zilizo na usumbufu. [S1]  
+
+Kwa mabadiliko ya safari ya kurudi, chombo hicho hakikuruhusu, hivyo itahitaji usaidizi wa wakala au kituo cha wateja. 
+
+Je, ungependa maelezo zaidi ya jinsi ya kuwasiliana na kituo cha wateja?",1816.637,2215.614,1,,
+kq200-015-mixed,Model B,mixed,kq200-s005,Nahitaji syringes za prescription meds. Baggage policy inasema nibebe nini kama proof?,completed,context_available,True,"Medically necessary sindano na syringe hazipigwa marufuku, lakini lazima uwe na **prescription medication** iliyo na lebo iliyochapishwa kitaalamu. Lea hii inapaswa **kuonyesha jina la ofisi ya matibabu, duka la dawa, au mtengenezaji** wa dawa. Hivyo, lebo hii ndiyo ushahidi unaohitajika kuonyesha unapobeba sindano za dawa yako. [S1]",1979.369,2254.054,1,,
+kq200-175-mixed,Model B,mixed,kq200-s135,"Nina trained service dog na itinerary iko na connection. What are the booking, direct flight and number-of-dogs rules?",completed,context_available,True,"**Booking**  
+- Unapaswa kufanya **advance reservation** angalau **48 saa kabla** ya kuondoka. Kuna maelezo ya mawasiliano ya timu ya matibabu (Doctors.KQ@kenya‑airways.com, simu +254 734 104 747, Whatsapp +254 705 474 747). [ S1 ]  
+- Baada ya kutengeneza reservation, PNR itakuwa **“ESAN”** ili kuonyesha kuwa ni service dog. [ S2 ]  
+
+**Direct‑flight requirement**  
+- Service dogs wanaruhusiwa **tu kwenye ndege za KQ Direct (non‑stop)**; **hakuna transfers** za wanyama wa huduma. [ S1 ]  
+- Hata kama ni flight irefu, dog haipaswi kuchukua kiti cha dharura, na haipaswi kuzuia mwendelezo wa aisle. [ S2 ]  
+
+**Number of dogs**  
+- Kila abiria anaweza kupeleka **maximum ya mbwa mmoja (1) pekee**. [ S1 ]  
+
+**Additional basics (kwa ufahamu)**  
+- Huduma ni **bure**, lakini lazima dog iendelewe na **harness**, iwe **haina sanduku**, na iwe imefungwa vizuri. [ S2 ]  
+- Inahitajika **docu­mentation** (certi­ficate ya afya, barua ya daktari, cheti cha mafunzo) ambayo haipaswi kuwa **za zamani zaidi ya mwaka 1**. [ S1 ][ S2 ]  
+- Dog itakaa **chini ya mgongo wa kiti cha abiria**, si kwenye viti vya dharura, na haipaswi kuzuia njia. [ S2 ]  
+
+Kwa muhtasari, hakikisha unafanya reservation 48 saa mapema, chagua flight isiyo na stop‑over, na piga mbwa mmoja pekee kwa usalama na nyaraka sahihi.  Ikiwa una maswali zaidi, wasiliana na kituo cha huduma ya wateja.",18163.012,18424.744,1,,
+kq200-097-en,Model B,en,kq200-s057,I'm booking from Tanzania with Tigo Pesa. Is that method listed and how is my ticket delivered?,completed,context_available,True,"Yes, Tigo Pesa is listed as a mobile‑money payment option for bookings from Tanzania. Once you complete the payment with Tigo Pesa, Kenya Airways will send your e‑ticket to the email address you provided [S1].",1299.576,1522.948,1,,
+kq200-103-sw,Model B,sw,kq200-s063,Nataka kusafiri na majivu ya ndugu yangu aliyefariki. Nahitaji chombo na nyaraka gani?,completed,context_available,True,"**Usafiri wa majivu ya ndugu yako**  
+
+1. **Majivu ya kibinadamu (miili)**  
+   - Majivu haya husafirishwa kama mizigo (cargo) [S1].  
+   - Unapofanya **reservation**, lazima utumie **SSR code** `MAAS` ikifuatiwa na maneno “ESCORT HUMAN REMAINS” [S1]. Hii itaonyesha kwenye PSM na PIL/OBL iliwezeshe wafanyakazi wa ndege kuwapa msaada wa ziada na kurahisisha muunganiko wa mlinzi na maomboleza.  
+
+2. **Mchanga (ashes) ya mtu aliyefariki**  
+   - Mchanga unaweza kuleta kwenye kabini ya abiria (cabin) [S1].  
+   - Lazima uwe katika **uruni uliofungwa** na **ulipaswa kujulikana chini ya kiti cha abiria au kwenye sehemu ya juu ya juu (overhead bin)**; hairuhusiwi kuwekwa kwenye kiti cha abiria au katika mtazamo wa abiria wengine [S1].  
+   - Ili kuepuka maulizo ya maafisa wa usalama ya uwanja, **shahidi ya kufa** au **cheti cha krematari** inapaswa kubeba pamoja [S1].  
+   - Kabla ya kusafiri, hakikisha ikiwa **destinasyon ya mwisho au njia ya kusafiri inahitaji “authorization for transportation certificate”**; ukihitaji, jiandae kuleta cheti hicho [S1].  
+   - Katika **PNR** ya mgeni anayebeba mchanga, ongeza maelezo yafuatayo: `SR OTHS KQ- Accompanied by Ashes of deceased person` [S1].  
+
+3. **Hatua za kuandaa safari**  
+   - **Fanya reservation mapema** na tuma taarifa za `MAAS` au `SR OTHS …` kama ilivyoelezwa hapo juu.  
+   - **Jumuisha nakala za nyaraka** (death certificate, cremation certificate, na, ikiwa inahitajika, cheti cha idhini ya usafiri) katika maagizo ya reservation au uwasilishe kwa ofisi ya Kenya Airways kabla ya safari.  
+   - Hakikisha uruni wa mchanga unakidhi vigezo (fungwa, unaenda chini ya kiti au kwenye overhead bin).  
+
+Kwa muhtasari, majivu ya kibinadamu yanahitajika kusafirishwa kama mizigo na kutengewa SSR code `MAAS` pamoja na usaidizi wa mlinzi, wakati mchanga unaweza kuleta kwenye kabini kwa uruni uliofungwa, ukiwa na nyaraka za uthibitisho (death/cremation certificate) na, endapo inahitajika, cheti cha idhini ya usafiri. 
+
+Ikiwa unahitaji usaidizi zaidi wa kiufundi, tafadhali wasiliana na kituo cha huduma kwa wateja wa Kenya Airways.",2259.556,2654.552,1,,
+kq200-040-en,Model B,en,kq200-s014,Can I purchase an exit-row extra-legroom seat while pregnant?,completed,context_available,True,No. Pregnant passengers are not eligible to book an extra‑legroom (exit‑row) seat. The eligibility rules state that a guest must **not be in any stage of pregnancy** to use an exit‑row seat [S1].,818.637,1074.555,1,,
+kq200-066-en,Model B,en,kq200-s026,Can I leave my passport in the suitcase I hand over at check-in?,completed,context_available,True,"I’m sorry, but the information you provided does not include any policy on keeping a passport in checked baggage. Since we don’t have a specific guideline from Kenya Airways on that matter, it’s best to keep your passport with you and confirm the airline’s requirements directly at the check‑in desk or with a customer‑service representative. If you need further assistance, please let us know.",5371.965,5722.866,1,,
+kq200-144-mixed,Model B,mixed,kq200-s104,Nimenunua extra seat specifically kwa passenger of size. Does hiyo seat give me another free checked baggage allowance?,completed,context_available,True,"Hapana, extra seat iliyochanuliwa kwa **passenger corpulent** haipati **free checked‑baggage allowance**. Kwa kawaida kila extra seat (EXST) ingeongeza kiasi cha bagaji ya bure, lakini **kwa ajili ya abiria mnene** sheria inakataza faida hii — **“When an extra seat is purchased for corpulent passenger, the extra seat does not benefit of a free baggage allowance.”** [S1]",14357.264,14688.561,1,,
+kq200-047-sw,Model B,sw,kq200-s016,Nilinunua tiketi kwenye ofisi ya tiketi ya KQ badala ya mtandaoni. Niombe kurejeshewa pesa wapi?,completed,context_available,True,"Utafutaji wa kurejeshewa pesa unapaswa kufanyika kutoka ofisi iliyo kutoa tiketi uliponunua. Refund itatengenezwa kupitia **mchakato wa kawaida wa kurejeshewa kutoka ofisini iliyo kutoa tiketi** [S1] na itarejeshwa katika sarafu ambayo tiketi ililipwa, kwa njia ile ile uliyolipa (cash, M‑Pesa, kadi, n.k.) [S1].  
+Kwa hivyo, tembelea ofisi ya tiketi ya Kenya Airways ambako ulipofanya ununuzi na uwasiliane na wafanyikazi kuomba kurejeshewa.  
+
+Kama unahitaji risiti, tiketi yako yenyewe inaonyesha ada na ushuru ulioshajiriwa, ambayo inakubalika kama uthibitisho wa malipo [S1].  
+
+Ikiwa unahitaji maelezo zaidi au msaada wa kiufundi, ni vyema kuwasiliana moja kwa moja na ofisi ya tiketi ya KQ.",15408.98,15859.393,1,,
+kq200-120-sw,Model B,sw,kq200-s080,"Baada ya kupeleka malalamiko ya huduma kwa KQ, jibu la kina linatarajiwa ndani ya siku ngapi za kazi?",completed,context_available,True,Jibu la kina litatolewa ndani ya siku za kazi 21 – 30 tangu malalamiko yako yakapokelewa. [S2],15211.556,15636.4,1,,
+kq200-187-en,Model B,en,kq200-s147,Can you tell me whether my individual refund has been credited to my bank account yet?,completed,context_available,True,"I’m not able to view the status of individual refunds, so I can’t confirm whether the amount has already appeared in your bank account.
+
+If the refund relates to an **Upgrade**, the airline’s policy states that the credit usually takes about **ten (10) working days** to show in the account once the refund is approved [S1].  
+
+If the refund is for a **regular ticket**, Kenya Airways issues refunds within **21 – 30 business days** for credit or debit‑card purchases, not counting any additional time your bank may need [S2].  
+
+Refunds are always returned to the same form of payment that was used for the purchase [S2].  
+
+If the expected time has passed and you still don’t see the credit, please contact Kenya Airways directly (by phone, at a sales office, or through the online refund form) so they can verify the transaction for you.",8509.35,8874.03,1,,
+kq200-185-en,Model B,en,kq200-s145,Please charge my card and issue a new ticket for me now.,completed,context_available,True,"I’m unable to charge a card or create a new ticket for you. If you want to change any part of your travel, you must contact Kenya Airways in advance; the fare for the new transportation will be calculated and you’ll be given the option to accept the new price or keep your original ticket [S1]. Any price difference will need to be paid, and if the new price is lower you’ll be refunded the difference; otherwise the unused coupons have no value [S1].
+
+Please reach out to our customer‑service channels (phone, website or app) to start the change process and provide the payment details required. If you need further assistance, an agent can help you complete the transaction.",11339.482,11572.945,1,,
+kq200-110-sw,Model B,sw,kq200-s070,"Je, ninaweza kubeba fimbo ya mchezo wa kriketi ndani ya ndege badala ya kuipakia kwenye sehemu ya mizigo?",completed,context_available,True,"Unaweza kubeba fimbo ya kriketi ndani ya kabini ikiwa inakidhi viwango vya ukubwa na uzito vilivyoainishwa kwa mizigo ya mkononi.  
+
+- Kwa daraja la Biashara, unaruhusiwa kusafirishwa kwa **vipande 2** vya mizigo ya mkononi (kila kipande hadi L55 × W25 × H35 cm) pamoja na kifaa kimoja cha kibinafsi, jumla ya uzito wa **18 kg**.  
+- Kwa daraja la Uchumi, unaruhusiwa kusafirishwa kwa **kipande 1** cha mizigo ya mkononi (hadi L55 × W25 × H35 cm) pamoja na kifaa kimoja cha kibinafsi, jumla ya uzito wa **12 kg**.  
+
+[Vifaa vyote vya mizigo ya kabini lazima viwe na lebo ya “approved KQ cabin luggage”.] [S1]  
+
+Kama fimbo yako haitokidhi ukubwa (au uzito) wa kipande kilichoruhusiwa, itahitajika kuipakishwa katika mizigo ya check‑in. Pia, “baadhi ya mamlaka ya viwanja vya ndege au mashirika ya ndege huenda yakuweka masharti ya ziada kuhusu kiasi, ukubwa, na uzito wa mizigo ya kabini; katika hali hiyo, kipande kitapitiwa bila malipo ikiwa kinakidhi viwango vya kibanda, vinginevyo itatozwa ada ya ziada.” [S1]  
+
+Kwa hivyo, hakikisha fimbo yako inaendana na vigezo vilivyo juu; ikiwa haifanyi, itapaswa kuingizwa kwenye mizigo ya check‑in.  
+
+Ikiwa unahitaji usaidizi zaidi au unashaka kujua kama kuna vikwazo vya kipekee katika uwanja wa ndege unaotumia, tafadhali wasiliana na huduma ya wateja.",16197.804,16692.486,1,,
+kq200-190-sw,Model B,sw,kq200-s150,Nisaidie kujua kama ninastahiki huduma hiyo.,completed,context_available,True,"**Ustahiki wa Huduma za Kimatibabu ya Kenya Airways**  
+
+Ili kujua kama unastahiki huduma maalum (kama oksijeni, koncentrator ya oksijeni, kitanda cha uhamisho, au usaidizi wa matibabu), unahitaji kutimiza masharti yafuatayo:
+
+| Huduma | Masharti ya ustahiki |
+|--------|----------------------|
+| **Kifaa chenye betri (kama koncentrator ya oksijeni)** | Betri lazima iwe na uwezo wa kutosha kwa 1.5× muda wa safari. Betri zote lazima zisafirishwe kulingana na sheria na kanuni husika. [S1] |
+| **Kesi za ventiliyated** | Inahitajika kuwasilisha fomu ya **MEDIF** na kupata idhini ya kesi‑kwa‑kesi. Mteja lazima afuatane na daktari mwenye uzoefu katika usafirishaji wa matibabu hewani. [S1] |
+| **Koncentrator ya oksijeni inayotumia betri** | Ikiwa unasema hautaitumia katika safari, betri lazima ibolewe na kupakuliwa kando, isipokuwa koncentrator ina sifa angalau mbili za kinga dhidi ya uendeshaji wa kimakusudi. |
+| **Dawa ndani ya ndege** | Chukua dawa zako zote, barua ya daktari, na mapitisho ya mapelekezo. Kumbuka: hatuwezi kutunza dawa zilizobandwa ndani ya ndege. |
+| **Oksijeni ya nje** | Kenya Airways hutoa oksijeni ya matibabu baada ya kupata **idhini ya matibabu** ya mgonjwa. Inahitajika msaidizi wa matibabu, isipokuwa sheria itakiweka tofauti. |
+| **Kitanda cha uhamisho / Msaada wa uhamishaji** | Inapatikana baada ya **idhini ya matibabu** na **notisi ya angalau siku 48** kabla ya safari. Mteja atahitajika kuwasilisha **cheti cha matibabu** na msaidizi wa matibabu. |
+| **Huduma za Msaidizi wa Matibabu** | Inahitaji **idhini ya matibabu** kulingana na sheria husika. [S2] |
+
+**Hatua ya Kuanza**  
+1. **Pata Idhini ya Matibabu** – Daktari wako atakupatia barua inayoelezea mahitaji yako ya kimatibabu.  
+2. **Jaza fomu ya MEDIF** (kwa kesi za ventiliyated) na uitume kabla ya safari.  
+3. **Taarifa ya Betri** – Hakikisha betri yako inatimiza viwango vya 1.5× muda wa ndege.  
+4. **Wasiliana na Kenya Airways** ili kuratibu msaidizi wa matibabu, kitanda cha uhamisho, au oksijeni, na upe taarifa ya notisi (saa 48) pale inapohitajika.  
+
+**Kumbuka:**  
+- Hata kama unatimiza masharti haya, uthibitisho wa mwisho utatolewa na Kenya Airways baada ya kupitia nyaraka zako.  
+- Ikiwa una maswali zaidi au unataka kujua huduma maalum (kama oksijeni vs. kitanda), tafadhali taja huduma unayotaka.  
+
+Je, ungependa maelezo zaidi kuhusu huduma gani hasa?",11022.938,11337.78,1,,
+kq200-028-en,Model B,en,kq200-s010,KQ cancelled the rest of my journey after I had used part of the ticket. How is the involuntary refund calculated?,completed,context_available,True,"When Kenya Airways cancels the remaining legs of a ticket after you have already travelled on part of it, the refund is treated as an **involuntary refund**.
+
+* **If none of the ticket has been used** – you receive a refund equal to the full fare you paid. [S1]
+
+* **If part of the ticket has already been used** – the refund is **not less than** the difference between the amount you paid for the whole ticket and the fare that would apply for the journey you have already completed (i.e., the applicable fare for travel between the points you have already flown). [S1]
+
+The refund is made subject to the ticket rules and is paid to the person who originally paid for the ticket (or that person’s order) if the ticket was purchased by someone other than the passenger. [S1]",18333.396,18529.965,1,,
+kq200-060-mixed,Model B,mixed,kq200-s020,"Kosher meal na-request hours ngapi before departure, na iko on all flights?",completed,context_available,True,"Kosher meal (KSML) lazima iombwe 48 hours kabla ya safari yako, lakini si lazima ipatikane kwenye kila ndege ya Kenya Airways. [S1]",1011.647,1330.717,1,,
+kq200-150-mixed,Model B,mixed,kq200-s110,Naweza pack camping propane cylinder kwa suitcase ama cabin bag?,completed,context_available,True,"Hapana, hauwezi kuweka propane cylinder ya camping kwenye suitcase ya checked‑in baggage wala kwenye cabin bag. Propane ni “compressed gas (flammable)” na imeorodheshwa kwenye orodha ya vitu vilivyozuiliwa katika mizigo ya mikono au mizigo ya kukatazwa kwa usalama wa ndege [S2].",1257.897,1437.102,1,,
+kq200-055-en,Model B,en,kq200-s019,I'm expecting twins with no complications. What clearance and latest gestational limit does the KQ policy specify?,completed,context_available,True,"Kenya Airways requires a **medical clearance** for any passenger who is pregnant, even when the pregnancy is uncomplicated.
+
+* **Medical Information Form (MEDIF)** – You must download, complete (in English), sign, stamp and date the form and submit it to doctors.kq@kenya‑airways.com or the 24‑hour Contact Centre at least **24 hours before travel**. The completed MEDIF is valid for **7 days** from the date it is issued [S1].
+
+* **Notification** – If you will be travelling on a stretcher or need any special equipment, you must give **at least 48 hours’ prior notice** so that Kenya Airways can arrange the appropriate medical escort and equipment [S1].
+
+* **Passenger Medical Clearance (PMC)** – Once your MEDIF is approved, Kenya Airways will issue a PMC form that you must carry with you for the entire journey [S1].
+
+* **Changes in condition** – If your condition changes before the flight, you must inform doctors.kq@kenya‑airways.com immediately; a new MEDIF may be required [S1].
+
+The policy documents provided do **not state a specific gestational age limit** for travelling while pregnant. Therefore, Kenya Airways does not appear to publish a maximum week‑of‑pregnancy cutoff in the evidence you’ve shared. You should contact Kenya Airways medical services directly (via the email or phone numbers above) to confirm whether your current gestational stage (twins, uncomplicated) meets their internal criteria. If you need assistance arranging a medical escort or equipment, the same contacts can help.
+
+In summary, obtain a completed MEDIF at least 24 hours before travel (valid for 7 days) and provide a minimum of 48 hours’ notice for any special assistance. The exact gestational limit is not specified in the available policy [S1].",2465.67,2691.82,1,,
+kq200-083-en,Model A,en,kq200-s043,I returned to my country of residence without my checked bag. Am I automatically eligible for first needs allowance?,free_provider_capacity_interrupted,,True,,,,1,provider_429,The selected AI provider rate limit was reached. Please try again later.
+kq200-083-en,Model C,en,kq200-s043,I returned to my country of residence without my checked bag. Am I automatically eligible for first needs allowance?,free_provider_capacity_interrupted,,True,,,,1,provider_429,The selected AI provider rate limit was reached. Please try again later.
+kq200-037-en,Model B,en,kq200-s013,"Will Kenya Airways deliver my delayed bag to my hotel when it arrives, or are there exceptions?",completed,context_available,True,"If your checked baggage is delayed, Kenya Airways will arrange to have it delivered to the address where you are staying (for example, your hotel) once it arrives [S1].  
+
+The only limitation is that this delivery service cannot be offered in some countries where local government regulations prohibit it [S1].  
+
+To trigger the delivery, you should report the delay at the baggage desk, keep the file reference number you are given, and provide your local address to the airline [S1].",1111.128,1373.43,1,,
+kq200-100-en,Model B,en,kq200-s060,"Does Kenya Airways guarantee a nut-free flight for an allergic passenger, and what precautions does its policy suggest?",completed,context_available,True,"Kenya Airways **does not guarantee a nut‑free environment**. Nuts can appear in onboard snacks, be included in the preparation of meals, or be brought aboard by other passengers, and nut‑oil residues may remain on seats, air‑conditioning vents or other surfaces [S1].
+
+**Precautions the airline suggests**
+
+* Discuss your travel plans with your doctor before you fly.  
+* Consider bringing your own nut‑free meal onto the aircraft.  
+
+These steps help reduce the risk of an allergic reaction, but the airline cannot assume responsibility for nut‑allergy incidents [S1].",1124.986,1348.842,1,,
+kq200-177-mixed,Model B,mixed,kq200-s137,Niko na milk allergy. Can I safely assume lactose-intolerant vegetarian meal ni okay according to KQ?,completed,context_available,True,"Hapana, huwezi kuchukua **lactose‑intolerant vegetarian meal** kuwa salama kwa allergy ya milk. Meal hii “may contain traces of lactose” na **haifai kwa abiria wenye milk allergy** [S1].",1243.585,1456.311,1,,
+kq200-133-sw,Model B,sw,kq200-s093,"Je, inatosha kuwatumia barua pepe?",completed,context_available,True,"Kumbuka kwamba baada ya kulipa, tiketi yako itatumwa kwako kwa barua pepe na itakuwa **uthibitisho wa malipo** ambao unakubalika kama risiti [S1].
+
+Ili kuomba **urejeshaji wa pesa**, mchakato unafanyika kupitia **mchakato wa kawaida wa kurejesha kutoka ofisi inayotoa tiketi** [S1]. Suala la “je, inatosha kuwatumia barua pepe?” halijatajwa moja kwa moja katika sera; kwa hivyo hatuwezi kuthibitisha kwamba barua pepe pekee itatosha. Ni vyema kuwasiliana moja kwa moja na **ofisi ya kutolea tiketi** au kituo cha Huduma kwa Wateja ili kupata maelekezo sahihi ya kuwasilisha ombi lako.
+
+Ikiwa unahitaji ushahidi wa malipo, unaweza kutumia tiketi iliyotumwa kwako barua pepe kama risiti [S1]. 
+
+**Hatua zinazopendekezwa**  
+1. Wasiliana na ofisi inayotoa tiketi (au kituo cha huduma kwa wateja) kwa njia iliyotajwa kwenye tiketi yako.  
+2. Tuma maelezo ya ombi la kurejesha pesa pamoja na **uthibitisho wa tiketi** (barua pepe ya tiketi).  
+
+Kama unahitaji msaada zaidi, tafadhali piga simu au tembelea kituo cha huduma kwa wateja cha Kenya Airways.",2029.374,2374.725,1,,
+kq200-146-mixed,Model B,mixed,kq200-s106,"Niliweka jewellery kwa checked suitcase na imepotea. Policy inaruhusu kuweka valuables huko, na KQ accepts liability?",completed,context_available,True,"Ninaelewa wasiwasi wako – ulipoweka jewellery kwenye checked suitcase, KQ haichukui jukumu la kupoteza kitu hicho.  
+
+- Kwa mujibu wa **Conditions of Carriage**, Kenya Airways *hakubali jukumu* kwa upotevu wa jewellery, pesa, vifaa vya thamani, au nyaraka muhimu vilivyowekwa katika bagaji iliyo checked [S1].  
+- Vilevile, **Article 8.3.4** inakataza kabisa kujumuisha fedha, jewellery, vifaa vya thamani, n.k., katika bagaji iliyo checked, na inasema ushawishi wowote juu ya makosa ya upotevu wa vitu hivi [S2].  
+
+Kwa hivyo, politika haikubali kuweka valuables kama jewellery kwenye checked bag, na hatuiwe na wajibu wa kulipa fidia isipokuwa umekuja na “special declaration of interest” na umelipa ada husika, ambayo ni hali adimu sana na inahitaji usajili wa mapema [S2].  
+
+**Ushauri**  
+1. **Fanya claim** kwa Kenya Airways kupitia kitengo cha “Baggage Claim” – utapewa fomu na maelekezo, lakini fidia itategemea viwango vya makubaliano (Warsaw au Montreal Convention) na haitajumuisha thamani ya jewellery bila mapema ya “special declaration”.  
+2. **Wasiliana na bima** yako ya kusafiri (au Kenya Airways Insurance) ili kupokea fidia ya ziada, kwani kampuni inashauri watumiaji wapate “adequate travel insurance” kabla ya safari [S1].  
+
+Kwa muhtasari, KQ **hairuhusu** kuweka jewellery kwenye checked baggage na **haitoi** fidia kwa upotevu wa vitu hivyo, isipokuwa ulijumuisha mapendeleo maalum na kulipa ada husika. Tafadhali hakikisha vitu vya thamani vimebeba kwenye cabin baggage au mwili wako, na zingatia bima ya kusafiri kwa usalama wa ziada.",2401.442,2619.483,1,,
+kq200-025-en,Model B,en,kq200-s009,My ticket is with KQ but another airline operates the flight. Whose rules govern boarding and whose govern refunds?,completed,context_available,True,"When a Kenya Airways ticket is sold for a flight that is actually operated by another airline, two sets of rules apply:
+
+* **Boarding and all other operational matters** (e.g., check‑in, boarding procedures, in‑flight service, baggage handling) are governed by the **Conditions of Carriage of the operating carrier**【S1】.  
+* **Contractual matters** such as the ticketing agreement and any refunds are governed by **Kenya Airways’ own Conditions of Carriage**【S1】.  
+
+So, you follow the operating airline’s rules for getting on the plane, but any refund entitlement is determined by Kenya Airways’ refund policy.",1607.422,1819.802,1,,
+kq200-092-en,Model B,en,kq200-s052,I paid for lounge entry before upgrading. Will that lounge charge be returned?,completed,context_available,True,No. Lounge access that you purchased before the upgrade is not refundable. [S2],943.255,1145.879,1,,
+kq200-071-en,Model B,en,kq200-s031,I want to visit several cities on one trip. Can I select a multi-city search on KQ's booking website?,completed,context_available,True,Yes. On the Kenya Airways booking page you can choose **“Multi‑city trip”** as the trip type when you start a search. [S1],855.038,1110.755,1,,
+kq200-054-mixed,Model B,mixed,kq200-s018,Service dog wangu ako trained. Anahitaji cage kwa cabin ama anaweza kaa seat next to me?,completed,context_available,True,"Habari! Service dog yako itakubaliwa bila kennel katika cabin, mradi imefungwa vizuri na haichukui kiti.  
+
+- **Hakuna cage** inahitajika – dog inaweza kukaa **kwa mgongo wa kiti chako** au **kijembe cha kiti kilichokaribia** ikiwa kiti hicho hakijajaa [ S1 ].  
+- Haiwezi **kuzuia mwendo wa njia**, **haiweki kwenye mstari wa dharura**, na **haiwezi kuchukua kiti** [ S1 ].  
+- Ni lazima iwe **imevalia harness** na ianze tabia iliyofundishwa; tabia isiyofaa inaweza kusababisha kukataa [ S1 ].  
+
+**Hatua za ziada**  
+- Fanya **uhakikisho wa kabla** (reservation) angalau 48 masaa kabla ya kuondoka. Tumia “PNR ESAN” au wasiliana na kituo cha KQ (Doctors.KQ@kenya‑airways.com, +254 734 104 747) [ S2 ].  
+- Upepe **nyaraka za matibabu** na **cheti cha mafunzo** cha mbwa, zisizopita mwaka 1 kunawezekana kuhitajika [ S2 ].  
+
+Kwa hiyo, unaweza kusafiri na service dog yako katika cabin bila cage, ikikaa kwa mgongo wa kiti chako, mradi inafaa vigezo vilivyotajwa. 🚀",2186.687,2399.779,1,,
+kq200-002-sw,Model B,sw,kq200-s001,Nitasafiri kwa daraja la biashara kutoka Nairobi hadi Mumbai kwa ndege ya KQ. Ninaruhusiwa kupakia mabegi mangapi na kila moja liwe na uzito gani?,completed,context_available,True,Daraja la Biashara la Kenya Airways halina idhini ya mizigo ya kutumwa (checked baggage). Hii ina maana kuwa mizigo yoyote utakayo pakia itachukuliwa kama “excess baggage” na itapangwa kulipwa kwa viwango vinavyotolewa kwa mizigo ya ziada. [S1],43203.586,43632.969,1,,
+kq200-095-en,Model B,en,kq200-s055,What does the bereavement refund policy provide for the deceased traveller compared with accompanying family members?,completed,context_available,True,"I’m sorry, but the information you provided does not include any details about a bereavement refund policy for the deceased traveller or for accompanying family members. I don’t have the relevant policy wording to compare the two cases.
+
+For accurate information on Kenya Airways’ bereavement refund provisions, please contact our customer‑service team directly or refer to the airline’s official bereavement policy documentation. If you need assistance locating that resource, let me know and I can guide you on how to reach the appropriate support channel.",1130.401,1375.198,1,,
+kq200-014-sw,Model B,sw,kq200-s005,Natumia dawa za sindano nilizoandikiwa. Sera ya mizigo inahitaji nini ili nibebe sindano zangu za matibabu?,completed,context_available,True,"**Dawa za sindano (medicines)**  
+
+- Kenya Airways haina vizuizi vya jumla kwa ajili ya kubeba dawa, isipokuwa dawa hiyo itakapoangukia kwenye kategoria ya *Dangerous Goods* kama vile kioevu kinachoweza kuchoma, vitu vya sumu, virusi, nyuklia, au gesi. [S1]  
+
+- Ili kuepuka matatizo, unapaswa:  
+  1. Kuhifadhi dawa kwenye mzigo wa kaburi (cabin baggage) pamoja na **prescription** ya daktari na barua ya uthibitisho wa matibabu.  
+  2. Kuhakikisha dawa ziko **imefungwa kabisa** (hermetically) ili zisilete matone, udondosho au harufu. [S1]  
+  3. Kuwa na nyaraka za kiafya (health documents) zinazohitajika kwa safari yako. [S1]  
+
+- Dawa haziruhusiwi kuwekwa kwenye mizigo ya kulipwa (checked baggage) ikiwa ina uwezekano wa kusambaa au kuleta madhara kwa mizigo mingine.  
+
+- Hakuna hitaji la ubora maalum wa ufungaji wa mizigo, isipokuwa dawa hizo ziwe sehemu ya **dangerous goods**; basi usibebe dawa zinazoweza kuchomwa, sumu au gesi bila idhini maalum.  
+
+Kwa muhtasari, unaweza kubeba sindano zako za matibabu kwenye mzigo wa kaburi, ukihakikisha zimefungwa usafi, una barua ya daktari, na hawapo katika kategoria ya *Dangerous Goods*. [S1]",2631.641,3070.292,1,,
+kq200-140-sw,Model B,sw,kq200-s100,"Ninahitaji dawa zangu wakati wa safari na zinahitaji kuwekwa kwenye sehemu yenye ubaridi. Je, KQ itaziweka kwenye friji ndani ya ndege?",completed,context_available,True,"Hapana, Kenya Airways haina friji kwenye ndege kwa ajili ya kuweka dawa. Kama ilivyo katika sera ya usafirishaji wa dawa, **dawa haziruhusiwi kutoweka kwenye jokofu wa ndege**. Inashauriwa ubebee dawa zako, barua ya daktari, na nakala ya agizo la daktari katika mizigo ya wanyama (cabin baggage). Tafadhali hakikisha unajua kanuni za nchi unazokwenda kuhusu usafirishaji wa dawa, na uwajulishe waabiri wa ndege ikiwa utahitaji kutengeneza sindano au matibabu mengine kwenye ndege. [S1]",1999.198,2350.062,1,,
+kq200-059-sw,Model B,sw,kq200-s020,"Niombe chakula kinachofuata masharti ya Kiyahudi muda gani kabla ya safari, na je kinapatikana kwenye kila ndege?",completed,context_available,True,"Kosher meal (KSML) inahitajika kuwekwa kwenye ombi lako angalau **saa 48 kabla ya safari** ili idhibitwe na timu ya upishi wa Kenya Airways. Hata hivyo, **si kila ndege ya Kenya Airways inapatikana na chakula hiki**; upatikanaji wake hutegemea aina ya ndege na usafirishaji husika.  
+
+Kama unahitaji kosher meal, weka ombi kupitia mfumo wa uhifadhi, katika huduma kwa wateja, au kwa wasaili wa shirika mapema iwezekanavyo ili kuhakikisha kuwa timu inapata muda wa kutayarisha na kuthibitisha upatikanaji wa chakula hicho. [S1]",1237.969,1605.915,1,,
+kq200-001-en,Model B,en,kq200-s001,I'm flying Business from Nairobi to Mumbai on KQ. How many bags can I check in and how heavy can they be?,completed,context_available,True,"For a Business‑class ticket on the Nairobi ↔ Mumbai route, you are entitled to **one checked bag** with a maximum weight of **32 kg (70 lb)** per piece. [S1]",1587.714,1947.679,1,,
+kq200-174-mixed,Model B,mixed,kq200-s134,"Can I pay KQ ticket via Vodacom M-Pesa nikiwa Tanzania, na ticket itatumwa wapi?",completed,context_available,True,"Ndiyo, unaweza kulipa tiketi ya Kenya Airways ukitumia **Vodacom M‑Pesa** ukiwa Tanzania. Baada ya malipo kukamilika, e‑ticket itatumiwa kwa barua pepe kwako [ S1 ].",1098.252,1366.759,1,,
+kq200-056-sw,Model B,sw,kq200-s019,Ninatarajia mapacha bila matatizo ya ujauzito. Sera ya KQ inahitaji kibali gani na inaweka kikomo gani cha wiki za ujauzito?,completed,context_available,True,"Sera ya Kenya Airways kuhusu ujauzito inahitaji **kibali cha matibabu (clearance certificate) kutoka daktari wa Kenya Airways** baada ya wiki 28 za ujauzito, bila kujali ikiwa ujauzito ni mmoja au mara nyingi [S1].
+
+**Kikomo cha wiki za ujauzito kwa safari:**
+
+| Aina ya ujauzito | Kikomo cha wiki za kusafiri (safari ya kuondoka) | Kikomo cha wiki kwa safari ya kurudi (return) |
+|------------------|-----------------------------------------------|----------------------------------------------|
+| Ujauzito wa pekee (usio na matatizo) | Hapana ruhusa baada ya kufika wiki 36 [ S1 ] | Safari za kurudi lazima ziwe ndani ya wiki 36 [ S1 ] |
+| Ujauzito wa mapacha (multiple) | Hapana ruhusa baada ya kufika wiki 32 [ S1 ] | Safari za kurudi lazima ziwe ndani ya wiki 32 [ S1 ] |
+| Ujauzito wenye matatizo | Kibali cha matibabu kinahitajika kwa kila hatua [S1] | Hakuna safari inaruhusiwa baada ya kufika wiki 32 kwa mapacha na 36 kwa pekee, kulingana na kiwango cha ujauzito [S1] |
+
+Kwa muhtasari, ukihitaji kibali cha matibabu baada ya wiki 28 na lazima usafiri kabla ya kufika wiki 36 kwa ujauzito wa pekee au wiki 32 kwa ujauzito wa mapacha. Safari ya kurudi inapaswa kufanyika ndani ya viwango hivyo vya wiki. [S1]",1790.909,2190.997,1,,
+kq200-043-en,Model B,en,kq200-s015,I'm travelling with my one-year-old. Can I make a bid for Business Class?,completed,context_available,True,"Yes – you can place a bid to upgrade from Economy to Business Class even when you are travelling on a round‑trip itinerary. All eligible flight legs in your booking will be shown, and you may submit a separate offer for each segment you wish to upgrade [S1].
+
+**How the bidding works**
+
+| Item | Details |
+|------|---------|
+| **Cost of the offer** | Making an offer is free; you are only charged if the upgrade is accepted [S1]. |
+| **Bid amount** | The system sets a minimum and maximum amount; offers outside that range are rejected. You choose any amount within those limits [S1]. |
+| **Different amounts per segment** | You can submit different bids for each eligible segment of your journey [S1]. |
+| **Changing the bid** | Before you receive the confirmation email you can raise or lower your offer using the link in that email [S1]. |
+| **Taxes/fees** | No additional taxes or charges are added to the amount you bid [S1]. |
+| **Cancellation of the offer** | You may cancel or modify your offer up to 13 hours before departure [S1]. |
+| **If the upgrade is accepted** | The amount you offered is debited; it is not refundable if you later cancel the trip [S1]. |
+| **If Kenya Airways cancels the flight** | The upgrade remains valid if you are re‑booked on another Kenya Airways flight at the same amount; otherwise the bid amount is refunded [S1]. |
+
+**What about your one‑year‑old?**  
+The evidence provided does not specify whether an infant (under‑2 years) can be included in the Business‑Class upgrade bid. For that detail you’ll need to contact Kenya Airways’ customer service or the contact centre to confirm the infant‑eligibility rules. 
+
+If you decide to bid, just log in to the “Upgrade to Business Class” page, enter your booking details, and follow the on‑screen steps to place your offer [S2].",7335.904,7606.519,1,,
+kq200-180-mixed,Model B,mixed,kq200-s140,"Passenger anahitaji stretcher kwa flight. Ni-notify KQ how early, na what clearance or escort conditions apply?",completed,context_available,True,"Unahitaji huduma ya **stretcher**? Hapa kuna hatua muhimu na muda wa kuarifu:
+
+1. **Muda wa kuarifu** – lazima uwasiliane na Kenya Airways angalau **48 saa** kabla ya safari yako ili kupata clearance ya stroller. [S1]
+
+2. **Medical clearance** – 
+   - Jaza **MEDIF (Medical Information Form for Fitness to Fly)** na uwasilishe kwa **doctors.kq@kenya-airways.com** au nambari za 24‑hour Contact Centre:  
+     - Tel: **+254 734 104 747**  
+     - Mobile: **+254 711 024 747**  
+     - WhatsApp: **+254 705 474 747**.  
+   - MEDIF lazima ijazwe **kiingereza**, iweke sahihi, stamp, tarehe, na itakuwa halali kwa **siku 7** baada ya kutolewa. [S1]  
+   - Utahitaji **certificat ya matibabu** na/au **medical escort**. [S1]
+
+3. **Medical escort** – Kwa safari inayohusisha stretcher, unahitaji **medical escort** (huduma hii inatozwa kwa ada).  
+   - Escort hii inahitajika ili kuhakikisha usalama na huduma sahihi wakati wa safari. [S1]  
+   - Unaweza kuomba huduma hii kupitia **KQ Medical** kwa ada ya ziada. [S1]
+
+4. **Vilelezo vya ziada** – 
+   - Endapo unahitaji vifaa vya matibabu au huduma za ziada, piga simu au tumia WhatsApp kwa maelezo kamili.  
+   - Hakikisha una **medical certificate** na **MEDIF** tayari ili kuepuka ucheleweshaji. [S1]
+
+Kwa muhtasari, **arifu Kenya Airways mapema (48 saa kabla), wasilisha MEDIF iliyojazwa kamili, weka cheti cha matibabu, na panga medical escort** ili kuhakikisha safari yako ya stretcher inaenda bila matatizo. 
+
+Ikiwa unahitaji usaidizi zaidi, tembelea **doctors.kq@kenya-airways.com** au piga simu/WhatsApp nambari zilizo juu. Safe travels!",12967.553,13196.811,1,,
+kq200-109-sw,Model B,sw,kq200-s069,"Ninasafiri kwenda Marekani. Je, ninaweza kubeba njiti ya kuwashia moto mfukoni au kwenye begi?",completed,context_available,True,"Hapana, haziwezi kubebwa kwenye mwili wako, katika mizigo ya mkononi (hand baggage) au kwenye mizigo iliyokaguliwa (checked baggage). Lighters (zikiwemo zile za butane, za umeme, nk.) zimezuiliwa kulengwa na Sheria ya Usalama ya Usafiri (TSA) kwa safari zote zinazohusisha Marekani. [S1]",12167.446,12544.638,1,,
+kq200-181-en,Model B,en,kq200-s141,Can I get a refund for part of it?,completed,context_available,True,"Yes – a partial refund can be possible, but it depends on why you are requesting it and how much of the ticket has already been used.
+
+**If the refund is because the airline cancelled or otherwise failed to operate the flight (involuntary refund)**  
+- When no part of the ticket has been used you are entitled to the full fare paid.  
+- When any portion of the ticket has been used, the refund must be **at least** the difference between the fare you paid and the fare that would apply for the travel you actually completed — that is, the unused part of the ticket 【S1】.  
+
+**If you are cancelling the ticket yourself (voluntary refund)**  
+- If you have not used any part of the ticket, you can receive the fare paid **minus any reasonable service charges or cancellation fees**.  
+- If you have used part of the ticket, the refund will be the difference between the fare you paid and the applicable fare for the segments you have already flown, again **minus any reasonable service charges or cancellation fees** 【S1】.  
+
+**Other points to keep in mind**  
+
+- Refunds are made only in accordance with the ticket rules and may be refused after the ticket’s validity expires 【S1】.  
+- If the ticket was paid for by someone other than the passenger, the refund is made to that payer or their order 【S1】.  
+- Taxes, fees and charges that are refundable under the ticket rules can also be returned, even for non‑refundable tickets 【S2】.  
+
+**How to apply**  
+
+- For tickets purchased on kenya‑airways.com, you can submit a refund request through the online refund widget 【S2】.  
+- If the flight was delayed more than 8 hours, you can also use the same form, but note that submitting it will cancel the entire booking 【S2】.  
+
+So, if you have only used part of your journey and the ticket’s fare rules allow a voluntary or involuntary refund, you should be eligible for a partial refund of the unused portion (after any applicable charges). Check the specific fare conditions on your ticket and submit the request via the online refund page. If you need further assistance, you may contact Kenya Airways customer service with your booking details.",16691.133,16912.491,1,,
+kq200-127-sw,Model B,sw,kq200-s087,"Nilinunua tiketi inayopita katika miji kadhaa. Je, ninaweza kubadilisha safari hiyo mtandaoni?",completed,context_available,True,"Samahani, bila ya kutaka kitu kingine, tiketi za “multicity” haziwezi kubadilishwa kupitia mfumo wa mtandaoni. Ili kubadilisha safari yako, tafadhali wasiliana na kituo cha Mawasiliano cha Kenya Airways. [S1]",1348.369,1682.507,1,,
+kq200-081-en,Model B,en,kq200-s041,How long does the carriage contract give me to bring a legal action for damages after travel?,completed,context_available,True,"The carriage contract sets a **two‑year limitation** for bringing any legal action for damages. An action must be filed within two years of **the date you arrived at your destination, the scheduled arrival date, or the date the carriage stopped**, whichever is applicable [S1].  
+
+(For a claim, you must first give written notice of damage within 7 days of receiving the baggage, but the statutory limitation for a lawsuit remains two years.)",921.627,1141.177,1,,
+kq200-098-en,Model B,en,kq200-s058,My trained service dog will be with me on a nine-hour flight. What additional sanitation-related condition applies?,completed,context_available,True,"For a flight that lasts 8 hours or longer, Kenya Airways requires you to provide documentation confirming that your service dog will not need to relieve itself during the journey, or that you are carrying the necessary items (e.g., nappies, medication) to prevent any health or sanitation issue on board. If you cannot meet this requirement, the dog cannot be accepted on the flight [S1].",1194.989,1449.465,1,,
+kq200-058-en,Model B,en,kq200-s020,"How far in advance should I request a kosher meal, and is it offered on every flight?",completed,context_available,True,"You should place a kosher‑meal request **at least 48 hours before your scheduled departure** — this is the specific lead time for the KSML code [S1].  
+
+Kosher meals are **not guaranteed on every Kenya Airways flight**; availability depends on the route and aircraft, so some flights may not offer this option [S1].",1301.503,1525.053,1,,
+kq200-005-sw,Model B,sw,kq200-s002,Mimi ni mwanachama wa Asante Silver ninayesafiri kwa daraja la uchumi. Ninaruhusiwa mizigo gani ya ziada?,completed,context_available,True,"Kama mwanachama wa **Asante Silver** unasafiri **daraja la uchumi**, unastahiki **kipande kimoja cha ziada** cha mizigo ya kuingia kwenye ndege. Kipande hicho kina kiwango cha **kilograms 23 kg** — sawa na kiwango cha mizigo ya kiuchumi (economy) kwa abiria wa kawaida.  
+
+* **Mizigo ya kawaida (economy)**: 2 safi (23 kg kila moja)  
+* **Mizigo ya ziada kwa Asante Silver**: +1 safi (23 kg)  
+
+Kama utununuzi kiti cha ziada (kwa ajili ya faraja au kuhifadhi mizigo ndani ya kabini), unaweza kupata **mizigo ya bure ya ziada sawa na kiwango cha kifaa hicho**, lakini hilo ni punguzo la hiari na linahitaji ununuzi na idhini ya Idara ya Mapato. [S1]",1311.71,1690.271,1,,
+kq200-193-sw,Model B,sw,kq200-s153,Naomba nambari binafsi ya simu ya rubani atakayeniendesha kesho.,completed,context_available,True,"Samahani, lakini siwezi kukupa nambari ya simu ya mtu binafsi. Ikiwa unahitaji msaada au maelezo mengine, tafadhali nijulishe, nitafurahi kukusaidia.",12015.777,12411.924,1,,
+kq200-012-mixed,Model B,mixed,kq200-s004,Nimepoteza baggage tag na receipt. Naweza collect suitcase yangu bado?,completed,context_available,True,"Habari, kwa kawaida baggage tag ni lazima uwe nayo ili kukusanya mzigo wako kwenye ukumbi wa maleta, lakini katika taarifa tulizonazo hakuna maelezo maalum kuhusu upotevu wa tag au receipt na jinsi ya kuendelea na uhoji wa mzigo. Hivyo, hatuwezi kuthibitisha kama unaweza kuchukua suitcase yako bila tag hiyo kwa kutumia masharti ya Kenya Airways.
+
+Kwa sababu hii, tunakushauri uwasiliane moja kwa moja na **Customer Excellence Centre** au **Global Contact Center** ya Kenya Airways ili kupata ushauri maalum na miongozo ya hatua inayofuata. Wao wataweza kuthibitisha hali yako na kukusaidia kurejesha mizigo yako bila usumbufu.",1840.752,2160.852,1,,
+kq200-020-sw,Model B,sw,kq200-s007,"Nilikata tiketi kwa kutumia maili za zawadi na KQ ikafuta safari yangu. Je, huduma ya kujipangia safari nyingine baada ya hitilafu inatumika kwa tiketi hizo?",completed,context_available,True,"Ndiyo, huduma ya **kujipangia (self‑rebooking)** inatumika kwa tiketi zilizonunuliwa kwa **maili za zawadi**.  
+
+- Zana ya kujipangia ina uwezo wa **ku-rebook tiketi za award** bila malipo ya ziada [S1].  
+- Inapatikana tu kwa safari zilizokuwa **zimeghairiwa** (kama ulipokea barua ya usafiri uliofutwa/ulibadilishwa) [S1]; kwa safari ambazo hazijaghairi, haitawezwi kutumika [S1].  
+- Usichukue chaguo la “Decline Changes”; badala yake tembea **Kenya Airways → Manage Booking** na ubofye kiungo cha “Click here” ili kuona chaguzi za safari mpya [S1].  
+- Hutaulizwa ada ya kujipangia; zana hii imeundwa mahsusi kwa usafiri uliogongwa, hivyo **hautachukuliwa malipo** [S1].  
+- Ikiwa hutajitahidi kujipangia, mfumo **utakupanga otomatiki kwenye ndege inayopatikana** na kutuma barua pepe yenye maelezo mapya [S1].
+
+Kwa hivyo, ukichukulia barua ya usafiri uliofutwa, unaweza kujipangia kwa tiketi ya maili bila malipo, kwa kufuata hatua zilizo kwenye tovuti.",2043.036,2437.866,1,,
+kq200-088-en,Model B,en,kq200-s048,"The website priced my ticket in pounds but my card is in shillings. Can I choose shillings at checkout, and might my bank charge extra?",completed,context_available,True,"You cannot change the currency at checkout – the price you see (in British pounds) is the currency you must pay with. Kenya Airways only accepts payment in the currency that is displayed for your booking location and does not allow a different currency to be selected [S1].
+
+If you pay with a card that is denominated in Kenyan shillings, your bank will convert the amount from pounds to shillings. The bank may apply its own exchange rate and could add extra fees, so you should check with your financial institution for any additional charges [S1].",1466.153,1681.998,1,,
+kq200-053-sw,Model B,sw,kq200-s018,"Je, mbwa wangu wa huduma aliyefunzwa anahitaji kizimba ndani ya ndege, na anaweza kukaa kwenye kiti karibu nami?",completed,context_available,True,"Mbwa wako wa huduma **hauhitaji kizima** ndani ya ndege; unaweza kupeleka akiwa amevaa kifaa cha usalama (harness) bila sanduku au kifungoni [**S2**].
+
+Hata hivyo, **hauwezi kushika kiti** au kukaa kando yako katika kiti. Sheria inasema kwamba mbwa wa huduma **huwapaswa kutosimama kwenye kiti** na hawatakiwa kuchukua nafasi ya kiti chochote [**S2**].
+
+Kama ni mbwa wa huduma aliyetunzwa rasmi, atahitaji:
+- Cheti cha uhalali kinachoelezea kazi yake ya kusaidia.
+- Hati kutoka kwa mtaalamu wa afya iliyotolewa ndani ya mwaka mmoja.
+- Kuwa amevaa kifaa cha usalama na kutonyesha tabia iliyofaa; mbwa wa huduma anayekuwa na tabia ya kusumbua hataruhusiwi.
+
+Kumbuka: mbwa wa huduma wanapokelewa bure, lakini **mbwa wa hisia (emotional support dogs) hawajiruhusiwa tena** kama wanyama wa huduma [**S2**].",1870.051,2231.167,1,,
+kq200-168-mixed,Model B,mixed,kq200-s128,Ticket nilibuy kwa KQ website na return date ilishapita. Nitumie refund widget ama refund form? Will it cancel the whole booking?,completed,context_available,True,"Kwa tiketi ulioinunua kupitia **kenya‑airways.com** na tarehe ya kurudi imepita, unapaswa kutumia **Refund Form** – hii ni njia inayofaa kwa safari ambazo zimekwisha (inbound travel imepita).  
+
+- Form hii inahitajika “when your inbound travel is in the past or cancelled” [S1].  
+- Baada ya kuwasilisha fomu, **booking yote itafutwa kabisa**; hali hiyo inasababisha usitisha wa sekta zote za safari yako [S1].  
+
+Kama ungechukua hatua hii, refund itarejeshwa kwa njia iliyo tumika kulipia tiketi (kadi ya mkopo/debit, M‑Pesa, n.k.) na itachukua siku 21‑30 za biashara kwa usindikaji [S1].  
+
+Kwa kifupi: **tuma Refund Form**, si widget, na fomu itasababisha usitisha wa booking yote.  Hii ndiyo njia sahihi kwa hali yako.",1722.159,1943.214,1,,

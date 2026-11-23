@@ -14,6 +14,10 @@ from app.services.firebase_auth import FirebaseConfigurationError, get_firebase_
 
 logger = logging.getLogger(__name__)
 FIRESTORE_READ_TIMEOUT = 10
+# Knowledge-base publication reads complete manifests and chunk collections.
+# They need a wider deadline than small profile/dashboard reads, especially on
+# first use when Firestore establishes a local network channel.
+FIRESTORE_BULK_READ_TIMEOUT = 60
 TRANSACTION_MAX_ATTEMPTS = 3
 Result = TypeVar("Result")
 

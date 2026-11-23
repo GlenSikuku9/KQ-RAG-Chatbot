@@ -11,7 +11,11 @@ from app.models.database import encode_document_id, utc_now
 from app.models.document import document_id_for_source
 from app.models.document_chunk import DocumentChunk
 from app.models.ingestion import ActiveDocumentVersion, DocumentRecord, IngestionResult, ProcessingAttempt
-from app.services.firestore_client import FIRESTORE_READ_TIMEOUT, firestore_operation, run_transaction
+from app.services.firestore_client import (
+    FIRESTORE_BULK_READ_TIMEOUT,
+    firestore_operation,
+    run_transaction,
+)
 
 
 logger = logging.getLogger(__name__)
@@ -43,7 +47,10 @@ class KnowledgeBaseStore:
 
     def read(self, source: str, transaction: Transaction | None = None) -> DocumentRecord | None:
         with firestore_operation():
-            snapshot = self._reference(source).get(transaction=transaction, timeout=FIRESTORE_READ_TIMEOUT)
+            snapshot = self._reference(source).get(
+                transaction=transaction,
+                timeout=FIRESTORE_BULK_READ_TIMEOUT,
+            )
         if not snapshot.exists:
             return None
         try:
@@ -69,7 +76,8 @@ class KnowledgeBaseStore:
         """Read all active manifests and their chunks from a single Firestore snapshot."""
         def operation(transaction: Transaction) -> list[DocumentChunk]:
             snapshots = self.client.collection("documents").stream(
-                transaction=transaction, timeout=FIRESTORE_READ_TIMEOUT,
+                transaction=transaction,
+                timeout=FIRESTORE_BULK_READ_TIMEOUT,
             )
             chunks: list[DocumentChunk] = []
             for snapshot in snapshots:
@@ -91,7 +99,11 @@ class KnowledgeBaseStore:
             self.client.collection("document_chunks").document(encode_document_id(key))
             for key in record.active.chunk_ids
         ]
-        snapshots = self.client.get_all(references, transaction=transaction, timeout=FIRESTORE_READ_TIMEOUT)
+        snapshots = self.client.get_all(
+            references,
+            transaction=transaction,
+            timeout=FIRESTORE_BULK_READ_TIMEOUT,
+        )
         try:
             chunks = [DocumentChunk.model_validate(snapshot.to_dict()) for snapshot in snapshots]
             chunks.sort(key=lambda chunk: chunk.chunk_index)

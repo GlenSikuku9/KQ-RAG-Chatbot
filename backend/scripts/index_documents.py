@@ -33,7 +33,13 @@ def main(argv: list[str] | None = None) -> int:
                 parser.error("--rebuild cannot be combined with --query")
             request = RetrievalRequest(question=args.query, language=args.language, top_k=args.top_k)
             response = get_retrieval_service().retrieve(request)
-            print(response.model_dump_json(indent=2))
+            # ASCII escaping keeps diagnostic JSON printable in Windows
+            # terminals while json.loads restores the original Unicode text.
+            print(json.dumps(
+                response.model_dump(mode="json"),
+                ensure_ascii=True,
+                indent=2,
+            ))
         else:
             if args.language is not None or args.top_k is not None:
                 parser.error("--language and --top-k require --query")

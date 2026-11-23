@@ -55,7 +55,7 @@ def _source_overlap(
     selected_sources: set[str],
     expected_sources: set[str],
 ) -> tuple[float, float]:
-    """Calculate custom document-source overlap, not RAGAS metrics."""
+    """Calculate custom document-source overlap for retrieval evaluation."""
 
     matched = selected_sources & expected_sources
     precision = (
@@ -145,10 +145,6 @@ def _context_outcome(case: dict, prepared) -> dict:
         "selected_documents": sorted(selected_sources),
         "source_review": case.get("source_review"),
         "reference_answer": case.get("expected_answer"),
-        "ragas_reference_status": case.get(
-            "ragas_reference_status",
-            "missing",
-        ),
         "decision": prepared.decision,
         "decision_reason": prepared.reason,
         "document_source_precision": precision,
@@ -298,7 +294,6 @@ def run_context_only(
         "knowledge_base_version": knowledge_base_version,
         "context_methodology": {
             "metric_name": "document_source_overlap",
-            "ragas_metric": False,
             "unique_questions": len(context_outcomes),
             "eligible_answerable_questions": sum(
                 item["context_metric_eligible"]
@@ -470,7 +465,6 @@ def run(dataset: dict, model_ids: list[str] | None = None, persist: bool = False
         ],
         "context_methodology": {
             "metric_name": "document_source_overlap",
-            "ragas_metric": False,
             "unique_questions": len(context_outcomes),
             "eligible_answerable_questions": len(eligible_context),
             "unsupported_questions_excluded": (

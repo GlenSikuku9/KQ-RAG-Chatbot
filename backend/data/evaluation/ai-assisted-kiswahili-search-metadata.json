@@ -1,0 +1,3839 @@
+{
+  "status": "AI-assisted search metadata; not official Kenya Airways translations",
+  "coverage": {
+    "parents": 188,
+    "documents": 14
+  },
+  "verification": "Terminology requires independent bilingual policy review before production use.",
+  "parents": [
+    {
+      "parent_chunk_id": "b4a045cd6f8b69930dfc1a8e374fd867f1e66c2da2b55accd361d072cef0818e",
+      "document": "Baggage Allowance Information",
+      "document_title_kiswahili": "Taarifa za kiwango cha mizigo",
+      "source_heading_english": "Baggage AllowanceBaggage AllowanceBaggage Allowance",
+      "terminology": [
+        {
+          "english": "baggage allowance",
+          "kiswahili": "kiwango cha mizigo"
+        },
+        {
+          "english": "checked baggage",
+          "kiswahili": "mizigo ya kupakiwa"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "c98e558acca18cb892616cdf275ce920947e3f4d79bc22b77607530949c96d08",
+      "document": "Baggage Allowance Information",
+      "document_title_kiswahili": "Taarifa za kiwango cha mizigo",
+      "source_heading_english": "Free Checked Baggage Allowance:Free Checked Baggage Allowance:Free Checked Baggage Allowance:",
+      "terminology": [
+        {
+          "english": "baggage allowance",
+          "kiswahili": "kiwango cha mizigo"
+        },
+        {
+          "english": "business class",
+          "kiswahili": "daraja la biashara"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "e59caebaa2e3d4febd4d6409ca9c8c8d2f07a291841d22ea84b0b2fb094b06f9",
+      "document": "Baggage Allowance Information",
+      "document_title_kiswahili": "Taarifa za kiwango cha mizigo",
+      "source_heading_english": "FREQUENT FLYER MEMBERSFREQUENT FLYER MEMBERSFREQUENT FLYER MEMBERS",
+      "terminology": [
+        {
+          "english": "business class",
+          "kiswahili": "daraja la biashara"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "cfea193aec0d73f6dde1ada11dcf1a0db832fa824542df513308a4c275d646c2",
+      "document": "Baggage Allowance Information",
+      "document_title_kiswahili": "Taarifa za kiwango cha mizigo",
+      "source_heading_english": "Reference TableReference TableReference Table",
+      "terminology": [
+        {
+          "english": "ticket",
+          "kiswahili": "tiketi"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "6506daa9afd1313e628476a12dcf98169f7734e4c1cd36f9d93df12b0bdcc85c",
+      "document": "Baggage Allowance Information",
+      "document_title_kiswahili": "Taarifa za kiwango cha mizigo",
+      "source_heading_english": "Reference TableReference TableReference Table",
+      "terminology": [
+        {
+          "english": "baggage allowance",
+          "kiswahili": "kiwango cha mizigo"
+        },
+        {
+          "english": "checked baggage",
+          "kiswahili": "mizigo ya kupakiwa"
+        },
+        {
+          "english": "cabin baggage",
+          "kiswahili": "mizigo ya mkononi"
+        },
+        {
+          "english": "ticket",
+          "kiswahili": "tiketi"
+        },
+        {
+          "english": "wheelchair",
+          "kiswahili": "kiti cha magurudumu"
+        },
+        {
+          "english": "conditions",
+          "kiswahili": "masharti"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "aa717413ce00f5e237caad78098ad5240e17c45fbc0979937b381cdda095d2cb",
+      "document": "Baggage Allowance Information",
+      "document_title_kiswahili": "Taarifa za kiwango cha mizigo",
+      "source_heading_english": "ExceptionsExceptionsExceptions",
+      "terminology": [
+        {
+          "english": "baggage allowance",
+          "kiswahili": "kiwango cha mizigo"
+        },
+        {
+          "english": "checked baggage",
+          "kiswahili": "mizigo ya kupakiwa"
+        },
+        {
+          "english": "excess baggage",
+          "kiswahili": "mizigo inayozidi kiwango"
+        },
+        {
+          "english": "ticket",
+          "kiswahili": "tiketi"
+        },
+        {
+          "english": "check-in",
+          "kiswahili": "kuingia kwenye safari"
+        },
+        {
+          "english": "charges",
+          "kiswahili": "gharama"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "092a4fe061b0f0801a91590cd3d4fad73226dc4844ea7899c6baac3a2fdad941",
+      "document": "Baggage Allowance Information",
+      "document_title_kiswahili": "Taarifa za kiwango cha mizigo",
+      "source_heading_english": "Pooling of AllowancePooling of AllowancePooling of Allowance",
+      "terminology": [
+        {
+          "english": "baggage allowance",
+          "kiswahili": "kiwango cha mizigo"
+        },
+        {
+          "english": "checked baggage",
+          "kiswahili": "mizigo ya kupakiwa"
+        },
+        {
+          "english": "cabin baggage",
+          "kiswahili": "mizigo ya mkononi"
+        },
+        {
+          "english": "check-in",
+          "kiswahili": "kuingia kwenye safari"
+        },
+        {
+          "english": "charges",
+          "kiswahili": "gharama"
+        },
+        {
+          "english": "conditions",
+          "kiswahili": "masharti"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "94fdddb93f7d6ab885cff029345c213efa7c10cba4a73c40c54fb59ef13d6a35",
+      "document": "Baggage Allowance Information",
+      "document_title_kiswahili": "Taarifa za kiwango cha mizigo",
+      "source_heading_english": "Pooling of AllowancePooling of AllowancePooling of Allowance",
+      "terminology": [
+        {
+          "english": "baggage allowance",
+          "kiswahili": "kiwango cha mizigo"
+        },
+        {
+          "english": "checked baggage",
+          "kiswahili": "mizigo ya kupakiwa"
+        },
+        {
+          "english": "conditions",
+          "kiswahili": "masharti"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "27fda82a75c875bf905fe80a56ed952dc8345c3d433030eae51d2e9552a971ed",
+      "document": "Baggage Allowance Information",
+      "document_title_kiswahili": "Taarifa za kiwango cha mizigo",
+      "source_heading_english": "Pooling of AllowancePooling of AllowancePooling of Allowance",
+      "terminology": [],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "3de6ae18a43548fcd73d5c0390a0bbb96110d36fb208a3308ccbaf418d5c6f21",
+      "document": "Baggage Allowance Information",
+      "document_title_kiswahili": "Taarifa za kiwango cha mizigo",
+      "source_heading_english": "Pooling of AllowancePooling of AllowancePooling of Allowance",
+      "terminology": [],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "5f9a0e950ff6b995222d5f346e42f887fb180a02372d16f4ac207e514b3b8baa",
+      "document": "Baggage Allowance Information",
+      "document_title_kiswahili": "Taarifa za kiwango cha mizigo",
+      "source_heading_english": "Note:Note:Note:",
+      "terminology": [
+        {
+          "english": "baggage allowance",
+          "kiswahili": "kiwango cha mizigo"
+        },
+        {
+          "english": "booking",
+          "kiswahili": "nafasi ya safari"
+        },
+        {
+          "english": "conditions",
+          "kiswahili": "masharti"
+        },
+        {
+          "english": "exception",
+          "kiswahili": "hali isiyofuata kanuni ya kawaida"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "0ba3841f20e5e09c5b39ad50b3ac8296ef877f0b72efdf7fc91a840b5b75a93b",
+      "document": "Baggage Allowance Information",
+      "document_title_kiswahili": "Taarifa za kiwango cha mizigo",
+      "source_heading_english": "GeneralGeneralGeneral",
+      "terminology": [
+        {
+          "english": "check-in",
+          "kiswahili": "kuingia kwenye safari"
+        },
+        {
+          "english": "conditions",
+          "kiswahili": "masharti"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "b4bd049ff754362cb4121bb5a777c8358e5bbb1d9f20634a55027d614721515b",
+      "document": "Baggage Allowance Information",
+      "document_title_kiswahili": "Taarifa za kiwango cha mizigo",
+      "source_heading_english": "Bulky Baggage:Bulky BaggageBulky Baggage::",
+      "terminology": [
+        {
+          "english": "wheelchair",
+          "kiswahili": "kiti cha magurudumu"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "4fb726434b2b01faa4964b66aedb4350752c0d63652572830abc74407fe3c950",
+      "document": "Baggage Allowance Information",
+      "document_title_kiswahili": "Taarifa za kiwango cha mizigo",
+      "source_heading_english": "Fragile Baggage:Fragile BaggageFragile Baggage::",
+      "terminology": [
+        {
+          "english": "check-in",
+          "kiswahili": "kuingia kwenye safari"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "144778b4e901521d5d62bcc98b2936827e8228967255b1ff5c08f4c748908094",
+      "document": "Baggage Allowance Information",
+      "document_title_kiswahili": "Taarifa za kiwango cha mizigo",
+      "source_heading_english": "Lithium Batteries: Lithium BatteriesLithium Batteries: :",
+      "terminology": [
+        {
+          "english": "reservation",
+          "kiswahili": "nafasi ya safari"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "036a669f02b8703281455dc209d5a491470e9a4c43a22e065a9679591f4eefc0",
+      "document": "Baggage Allowance Information",
+      "document_title_kiswahili": "Taarifa za kiwango cha mizigo",
+      "source_heading_english": "ReservationsReservationsReservations",
+      "terminology": [
+        {
+          "english": "reservation",
+          "kiswahili": "nafasi ya safari"
+        },
+        {
+          "english": "wheelchair",
+          "kiswahili": "kiti cha magurudumu"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "effd5e4118016e991be2774e943b49f31691afd154913db6872c1adb70cd80cb",
+      "document": "Baggage Allowance Information",
+      "document_title_kiswahili": "Taarifa za kiwango cha mizigo",
+      "source_heading_english": "ReservationReservationReservation",
+      "terminology": [
+        {
+          "english": "wheelchair",
+          "kiswahili": "kiti cha magurudumu"
+        },
+        {
+          "english": "conditions",
+          "kiswahili": "masharti"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "3311d3c55626772eb2612898e8dfc3f2dbbb5b89e8c649c243720ba9d2215367",
+      "document": "Baggage Allowance Information",
+      "document_title_kiswahili": "Taarifa za kiwango cha mizigo",
+      "source_heading_english": "Sporting Equipment: Sporting EquipmentSporting Equipment: :",
+      "terminology": [
+        {
+          "english": "conditions",
+          "kiswahili": "masharti"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "30bceeb0c4a4e4e8b97cd8714c0a22ac00afaaab5c6119e8e2552020c14832d0",
+      "document": "Baggage Allowance Information",
+      "document_title_kiswahili": "Taarifa za kiwango cha mizigo",
+      "source_heading_english": "Sporting Equipment Conditions of Carriage:Sporting Equipment Conditions of CarriageSporting Equipment Conditions of Carriage::",
+      "terminology": [
+        {
+          "english": "baggage allowance",
+          "kiswahili": "kiwango cha mizigo"
+        },
+        {
+          "english": "reservation",
+          "kiswahili": "nafasi ya safari"
+        },
+        {
+          "english": "check-in",
+          "kiswahili": "kuingia kwenye safari"
+        },
+        {
+          "english": "charges",
+          "kiswahili": "gharama"
+        },
+        {
+          "english": "conditions",
+          "kiswahili": "masharti"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "c17fdf1ab1c90f0ed766e8e8e4e7936591d4b2391438e0e9fa12ac8f52ccbb7c",
+      "document": "Baggage Allowance Information",
+      "document_title_kiswahili": "Taarifa za kiwango cha mizigo",
+      "source_heading_english": "Sporting Equipment Conditions of Carriage:Sporting Equipment Conditions of CarriageSporting Equipment Conditions of Carriage::",
+      "terminology": [
+        {
+          "english": "baggage allowance",
+          "kiswahili": "kiwango cha mizigo"
+        },
+        {
+          "english": "cabin baggage",
+          "kiswahili": "mizigo ya mkononi"
+        },
+        {
+          "english": "excess baggage",
+          "kiswahili": "mizigo inayozidi kiwango"
+        },
+        {
+          "english": "check-in",
+          "kiswahili": "kuingia kwenye safari"
+        },
+        {
+          "english": "charges",
+          "kiswahili": "gharama"
+        },
+        {
+          "english": "conditions",
+          "kiswahili": "masharti"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "004ed66ee7e0df7bd8af766287c326b1644f6970ef34d9b3b28a83549347cde6",
+      "document": "Baggage Allowance Information",
+      "document_title_kiswahili": "Taarifa za kiwango cha mizigo",
+      "source_heading_english": "Sporting Equipment Conditions of Carriage:Sporting Equipment Conditions of CarriageSporting Equipment Conditions of Carriage::",
+      "terminology": [
+        {
+          "english": "baggage allowance",
+          "kiswahili": "kiwango cha mizigo"
+        },
+        {
+          "english": "checked baggage",
+          "kiswahili": "mizigo ya kupakiwa"
+        },
+        {
+          "english": "cabin baggage",
+          "kiswahili": "mizigo ya mkononi"
+        },
+        {
+          "english": "booking",
+          "kiswahili": "nafasi ya safari"
+        },
+        {
+          "english": "charges",
+          "kiswahili": "gharama"
+        },
+        {
+          "english": "conditions",
+          "kiswahili": "masharti"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "5b314eacf37fc8907817668fd47981bc59403a1d7fd0046134b1ca8c0c3e86ae",
+      "document": "Baggage Allowance Information",
+      "document_title_kiswahili": "Taarifa za kiwango cha mizigo",
+      "source_heading_english": "Sporting Equipment Conditions of Carriage:Sporting Equipment Conditions of CarriageSporting Equipment Conditions of Carriage::",
+      "terminology": [
+        {
+          "english": "baggage allowance",
+          "kiswahili": "kiwango cha mizigo"
+        },
+        {
+          "english": "checked baggage",
+          "kiswahili": "mizigo ya kupakiwa"
+        },
+        {
+          "english": "cabin baggage",
+          "kiswahili": "mizigo ya mkononi"
+        },
+        {
+          "english": "conditions",
+          "kiswahili": "masharti"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "1d86115f38cc39bfcabb77f6a75deba2347bc492f999c45a8697146378d1578a",
+      "document": "Baggage Allowance Information",
+      "document_title_kiswahili": "Taarifa za kiwango cha mizigo",
+      "source_heading_english": "Sporting Equipment Conditions of Carriage:Sporting Equipment Conditions of CarriageSporting Equipment Conditions of Carriage::",
+      "terminology": [
+        {
+          "english": "checked baggage",
+          "kiswahili": "mizigo ya kupakiwa"
+        },
+        {
+          "english": "conditions",
+          "kiswahili": "masharti"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "ba578b8a0651172461b83436afec06f75e56701d61ed0f491ee7ed491b564224",
+      "document": "Baggage Allowance Information",
+      "document_title_kiswahili": "Taarifa za kiwango cha mizigo",
+      "source_heading_english": "Sporting Equipment Conditions of Carriage:Sporting Equipment Conditions of CarriageSporting Equipment Conditions of Carriage::",
+      "terminology": [
+        {
+          "english": "conditions",
+          "kiswahili": "masharti"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "8cc9a5b8ec30dd8bc41542234ef085070a3be4c57c651546c568f878ec832182",
+      "document": "Baggage Allowance Information",
+      "document_title_kiswahili": "Taarifa za kiwango cha mizigo",
+      "source_heading_english": "Kenya Airway's Media / Entertainment Baggage:Kenya Airway's Media / Entertainment BaggageKenya Airway's Media / Entertainment Baggage::",
+      "terminology": [
+        {
+          "english": "conditions",
+          "kiswahili": "masharti"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "6997fead43c0ab0d3f926a636764918237f3876da92cdd114945526fd34cd214",
+      "document": "Baggage Allowance Information",
+      "document_title_kiswahili": "Taarifa za kiwango cha mizigo",
+      "source_heading_english": "Conditions:Conditions:Conditions:",
+      "terminology": [
+        {
+          "english": "baggage allowance",
+          "kiswahili": "kiwango cha mizigo"
+        },
+        {
+          "english": "charges",
+          "kiswahili": "gharama"
+        },
+        {
+          "english": "conditions",
+          "kiswahili": "masharti"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "53e2c5f1af391099ee23e0bfd24fbbf7382609aab60c057f12517160a6d2937f",
+      "document": "Baggage Allowance Information",
+      "document_title_kiswahili": "Taarifa za kiwango cha mizigo",
+      "source_heading_english": "Hand Baggage: Hand BaggageHand Baggage::",
+      "terminology": [
+        {
+          "english": "baggage allowance",
+          "kiswahili": "kiwango cha mizigo"
+        },
+        {
+          "english": "cabin baggage",
+          "kiswahili": "mizigo ya mkononi"
+        },
+        {
+          "english": "business class",
+          "kiswahili": "daraja la biashara"
+        },
+        {
+          "english": "economy class",
+          "kiswahili": "daraja la kawaida"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "38cd7ec666cb94a76380229b2732475e0e4b8db98408200a8046737e63387074",
+      "document": "Baggage Allowance Information",
+      "document_title_kiswahili": "Taarifa za kiwango cha mizigo",
+      "source_heading_english": "Hand Baggage: Hand BaggageHand Baggage::",
+      "terminology": [
+        {
+          "english": "baggage allowance",
+          "kiswahili": "kiwango cha mizigo"
+        },
+        {
+          "english": "cabin baggage",
+          "kiswahili": "mizigo ya mkononi"
+        },
+        {
+          "english": "excess baggage",
+          "kiswahili": "mizigo inayozidi kiwango"
+        },
+        {
+          "english": "charges",
+          "kiswahili": "gharama"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "afb24c06204510bf2ffc800bf8f0038461c331d4ac04d3baa137db148e70e780",
+      "document": "Baggage Conditions Rules",
+      "document_title_kiswahili": "Masharti na kanuni za mizigo",
+      "source_heading_english": "Baggage Conditions RulesBaggage ConditionsBaggage Conditions Rules Rules",
+      "terminology": [
+        {
+          "english": "baggage allowance",
+          "kiswahili": "kiwango cha mizigo"
+        },
+        {
+          "english": "checked baggage",
+          "kiswahili": "mizigo ya kupakiwa"
+        },
+        {
+          "english": "excess baggage",
+          "kiswahili": "mizigo inayozidi kiwango"
+        },
+        {
+          "english": "conditions",
+          "kiswahili": "masharti"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "9952173577ad6b1902c8784ac81c7cd9f3765965c009838fe77534673f372280",
+      "document": "Baggage Conditions Rules",
+      "document_title_kiswahili": "Masharti na kanuni za mizigo",
+      "source_heading_english": "8.3 Items Unacceptable as Baggage8.3 Items Unacceptable as Baggage8.3 Items Unacceptable as Baggage",
+      "terminology": [
+        {
+          "english": "checked baggage",
+          "kiswahili": "mizigo ya kupakiwa"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "a88f0f3d03271dd7fdd075e079b22cdf28a7249452e463ead6b12191dab8062e",
+      "document": "Baggage Conditions Rules",
+      "document_title_kiswahili": "Masharti na kanuni za mizigo",
+      "source_heading_english": "8.3 Items Unacceptable as Baggage8.3 Items Unacceptable as Baggage8.3 Items Unacceptable as Baggage",
+      "terminology": [],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "5d50084a6514c581e11381e324978c15dd1b2dc095acd20366b782811a7cf954",
+      "document": "Baggage Conditions Rules",
+      "document_title_kiswahili": "Masharti na kanuni za mizigo",
+      "source_heading_english": "8.4 Right to Refuse Carriage8.4 Right to Refuse Carriage8.4 Right to Refuse Carriage",
+      "terminology": [
+        {
+          "english": "checked baggage",
+          "kiswahili": "mizigo ya kupakiwa"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "3ac2889ec64dbefc067537bdb754a8023e054172d971f43d271ef8f00b97a256",
+      "document": "Baggage Conditions Rules",
+      "document_title_kiswahili": "Masharti na kanuni za mizigo",
+      "source_heading_english": "8.5 Right of Search8.5 Right of Search8.5 Right of Search",
+      "terminology": [
+        {
+          "english": "checked baggage",
+          "kiswahili": "mizigo ya kupakiwa"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "8bbeed266a7e43272eec4f32ee0dff788ecba753418bd50dc194a14b8392153e",
+      "document": "Baggage Conditions Rules",
+      "document_title_kiswahili": "Masharti na kanuni za mizigo",
+      "source_heading_english": "8.7 Unchecked Baggage8.7 Unchecked Baggage8.7 Unchecked Baggage",
+      "terminology": [
+        {
+          "english": "checked baggage",
+          "kiswahili": "mizigo ya kupakiwa"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "d8566ff8dd1378685d5cc2f714ccbab4c9905b3fe16b2f8dbb86a374bdd6a57f",
+      "document": "Baggage Conditions Rules",
+      "document_title_kiswahili": "Masharti na kanuni za mizigo",
+      "source_heading_english": "8.8 Collection and Delivery of Checked Baggage8.8 Collection and Delivery of Checked Baggage8.8 Collection and Delivery of Checked Baggage",
+      "terminology": [
+        {
+          "english": "baggage allowance",
+          "kiswahili": "kiwango cha mizigo"
+        },
+        {
+          "english": "excess baggage",
+          "kiswahili": "mizigo inayozidi kiwango"
+        },
+        {
+          "english": "conditions",
+          "kiswahili": "masharti"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "2da416516f4770d9b440a9c26bd99277c60c051be6ae2197ab3674a4aec2373d",
+      "document": "Baggage Conditions Rules",
+      "document_title_kiswahili": "Masharti na kanuni za mizigo",
+      "source_heading_english": "8.9 Animals8.9 Animals8.9 Animals",
+      "terminology": [],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "e3c58cdde271240f5ae1dd21b4f0d907d497346b3a39416ba44d97ba2b5a6e0c",
+      "document": "Baggage Restrictions",
+      "document_title_kiswahili": "Vizuizi vya mizigo",
+      "source_heading_english": "Baggage RestrictionsBaggage RestrictionsBaggage Restrictions",
+      "terminology": [
+        {
+          "english": "checked baggage",
+          "kiswahili": "mizigo ya kupakiwa"
+        },
+        {
+          "english": "prohibited items",
+          "kiswahili": "vitu vilivyopigwa marufuku"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "c479fd2ef5e0614ce3dbcbdf40d65e58c6f86dad060316025de63b1cea69af34",
+      "document": "Baggage Restrictions",
+      "document_title_kiswahili": "Vizuizi vya mizigo",
+      "source_heading_english": "Prohibited ItemsProhibited ItemsProhibited Items",
+      "terminology": [
+        {
+          "english": "checked baggage",
+          "kiswahili": "mizigo ya kupakiwa"
+        },
+        {
+          "english": "restricted items",
+          "kiswahili": "vitu vyenye vizuizi"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "b8cfdb67c1007ef07b5459b30c224006b81a63e9f590da29ce760ebab7585dbb",
+      "document": "Baggage Restrictions",
+      "document_title_kiswahili": "Vizuizi vya mizigo",
+      "source_heading_english": "Restricted ItemsRestricted ItemsRestricted Items",
+      "terminology": [
+        {
+          "english": "checked baggage",
+          "kiswahili": "mizigo ya kupakiwa"
+        },
+        {
+          "english": "check-in",
+          "kiswahili": "kuingia kwenye safari"
+        },
+        {
+          "english": "boarding",
+          "kiswahili": "kupanda ndege"
+        },
+        {
+          "english": "conditions",
+          "kiswahili": "masharti"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "bb1d280e8afc5eac2a9a965c3f5ca4518bc1b987562a186750b52531ed523493",
+      "document": "Baggage Restrictions",
+      "document_title_kiswahili": "Vizuizi vya mizigo",
+      "source_heading_english": "Security Removed Items Security Removed Items Security Removed Items",
+      "terminology": [
+        {
+          "english": "checked baggage",
+          "kiswahili": "mizigo ya kupakiwa"
+        },
+        {
+          "english": "cabin baggage",
+          "kiswahili": "mizigo ya mkononi"
+        },
+        {
+          "english": "check-in",
+          "kiswahili": "kuingia kwenye safari"
+        },
+        {
+          "english": "charges",
+          "kiswahili": "gharama"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "8c0c1993f238c677a35ba63a50dce184be11caaaa39568df74dcfe338de28a8e",
+      "document": "Baggage Restrictions",
+      "document_title_kiswahili": "Vizuizi vya mizigo",
+      "source_heading_english": "1. Acceptance Criteria 1. Acceptance Criteria 1. Acceptance Criteria",
+      "terminology": [
+        {
+          "english": "charges",
+          "kiswahili": "gharama"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "4882d8693b678c46a3e2c959048e61072b889df19a17d86cd2f332dfff19d3c1",
+      "document": "Bookings and Self Rebooking",
+      "document_title_kiswahili": "Nafasi za safari na kujibadilishia nafasi",
+      "source_heading_english": "Book a FlightBook a FlightBook a Flight",
+      "terminology": [
+        {
+          "english": "booking",
+          "kiswahili": "nafasi ya safari"
+        },
+        {
+          "english": "rebooking",
+          "kiswahili": "kubadilisha nafasi ya safari"
+        },
+        {
+          "english": "ticket",
+          "kiswahili": "tiketi"
+        },
+        {
+          "english": "conditions",
+          "kiswahili": "masharti"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "7c1085add8651d36fe8b0b9aaf74b87cf6abcf5cf2c2665ce7a52e827c3fe50e",
+      "document": "Bookings and Self Rebooking",
+      "document_title_kiswahili": "Nafasi za safari na kujibadilishia nafasi",
+      "source_heading_english": "Flight Delays and CancellationsFlight Delays and CancellationsFlight Delays and Cancellations",
+      "terminology": [
+        {
+          "english": "booking",
+          "kiswahili": "nafasi ya safari"
+        },
+        {
+          "english": "rebooking",
+          "kiswahili": "kubadilisha nafasi ya safari"
+        },
+        {
+          "english": "charges",
+          "kiswahili": "gharama"
+        },
+        {
+          "english": "conditions",
+          "kiswahili": "masharti"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "4a5f2143301bc50533e08a49cd4ea050a7865aaaa7c79f67d4b9817860456ec7",
+      "document": "Bookings and Self Rebooking",
+      "document_title_kiswahili": "Nafasi za safari na kujibadilishia nafasi",
+      "source_heading_english": "How to Rebook Your Flight:How to Rebook Your Flight:How to Rebook Your Flight:",
+      "terminology": [
+        {
+          "english": "booking",
+          "kiswahili": "nafasi ya safari"
+        },
+        {
+          "english": "rebooking",
+          "kiswahili": "kubadilisha nafasi ya safari"
+        },
+        {
+          "english": "ticket",
+          "kiswahili": "tiketi"
+        },
+        {
+          "english": "customer support",
+          "kiswahili": "huduma kwa wateja"
+        },
+        {
+          "english": "charges",
+          "kiswahili": "gharama"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "39699f097fc1a0d3599ab613a02c2436b37ffcc0eaff0ba675f35da2ed7427e5",
+      "document": "Bookings and Self Rebooking",
+      "document_title_kiswahili": "Nafasi za safari na kujibadilishia nafasi",
+      "source_heading_english": "What is the KQ Self Rebooking Service?What is the KQ Self Rebooking Service?What is the KQ Self Rebooking Service?",
+      "terminology": [
+        {
+          "english": "booking",
+          "kiswahili": "nafasi ya safari"
+        },
+        {
+          "english": "rebooking",
+          "kiswahili": "kubadilisha nafasi ya safari"
+        },
+        {
+          "english": "ticket",
+          "kiswahili": "tiketi"
+        },
+        {
+          "english": "boarding",
+          "kiswahili": "kupanda ndege"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "b868f96f8d62391500c2be94d8d12ab41d1a56c397cee37aa1d6d076e08345de",
+      "document": "Bookings and Self Rebooking",
+      "document_title_kiswahili": "Nafasi za safari na kujibadilishia nafasi",
+      "source_heading_english": "Will I receive my e-ticket and boarding pass?Will I receive my e-ticket and boarding pass?Will I receive my e-ticket and boarding pass?",
+      "terminology": [
+        {
+          "english": "booking",
+          "kiswahili": "nafasi ya safari"
+        },
+        {
+          "english": "rebooking",
+          "kiswahili": "kubadilisha nafasi ya safari"
+        },
+        {
+          "english": "ticket",
+          "kiswahili": "tiketi"
+        },
+        {
+          "english": "contact center",
+          "kiswahili": "kituo cha mawasiliano"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "645fb70a85b5c52b1e39133bc700ee21d04930f90d01f10a5da4b8dac01165e3",
+      "document": "Check in",
+      "document_title_kiswahili": "Kuingia kwenye safari",
+      "source_heading_english": "Check-inCheck-inCheck-in",
+      "terminology": [
+        {
+          "english": "booking",
+          "kiswahili": "nafasi ya safari"
+        },
+        {
+          "english": "check-in",
+          "kiswahili": "kuingia kwenye safari"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "387d08b9fd60495e7a58af6e371cb0f34c0ab5b1763b61ebe8e2bd86bd730b9a",
+      "document": "Check in",
+      "document_title_kiswahili": "Kuingia kwenye safari",
+      "source_heading_english": "Check-inCheck-inCheck-in",
+      "terminology": [
+        {
+          "english": "ticket",
+          "kiswahili": "tiketi"
+        },
+        {
+          "english": "check-in",
+          "kiswahili": "kuingia kwenye safari"
+        },
+        {
+          "english": "boarding",
+          "kiswahili": "kupanda ndege"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "b8a7375af85062c4a6c9ac1553dff197fb26900b689c856517bcc3228f183fd7",
+      "document": "Check in",
+      "document_title_kiswahili": "Kuingia kwenye safari",
+      "source_heading_english": "Domestic Check-in:Domestic Check-in:Domestic Check-in:",
+      "terminology": [
+        {
+          "english": "business class",
+          "kiswahili": "daraja la biashara"
+        },
+        {
+          "english": "check-in",
+          "kiswahili": "kuingia kwenye safari"
+        },
+        {
+          "english": "boarding",
+          "kiswahili": "kupanda ndege"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "5ebdcfddadb8b4af5f85881e581d2386479f51f2afb35b2c1c27db1303f49015",
+      "document": "Conditions of Carriage",
+      "document_title_kiswahili": "Masharti ya usafirishaji",
+      "source_heading_english": "Conditions of CarriageConditions of CarriageConditions of Carriage",
+      "terminology": [
+        {
+          "english": "checked baggage",
+          "kiswahili": "mizigo ya kupakiwa"
+        },
+        {
+          "english": "ticket",
+          "kiswahili": "tiketi"
+        },
+        {
+          "english": "conditions",
+          "kiswahili": "masharti"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "af900eb57df3a440a1c9000cb8fd07aeb8fa85c481293d7bbd40bc2b274e8583",
+      "document": "Conditions of Carriage",
+      "document_title_kiswahili": "Masharti ya usafirishaji",
+      "source_heading_english": "Conditions of CarriageConditions of CarriageConditions of Carriage",
+      "terminology": [
+        {
+          "english": "checked baggage",
+          "kiswahili": "mizigo ya kupakiwa"
+        },
+        {
+          "english": "ticket",
+          "kiswahili": "tiketi"
+        },
+        {
+          "english": "check-in",
+          "kiswahili": "kuingia kwenye safari"
+        },
+        {
+          "english": "boarding",
+          "kiswahili": "kupanda ndege"
+        },
+        {
+          "english": "conditions",
+          "kiswahili": "masharti"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "547765f869462c426bb088a56aa082e1c32cf70d104c973ea724a17c9d473f7b",
+      "document": "Conditions of Carriage",
+      "document_title_kiswahili": "Masharti ya usafirishaji",
+      "source_heading_english": "Conditions of CarriageConditions of CarriageConditions of Carriage",
+      "terminology": [
+        {
+          "english": "ticket",
+          "kiswahili": "tiketi"
+        },
+        {
+          "english": "boarding",
+          "kiswahili": "kupanda ndege"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "b55f3c38dccb95421d5de04490eb03c158be4d3e8928b344ec095238f05ec86f",
+      "document": "Conditions of Carriage",
+      "document_title_kiswahili": "Masharti ya usafirishaji",
+      "source_heading_english": "Conditions of CarriageConditions of CarriageConditions of Carriage",
+      "terminology": [
+        {
+          "english": "booking",
+          "kiswahili": "nafasi ya safari"
+        },
+        {
+          "english": "ticket",
+          "kiswahili": "tiketi"
+        },
+        {
+          "english": "boarding",
+          "kiswahili": "kupanda ndege"
+        },
+        {
+          "english": "travel documents",
+          "kiswahili": "hati za safari"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "0ea9b647de8724f8ba662bdd473506c555a3cee55c786708c8880e17fedec3e4",
+      "document": "Conditions of Carriage",
+      "document_title_kiswahili": "Masharti ya usafirishaji",
+      "source_heading_english": "Conditions of CarriageConditions of CarriageConditions of Carriage",
+      "terminology": [
+        {
+          "english": "ticket",
+          "kiswahili": "tiketi"
+        },
+        {
+          "english": "travel documents",
+          "kiswahili": "hati za safari"
+        },
+        {
+          "english": "charges",
+          "kiswahili": "gharama"
+        },
+        {
+          "english": "conditions",
+          "kiswahili": "masharti"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "5fabe415495ce67124123845aebfd29110e4f69a22f5684cc1012a94a27d7c5e",
+      "document": "Conditions of Carriage",
+      "document_title_kiswahili": "Masharti ya usafirishaji",
+      "source_heading_english": "Conditions of CarriageConditions of CarriageConditions of Carriage",
+      "terminology": [
+        {
+          "english": "checked baggage",
+          "kiswahili": "mizigo ya kupakiwa"
+        },
+        {
+          "english": "ticket",
+          "kiswahili": "tiketi"
+        },
+        {
+          "english": "charges",
+          "kiswahili": "gharama"
+        },
+        {
+          "english": "conditions",
+          "kiswahili": "masharti"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "2fce31809e2650806b00ba431ba45b12c80d4d6a8044a0d11a9647d8f386f5d4",
+      "document": "Conditions of Carriage",
+      "document_title_kiswahili": "Masharti ya usafirishaji",
+      "source_heading_english": "ARTICLE 2 APPLICABILITYARTICLE 2 APPLICABILITYARTICLE 2 APPLICABILITY",
+      "terminology": [
+        {
+          "english": "reservation",
+          "kiswahili": "nafasi ya safari"
+        },
+        {
+          "english": "ticket",
+          "kiswahili": "tiketi"
+        },
+        {
+          "english": "boarding",
+          "kiswahili": "kupanda ndege"
+        },
+        {
+          "english": "conditions",
+          "kiswahili": "masharti"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "79f4e605315a13b92651dbbe7d142d1bf1a2cc5c3861ae9bcbab40e77200c761",
+      "document": "Conditions of Carriage",
+      "document_title_kiswahili": "Masharti ya usafirishaji",
+      "source_heading_english": "ARTICLE 2 APPLICABILITYARTICLE 2 APPLICABILITYARTICLE 2 APPLICABILITY",
+      "terminology": [
+        {
+          "english": "ticket",
+          "kiswahili": "tiketi"
+        },
+        {
+          "english": "passport",
+          "kiswahili": "pasipoti"
+        },
+        {
+          "english": "conditions",
+          "kiswahili": "masharti"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "6197c7f0fbba5bdaf1d4d36e56c38e8f7d776e0309e4f41fed1957cec863b5cb",
+      "document": "Conditions of Carriage",
+      "document_title_kiswahili": "Masharti ya usafirishaji",
+      "source_heading_english": "3.1 GENERAL PROVISIONS 3.1 GENERAL PROVISIONS 3.1 GENERAL PROVISIONS",
+      "terminology": [
+        {
+          "english": "ticket",
+          "kiswahili": "tiketi"
+        },
+        {
+          "english": "passport",
+          "kiswahili": "pasipoti"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "89d56cdb1e80299983e6b91436b6febdd89580896629a4fb2b685afc6906d257",
+      "document": "Conditions of Carriage",
+      "document_title_kiswahili": "Masharti ya usafirishaji",
+      "source_heading_english": "3.1 GENERAL PROVISIONS 3.1 GENERAL PROVISIONS 3.1 GENERAL PROVISIONS",
+      "terminology": [
+        {
+          "english": "reservation",
+          "kiswahili": "nafasi ya safari"
+        },
+        {
+          "english": "ticket",
+          "kiswahili": "tiketi"
+        },
+        {
+          "english": "refund",
+          "kiswahili": "marejesho ya fedha"
+        },
+        {
+          "english": "conditions",
+          "kiswahili": "masharti"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "2b566b95d2c84f14b6d557af692fce41843535bf74b900172fc85122fd1ae09c",
+      "document": "Conditions of Carriage",
+      "document_title_kiswahili": "Masharti ya usafirishaji",
+      "source_heading_english": "3.2 PERIOD OF VALIDITY 3.2 PERIOD OF VALIDITY 3.2 PERIOD OF VALIDITY",
+      "terminology": [
+        {
+          "english": "reservation",
+          "kiswahili": "nafasi ya safari"
+        },
+        {
+          "english": "ticket",
+          "kiswahili": "tiketi"
+        },
+        {
+          "english": "refund",
+          "kiswahili": "marejesho ya fedha"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "135cb6940ce10e5a08ead19ea1d5cf0cb87b5ef6063d8bb2ef17427e9a5d31f2",
+      "document": "Conditions of Carriage",
+      "document_title_kiswahili": "Masharti ya usafirishaji",
+      "source_heading_english": "3.2 PERIOD OF VALIDITY 3.2 PERIOD OF VALIDITY 3.2 PERIOD OF VALIDITY",
+      "terminology": [
+        {
+          "english": "ticket",
+          "kiswahili": "tiketi"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "64d5b752d09760edc28abe0d07e6605eca5e501655f50be35393a90a3f6dae2a",
+      "document": "Conditions of Carriage",
+      "document_title_kiswahili": "Masharti ya usafirishaji",
+      "source_heading_english": "3.3 COUPON SEQUENCE AND USE 3.3 COUPON SEQUENCE AND USE3.3 COUPON SEQUENCE AND USE",
+      "terminology": [
+        {
+          "english": "ticket",
+          "kiswahili": "tiketi"
+        },
+        {
+          "english": "refund",
+          "kiswahili": "marejesho ya fedha"
+        },
+        {
+          "english": "payment",
+          "kiswahili": "malipo"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "6cf80311fedac48f56d8f27de2b32fe14c463155e50b344defa784d8107c5418",
+      "document": "Conditions of Carriage",
+      "document_title_kiswahili": "Masharti ya usafirishaji",
+      "source_heading_english": "3.3 COUPON SEQUENCE AND USE 3.3 COUPON SEQUENCE AND USE3.3 COUPON SEQUENCE AND USE",
+      "terminology": [
+        {
+          "english": "reservation",
+          "kiswahili": "nafasi ya safari"
+        },
+        {
+          "english": "ticket",
+          "kiswahili": "tiketi"
+        },
+        {
+          "english": "payment",
+          "kiswahili": "malipo"
+        },
+        {
+          "english": "fees",
+          "kiswahili": "ada"
+        },
+        {
+          "english": "charges",
+          "kiswahili": "gharama"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "396839360b7f1f62128c97f25027e5eae8da0da119494fe7b8331ddab87777e9",
+      "document": "Conditions of Carriage",
+      "document_title_kiswahili": "Masharti ya usafirishaji",
+      "source_heading_english": "3.3 COUPON SEQUENCE AND USE 3.3 COUPON SEQUENCE AND USE3.3 COUPON SEQUENCE AND USE",
+      "terminology": [
+        {
+          "english": "ticket",
+          "kiswahili": "tiketi"
+        },
+        {
+          "english": "payment",
+          "kiswahili": "malipo"
+        },
+        {
+          "english": "fees",
+          "kiswahili": "ada"
+        },
+        {
+          "english": "charges",
+          "kiswahili": "gharama"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "f4b8ad2c2eb0fb52e8bd804d05caa23c3e8ee478b994d29023d1fd49a3affcd9",
+      "document": "Conditions of Carriage",
+      "document_title_kiswahili": "Masharti ya usafirishaji",
+      "source_heading_english": "4.1 FARES 4.1 FARES4.1 FARES",
+      "terminology": [
+        {
+          "english": "ticket",
+          "kiswahili": "tiketi"
+        },
+        {
+          "english": "refund",
+          "kiswahili": "marejesho ya fedha"
+        },
+        {
+          "english": "fees",
+          "kiswahili": "ada"
+        },
+        {
+          "english": "charges",
+          "kiswahili": "gharama"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "af7748c98137072361d0e5b3851b136802c0002689ece636655c4112ecd9fede",
+      "document": "Conditions of Carriage",
+      "document_title_kiswahili": "Masharti ya usafirishaji",
+      "source_heading_english": "4.2 TAXES, FEES AND CHARGES 4.2 TAXES, FEES AND CHARGES 4.2 TAXES, FEES AND CHARGES",
+      "terminology": [
+        {
+          "english": "reservation",
+          "kiswahili": "nafasi ya safari"
+        },
+        {
+          "english": "ticket",
+          "kiswahili": "tiketi"
+        },
+        {
+          "english": "refund",
+          "kiswahili": "marejesho ya fedha"
+        },
+        {
+          "english": "payment",
+          "kiswahili": "malipo"
+        },
+        {
+          "english": "special assistance",
+          "kiswahili": "msaada maalumu"
+        },
+        {
+          "english": "fees",
+          "kiswahili": "ada"
+        },
+        {
+          "english": "charges",
+          "kiswahili": "gharama"
+        },
+        {
+          "english": "conditions",
+          "kiswahili": "masharti"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "b656f106726ee5b7e6486043571bfdbb87ba7dc98512446a71faaedd6d5c7d6f",
+      "document": "Conditions of Carriage",
+      "document_title_kiswahili": "Masharti ya usafirishaji",
+      "source_heading_english": "5.1 RESERVATION REQUIREMENTS 5.1 RESERVATION REQUIREMENTS 5.1 RESERVATION REQUIREMENTS",
+      "terminology": [
+        {
+          "english": "reservation",
+          "kiswahili": "nafasi ya safari"
+        },
+        {
+          "english": "booking",
+          "kiswahili": "nafasi ya safari"
+        },
+        {
+          "english": "ticket",
+          "kiswahili": "tiketi"
+        },
+        {
+          "english": "payment",
+          "kiswahili": "malipo"
+        },
+        {
+          "english": "boarding",
+          "kiswahili": "kupanda ndege"
+        },
+        {
+          "english": "travel documents",
+          "kiswahili": "hati za safari"
+        },
+        {
+          "english": "special assistance",
+          "kiswahili": "msaada maalumu"
+        },
+        {
+          "english": "conditions",
+          "kiswahili": "masharti"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "e34faf9ae1e0129048883946b6e186c3246c37d48f94b5a54ebedf88f121f6ae",
+      "document": "Conditions of Carriage",
+      "document_title_kiswahili": "Masharti ya usafirishaji",
+      "source_heading_english": "5.4 SEATING 5.4 SEATING5.4 SEATING",
+      "terminology": [
+        {
+          "english": "ticket",
+          "kiswahili": "tiketi"
+        },
+        {
+          "english": "refund",
+          "kiswahili": "marejesho ya fedha"
+        },
+        {
+          "english": "boarding",
+          "kiswahili": "kupanda ndege"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "8f31410d2a6d03052434214e0361595bd16dc45c4f3ba357d5b97f9501a881fc",
+      "document": "Conditions of Carriage",
+      "document_title_kiswahili": "Masharti ya usafirishaji",
+      "source_heading_english": "5.5 RECONFIRMATION OF RESERVATIONS 5.5 RECONFIRMATION OF RESERVATIONS 5.5 RECONFIRMATION OF RESERVATIONS",
+      "terminology": [
+        {
+          "english": "checked baggage",
+          "kiswahili": "mizigo ya kupakiwa"
+        },
+        {
+          "english": "business class",
+          "kiswahili": "daraja la biashara"
+        },
+        {
+          "english": "economy class",
+          "kiswahili": "daraja la kawaida"
+        },
+        {
+          "english": "reservation",
+          "kiswahili": "nafasi ya safari"
+        },
+        {
+          "english": "ticket",
+          "kiswahili": "tiketi"
+        },
+        {
+          "english": "check-in",
+          "kiswahili": "kuingia kwenye safari"
+        },
+        {
+          "english": "boarding",
+          "kiswahili": "kupanda ndege"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "6838ba5aaa6ff432bf28d72640934bea646f4d19aea1e9c3cf69079965608087",
+      "document": "Conditions of Carriage",
+      "document_title_kiswahili": "Masharti ya usafirishaji",
+      "source_heading_english": "ARTICLE 6: CHECK IN AND BOARDINGARTICLE 6: CHECK IN AND BOARDINGARTICLE 6: CHECK IN AND BOARDING",
+      "terminology": [
+        {
+          "english": "checked baggage",
+          "kiswahili": "mizigo ya kupakiwa"
+        },
+        {
+          "english": "ticket",
+          "kiswahili": "tiketi"
+        },
+        {
+          "english": "check-in",
+          "kiswahili": "kuingia kwenye safari"
+        },
+        {
+          "english": "boarding",
+          "kiswahili": "kupanda ndege"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "7e65b24ab8adf6b52cdf1312c4a69eb702e8fc8509c3512c19d0924fb5e269e0",
+      "document": "Conditions of Carriage",
+      "document_title_kiswahili": "Masharti ya usafirishaji",
+      "source_heading_english": "ARTICLE 7: REFUSAL AND LIMITATION OF CARRIAGEARTICLE 7: REFUSAL AND LIMITATION OF CARRIAGEARTICLE 7: REFUSAL AND LIMITATION OF CARRIAGE",
+      "terminology": [
+        {
+          "english": "ticket",
+          "kiswahili": "tiketi"
+        },
+        {
+          "english": "travel documents",
+          "kiswahili": "hati za safari"
+        },
+        {
+          "english": "fees",
+          "kiswahili": "ada"
+        },
+        {
+          "english": "charges",
+          "kiswahili": "gharama"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "a71fe748b34825ac04671677451c0655b56c84152173b61794b5e0c88785f74f",
+      "document": "Conditions of Carriage",
+      "document_title_kiswahili": "Masharti ya usafirishaji",
+      "source_heading_english": "ARTICLE 7: REFUSAL AND LIMITATION OF CARRIAGEARTICLE 7: REFUSAL AND LIMITATION OF CARRIAGEARTICLE 7: REFUSAL AND LIMITATION OF CARRIAGE",
+      "terminology": [
+        {
+          "english": "baggage allowance",
+          "kiswahili": "kiwango cha mizigo"
+        },
+        {
+          "english": "excess baggage",
+          "kiswahili": "mizigo inayozidi kiwango"
+        },
+        {
+          "english": "ticket",
+          "kiswahili": "tiketi"
+        },
+        {
+          "english": "charges",
+          "kiswahili": "gharama"
+        },
+        {
+          "english": "conditions",
+          "kiswahili": "masharti"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "8b3628da14ca000c5753c124209109459b56bf6eebd74b8e546a5f8bad0818ac",
+      "document": "Conditions of Carriage",
+      "document_title_kiswahili": "Masharti ya usafirishaji",
+      "source_heading_english": "8.2 EXCESS BAGGAGE 8.2 EXCESS BAGGAGE 8.2 EXCESS BAGGAGE",
+      "terminology": [
+        {
+          "english": "baggage allowance",
+          "kiswahili": "kiwango cha mizigo"
+        },
+        {
+          "english": "checked baggage",
+          "kiswahili": "mizigo ya kupakiwa"
+        },
+        {
+          "english": "excess baggage",
+          "kiswahili": "mizigo inayozidi kiwango"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "ac6a83935a3ce4f1f9ad67ec81f665412b4e15c55994cd9aabaed66b0dfbe0b0",
+      "document": "Conditions of Carriage",
+      "document_title_kiswahili": "Masharti ya usafirishaji",
+      "source_heading_english": "8.3 ITEMS UNACCEPTABLE AS BAGGAGE 8.3 ITEMS UNACCEPTABLE AS BAGGAGE 8.3 ITEMS UNACCEPTABLE AS BAGGAGE",
+      "terminology": [
+        {
+          "english": "checked baggage",
+          "kiswahili": "mizigo ya kupakiwa"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "99536d5d6c1bbe5168c8602b0ccb7745a10403bf74b45155ea5f56b0dcff0d55",
+      "document": "Conditions of Carriage",
+      "document_title_kiswahili": "Masharti ya usafirishaji",
+      "source_heading_english": "8.4 RIGHT TO REFUSE CARRIAGE 8.4 RIGHT TO REFUSE CARRIAGE 8.4 RIGHT TO REFUSE CARRIAGE",
+      "terminology": [
+        {
+          "english": "checked baggage",
+          "kiswahili": "mizigo ya kupakiwa"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "2324be2fbdb9de82a047edfedf6c83abb29ba592db4ecac3d746ecbd8c3d328a",
+      "document": "Conditions of Carriage",
+      "document_title_kiswahili": "Masharti ya usafirishaji",
+      "source_heading_english": "8.6 CHECKED BAGGAGE 8.6 CHECKED BAGGAGE 8.6 CHECKED BAGGAGE",
+      "terminology": [
+        {
+          "english": "checked baggage",
+          "kiswahili": "mizigo ya kupakiwa"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "5c61602f2840f0272c101cb139e05320c9ffdf77019d2dc5144790e450e07bb0",
+      "document": "Conditions of Carriage",
+      "document_title_kiswahili": "Masharti ya usafirishaji",
+      "source_heading_english": "8.7 UNCHECKED BAGGAGE 8.7 UNCHECKED BAGGAGE8.7 UNCHECKED BAGGAGE",
+      "terminology": [
+        {
+          "english": "checked baggage",
+          "kiswahili": "mizigo ya kupakiwa"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "27741a5d936f03520c91832155a3fe5dc92d51d5e3b0eebd75f935741226121f",
+      "document": "Conditions of Carriage",
+      "document_title_kiswahili": "Masharti ya usafirishaji",
+      "source_heading_english": "8.8 COLLECTION AND DELIVERY OF CHECKED BAGGAGE 8.8 COLLECTION AND DELIVERY OF CHECKED BAGGAGE 8.8 COLLECTION AND DELIVERY OF CHECKED BAGGAGE",
+      "terminology": [
+        {
+          "english": "baggage allowance",
+          "kiswahili": "kiwango cha mizigo"
+        },
+        {
+          "english": "excess baggage",
+          "kiswahili": "mizigo inayozidi kiwango"
+        },
+        {
+          "english": "conditions",
+          "kiswahili": "masharti"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "eb753145dcaba6db902a56912389affbe5f89b831656e442c25648ce7a440cb9",
+      "document": "Conditions of Carriage",
+      "document_title_kiswahili": "Masharti ya usafirishaji",
+      "source_heading_english": "8.8 COLLECTION AND DELIVERY OF CHECKED BAGGAGE 8.8 COLLECTION AND DELIVERY OF CHECKED BAGGAGE 8.8 COLLECTION AND DELIVERY OF CHECKED BAGGAGE",
+      "terminology": [
+        {
+          "english": "baggage allowance",
+          "kiswahili": "kiwango cha mizigo"
+        },
+        {
+          "english": "conditions",
+          "kiswahili": "masharti"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "ced9e582eaebd2295945504b158b00472104cd5b862faee6e247426fe5196089",
+      "document": "Conditions of Carriage",
+      "document_title_kiswahili": "Masharti ya usafirishaji",
+      "source_heading_english": "9.1 SCHEDULES 9.1 SCHEDULES 9.1 SCHEDULES",
+      "terminology": [
+        {
+          "english": "booking",
+          "kiswahili": "nafasi ya safari"
+        },
+        {
+          "english": "ticket",
+          "kiswahili": "tiketi"
+        },
+        {
+          "english": "refund",
+          "kiswahili": "marejesho ya fedha"
+        },
+        {
+          "english": "flight cancellation",
+          "kiswahili": "kufutwa kwa safari"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "110b279594e499d51ac61c9c88c0e9cf2107b7b2dd1c4914ce17208557494148",
+      "document": "Conditions of Carriage",
+      "document_title_kiswahili": "Masharti ya usafirishaji",
+      "source_heading_english": "9.2 CANCELLATION, REROUTING, DELAYS, ETC. 9.2 CANCELLATION, REROUTING, DELAYS, ETC. 9.2 CANCELLATION, REROUTING, DELAYS, ETC.",
+      "terminology": [
+        {
+          "english": "reservation",
+          "kiswahili": "nafasi ya safari"
+        },
+        {
+          "english": "ticket",
+          "kiswahili": "tiketi"
+        },
+        {
+          "english": "refund",
+          "kiswahili": "marejesho ya fedha"
+        },
+        {
+          "english": "boarding",
+          "kiswahili": "kupanda ndege"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "631a2f1cd2507fdac31b4d4300b19909282416bf8dcd8cb9631057c45f5f4b16",
+      "document": "Conditions of Carriage",
+      "document_title_kiswahili": "Masharti ya usafirishaji",
+      "source_heading_english": "9.2 CANCELLATION, REROUTING, DELAYS, ETC. 9.2 CANCELLATION, REROUTING, DELAYS, ETC. 9.2 CANCELLATION, REROUTING, DELAYS, ETC.",
+      "terminology": [
+        {
+          "english": "ticket",
+          "kiswahili": "tiketi"
+        },
+        {
+          "english": "refund",
+          "kiswahili": "marejesho ya fedha"
+        },
+        {
+          "english": "payment",
+          "kiswahili": "malipo"
+        },
+        {
+          "english": "check-in",
+          "kiswahili": "kuingia kwenye safari"
+        },
+        {
+          "english": "boarding",
+          "kiswahili": "kupanda ndege"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "960f0028dbf42f0cc60e398d98dcb34018c61da5f3c22b1f78e4a8c165c587f3",
+      "document": "Conditions of Carriage",
+      "document_title_kiswahili": "Masharti ya usafirishaji",
+      "source_heading_english": "ARTICLE 10: REFUNDSARTICLE 10: REFUNDSARTICLE 10: REFUNDS",
+      "terminology": [
+        {
+          "english": "reservation",
+          "kiswahili": "nafasi ya safari"
+        },
+        {
+          "english": "ticket",
+          "kiswahili": "tiketi"
+        },
+        {
+          "english": "refund",
+          "kiswahili": "marejesho ya fedha"
+        },
+        {
+          "english": "fees",
+          "kiswahili": "ada"
+        },
+        {
+          "english": "charges",
+          "kiswahili": "gharama"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "10a2d805a409eb7e91d350ef0d85a31cc906390d601e870a8bca9a463c1b62c3",
+      "document": "Conditions of Carriage",
+      "document_title_kiswahili": "Masharti ya usafirishaji",
+      "source_heading_english": "10.3 VOLUNTARY REFUNDS 10.3 VOLUNTARY REFUNDS 10.3 VOLUNTARY REFUNDS",
+      "terminology": [
+        {
+          "english": "ticket",
+          "kiswahili": "tiketi"
+        },
+        {
+          "english": "refund",
+          "kiswahili": "marejesho ya fedha"
+        },
+        {
+          "english": "fees",
+          "kiswahili": "ada"
+        },
+        {
+          "english": "charges",
+          "kiswahili": "gharama"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "8f00a158abba81c85ed4788baca4d55a425364ff19730538556975a4685c048f",
+      "document": "Conditions of Carriage",
+      "document_title_kiswahili": "Masharti ya usafirishaji",
+      "source_heading_english": "10.4 RIGHT TO REFUSE REFUND 10.4 RIGHT TO REFUSE REFUND 10.4 RIGHT TO REFUSE REFUND",
+      "terminology": [
+        {
+          "english": "ticket",
+          "kiswahili": "tiketi"
+        },
+        {
+          "english": "payment",
+          "kiswahili": "malipo"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "9b47fd280a81d33e4ca66ccfad1d9778fb0dca2be937f905683493ae1e6622f7",
+      "document": "Conditions of Carriage",
+      "document_title_kiswahili": "Masharti ya usafirishaji",
+      "source_heading_english": "11.2 PAYMENT OF DIVERSION COSTS 11.2 PAYMENT OF DIVERSION COSTS 11.2 PAYMENT OF DIVERSION COSTS",
+      "terminology": [
+        {
+          "english": "ticket",
+          "kiswahili": "tiketi"
+        },
+        {
+          "english": "conditions",
+          "kiswahili": "masharti"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "0d58714f901275093b30d945551e1eea30f7fa3889f5bad46db0731e5ac8501a",
+      "document": "Conditions of Carriage",
+      "document_title_kiswahili": "Masharti ya usafirishaji",
+      "source_heading_english": "11.3 ELECTRONIC DEVICES 11.3 ELECTRONIC DEVICES11.3 ELECTRONIC DEVICES",
+      "terminology": [
+        {
+          "english": "booking",
+          "kiswahili": "nafasi ya safari"
+        },
+        {
+          "english": "travel documents",
+          "kiswahili": "hati za safari"
+        },
+        {
+          "english": "conditions",
+          "kiswahili": "masharti"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "f76a281c24949a52235af80fd1fcee54aeda6985d917b535a54869e1edceaa80",
+      "document": "Conditions of Carriage",
+      "document_title_kiswahili": "Masharti ya usafirishaji",
+      "source_heading_english": "13.2 TRAVEL DOCUMENTS 13.2 TRAVEL DOCUMENTS13.2 TRAVEL DOCUMENTS",
+      "terminology": [
+        {
+          "english": "ticket",
+          "kiswahili": "tiketi"
+        },
+        {
+          "english": "payment",
+          "kiswahili": "malipo"
+        },
+        {
+          "english": "travel documents",
+          "kiswahili": "hati za safari"
+        },
+        {
+          "english": "charges",
+          "kiswahili": "gharama"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "8db4d5010ce27488b3caf67301e93cea72c44164edc17bdbd1e80fa187794911",
+      "document": "Conditions of Carriage",
+      "document_title_kiswahili": "Masharti ya usafirishaji",
+      "source_heading_english": "13.3 REFUSAL OF ENTRY 13.3 REFUSAL OF ENTRY13.3 REFUSAL OF ENTRY",
+      "terminology": [
+        {
+          "english": "ticket",
+          "kiswahili": "tiketi"
+        },
+        {
+          "english": "payment",
+          "kiswahili": "malipo"
+        },
+        {
+          "english": "boarding",
+          "kiswahili": "kupanda ndege"
+        },
+        {
+          "english": "conditions",
+          "kiswahili": "masharti"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "d0f4fd8f77fce5b468037915d0fb577cfbe41ee9ac05de16fc76fa4ce346a644",
+      "document": "Conditions of Carriage",
+      "document_title_kiswahili": "Masharti ya usafirishaji",
+      "source_heading_english": "ARTICLE 15: LIABILITY FOR DAMAGEARTICLE 15: LIABILITY FOR DAMAGEARTICLE 15: LIABILITY FOR DAMAGE",
+      "terminology": [
+        {
+          "english": "conditions",
+          "kiswahili": "masharti"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "9ec7b1292f394050c6b50195be0dcf4bb9facd5a41c28edafcb8ea7c68829fc6",
+      "document": "Conditions of Carriage",
+      "document_title_kiswahili": "Masharti ya usafirishaji",
+      "source_heading_english": "15.3 DEATH OF OR INJURY TO PASSENGERS 15.3 DEATH OF OR INJURY TO PASSENGERS15.3 DEATH OF OR INJURY TO PASSENGERS",
+      "terminology": [
+        {
+          "english": "payment",
+          "kiswahili": "malipo"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "7ff595e91c8684356577c215e079cfc0b39687d9d96332e12c539df7c72dea8b",
+      "document": "Conditions of Carriage",
+      "document_title_kiswahili": "Masharti ya usafirishaji",
+      "source_heading_english": "15.3 DEATH OF OR INJURY TO PASSENGERS 15.3 DEATH OF OR INJURY TO PASSENGERS15.3 DEATH OF OR INJURY TO PASSENGERS",
+      "terminology": [
+        {
+          "english": "conditions",
+          "kiswahili": "masharti"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "383948ddb660af4e3cc7c4928522777638c2ce1e60c7b7411b9ec278ba711aca",
+      "document": "Conditions of Carriage",
+      "document_title_kiswahili": "Masharti ya usafirishaji",
+      "source_heading_english": "15.5 BAGGAGE 15.5 BAGGAGE15.5 BAGGAGE",
+      "terminology": [
+        {
+          "english": "baggage allowance",
+          "kiswahili": "kiwango cha mizigo"
+        },
+        {
+          "english": "checked baggage",
+          "kiswahili": "mizigo ya kupakiwa"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "d84c9d8f3f2e9dd28066a49e6706f67e9bc2b1469f5f097a0d392049cb0945ce",
+      "document": "Conditions of Carriage",
+      "document_title_kiswahili": "Masharti ya usafirishaji",
+      "source_heading_english": "15.5 BAGGAGE 15.5 BAGGAGE15.5 BAGGAGE",
+      "terminology": [
+        {
+          "english": "checked baggage",
+          "kiswahili": "mizigo ya kupakiwa"
+        },
+        {
+          "english": "ticket",
+          "kiswahili": "tiketi"
+        },
+        {
+          "english": "conditions",
+          "kiswahili": "masharti"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "43e58d569fe9626c0e1851d8baee1989f5e08db2ae38372ae95ba7641217812c",
+      "document": "Conditions of Carriage",
+      "document_title_kiswahili": "Masharti ya usafirishaji",
+      "source_heading_english": "15.6 GENERAL 15.6 GENERAL15.6 GENERAL",
+      "terminology": [
+        {
+          "english": "conditions",
+          "kiswahili": "masharti"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "cd1d18a88fa499ca4835e43ea397772cfca61bf2059969f878c298f1485a27be",
+      "document": "Conditions of Carriage",
+      "document_title_kiswahili": "Masharti ya usafirishaji",
+      "source_heading_english": "16.1 NOTICE OF CLAIMS 16.1 NOTICE OF CLAIMS 16.1 NOTICE OF CLAIMS",
+      "terminology": [
+        {
+          "english": "checked baggage",
+          "kiswahili": "mizigo ya kupakiwa"
+        },
+        {
+          "english": "conditions",
+          "kiswahili": "masharti"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "3fa799bf4b61c2165d38ba3f7c7707ecb587cb5cb3b489f0104480092391efd2",
+      "document": "Conditions of Carriage",
+      "document_title_kiswahili": "Masharti ya usafirishaji",
+      "source_heading_english": "ARTICLE 17: OTHER CONDITIONSARTICLE 17: OTHER CONDITIONSARTICLE 17: OTHER CONDITIONS",
+      "terminology": [
+        {
+          "english": "special assistance",
+          "kiswahili": "msaada maalumu"
+        },
+        {
+          "english": "conditions",
+          "kiswahili": "masharti"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "e15639775479216dbc6f2a417b77986fd3b448fd12b63193a015b0077b34867a",
+      "document": "Conditions of Carriage",
+      "document_title_kiswahili": "Masharti ya usafirishaji",
+      "source_heading_english": "Customer Complaints Handling Customer Complaints Handling Customer Complaints Handling",
+      "terminology": [
+        {
+          "english": "ticket",
+          "kiswahili": "tiketi"
+        },
+        {
+          "english": "boarding",
+          "kiswahili": "kupanda ndege"
+        },
+        {
+          "english": "conditions",
+          "kiswahili": "masharti"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "f73c9b83c5c5a6fc1497c518b7fbc2dd13c98505d8d1a5b822c056aae6bfe51a",
+      "document": "Contact",
+      "document_title_kiswahili": "Mawasiliano",
+      "source_heading_english": "Customer Excellence CenterCustomer Excellence Customer Excellence CenterCenter",
+      "terminology": [
+        {
+          "english": "customer support",
+          "kiswahili": "huduma kwa wateja"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "32562bb45a911808161d6b948c7492586f540967fb9c2a1100fe339c26747f6c",
+      "document": "Delayed or Lost or Damaged Baggage",
+      "document_title_kiswahili": "Mizigo iliyochelewa, kupotea au kuharibika",
+      "source_heading_english": "Delayed, Lost or Damaged BaggageDelayed, Lost or Damaged BaggageDelayed, Lost or Damaged Baggage",
+      "terminology": [
+        {
+          "english": "lost baggage",
+          "kiswahili": "mizigo iliyopotea"
+        },
+        {
+          "english": "damaged baggage",
+          "kiswahili": "mizigo iliyoharibika"
+        },
+        {
+          "english": "check-in",
+          "kiswahili": "kuingia kwenye safari"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "9f5d7f883cc4ed42cf7c1419d3d663c88e535c44bd8c54e8011f0f38429040e5",
+      "document": "Delayed or Lost or Damaged Baggage",
+      "document_title_kiswahili": "Mizigo iliyochelewa, kupotea au kuharibika",
+      "source_heading_english": "Delayed, Lost or Damaged BaggageDelayed, Lost or Damaged BaggageDelayed, Lost or Damaged Baggage",
+      "terminology": [
+        {
+          "english": "checked baggage",
+          "kiswahili": "mizigo ya kupakiwa"
+        },
+        {
+          "english": "business class",
+          "kiswahili": "daraja la biashara"
+        },
+        {
+          "english": "economy class",
+          "kiswahili": "daraja la kawaida"
+        },
+        {
+          "english": "payment",
+          "kiswahili": "malipo"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "c3410f22052696f3d04d251e0980326f8f3996912d21804497ca745d0d0315c3",
+      "document": "Delayed or Lost or Damaged Baggage",
+      "document_title_kiswahili": "Mizigo iliyochelewa, kupotea au kuharibika",
+      "source_heading_english": "First Needs Allowance (FNA) Payment:First Needs Allowance (FNA) PaymentFirst Needs Allowance (FNA) Payment::",
+      "terminology": [
+        {
+          "english": "business class",
+          "kiswahili": "daraja la biashara"
+        },
+        {
+          "english": "economy class",
+          "kiswahili": "daraja la kawaida"
+        },
+        {
+          "english": "payment",
+          "kiswahili": "malipo"
+        },
+        {
+          "english": "charges",
+          "kiswahili": "gharama"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "3baf2883d7df27e718241fcf8446516985814c744b0da3110e7fa8ea3c8a9241",
+      "document": "Delayed or Lost or Damaged Baggage",
+      "document_title_kiswahili": "Mizigo iliyochelewa, kupotea au kuharibika",
+      "source_heading_english": "Insurance and baggage liability limitations:Insurance and baggage liability limitations:Insurance and baggage liability limitations:",
+      "terminology": [
+        {
+          "english": "checked baggage",
+          "kiswahili": "mizigo ya kupakiwa"
+        },
+        {
+          "english": "cabin baggage",
+          "kiswahili": "mizigo ya mkononi"
+        },
+        {
+          "english": "charges",
+          "kiswahili": "gharama"
+        },
+        {
+          "english": "conditions",
+          "kiswahili": "masharti"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "4b5f3a65d6adc07340d93247e2c4f7c8d3c3afeecc0b25ee912a2786a3dcdd0d",
+      "document": "FAQs",
+      "document_title_kiswahili": "Maswali yanayoulizwa mara kwa mara",
+      "source_heading_english": "FAQSFAQSFAQS",
+      "terminology": [
+        {
+          "english": "excess baggage",
+          "kiswahili": "mizigo inayozidi kiwango"
+        },
+        {
+          "english": "business class",
+          "kiswahili": "daraja la biashara"
+        },
+        {
+          "english": "booking",
+          "kiswahili": "nafasi ya safari"
+        },
+        {
+          "english": "refund",
+          "kiswahili": "marejesho ya fedha"
+        },
+        {
+          "english": "payment",
+          "kiswahili": "malipo"
+        },
+        {
+          "english": "charges",
+          "kiswahili": "gharama"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "3308b1d7ba2ad2adcbf2b1885bd8ae7b927c2dc9aa7ad28dfa57b73ed15ce277",
+      "document": "FAQs",
+      "document_title_kiswahili": "Maswali yanayoulizwa mara kwa mara",
+      "source_heading_english": "Can I make changes to my flight details?Can I make changes to my flight details?Can I make changes to my flight details?",
+      "terminology": [
+        {
+          "english": "excess baggage",
+          "kiswahili": "mizigo inayozidi kiwango"
+        },
+        {
+          "english": "booking",
+          "kiswahili": "nafasi ya safari"
+        },
+        {
+          "english": "ticket",
+          "kiswahili": "tiketi"
+        },
+        {
+          "english": "refund",
+          "kiswahili": "marejesho ya fedha"
+        },
+        {
+          "english": "fees",
+          "kiswahili": "ada"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "5d0e3a91b8fefe4c341095e005f222167175d8f96eda2ca77bf3a961483c81ad",
+      "document": "FAQs",
+      "document_title_kiswahili": "Maswali yanayoulizwa mara kwa mara",
+      "source_heading_english": "How do I edit or correct my name in my ticket?How do I edit or correct my name in my ticket?How do I edit or correct my name in my ticket?",
+      "terminology": [
+        {
+          "english": "economy class",
+          "kiswahili": "daraja la kawaida"
+        },
+        {
+          "english": "booking",
+          "kiswahili": "nafasi ya safari"
+        },
+        {
+          "english": "ticket",
+          "kiswahili": "tiketi"
+        },
+        {
+          "english": "pregnancy",
+          "kiswahili": "ujauzito"
+        },
+        {
+          "english": "conditions",
+          "kiswahili": "masharti"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "71995436b1d12fe055841c0456e90af344d052a77be0342b12a3f257b5e64af1",
+      "document": "FAQs",
+      "document_title_kiswahili": "Maswali yanayoulizwa mara kwa mara",
+      "source_heading_english": "Who can book an Extra Legroom Seat?Who can book an Extra Legroom Seat?Who can book an Extra Legroom Seat?",
+      "terminology": [
+        {
+          "english": "booking",
+          "kiswahili": "nafasi ya safari"
+        },
+        {
+          "english": "ticket",
+          "kiswahili": "tiketi"
+        },
+        {
+          "english": "payment",
+          "kiswahili": "malipo"
+        },
+        {
+          "english": "check-in",
+          "kiswahili": "kuingia kwenye safari"
+        },
+        {
+          "english": "contact center",
+          "kiswahili": "kituo cha mawasiliano"
+        },
+        {
+          "english": "conditions",
+          "kiswahili": "masharti"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "2c3834cc27128aba6cbbbbbedab99bf253d36bd538c311a2f939c97055b4d568",
+      "document": "FAQs",
+      "document_title_kiswahili": "Maswali yanayoulizwa mara kwa mara",
+      "source_heading_english": "Where do I present my credit/debit card?Where do I present my credit/debit card?Where do I present my credit/debit card?",
+      "terminology": [
+        {
+          "english": "booking",
+          "kiswahili": "nafasi ya safari"
+        },
+        {
+          "english": "ticket",
+          "kiswahili": "tiketi"
+        },
+        {
+          "english": "refund",
+          "kiswahili": "marejesho ya fedha"
+        },
+        {
+          "english": "payment",
+          "kiswahili": "malipo"
+        },
+        {
+          "english": "contact center",
+          "kiswahili": "kituo cha mawasiliano"
+        },
+        {
+          "english": "conditions",
+          "kiswahili": "masharti"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "cdbce02fc752171a3baa2b309aeeec424e5f1d085ff63730183ff3987eaf9a6c",
+      "document": "FAQs",
+      "document_title_kiswahili": "Maswali yanayoulizwa mara kwa mara",
+      "source_heading_english": "How can I get a proof of payment?How can I get a proof of payment?How can I get a proof of payment?",
+      "terminology": [
+        {
+          "english": "booking",
+          "kiswahili": "nafasi ya safari"
+        },
+        {
+          "english": "ticket",
+          "kiswahili": "tiketi"
+        },
+        {
+          "english": "payment",
+          "kiswahili": "malipo"
+        },
+        {
+          "english": "check-in",
+          "kiswahili": "kuingia kwenye safari"
+        },
+        {
+          "english": "contact center",
+          "kiswahili": "kituo cha mawasiliano"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "1346c76983fd6d874478f20b3716fdc3829e7d044d90af47e16be8560257885d",
+      "document": "FAQs",
+      "document_title_kiswahili": "Maswali yanayoulizwa mara kwa mara",
+      "source_heading_english": "How can I get a proof of payment?How can I get a proof of payment?How can I get a proof of payment?",
+      "terminology": [
+        {
+          "english": "business class",
+          "kiswahili": "daraja la biashara"
+        },
+        {
+          "english": "economy class",
+          "kiswahili": "daraja la kawaida"
+        },
+        {
+          "english": "booking",
+          "kiswahili": "nafasi ya safari"
+        },
+        {
+          "english": "ticket",
+          "kiswahili": "tiketi"
+        },
+        {
+          "english": "contact center",
+          "kiswahili": "kituo cha mawasiliano"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "b8e0f3f2801a0f5f64a6ce9d38320f39d13feff7bf4288618a6624297e0b6274",
+      "document": "FAQs",
+      "document_title_kiswahili": "Maswali yanayoulizwa mara kwa mara",
+      "source_heading_english": "Who can make an Offer for an Upgrade?Who can make an Offer for an Upgrade?Who can make an Offer for an Upgrade?",
+      "terminology": [
+        {
+          "english": "business class",
+          "kiswahili": "daraja la biashara"
+        },
+        {
+          "english": "economy class",
+          "kiswahili": "daraja la kawaida"
+        },
+        {
+          "english": "booking",
+          "kiswahili": "nafasi ya safari"
+        },
+        {
+          "english": "ticket",
+          "kiswahili": "tiketi"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "9c9ccfc385b5453ca580e5e680a670ac217ae7a83c70836a36d495113dfe5cd5",
+      "document": "FAQs",
+      "document_title_kiswahili": "Maswali yanayoulizwa mara kwa mara",
+      "source_heading_english": "Who can make an Offer for an Upgrade?Who can make an Offer for an Upgrade?Who can make an Offer for an Upgrade?",
+      "terminology": [
+        {
+          "english": "business class",
+          "kiswahili": "daraja la biashara"
+        },
+        {
+          "english": "booking",
+          "kiswahili": "nafasi ya safari"
+        },
+        {
+          "english": "check-in",
+          "kiswahili": "kuingia kwenye safari"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "15957459e1b35e57f794cf2bd903a35815a5c36fdf21728dd11f13744cb9d389",
+      "document": "FAQs",
+      "document_title_kiswahili": "Maswali yanayoulizwa mara kwa mara",
+      "source_heading_english": "Who can make an Offer for an Upgrade?Who can make an Offer for an Upgrade?Who can make an Offer for an Upgrade?",
+      "terminology": [
+        {
+          "english": "refund",
+          "kiswahili": "marejesho ya fedha"
+        },
+        {
+          "english": "charges",
+          "kiswahili": "gharama"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "76643c828fc6fb4b87d43f454813fb09c8bea2b26343d64aeed622d8f3e85391",
+      "document": "FAQs",
+      "document_title_kiswahili": "Maswali yanayoulizwa mara kwa mara",
+      "source_heading_english": "How much does it cost to make an offer?How much does it cost to make an offer?How much does it cost to make an offer?",
+      "terminology": [
+        {
+          "english": "business class",
+          "kiswahili": "daraja la biashara"
+        },
+        {
+          "english": "booking",
+          "kiswahili": "nafasi ya safari"
+        },
+        {
+          "english": "ticket",
+          "kiswahili": "tiketi"
+        },
+        {
+          "english": "refund",
+          "kiswahili": "marejesho ya fedha"
+        },
+        {
+          "english": "check-in",
+          "kiswahili": "kuingia kwenye safari"
+        },
+        {
+          "english": "contact center",
+          "kiswahili": "kituo cha mawasiliano"
+        },
+        {
+          "english": "fees",
+          "kiswahili": "ada"
+        },
+        {
+          "english": "conditions",
+          "kiswahili": "masharti"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "d191fb0ac3653c4c08a0bc7db685baf8fa180ad8921381b5348ceecf6b2c16e4",
+      "document": "FAQs",
+      "document_title_kiswahili": "Maswali yanayoulizwa mara kwa mara",
+      "source_heading_english": "You are travelling as a couple or family?You are travelling as a couple or family?You are travelling as a couple or family?",
+      "terminology": [
+        {
+          "english": "booking",
+          "kiswahili": "nafasi ya safari"
+        },
+        {
+          "english": "ticket",
+          "kiswahili": "tiketi"
+        },
+        {
+          "english": "payment",
+          "kiswahili": "malipo"
+        },
+        {
+          "english": "contact center",
+          "kiswahili": "kituo cha mawasiliano"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "f1ab5ac98e19b275843da78a7c6a8f73070870ea79d8d792a8d683450b57a0ef",
+      "document": "FAQs",
+      "document_title_kiswahili": "Maswali yanayoulizwa mara kwa mara",
+      "source_heading_english": "What is Msafiriconnect?What is What is MsafiriconnectMsafiriconnect??",
+      "terminology": [
+        {
+          "english": "booking",
+          "kiswahili": "nafasi ya safari"
+        },
+        {
+          "english": "payment",
+          "kiswahili": "malipo"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "7651ae8e3e3c539afcc1185b040b36acfd4c2cec7b106137d62ed6af43019025",
+      "document": "FAQs",
+      "document_title_kiswahili": "Maswali yanayoulizwa mara kwa mara",
+      "source_heading_english": "Who can use Msafiriconnect?Who can use Who can use MsafiriconnectMsafiriconnect??",
+      "terminology": [],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "31cad70282aceb8596b8e786a6db1ab5da7cae336d86a9cf6c147cf7cd32edc6",
+      "document": "Flight upgrade",
+      "document_title_kiswahili": "Kupandisha daraja la safari",
+      "source_heading_english": "Upgrade FlightUpgrade FlightUpgrade Flight",
+      "terminology": [
+        {
+          "english": "baggage allowance",
+          "kiswahili": "kiwango cha mizigo"
+        },
+        {
+          "english": "business class",
+          "kiswahili": "daraja la biashara"
+        },
+        {
+          "english": "economy class",
+          "kiswahili": "daraja la kawaida"
+        },
+        {
+          "english": "booking",
+          "kiswahili": "nafasi ya safari"
+        },
+        {
+          "english": "ticket",
+          "kiswahili": "tiketi"
+        },
+        {
+          "english": "check-in",
+          "kiswahili": "kuingia kwenye safari"
+        },
+        {
+          "english": "boarding",
+          "kiswahili": "kupanda ndege"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "0112dbfe8e254d64f8ee4da022d1775c1c855fa2884cefbbdd9422dac8a3cd4c",
+      "document": "Flight upgrade",
+      "document_title_kiswahili": "Kupandisha daraja la safari",
+      "source_heading_english": "Benefits of upgrading to Business ClassBenefits of upgrading to Business ClassBenefits of upgrading to Business Class",
+      "terminology": [
+        {
+          "english": "baggage allowance",
+          "kiswahili": "kiwango cha mizigo"
+        },
+        {
+          "english": "business class",
+          "kiswahili": "daraja la biashara"
+        },
+        {
+          "english": "economy class",
+          "kiswahili": "daraja la kawaida"
+        },
+        {
+          "english": "ticket",
+          "kiswahili": "tiketi"
+        },
+        {
+          "english": "check-in",
+          "kiswahili": "kuingia kwenye safari"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "0ea543fa49c3a44ab2ae3441919951935842ca9199150c4294accf4adcf7ace1",
+      "document": "Flight upgrade",
+      "document_title_kiswahili": "Kupandisha daraja la safari",
+      "source_heading_english": "Upgrade at the AirportUpgrade at the AirportUpgrade at the Airport",
+      "terminology": [
+        {
+          "english": "business class",
+          "kiswahili": "daraja la biashara"
+        },
+        {
+          "english": "economy class",
+          "kiswahili": "daraja la kawaida"
+        },
+        {
+          "english": "ticket",
+          "kiswahili": "tiketi"
+        },
+        {
+          "english": "payment",
+          "kiswahili": "malipo"
+        },
+        {
+          "english": "conditions",
+          "kiswahili": "masharti"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "dadd26844495f51dd2eea3787c69b2ff1e1391c8a539be1b3a341ba5c20c6eb2",
+      "document": "Flight upgrade",
+      "document_title_kiswahili": "Kupandisha daraja la safari",
+      "source_heading_english": "Learn MoreLearn MoreLearn More",
+      "terminology": [
+        {
+          "english": "booking",
+          "kiswahili": "nafasi ya safari"
+        },
+        {
+          "english": "ticket",
+          "kiswahili": "tiketi"
+        },
+        {
+          "english": "refund",
+          "kiswahili": "marejesho ya fedha"
+        },
+        {
+          "english": "payment",
+          "kiswahili": "malipo"
+        },
+        {
+          "english": "conditions",
+          "kiswahili": "masharti"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "5b66f238b7d458c5516d483599ab3beabfaa2101f76eceff3b982db7e107ddd4",
+      "document": "Flight upgrade",
+      "document_title_kiswahili": "Kupandisha daraja la safari",
+      "source_heading_english": "Learn MoreLearn MoreLearn More",
+      "terminology": [
+        {
+          "english": "business class",
+          "kiswahili": "daraja la biashara"
+        },
+        {
+          "english": "economy class",
+          "kiswahili": "daraja la kawaida"
+        },
+        {
+          "english": "ticket",
+          "kiswahili": "tiketi"
+        },
+        {
+          "english": "refund",
+          "kiswahili": "marejesho ya fedha"
+        },
+        {
+          "english": "fees",
+          "kiswahili": "ada"
+        },
+        {
+          "english": "conditions",
+          "kiswahili": "masharti"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "8a7e89a73c55a5d5fc425341756214ab8d19bc041f147644ab99e1103c0a4a79",
+      "document": "Flight upgrade",
+      "document_title_kiswahili": "Kupandisha daraja la safari",
+      "source_heading_english": "Learn MoreLearn MoreLearn More",
+      "terminology": [
+        {
+          "english": "business class",
+          "kiswahili": "daraja la biashara"
+        },
+        {
+          "english": "ticket",
+          "kiswahili": "tiketi"
+        },
+        {
+          "english": "refund",
+          "kiswahili": "marejesho ya fedha"
+        },
+        {
+          "english": "boarding",
+          "kiswahili": "kupanda ndege"
+        },
+        {
+          "english": "charges",
+          "kiswahili": "gharama"
+        },
+        {
+          "english": "conditions",
+          "kiswahili": "masharti"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "9fe66089494a750cb2e8b6e5c976e978cfdda6c48dc0d186b98eb7510834ff8d",
+      "document": "Flight upgrade",
+      "document_title_kiswahili": "Kupandisha daraja la safari",
+      "source_heading_english": "Learn MoreLearn MoreLearn More",
+      "terminology": [
+        {
+          "english": "business class",
+          "kiswahili": "daraja la biashara"
+        },
+        {
+          "english": "booking",
+          "kiswahili": "nafasi ya safari"
+        },
+        {
+          "english": "ticket",
+          "kiswahili": "tiketi"
+        },
+        {
+          "english": "fees",
+          "kiswahili": "ada"
+        },
+        {
+          "english": "conditions",
+          "kiswahili": "masharti"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "084c343665f6e9f10368a66c94d0e8377ad3bc6f6c06474e36c0887e7c44dfb0",
+      "document": "Flight upgrade",
+      "document_title_kiswahili": "Kupandisha daraja la safari",
+      "source_heading_english": "Learn MoreLearn MoreLearn More",
+      "terminology": [
+        {
+          "english": "baggage allowance",
+          "kiswahili": "kiwango cha mizigo"
+        },
+        {
+          "english": "economy class",
+          "kiswahili": "daraja la kawaida"
+        },
+        {
+          "english": "ticket",
+          "kiswahili": "tiketi"
+        },
+        {
+          "english": "fees",
+          "kiswahili": "ada"
+        },
+        {
+          "english": "conditions",
+          "kiswahili": "masharti"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "1e9946ec182c28c2c1107c68822358ffbc1ada62a419b4c2748cee4c6b0e982b",
+      "document": "Flight upgrade",
+      "document_title_kiswahili": "Kupandisha daraja la safari",
+      "source_heading_english": "Learn MoreLearn MoreLearn More",
+      "terminology": [
+        {
+          "english": "booking",
+          "kiswahili": "nafasi ya safari"
+        },
+        {
+          "english": "refund",
+          "kiswahili": "marejesho ya fedha"
+        },
+        {
+          "english": "conditions",
+          "kiswahili": "masharti"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "4229de60ab77305d0491068a4c108358595f627555db155a8f339f944bf401be",
+      "document": "Online Refunds",
+      "document_title_kiswahili": "Marejesho ya fedha mtandaoni",
+      "source_heading_english": "Online RefundsOnline RefundsOnline Refunds",
+      "terminology": [
+        {
+          "english": "booking",
+          "kiswahili": "nafasi ya safari"
+        },
+        {
+          "english": "ticket",
+          "kiswahili": "tiketi"
+        },
+        {
+          "english": "refund",
+          "kiswahili": "marejesho ya fedha"
+        },
+        {
+          "english": "fees",
+          "kiswahili": "ada"
+        },
+        {
+          "english": "charges",
+          "kiswahili": "gharama"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "6b71971251672600d269230bb1a8624cb92bff9983488209232a914e0fa424ae",
+      "document": "Online Refunds",
+      "document_title_kiswahili": "Marejesho ya fedha mtandaoni",
+      "source_heading_english": "Taxes, Fees and Charges:Taxes, Fees and ChargesTaxes, Fees and Charges::",
+      "terminology": [
+        {
+          "english": "booking",
+          "kiswahili": "nafasi ya safari"
+        },
+        {
+          "english": "ticket",
+          "kiswahili": "tiketi"
+        },
+        {
+          "english": "refund",
+          "kiswahili": "marejesho ya fedha"
+        },
+        {
+          "english": "payment",
+          "kiswahili": "malipo"
+        },
+        {
+          "english": "contact center",
+          "kiswahili": "kituo cha mawasiliano"
+        },
+        {
+          "english": "fees",
+          "kiswahili": "ada"
+        },
+        {
+          "english": "charges",
+          "kiswahili": "gharama"
+        },
+        {
+          "english": "conditions",
+          "kiswahili": "masharti"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "5db45ff0824f62f7dc64ddce6244e6f3220bcd481585db66e1e1ec3a1d9e6c19",
+      "document": "Online Refunds",
+      "document_title_kiswahili": "Marejesho ya fedha mtandaoni",
+      "source_heading_english": "Taxes, Fees and Charges:Taxes, Fees and ChargesTaxes, Fees and Charges::",
+      "terminology": [
+        {
+          "english": "booking",
+          "kiswahili": "nafasi ya safari"
+        },
+        {
+          "english": "refund",
+          "kiswahili": "marejesho ya fedha"
+        },
+        {
+          "english": "flight cancellation",
+          "kiswahili": "kufutwa kwa safari"
+        },
+        {
+          "english": "contact center",
+          "kiswahili": "kituo cha mawasiliano"
+        },
+        {
+          "english": "fees",
+          "kiswahili": "ada"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "337635f5cb6cbef58d206c02850dfc7b949b2e3b9a8b44b151efcea519ef5866",
+      "document": "Online Refunds",
+      "document_title_kiswahili": "Marejesho ya fedha mtandaoni",
+      "source_heading_english": "Check My Refund Status:Check My Refund StatusCheck My Refund Status::",
+      "terminology": [
+        {
+          "english": "booking",
+          "kiswahili": "nafasi ya safari"
+        },
+        {
+          "english": "ticket",
+          "kiswahili": "tiketi"
+        },
+        {
+          "english": "refund",
+          "kiswahili": "marejesho ya fedha"
+        },
+        {
+          "english": "fees",
+          "kiswahili": "ada"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "9c77c900c87aa376cd1859fe44c07825566b47dd9dbc7bd3ec42ad2b2410cba6",
+      "document": "Online Refunds",
+      "document_title_kiswahili": "Marejesho ya fedha mtandaoni",
+      "source_heading_english": "Check My Refund Status:Check My Refund StatusCheck My Refund Status::",
+      "terminology": [
+        {
+          "english": "ticket",
+          "kiswahili": "tiketi"
+        },
+        {
+          "english": "refund",
+          "kiswahili": "marejesho ya fedha"
+        },
+        {
+          "english": "fees",
+          "kiswahili": "ada"
+        },
+        {
+          "english": "charges",
+          "kiswahili": "gharama"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "83bb112055575d8cdb5fe2c1e70f0373574ce9854022068b0bb0fd35fa50c5e6",
+      "document": "Payments",
+      "document_title_kiswahili": "Malipo",
+      "source_heading_english": "Payment MethodsPayment MethodsPayment Methods",
+      "terminology": [
+        {
+          "english": "booking",
+          "kiswahili": "nafasi ya safari"
+        },
+        {
+          "english": "ticket",
+          "kiswahili": "tiketi"
+        },
+        {
+          "english": "payment",
+          "kiswahili": "malipo"
+        },
+        {
+          "english": "visa",
+          "kiswahili": "viza"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "27b63102f7bbc440d5f889b6e42e5a90044a344b069b8117441a4d6e11912950",
+      "document": "Payments",
+      "document_title_kiswahili": "Malipo",
+      "source_heading_english": "MasterCardMasterCardMasterCard",
+      "terminology": [
+        {
+          "english": "booking",
+          "kiswahili": "nafasi ya safari"
+        },
+        {
+          "english": "ticket",
+          "kiswahili": "tiketi"
+        },
+        {
+          "english": "payment",
+          "kiswahili": "malipo"
+        },
+        {
+          "english": "visa",
+          "kiswahili": "viza"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "98c4c2d60038366b52286a8e5f236437224f065c85c056260e07534065793511",
+      "document": "Payments",
+      "document_title_kiswahili": "Malipo",
+      "source_heading_english": "Mobile MoneyMobile MoneyMobile Money",
+      "terminology": [
+        {
+          "english": "ticket",
+          "kiswahili": "tiketi"
+        },
+        {
+          "english": "payment",
+          "kiswahili": "malipo"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "942b296f5cb1e3fb34ab2b809cb36167d47e721774ea249b612ffea8d6a38c3a",
+      "document": "Payments",
+      "document_title_kiswahili": "Malipo",
+      "source_heading_english": "Tigo PesaTigo PesaTigo Pesa",
+      "terminology": [
+        {
+          "english": "booking",
+          "kiswahili": "nafasi ya safari"
+        },
+        {
+          "english": "ticket",
+          "kiswahili": "tiketi"
+        },
+        {
+          "english": "payment",
+          "kiswahili": "malipo"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "9610fb3b01f3799b2ade99983eb971213203bdac589cfc24a9ff0378ed4910eb",
+      "document": "Payments",
+      "document_title_kiswahili": "Malipo",
+      "source_heading_english": "PayPalPayPalPayPal",
+      "terminology": [
+        {
+          "english": "booking",
+          "kiswahili": "nafasi ya safari"
+        },
+        {
+          "english": "ticket",
+          "kiswahili": "tiketi"
+        },
+        {
+          "english": "payment",
+          "kiswahili": "malipo"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "be668733ee527bfd39f2309ad157f816fe59ceced4e8af299db91bd666cf51ea",
+      "document": "Payments",
+      "document_title_kiswahili": "Malipo",
+      "source_heading_english": "iDEALiDEALiDEAL",
+      "terminology": [
+        {
+          "english": "ticket",
+          "kiswahili": "tiketi"
+        },
+        {
+          "english": "payment",
+          "kiswahili": "malipo"
+        },
+        {
+          "english": "name correction",
+          "kiswahili": "kusahihisha jina"
+        },
+        {
+          "english": "fees",
+          "kiswahili": "ada"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "f0a0cf741433c6d1637d1567429cfb17650989337ba789618429b2001a1758a5",
+      "document": "Payments",
+      "document_title_kiswahili": "Malipo",
+      "source_heading_english": "Name CorrectionName CorrectionName Correction",
+      "terminology": [
+        {
+          "english": "name correction",
+          "kiswahili": "kusahihisha jina"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "3f0d7ac43faf2d87798823cb4af8a85149dc2cb54e005f34ee2ee42f65c80623",
+      "document": "Payments",
+      "document_title_kiswahili": "Malipo",
+      "source_heading_english": "Name ChangeName ChangeName Change",
+      "terminology": [],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "6c0034561a11f784a4311ff7eb1f9a6536da08e6890dce403879a965d82a03e3",
+      "document": "Payments",
+      "document_title_kiswahili": "Malipo",
+      "source_heading_english": "Name ChangeName ChangeName Change",
+      "terminology": [],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "0ce8057dc8260eac8fb14a6ef086b4918327ea8eabbccdae881fb8410ae08ab3",
+      "document": "Payments",
+      "document_title_kiswahili": "Malipo",
+      "source_heading_english": "Note:Note:Note:",
+      "terminology": [
+        {
+          "english": "pet",
+          "kiswahili": "mnyama kipenzi"
+        },
+        {
+          "english": "fees",
+          "kiswahili": "ada"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "cfc7bb80c5da5749da062a00549e334ee4a926925d0b4f3fac33c6b3bf6675c4",
+      "document": "Payments",
+      "document_title_kiswahili": "Malipo",
+      "source_heading_english": "Pet Fees:Pet FeesPet Fees::",
+      "terminology": [
+        {
+          "english": "booking",
+          "kiswahili": "nafasi ya safari"
+        },
+        {
+          "english": "pet",
+          "kiswahili": "mnyama kipenzi"
+        },
+        {
+          "english": "fees",
+          "kiswahili": "ada"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "470c1c11531a5429797cf1eea32aea5aca221c7a7884d53860d25f3f9772abed",
+      "document": "Payments",
+      "document_title_kiswahili": "Malipo",
+      "source_heading_english": "Administrative Fees: Administrative FeesAdministrative Fees: :",
+      "terminology": [
+        {
+          "english": "fees",
+          "kiswahili": "ada"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "f604844a4cb6ea349ad060432016a37fd3e86710354eeb3bf31ca31d08fad1d2",
+      "document": "Payments",
+      "document_title_kiswahili": "Malipo",
+      "source_heading_english": "Administrative Fees: Administrative FeesAdministrative Fees: :",
+      "terminology": [
+        {
+          "english": "booking",
+          "kiswahili": "nafasi ya safari"
+        },
+        {
+          "english": "ticket",
+          "kiswahili": "tiketi"
+        },
+        {
+          "english": "refund",
+          "kiswahili": "marejesho ya fedha"
+        },
+        {
+          "english": "fees",
+          "kiswahili": "ada"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "51e0152b2bc5e6e92b96b35de6adc40ec786ab442aab10105ef46db9f4f32ea6",
+      "document": "Payments",
+      "document_title_kiswahili": "Malipo",
+      "source_heading_english": "First Needs Expense (FNE):First Needs Expense (FNE)First Needs Expense (FNE)::",
+      "terminology": [],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "1de911ae80841b67ad20aacecec2d42acac1078aed352fb272fa3483ce394e0d",
+      "document": "Payments",
+      "document_title_kiswahili": "Malipo",
+      "source_heading_english": "First Needs Expense (FNE):First Needs Expense (FNE)First Needs Expense (FNE)::",
+      "terminology": [],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "3289fa37c6901ab7057b6c9ab27dd7c84944c7aed6196dcff206909522e6b526",
+      "document": "Payments",
+      "document_title_kiswahili": "Malipo",
+      "source_heading_english": "Arms and Ammunition:Arms and AmmunitionArms and Ammunition::",
+      "terminology": [],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "26e5f845dd2a375c820324bc18c1b5725dc742afdd8af2dbeb1567bf8e039619",
+      "document": "Payments",
+      "document_title_kiswahili": "Malipo",
+      "source_heading_english": "Arms and Ammunition:Arms and AmmunitionArms and Ammunition::",
+      "terminology": [],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "b4d187fd7277e037674ef5d4bd16b128f902f08086cbc2bbe19bfc7f58439384",
+      "document": "Payments",
+      "document_title_kiswahili": "Malipo",
+      "source_heading_english": "Heavy Bag Charges:Heavy Bag Charges:Heavy Bag Charges:",
+      "terminology": [
+        {
+          "english": "charges",
+          "kiswahili": "gharama"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "951bd12a4af2282b3e0b97e6ed942968d8126b019cb7d75ee91cf38f7faf010c",
+      "document": "Payments",
+      "document_title_kiswahili": "Malipo",
+      "source_heading_english": "Heavy Bag Charges:Heavy Bag Charges:Heavy Bag Charges:",
+      "terminology": [
+        {
+          "english": "charges",
+          "kiswahili": "gharama"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "1acc9e0ba2e58bacd94d8f8312253a1640ad6492370d83c825d415971a0d0a40",
+      "document": "Payments",
+      "document_title_kiswahili": "Malipo",
+      "source_heading_english": "NOTE:NOTE:NOTE:",
+      "terminology": [
+        {
+          "english": "excess baggage",
+          "kiswahili": "mizigo inayozidi kiwango"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "68cd0f45d7843caa835f290a0fafddbef0ca47c5f00f6cf9b98f584219178f73",
+      "document": "Pet Carriage",
+      "document_title_kiswahili": "Usafirishaji wa wanyama kipenzi",
+      "source_heading_english": "Pet CarriagePet CarriagePet Carriage",
+      "terminology": [
+        {
+          "english": "pet",
+          "kiswahili": "mnyama kipenzi"
+        },
+        {
+          "english": "service dog",
+          "kiswahili": "mbwa wa huduma"
+        },
+        {
+          "english": "exception",
+          "kiswahili": "hali isiyofuata kanuni ya kawaida"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "718c402a44bf8e318ad6509e470856cd023beec0ca09f4ea00d5be510467d038",
+      "document": "Pet Carriage",
+      "document_title_kiswahili": "Usafirishaji wa wanyama kipenzi",
+      "source_heading_english": "Service DogService DogService Dog",
+      "terminology": [
+        {
+          "english": "reservation",
+          "kiswahili": "nafasi ya safari"
+        },
+        {
+          "english": "service dog",
+          "kiswahili": "mbwa wa huduma"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "aa11899694296f498eca63cdd33f7fdbe894e4ba71b044a760c3fc97dfb93f46",
+      "document": "Pet Carriage",
+      "document_title_kiswahili": "Usafirishaji wa wanyama kipenzi",
+      "source_heading_english": "Service Dogs are: Service Dogs are: Service Dogs are:",
+      "terminology": [
+        {
+          "english": "reservation",
+          "kiswahili": "nafasi ya safari"
+        },
+        {
+          "english": "service dog",
+          "kiswahili": "mbwa wa huduma"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "41063f3662f449799b952b7173878629704070bdb3b41b4d8dba05823b0a56d2",
+      "document": "Special Care",
+      "document_title_kiswahili": "Huduma maalumu",
+      "source_heading_english": "Need Special Care?Need Special Care?Need Special Care?",
+      "terminology": [
+        {
+          "english": "unaccompanied minor",
+          "kiswahili": "mtoto anayesafiri bila msindikizaji"
+        },
+        {
+          "english": "fees",
+          "kiswahili": "ada"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "e234612580708c736de8b0d31111e099e584b3ae25a67c82efcb9b14b5c4b9de",
+      "document": "Special Care",
+      "document_title_kiswahili": "Huduma maalumu",
+      "source_heading_english": "Guidelines & Requirements:Guidelines & RequirementsGuidelines & Requirements::",
+      "terminology": [
+        {
+          "english": "booking",
+          "kiswahili": "nafasi ya safari"
+        },
+        {
+          "english": "check-in",
+          "kiswahili": "kuingia kwenye safari"
+        },
+        {
+          "english": "unaccompanied minor",
+          "kiswahili": "mtoto anayesafiri bila msindikizaji"
+        },
+        {
+          "english": "fees",
+          "kiswahili": "ada"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "a6acc24617ffb226c20ead03fcb9d8708d624e16a63d670ad5f6206dd5f64fcc",
+      "document": "Special Care",
+      "document_title_kiswahili": "Huduma maalumu",
+      "source_heading_english": "Expert Support & Fees:Expert Support & FeesExpert Support & Fees::",
+      "terminology": [
+        {
+          "english": "check-in",
+          "kiswahili": "kuingia kwenye safari"
+        },
+        {
+          "english": "unaccompanied minor",
+          "kiswahili": "mtoto anayesafiri bila msindikizaji"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "f4f1c4026be6ea2fa4a32b448b008e34b6b60b50a3ff0581780bc4774d685715",
+      "document": "Special Care",
+      "document_title_kiswahili": "Huduma maalumu",
+      "source_heading_english": "Expert Support & Fees:Expert Support & FeesExpert Support & Fees::",
+      "terminology": [
+        {
+          "english": "unaccompanied minor",
+          "kiswahili": "mtoto anayesafiri bila msindikizaji"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "9a55d1e902b2108277a008006d8667fccfee679d88b0ee279c30e3209441eff6",
+      "document": "Special Care",
+      "document_title_kiswahili": "Huduma maalumu",
+      "source_heading_english": "Comfort and Care for Unaccompanied Minors:Comfort and Care for Unaccompanied MinorsComfort and Care for Unaccompanied Minors::",
+      "terminology": [
+        {
+          "english": "booking",
+          "kiswahili": "nafasi ya safari"
+        },
+        {
+          "english": "boarding",
+          "kiswahili": "kupanda ndege"
+        },
+        {
+          "english": "unaccompanied minor",
+          "kiswahili": "mtoto anayesafiri bila msindikizaji"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "74c9a7dd92d17bde8b3209d47c5629526bc1982685365ad2fc961b1d5307657f",
+      "document": "Special Care",
+      "document_title_kiswahili": "Huduma maalumu",
+      "source_heading_english": "Travel Comfort for Families with Infants:Travel Comfort for Families with InfantsTravel Comfort for Families with Infants::",
+      "terminology": [
+        {
+          "english": "baggage allowance",
+          "kiswahili": "kiwango cha mizigo"
+        },
+        {
+          "english": "booking",
+          "kiswahili": "nafasi ya safari"
+        },
+        {
+          "english": "boarding",
+          "kiswahili": "kupanda ndege"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "acadaa9fd540133efe5fd8abcded275c7640c11a0b1e21c73ac26b0fa91c9056",
+      "document": "Special Care",
+      "document_title_kiswahili": "Huduma maalumu",
+      "source_heading_english": "Travel Comfort for Families with Infants:Travel Comfort for Families with InfantsTravel Comfort for Families with Infants::",
+      "terminology": [
+        {
+          "english": "baggage allowance",
+          "kiswahili": "kiwango cha mizigo"
+        },
+        {
+          "english": "reduced mobility",
+          "kiswahili": "uwezo mdogo wa kutembea"
+        },
+        {
+          "english": "conditions",
+          "kiswahili": "masharti"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "8e5cf792a3dc59e0cc270af0b4b3b24d3ebeb639c75e89630ab571f6cb242e1a",
+      "document": "Special Care",
+      "document_title_kiswahili": "Huduma maalumu",
+      "source_heading_english": "Infant Friendly Amenities and Care:Infant Friendly Amenities and CareInfant Friendly Amenities and Care::",
+      "terminology": [
+        {
+          "english": "reservation",
+          "kiswahili": "nafasi ya safari"
+        },
+        {
+          "english": "wheelchair",
+          "kiswahili": "kiti cha magurudumu"
+        },
+        {
+          "english": "reduced mobility",
+          "kiswahili": "uwezo mdogo wa kutembea"
+        },
+        {
+          "english": "contact center",
+          "kiswahili": "kituo cha mawasiliano"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "65bd106b254593394ebf37ebaca07b41c54d771546bcba340c46f0cca1a17a63",
+      "document": "Special Care",
+      "document_title_kiswahili": "Huduma maalumu",
+      "source_heading_english": "General InformationGeneral InformationGeneral Information",
+      "terminology": [
+        {
+          "english": "reservation",
+          "kiswahili": "nafasi ya safari"
+        },
+        {
+          "english": "wheelchair",
+          "kiswahili": "kiti cha magurudumu"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "b2dcb404d942cd2a29921f4f372de20b6c6d411fd6cc4d3c10d483ab80bf8777",
+      "document": "Special Care",
+      "document_title_kiswahili": "Huduma maalumu",
+      "source_heading_english": "What Type of Wheelchair can you Bring? What Type of Wheelchair can you Bring? What Type of Wheelchair can you Bring?",
+      "terminology": [
+        {
+          "english": "check-in",
+          "kiswahili": "kuingia kwenye safari"
+        },
+        {
+          "english": "wheelchair",
+          "kiswahili": "kiti cha magurudumu"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "a0f3e20eb1e4e62312acd729c2fbf42374c4e069242c7ccdb15a46693476e89b",
+      "document": "Special Care",
+      "document_title_kiswahili": "Huduma maalumu",
+      "source_heading_english": "What Type of Wheelchair can you Bring? What Type of Wheelchair can you Bring? What Type of Wheelchair can you Bring?",
+      "terminology": [
+        {
+          "english": "check-in",
+          "kiswahili": "kuingia kwenye safari"
+        },
+        {
+          "english": "wheelchair",
+          "kiswahili": "kiti cha magurudumu"
+        },
+        {
+          "english": "reduced mobility",
+          "kiswahili": "uwezo mdogo wa kutembea"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "106747247eb174d7a20b4f626c0b339aa41c765e3285d8d948617bdf95215773",
+      "document": "Special Care",
+      "document_title_kiswahili": "Huduma maalumu",
+      "source_heading_english": "What Type of Wheelchair can you Bring? What Type of Wheelchair can you Bring? What Type of Wheelchair can you Bring?",
+      "terminology": [
+        {
+          "english": "reduced mobility",
+          "kiswahili": "uwezo mdogo wa kutembea"
+        },
+        {
+          "english": "pregnancy",
+          "kiswahili": "ujauzito"
+        },
+        {
+          "english": "conditions",
+          "kiswahili": "masharti"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "7db843546c9caf9cd79e76f4fc3f957d3ce75a53db6bdc0704b7361e7fbac30c",
+      "document": "Special Care",
+      "document_title_kiswahili": "Huduma maalumu",
+      "source_heading_english": "Pregnancy and Travel Safety:Pregnancy and Travel SafetyPregnancy and Travel Safety::",
+      "terminology": [
+        {
+          "english": "reservation",
+          "kiswahili": "nafasi ya safari"
+        },
+        {
+          "english": "pregnancy",
+          "kiswahili": "ujauzito"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "a0f033de186a439ddb26732d5fab59b604713fef3d8034e56c5ee0b8e02a6398",
+      "document": "Special Care",
+      "document_title_kiswahili": "Huduma maalumu",
+      "source_heading_english": "Traveling Comfortably During Pregnancy:Traveling Comfortably During PregnancyTraveling Comfortably During Pregnancy::",
+      "terminology": [
+        {
+          "english": "pregnancy",
+          "kiswahili": "ujauzito"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "59ebe396b8ccec96c7658d4b349030cd9748b010d6419339f3ab9d07462699f1",
+      "document": "Special Care",
+      "document_title_kiswahili": "Huduma maalumu",
+      "source_heading_english": "Note:Note:Note:",
+      "terminology": [
+        {
+          "english": "pregnancy",
+          "kiswahili": "ujauzito"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "5c30e4e5ba0e1fb9a11bd643f20f8841d7ea94b8de2ba1f35ef51c36bb7ecd78",
+      "document": "Special Care",
+      "document_title_kiswahili": "Huduma maalumu",
+      "source_heading_english": "Special MealsSpecial MealsSpecial Meals",
+      "terminology": [],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "9ff9afec94f96d6688a44a13689e7a279045d39cad58b800217f415838ade5c4",
+      "document": "Special Care",
+      "document_title_kiswahili": "Huduma maalumu",
+      "source_heading_english": "Religious Meals:Religious MealsReligious Meals::",
+      "terminology": [],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "59179ad0242329b654ef6daa224949f89037a3053adb98b60e2cbee51efd4218",
+      "document": "Special Care",
+      "document_title_kiswahili": "Huduma maalumu",
+      "source_heading_english": "Vegetarian meals:Vegetarian mealsVegetarian meals::",
+      "terminology": [],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "566a1982fc19f1451313b9c4d1be4ad774bcd93aa425b0e1cd08d6e82f43f4f6",
+      "document": "Special Care",
+      "document_title_kiswahili": "Huduma maalumu",
+      "source_heading_english": "Vegetarian meals:Vegetarian mealsVegetarian meals::",
+      "terminology": [],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "3d52eacc508a6979b193a5fbba8060499c7dd4477a928d5546c8cb100803d490",
+      "document": "Special Care",
+      "document_title_kiswahili": "Huduma maalumu",
+      "source_heading_english": "Medical and Dietary meals:Medical and Dietary mealsMedical and Dietary meals::",
+      "terminology": [],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "50a8b4a7ce7d35c0e647e761eef8b5f64f8a13764155670966a13f64195fc3d9",
+      "document": "Special Care",
+      "document_title_kiswahili": "Huduma maalumu",
+      "source_heading_english": "Medical and Dietary meals:Medical and Dietary mealsMedical and Dietary meals::",
+      "terminology": [],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "9a1fe439bc419c415c2415bc7bb7ad4c8492bb82e89f28e298fb996a1f9469f0",
+      "document": "Special Care",
+      "document_title_kiswahili": "Huduma maalumu",
+      "source_heading_english": "Medical and Dietary meals:Medical and Dietary mealsMedical and Dietary meals::",
+      "terminology": [],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "c7df75510313fc9dcffcedecfcc66ba301b4398d34bee6c2b3e5c883b8142f3a",
+      "document": "Special Care",
+      "document_title_kiswahili": "Huduma maalumu",
+      "source_heading_english": "Other special mealsOther special mealsOther special meals",
+      "terminology": [
+        {
+          "english": "booking",
+          "kiswahili": "nafasi ya safari"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "059e4f2428109aa80a5bb19dfdecc0d26dba8c407b2f3768761a3c8cda953c1f",
+      "document": "Special Care",
+      "document_title_kiswahili": "Huduma maalumu",
+      "source_heading_english": "Other special mealsOther special mealsOther special meals",
+      "terminology": [
+        {
+          "english": "booking",
+          "kiswahili": "nafasi ya safari"
+        },
+        {
+          "english": "charges",
+          "kiswahili": "gharama"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "0373bc174c9b3213666b004873db93ffee5d9e78128ec40d9beb682c953f6ea9",
+      "document": "Special Care",
+      "document_title_kiswahili": "Huduma maalumu",
+      "source_heading_english": "Travel InsuranceTravel InsuranceTravel Insurance",
+      "terminology": [
+        {
+          "english": "special assistance",
+          "kiswahili": "msaada maalumu"
+        },
+        {
+          "english": "conditions",
+          "kiswahili": "masharti"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "0579d99e7c4e7c4537b95430e0e7ce85fcc1482b9744831418808759b0b7b03f",
+      "document": "Special Care",
+      "document_title_kiswahili": "Huduma maalumu",
+      "source_heading_english": "1. Who Requires Medical Clearance to Fly?1. Who Requires Medical Clearance to Fly?1. Who Requires Medical Clearance to Fly?",
+      "terminology": [
+        {
+          "english": "fees",
+          "kiswahili": "ada"
+        },
+        {
+          "english": "conditions",
+          "kiswahili": "masharti"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "dedfc0260f146a958ddb1d5e0145fbb7d8631d2311081bf772d7375f88155115",
+      "document": "Special Care",
+      "document_title_kiswahili": "Huduma maalumu",
+      "source_heading_english": "Kindly note:Kindly note:Kindly note:",
+      "terminology": [
+        {
+          "english": "fees",
+          "kiswahili": "ada"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "63051f49f288013dabec9054f448f94e3c567455bfb200126ec87d8df8212c93",
+      "document": "Special Care",
+      "document_title_kiswahili": "Huduma maalumu",
+      "source_heading_english": "3. Medical Devices3. Medical Devices3. Medical Devices",
+      "terminology": [
+        {
+          "english": "cabin baggage",
+          "kiswahili": "mizigo ya mkononi"
+        },
+        {
+          "english": "conditions",
+          "kiswahili": "masharti"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "83e146b4c9e8365fc56728146554eef2cf42731f5fcd938fa3cf3bd9813a8617",
+      "document": "Special Care",
+      "document_title_kiswahili": "Huduma maalumu",
+      "source_heading_english": "6. Stretcher and Mobility Assistance6. Stretcher and Mobility Assistance6. Stretcher and Mobility Assistance",
+      "terminology": [
+        {
+          "english": "fees",
+          "kiswahili": "ada"
+        },
+        {
+          "english": "conditions",
+          "kiswahili": "masharti"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "7ba5f907c06c0bb875eca67f0b827d1453ff5ad556beec58e1d29c9a8a8c5c21",
+      "document": "Special Care",
+      "document_title_kiswahili": "Huduma maalumu",
+      "source_heading_english": "9. Facilitation Fees9. Facilitation Fees9. Facilitation Fees",
+      "terminology": [
+        {
+          "english": "fees",
+          "kiswahili": "ada"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "0e4a8953b904d851dd17897bcccaadb172bb170a6790926d4aa67f08c4f80f55",
+      "document": "Special Care",
+      "document_title_kiswahili": "Huduma maalumu",
+      "source_heading_english": "9. Facilitation Fees9. Facilitation Fees9. Facilitation Fees",
+      "terminology": [
+        {
+          "english": "reservation",
+          "kiswahili": "nafasi ya safari"
+        },
+        {
+          "english": "booking",
+          "kiswahili": "nafasi ya safari"
+        },
+        {
+          "english": "pet",
+          "kiswahili": "mnyama kipenzi"
+        },
+        {
+          "english": "service dog",
+          "kiswahili": "mbwa wa huduma"
+        },
+        {
+          "english": "fees",
+          "kiswahili": "ada"
+        },
+        {
+          "english": "conditions",
+          "kiswahili": "masharti"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "968851f12e820eccf32b687bf4f184dbf946e346056b30ded7ee075fc1c17177",
+      "document": "Special Care",
+      "document_title_kiswahili": "Huduma maalumu",
+      "source_heading_english": "General Conditions for Acceptance:General Conditions for Acceptance:General Conditions for Acceptance:",
+      "terminology": [
+        {
+          "english": "pet",
+          "kiswahili": "mnyama kipenzi"
+        },
+        {
+          "english": "service dog",
+          "kiswahili": "mbwa wa huduma"
+        },
+        {
+          "english": "conditions",
+          "kiswahili": "masharti"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "c193e843f2d32aef9b98a533ffc04595a6aee27a3bf425cdf6385698b7374640",
+      "document": "Special Care",
+      "document_title_kiswahili": "Huduma maalumu",
+      "source_heading_english": "Conditions for Travel:Conditions for TravelConditions for Travel::",
+      "terminology": [
+        {
+          "english": "service dog",
+          "kiswahili": "mbwa wa huduma"
+        }
+      ],
+      "status": "AI-assisted search metadata; not an official translation"
+    },
+    {
+      "parent_chunk_id": "ee29edb6b670d643a943b37fb37d872384ae692630b4d45fb136fdab6e596116",
+      "document": "Special Care",
+      "document_title_kiswahili": "Huduma maalumu",
+      "source_heading_english": "DOT Contacts:DOT ContactsDOT Contacts::",
+      "terminology": [],
+      "status": "AI-assisted search metadata; not an official translation"
+    }
+  ]
+}

@@ -1,0 +1,227 @@
+{
+  "status": "prepared_for_human_annotation",
+  "authoritative_source_directory": "backend/data/raw/KQ Data",
+  "instructions": "Review each proposed source and evidence requirement against the original DOCX. Fill reviewer_decision, reviewed_chunk_ids and reviewer_notes. Proposed entries are not ground truth until approved.",
+  "groups": [
+    {
+      "semantic_group": "dev-baggage",
+      "partition": "development",
+      "expected_behaviour": "answer",
+      "proposed_sources": ["Baggage Allowance Information.docx"],
+      "evidence_requirements": ["Africa to or from America/Europe routing", "Economy allowance of 2 pieces at 23 kg maximum each"],
+      "document_review_note": "The routing/cabin table was located in the original DOCX.",
+      "reviewer_decision": null,
+      "reviewed_chunk_ids": [],
+      "reviewer_notes": null
+    },
+    {
+      "semantic_group": "dev-wheelchair",
+      "partition": "development",
+      "expected_behaviour": "answer_with_conditions",
+      "proposed_sources": ["Special Care.docx"],
+      "evidence_requirements": ["Wheelchair assistance request timing", "Requests inside 48 hours are not guaranteed where applicable"],
+      "document_review_note": "The original DOCX contains the 48-hour assistance condition and operational-availability exception.",
+      "reviewer_decision": null,
+      "reviewed_chunk_ids": [],
+      "reviewer_notes": null
+    },
+    {
+      "semantic_group": "dev-name",
+      "partition": "development",
+      "expected_behaviour": "answer_with_conditions",
+      "proposed_sources": ["Payments.docx"],
+      "evidence_requirements": ["Name correction rather than name change", "International PNR fee", "Maximum three-character note"],
+      "document_review_note": "The original DOCX contains a Name Correction table with domestic and international fees and a separate Name Change table.",
+      "reviewer_decision": null,
+      "reviewed_chunk_ids": [],
+      "reviewer_notes": null
+    },
+    {
+      "semantic_group": "dev-refund",
+      "partition": "development",
+      "expected_behaviour": "answer_with_exception",
+      "proposed_sources": ["Conditions of Carriage.docx"],
+      "evidence_requirements": ["Completely unused non-refundable ticket", "Passenger prevented by Force Majeure", "Prompt notice and evidence", "Credit subject to administration fee and validity condition"],
+      "document_review_note": "Article 3.1.4 in the original DOCX contains the exception and its conditions.",
+      "reviewer_decision": null,
+      "reviewed_chunk_ids": [],
+      "reviewer_notes": null
+    },
+    {
+      "semantic_group": "dev-upgrade",
+      "partition": "development",
+      "expected_behaviour": "multi_document_answer",
+      "proposed_sources": ["Flight upgrade.docx", "Baggage Allowance Information.docx"],
+      "evidence_requirements": ["Available Economy-to-Business upgrade mechanism", "Whether the applicable upgrade method changes baggage allowance", "Relevant Business and Economy baggage tables"],
+      "document_review_note": "The upgrade DOCX states that at least one airport-upgrade product has no Business Class baggage allowance; method applicability requires careful annotation.",
+      "reviewer_decision": null,
+      "reviewed_chunk_ids": [],
+      "reviewer_notes": null
+    },
+    {
+      "semantic_group": "dev-checkin",
+      "partition": "development",
+      "expected_behaviour": "answer_with_route_exception",
+      "proposed_sources": ["Check-in.docx"],
+      "evidence_requirements": ["International online check-in opening time", "United States exception", "Online check-in closing time"],
+      "document_review_note": "The original DOCX contains the international window, US exception and one-hour closing time.",
+      "reviewer_decision": null,
+      "reviewed_chunk_ids": [],
+      "reviewer_notes": null
+    },
+    {
+      "semantic_group": "dev-ambiguous",
+      "partition": "development",
+      "expected_behaviour": "clarify",
+      "proposed_sources": ["Baggage Allowance Information.docx"],
+      "evidence_requirements": ["Cabin class and route materially affect the allowance"],
+      "document_review_note": "The question cannot have one allowance without route and cabin information.",
+      "reviewer_decision": null,
+      "reviewed_chunk_ids": [],
+      "reviewer_notes": null
+    },
+    {
+      "semantic_group": "dev-private",
+      "partition": "development",
+      "expected_behaviour": "unsupported_private_data",
+      "proposed_sources": [],
+      "evidence_requirements": [],
+      "document_review_note": "A current seat assignment requires private live booking data and must not be answered from policy retrieval.",
+      "reviewer_decision": null,
+      "reviewed_chunk_ids": [],
+      "reviewer_notes": null
+    },
+    {
+      "semantic_group": "dev-followup",
+      "partition": "development",
+      "expected_behaviour": "resolve_from_conversation_then_retrieve",
+      "proposed_sources": [],
+      "evidence_requirements": ["The preceding topic is required before evidence can be labelled"],
+      "document_review_note": "Annotate with a fixed preceding exchange; the standalone question is intentionally underspecified.",
+      "reviewer_decision": null,
+      "reviewed_chunk_ids": [],
+      "reviewer_notes": null
+    },
+    {
+      "semantic_group": "dev-docs",
+      "partition": "development",
+      "expected_behaviour": "partial_answer_or_clarify",
+      "proposed_sources": ["Conditions of Carriage.docx"],
+      "evidence_requirements": ["Passenger responsibility for required travel documents", "Destination-specific requirements are not fully enumerated in the available policy"],
+      "document_review_note": "The original DOCX confirms document responsibility but does not establish every country-specific requirement.",
+      "reviewer_decision": null,
+      "reviewed_chunk_ids": [],
+      "reviewer_notes": null
+    },
+    {
+      "semantic_group": "held-cabin",
+      "partition": "held_out",
+      "expected_behaviour": "answer",
+      "proposed_sources": ["Baggage Allowance Information.docx"],
+      "evidence_requirements": ["Business Class cabin baggage", "UK-route column", "Personal accessory and total-weight conditions"],
+      "document_review_note": "A cabin-baggage table exists in the original DOCX; exact reviewed chunks remain blank.",
+      "reviewer_decision": null,
+      "reviewed_chunk_ids": [],
+      "reviewer_notes": null
+    },
+    {
+      "semantic_group": "held-minor",
+      "partition": "held_out",
+      "expected_behaviour": "answer_with_eligibility_conditions",
+      "proposed_sources": ["Special Care.docx"],
+      "evidence_requirements": ["Unaccompanied-minor eligibility", "Required booking or forms", "Fees or route restrictions where applicable"],
+      "document_review_note": "The original Special Care DOCX contains a dedicated Unaccompanied Minor section.",
+      "reviewer_decision": null,
+      "reviewed_chunk_ids": [],
+      "reviewer_notes": null
+    },
+    {
+      "semantic_group": "held-rebook",
+      "partition": "held_out",
+      "expected_behaviour": "answer_with_eligibility_conditions",
+      "proposed_sources": ["Bookings and Self-Rebooking.docx"],
+      "evidence_requirements": ["Only disrupted or schedule-changed flights qualify", "Delayed or cancelled flight condition", "What happens when self-rebooking is not completed"],
+      "document_review_note": "The original DOCX states that unaffected flights are not open for self-rebooking.",
+      "reviewer_decision": null,
+      "reviewed_chunk_ids": [],
+      "reviewer_notes": null
+    },
+    {
+      "semantic_group": "held-special",
+      "partition": "held_out",
+      "expected_behaviour": "multi_evidence_answer",
+      "proposed_sources": ["Special Care.docx"],
+      "evidence_requirements": ["Own wheelchair or mobility aid may be carried free of charge", "Assistance reservation timing", "Operational conditions for late requests"],
+      "document_review_note": "The relevant requirements occur in neighbouring passages of the same original DOCX.",
+      "reviewer_decision": null,
+      "reviewed_chunk_ids": [],
+      "reviewer_notes": null
+    },
+    {
+      "semantic_group": "held-payment",
+      "partition": "held_out",
+      "expected_behaviour": "answer",
+      "proposed_sources": ["Payments.docx", "FAQs.docx"],
+      "evidence_requirements": ["Supported payment method categories", "Do not imply every method is available in every market"],
+      "document_review_note": "The original Payments DOCX lists cards and alternative methods; FAQs supplies a shorter category summary.",
+      "reviewer_decision": null,
+      "reviewed_chunk_ids": [],
+      "reviewer_notes": null
+    },
+    {
+      "semantic_group": "held-delay",
+      "partition": "held_out",
+      "expected_behaviour": "multi_evidence_answer",
+      "proposed_sources": ["Bookings and Self-Rebooking.docx"],
+      "evidence_requirements": ["Self-rebooking eligibility after disruption", "Automatic rebooking behavior", "Available passenger action without claiming a transaction was completed"],
+      "document_review_note": "The source contains Flight Delays and Cancellations and Self-Rebooking sections.",
+      "reviewer_decision": null,
+      "reviewed_chunk_ids": [],
+      "reviewer_notes": null
+    },
+    {
+      "semantic_group": "held-ambiguous",
+      "partition": "held_out",
+      "expected_behaviour": "clarify",
+      "proposed_sources": [],
+      "evidence_requirements": ["The object to be changed must be resolved from conversation context"],
+      "document_review_note": "No document should be labelled relevant until the preceding subject is supplied.",
+      "reviewer_decision": null,
+      "reviewed_chunk_ids": [],
+      "reviewer_notes": null
+    },
+    {
+      "semantic_group": "held-live",
+      "partition": "held_out",
+      "expected_behaviour": "route_to_live_flight_workflow_or_clarify",
+      "proposed_sources": [],
+      "evidence_requirements": [],
+      "document_review_note": "A current gate is live operational information and is outside static policy retrieval; OAG handling remains separate.",
+      "reviewer_decision": null,
+      "reviewed_chunk_ids": [],
+      "reviewer_notes": null
+    },
+    {
+      "semantic_group": "held-followup",
+      "partition": "held_out",
+      "expected_behaviour": "resolve_from_conversation_then_retrieve",
+      "proposed_sources": ["FAQs.docx"],
+      "evidence_requirements": ["Travel-agent handling depends on the preceding booking-modification topic"],
+      "document_review_note": "The original FAQ distinguishes direct/preferred-agent bookings from third-party bookings, but the preceding turn must be fixed for evaluation.",
+      "reviewer_decision": null,
+      "reviewed_chunk_ids": [],
+      "reviewer_notes": null
+    },
+    {
+      "semantic_group": "held-excess",
+      "partition": "held_out",
+      "expected_behaviour": "insufficient_evidence_or_clarify",
+      "proposed_sources": ["Baggage Allowance Information.docx", "Baggage Conditions Rules.docx"],
+      "evidence_requirements": ["Maximum individual piece weight", "Overweight handling or charges if explicitly present"],
+      "document_review_note": "A direct overweight-policy phrase was not located in the reviewed DOCX search. A reviewer must confirm whether sufficient evidence exists rather than infer a rule from ordinary allowances.",
+      "reviewer_decision": null,
+      "reviewed_chunk_ids": [],
+      "reviewer_notes": null
+    }
+  ]
+}

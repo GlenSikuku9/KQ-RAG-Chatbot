@@ -6,6 +6,10 @@
 const configuredApiUrl = import.meta.env.VITE_API_BASE_URL?.trim();
 const baseUrl = configuredApiUrl ? `${configuredApiUrl}/api/v1` : "/api/v1";
 const REQUEST_TIMEOUT_MS = 15000;
+// DOCX extraction, embedding and index synchronization are synchronous backend
+// operations. Keep their client connection alive instead of reporting failure
+// while the server is still completing the requested mutation.
+const DOCUMENT_MUTATION_TIMEOUT_MS = 300000;
 const inFlightGetRequests = new Map();
 
 function requestKey(scope, path) {
@@ -178,13 +182,11 @@ export function publicRequest(
 }
 
 export const getPassengerTheme = () => publicRequest("/theme");
-export const getPublicModels = () => publicRequest("/models/public");
 
 /** Guest requests generate an answer but never create conversation records. */
 export const sendGuestMessage = (
   question,
   previousLanguage,
-  modelId,
   conversationContext = [],
 ) => publicRequest(
   "/guest/messages",
@@ -193,7 +195,6 @@ export const sendGuestMessage = (
     body: JSON.stringify({
       question,
       previous_language: previousLanguage,
-      model_id: modelId,
       conversation_context: conversationContext,
     }),
   },
@@ -236,7 +237,6 @@ export function startConversationWithMessage(
   user,
   question,
   previousLanguage,
-  modelId,
   conversationContext = [],
 ) {
   return authenticatedRequest(
@@ -247,18 +247,12 @@ export function startConversationWithMessage(
       body: JSON.stringify({
         question,
         previous_language: previousLanguage,
-        model_id: modelId,
         conversation_context: conversationContext,
       }),
     },
     false,
     90000,
   );
-}
-
-/** List safe model metadata for the signed-in passenger's model picker. */
-export function getAvailableModels(user) {
-  return authenticatedRequest(user, "/models");
 }
 
 /** Load the caller's saved conversation summaries for the history drawer. */
@@ -295,7 +289,6 @@ export function sendConversationMessage(
   conversationId,
   question,
   previousLanguage,
-  modelId,
   conversationContext = [],
 ) {
   return authenticatedRequest(user, `/conversations/${conversationId}/messages`, {
@@ -303,7 +296,6 @@ export function sendConversationMessage(
     body: JSON.stringify({
       question,
       previous_language: previousLanguage,
-      model_id: modelId,
       conversation_context: conversationContext,
     }),
   }, false, 90000);
@@ -552,15 +544,15 @@ export const adminDeleteConversation = (user, id) => authenticatedRequest(
   `/admin/conversations/${id}`,
   { method: "DELETE" },
 );
-export const adminDeleteDocument = (user, id) => authenticatedRequest(user, `/admin/documents/${id}`, { method: "DELETE" });
-export const adminProcessDocument = (user, id) => authenticatedRequest(user, `/admin/documents/${id}/process`, { method: "POST" });
+export const adminDeleteDocument = (user, id) => authenticatedRequest(user, `/admin/documents/${id}`, { method: "DELETE" }, false, DOCUMENT_MUTATION_TIMEOUT_MS);
+export const adminProcessDocument = (user, id) => authenticatedRequest(user, `/admin/documents/${id}/process`, { method: "POST" }, false, DOCUMENT_MUTATION_TIMEOUT_MS);
 export const adminUpdateDocument = (user, id, title, category) => authenticatedRequest(user, `/admin/documents/${id}`, { method: "PATCH", body: JSON.stringify({ title, category }) });
 export const adminDocumentContent = (user, id) => authenticatedRequest(user, `/admin/documents/${id}/content`);
-export const adminSaveDocumentContent = (user, id, content) => authenticatedRequest(user, `/admin/documents/${id}/content`, { method: "PUT", body: JSON.stringify({ content }) });
+export const adminSaveDocumentContent = (user, id, content) => authenticatedRequest(user, `/admin/documents/${id}/content`, { method: "PUT", body: JSON.stringify({ content }) }, false, DOCUMENT_MUTATION_TIMEOUT_MS);
 export const adminDocumentVersions = (user, id) => authenticatedRequest(user, `/admin/documents/${id}/versions`);
-export const adminRestoreDocumentVersion = (user, id, version) => authenticatedRequest(user, `/admin/documents/${id}/versions/${version}/restore`, { method: "POST" });
+export const adminRestoreDocumentVersion = (user, id, version) => authenticatedRequest(user, `/admin/documents/${id}/versions/${version}/restore`, { method: "POST" }, false, DOCUMENT_MUTATION_TIMEOUT_MS);
 export function adminUploadDocument(user, file) {
   const form = new FormData();
   form.append("file", file);
-  return authenticatedRequest(user, "/admin/documents", { method: "POST", body: form, headers: {} });
+  return authenticatedRequest(user, "/admin/documents", { method: "POST", body: form, headers: {} }, false, DOCUMENT_MUTATION_TIMEOUT_MS);
 }

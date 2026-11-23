@@ -14,7 +14,13 @@ const PAGE_DESCRIPTIONS = {
   Logs: "Review administrative actions and operational diagnostics.",
   Settings: "Configure the passenger-facing chatbot appearance.",
 };
-export function PageHeader({ page, periodDays, onPeriodChange, onUpload }) {
+export function PageHeader({
+  page,
+  periodDays,
+  onPeriodChange,
+  onUpload,
+  uploading = false,
+}) {
   return (
     <header
       className={`admin-header ${page === "Overview" ? "overview-header" : ""}`}
@@ -43,9 +49,14 @@ export function PageHeader({ page, periodDays, onPeriodChange, onUpload }) {
         </label>
       )}
       {page === "Documents" && (
-        <label className="button primary admin-upload">
-          Upload document
-          <input type="file" accept=".docx" onChange={onUpload} />
+        <label className={`button primary admin-upload ${uploading ? "disabled" : ""}`}>
+          {uploading ? "Uploading and processing…" : "Upload document"}
+          <input
+            type="file"
+            accept=".docx"
+            disabled={uploading}
+            onChange={onUpload}
+          />
         </label>
       )}
     </header>

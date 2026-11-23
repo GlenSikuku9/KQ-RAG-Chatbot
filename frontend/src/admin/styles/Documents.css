@@ -15,6 +15,79 @@
   overflow-wrap: anywhere;
 }
 
+.category-filter {
+  position: relative;
+  display: grid;
+  min-width: 0;
+  gap: 0.3rem;
+}
+
+.category-filter-label {
+  color: var(--admin-muted);
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+.category-filter-trigger {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  min-height: 2.65rem;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.55rem 0.65rem;
+  border: 1px solid var(--admin-border);
+  border-radius: 0.55rem;
+  color: #172033;
+  background: #ffffff;
+  text-align: left;
+  cursor: pointer;
+}
+
+.category-filter-trigger span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.category-filter-trigger svg {
+  flex: 0 0 auto;
+}
+
+.category-filter-menu {
+  position: absolute;
+  z-index: 90;
+  top: calc(100% + 0.35rem);
+  right: 0;
+  left: 0;
+  display: grid;
+  max-height: min(20rem, 55vh);
+  padding: 0.35rem;
+  overflow-y: auto;
+  border: 1px solid var(--admin-border);
+  border-radius: 0.55rem;
+  background: #ffffff;
+  box-shadow: 0 14px 32px rgb(9 44 104 / 18%);
+}
+
+.category-filter-menu button {
+  padding: 0.6rem 0.7rem;
+  border: 0;
+  border-radius: 0.35rem;
+  color: #172033;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+}
+
+.category-filter-menu button:hover,
+.category-filter-menu button:focus-visible,
+.category-filter-menu button.selected {
+  color: var(--admin-navy);
+  background: #eef3f9;
+}
+
 .document-actions-trigger {
   display: grid;
   width: 2.1rem;

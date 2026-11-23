@@ -1,0 +1,12 @@
+{
+  "purpose": "diagnostic_examples_not_ground_truth",
+  "questions": [
+    {"id": "diag-economy-baggage", "language": "en", "question": "What is the baggage allowance for Economy Class passengers?"},
+    {"id": "diag-business-route", "language": "en", "question": "What is the baggage allowance for Business Class passengers travelling from Nairobi to London?"},
+    {"id": "diag-upgrade-baggage", "language": "en", "question": "Can I upgrade my Economy Class ticket and receive additional baggage allowance?"},
+    {"id": "diag-wheelchair", "language": "en", "question": "How do I request wheelchair assistance?"},
+    {"id": "diag-baggage-sw", "language": "sw", "question": "Ninaweza kubeba mizigo ya kilo ngapi nikisafiri kwa Economy Class?"},
+    {"id": "diag-name-sw", "language": "sw", "question": "Je, ninahitaji kulipa ili kurekebisha jina kwenye tiketi yangu?"},
+    {"id": "diag-refund-mixed", "language": "mixed", "question": "Can I get a refund kama nimecancel flight yangu?"}
+  ]
+}

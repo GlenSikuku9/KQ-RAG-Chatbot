@@ -21,8 +21,6 @@ import {
   endConversation,
   getConversation,
   getConversationFeedback,
-  getAvailableModels,
-  getPublicModels,
   getSupportAvailability,
   getSupportRequest,
   listConversations,
@@ -110,19 +108,6 @@ function responseLabel(responseSource) {
   return null;
 }
 
-const MODEL_LABELS = {
-  openrouter_gemma_26b: "Gemma 4 26B A4B",
-  openrouter_gemma_31b: "Gemma 4 31B",
-  groq_gpt_oss_120b: "GPT-OSS 120B",
-};
-
-function modelLabel(model) {
-  if (!model) {
-    return "Select model";
-  }
-  return MODEL_LABELS[model.model_id] || model.upstream_model || model.model_id;
-}
-
 function supportStatusLabel(request) {
   const labels = {
     pending: "Pending",
@@ -133,6 +118,36 @@ function supportStatusLabel(request) {
   };
 
   return labels[request.status] || request.status;
+}
+
+function formatConversationCreatedAt(timestamp) {
+  if (!timestamp) return null;
+
+  const createdAt = new Date(timestamp);
+  if (Number.isNaN(createdAt.getTime())) return null;
+
+  // Leaving timeZone unset intentionally formats the Firestore timestamp in
+  // the passenger's browser timezone. Build the date explicitly so its order
+  // remains DD/MM/YYYY regardless of the browser's language preference.
+  const parts = new Intl.DateTimeFormat("en-US", {
+    day: "2-digit",
+    hour: "numeric",
+    hour12: true,
+    minute: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  }).formatToParts(createdAt);
+  const value = (type) => parts.find((part) => part.type === type)?.value;
+  const dayPeriod = value("dayPeriod")?.toUpperCase();
+
+  if (!value("day") || !value("month") || !value("year")
+      || !value("hour") || !value("minute") || !dayPeriod) {
+    return null;
+  }
+
+  return `${value("day")}/${value("month")}/${value("year")}, ${
+    value("hour")
+  }:${value("minute")} ${dayPeriod}`;
 }
 
 function conversationTurns(messages) {
@@ -520,9 +535,6 @@ export function PassengerChat({
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [historyLoading, setHistoryLoading] = useState(Boolean(user));
   const [question, setQuestion] = useState("");
-  const [models, setModels] = useState([]);
-  const [selectedModelId, setSelectedModelId] = useState("");
-  const [modelLoading, setModelLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isStarting, setIsStarting] = useState(false);
   const [isSending, setIsSending] = useState(false);
@@ -540,12 +552,10 @@ export function PassengerChat({
   const [pendingEscalation, setPendingEscalation] = useState(null);
   const [unsuccessfulTurns, setUnsuccessfulTurns] = useState(0);
   const [expanded, setExpanded] = useState(false);
-  const [modelDropdownOpen, setModelDropdownOpen] = useState(false);
   const pendingSubmission = useRef(false);
   const messageListRef = useRef(null);
   const feedbackSectionRef = useRef(null);
   const pendingFeedbackScroll = useRef(false);
-  const modelDropdownRef = useRef(null);
   const composerFormRef = useRef(null);
   const previouslyAuthenticated = useRef(Boolean(user));
   const combinedHistory = useMemo(() => {
@@ -553,6 +563,8 @@ export function PassengerChat({
     // only combines and orders them for the shared history drawer.
     const aiItems = history.map((item) => ({
       activityAt: item.ended_at || item.started_at,
+      createdAt: item.started_at,
+      createdAtLabel: formatConversationCreatedAt(item.started_at),
       id: `ai:${item.conversation_id}`,
       kind: "ai",
       record: item,
@@ -565,6 +577,8 @@ export function PassengerChat({
         || item.cancelled_at
         || item.accepted_at
         || item.created_at,
+      createdAt: item.created_at,
+      createdAtLabel: formatConversationCreatedAt(item.created_at),
       id: `support:${item.request_id}`,
       kind: "support",
       record: item,
@@ -743,49 +757,6 @@ export function PassengerChat({
   }, [user]);
 
   useEffect(() => {
-    let ignoreResponse = false;
-
-    async function loadModels() {
-      try {
-        const availableModels = user
-          ? await getAvailableModels(user)
-          : await getPublicModels();
-        const configuredModels = availableModels.filter((model) => model.configured);
-
-        if (ignoreResponse) {
-          return;
-        }
-
-        setModels(configuredModels);
-        setSelectedModelId(
-          configuredModels.find((model) => model.is_default)?.model_id
-            || configuredModels[0]?.model_id
-            || "",
-        );
-      } catch (reason) {
-        if (!ignoreResponse) {
-          setError(
-            reason instanceof Error
-              ? reason.message
-              : "We could not load the available AI models.",
-          );
-        }
-      } finally {
-        if (!ignoreResponse) {
-          setModelLoading(false);
-        }
-      }
-    }
-
-    // The browser only receives safe model names and status, never provider keys.
-    loadModels();
-
-    return () => {
-      ignoreResponse = true;
-    };
-  }, [user]);
-
-  useEffect(() => {
     const list = messageListRef.current;
 
     if (list) {
@@ -822,22 +793,6 @@ export function PassengerChat({
   }, [conversation?.status]);
 
   useEffect(() => {
-    function handleClickOutside(event) {
-      if (modelDropdownRef.current && !modelDropdownRef.current.contains(event.target)) {
-        setModelDropdownOpen(false);
-      }
-    }
-
-    if (modelDropdownOpen) {
-      document.addEventListener("mousedown", handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [modelDropdownOpen]);
-
-  useEffect(() => {
     if (!confirmEndOpen) return undefined;
     const closeOnEscape = (event) => {
       if (event.key === "Escape" && !isEnding) {
@@ -849,7 +804,7 @@ export function PassengerChat({
   }, [confirmEndOpen, isEnding]);
 
   async function startConversation() {
-    if (isStarting || isSending || modelLoading || !selectedModelId) {
+    if (isStarting || isSending) {
       return;
     }
 
@@ -1128,8 +1083,6 @@ export function PassengerChat({
     // This closes the small timing window before React disables the send button.
     if (
       !trimmedQuestion ||
-      !selectedModelId ||
-      modelLoading ||
       isSending ||
       conversation?.status === "ended" ||
       pendingSubmission.current
@@ -1168,7 +1121,6 @@ export function PassengerChat({
               user,
               trimmedQuestion,
               activeConversation.language,
-              selectedModelId,
               conversationContext,
             )
           : await sendConversationMessage(
@@ -1176,14 +1128,12 @@ export function PassengerChat({
               activeConversation.conversation_id,
               trimmedQuestion,
               activeConversation.language,
-              selectedModelId,
               conversationContext,
             );
       } else {
         const generated = await sendGuestMessage(
           trimmedQuestion,
           activeConversation.language,
-          selectedModelId,
           conversationContext,
         );
         const now = new Date().toISOString();
@@ -1212,7 +1162,7 @@ export function PassengerChat({
             message_text: generated.answer,
             language: generated.language,
             timestamp: now,
-            model_id: generated.model?.model_id || selectedModelId,
+            model_id: generated.model?.model_id || null,
             response_source: generated.generation_called
               ? "generated"
               : generated.decision === "flight_information"
@@ -1341,7 +1291,7 @@ export function PassengerChat({
           className="button primary drawer-new"
           type="button"
           onClick={startConversation}
-          disabled={modelLoading || !selectedModelId}
+          disabled={isStarting || isSending}
         >
           + New conversation
         </button>
@@ -1396,15 +1346,27 @@ export function PassengerChat({
                       : openConversation(item.record.conversation_id)
                   )}
                 >
-                  <strong className="history-item-title">
-                    {item.title}
-                  </strong>
+                  <span className="history-item-summary">
+                    <strong className="history-item-title">
+                      {item.title}
+                    </strong>
+                  </span>
                   <span className="history-item-meta">
-                    {item.kind === "support" && (
-                      <span className="history-kind-label">
-                        Human Support
-                      </span>
-                    )}
+                    <span className="history-item-meta-copy">
+                      {item.createdAtLabel && (
+                        <time
+                          className="history-item-created-at"
+                          dateTime={item.createdAt}
+                        >
+                          {item.createdAtLabel}
+                        </time>
+                      )}
+                      {item.kind === "support" && (
+                        <span className="history-kind-label">
+                          Human Support
+                        </span>
+                      )}
+                    </span>
                     <span
                       className={`history-status-badge ${
                         item.kind
@@ -1456,7 +1418,7 @@ export function PassengerChat({
               <Minus aria-hidden="true" />
             </button>
             <button
-              className="icon-button"
+              className="icon-button chat-size-toggle"
               type="button"
               onClick={() => setExpanded((current) => !current)}
               aria-label={expanded ? "Restore chat size" : "Expand chat"}
@@ -1486,7 +1448,7 @@ export function PassengerChat({
           className="button secondary"
           type="button"
           onClick={startConversation}
-          disabled={isStarting || isSending || modelLoading || !selectedModelId}
+          disabled={isStarting || isSending}
         >
           {isStarting ? "Starting…" : "New conversation"}
         </button>
@@ -1643,12 +1605,6 @@ export function PassengerChat({
             Support request submitted.
           </p>
         )}
-        {activeView === "ai" && modelLoading && !error && (
-          <div className="welcome-screen">
-            <h3>Loading...</h3>
-            <p className="empty-chat">Please wait while we connect to the support system.</p>
-          </div>
-        )}
         {activeView === "ai"
           && !messages.length
           && !isSending
@@ -1665,7 +1621,7 @@ export function PassengerChat({
                   key={suggestion}
                   onClick={(event) => submitQuestion(event, suggestion)}
                   title={suggestion}
-                  disabled={modelLoading || isSending || !selectedModelId}
+                  disabled={isSending}
                 >
                   {suggestion}
                 </button>
@@ -1877,47 +1833,11 @@ export function PassengerChat({
             isSending
             || isStarting
             || conversation?.status === "ended"
-            || modelLoading
-            || !selectedModelId
           }
           required
         />
         <div className="composer-actions">
           <div className="composer-meta">
-            <div className="model-selector" ref={modelDropdownRef}>
-              <button
-                className="model-selector-button"
-                type="button"
-                onClick={() => setModelDropdownOpen((current) => !current)}
-                disabled={modelLoading || isSending || !models.length}
-                aria-label="Select AI model"
-              >
-                <span className="model-icon" aria-hidden="true">AI</span>
-                <span className="model-label">
-                  {modelLabel(models.find((model) => (
-                    model.model_id === selectedModelId
-                  )))}
-                </span>
-                <span className="model-dropdown-arrow">{modelDropdownOpen ? "▲" : "▼"}</span>
-              </button>
-              {modelDropdownOpen && (
-                <div className="model-dropdown">
-                  {models.map((model) => (
-                    <button
-                      key={model.model_id}
-                      className={`model-option ${model.model_id === selectedModelId ? "selected" : ""}`}
-                      type="button"
-                      onClick={() => {
-                        setSelectedModelId(model.model_id);
-                        setModelDropdownOpen(false);
-                      }}
-                    >
-                      {modelLabel(model)}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
             <p>{question.length}/4000 · Enter to send, Shift+Enter for a new line</p>
           </div>
           <button
@@ -1927,8 +1847,6 @@ export function PassengerChat({
               !question.trim()
               || isSending
               || isStarting
-              || modelLoading
-              || !selectedModelId
               || conversation?.status === "ended"
             }
           >

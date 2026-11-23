@@ -1,0 +1,157 @@
+{
+  "warning": "Development-set ablation only. Do not tune using held-out data.",
+  "dense_original_query": {
+    "all": {
+      "questions": 12,
+      "precision_at_5": 0.15,
+      "recall_at_5": 0.5,
+      "mrr_at_5": 0.34722222222222227
+    },
+    "en": {
+      "questions": 4,
+      "precision_at_5": 0.2,
+      "recall_at_5": 0.75,
+      "mrr_at_5": 0.5833333333333334
+    },
+    "sw": {
+      "questions": 4,
+      "precision_at_5": 0.1,
+      "recall_at_5": 0.25,
+      "mrr_at_5": 0.125
+    },
+    "mixed": {
+      "questions": 4,
+      "precision_at_5": 0.15000000000000002,
+      "recall_at_5": 0.5,
+      "mrr_at_5": 0.3333333333333333
+    },
+    "misses": [
+      "fees-sw",
+      "fees-mixed",
+      "wheelchair-sw",
+      "wheelchair-mixed",
+      "baggage-en",
+      "baggage-sw"
+    ]
+  },
+  "dense_expanded_query": {
+    "all": {
+      "questions": 12,
+      "precision_at_5": 0.20000000000000004,
+      "recall_at_5": 0.75,
+      "mrr_at_5": 0.5555555555555556
+    },
+    "en": {
+      "questions": 4,
+      "precision_at_5": 0.2,
+      "recall_at_5": 0.75,
+      "mrr_at_5": 0.5833333333333334
+    },
+    "sw": {
+      "questions": 4,
+      "precision_at_5": 0.2,
+      "recall_at_5": 0.75,
+      "mrr_at_5": 0.5
+    },
+    "mixed": {
+      "questions": 4,
+      "precision_at_5": 0.2,
+      "recall_at_5": 0.75,
+      "mrr_at_5": 0.5833333333333334
+    },
+    "misses": [
+      "fees-sw",
+      "fees-mixed",
+      "baggage-en"
+    ]
+  },
+  "hybrid_original_query": {
+    "all": {
+      "questions": 12,
+      "precision_at_5": 0.18333333333333335,
+      "recall_at_5": 0.7083333333333334,
+      "mrr_at_5": 0.4930555555555556
+    },
+    "en": {
+      "questions": 4,
+      "precision_at_5": 0.25,
+      "recall_at_5": 1.0,
+      "mrr_at_5": 0.75
+    },
+    "sw": {
+      "questions": 4,
+      "precision_at_5": 0.05,
+      "recall_at_5": 0.125,
+      "mrr_at_5": 0.08333333333333333
+    },
+    "mixed": {
+      "questions": 4,
+      "precision_at_5": 0.25,
+      "recall_at_5": 1.0,
+      "mrr_at_5": 0.6458333333333334
+    },
+    "misses": [
+      "fees-sw",
+      "wheelchair-sw",
+      "baggage-sw"
+    ]
+  },
+  "hybrid_expanded_query": {
+    "all": {
+      "questions": 12,
+      "precision_at_5": 0.21666666666666667,
+      "recall_at_5": 0.875,
+      "mrr_at_5": 0.7222222222222222
+    },
+    "en": {
+      "questions": 4,
+      "precision_at_5": 0.25,
+      "recall_at_5": 1.0,
+      "mrr_at_5": 0.75
+    },
+    "sw": {
+      "questions": 4,
+      "precision_at_5": 0.15000000000000002,
+      "recall_at_5": 0.625,
+      "mrr_at_5": 0.5833333333333334
+    },
+    "mixed": {
+      "questions": 4,
+      "precision_at_5": 0.25,
+      "recall_at_5": 1.0,
+      "mrr_at_5": 0.8333333333333334
+    },
+    "misses": [
+      "fees-sw"
+    ]
+  },
+  "hybrid_without_taxonomy_or_heading": {
+    "all": {
+      "questions": 12,
+      "precision_at_5": 0.21666666666666667,
+      "recall_at_5": 0.875,
+      "mrr_at_5": 0.6666666666666666
+    },
+    "en": {
+      "questions": 4,
+      "precision_at_5": 0.25,
+      "recall_at_5": 1.0,
+      "mrr_at_5": 0.7083333333333334
+    },
+    "sw": {
+      "questions": 4,
+      "precision_at_5": 0.15000000000000002,
+      "recall_at_5": 0.625,
+      "mrr_at_5": 0.4583333333333333
+    },
+    "mixed": {
+      "questions": 4,
+      "precision_at_5": 0.25,
+      "recall_at_5": 1.0,
+      "mrr_at_5": 0.8333333333333334
+    },
+    "misses": [
+      "fees-sw"
+    ]
+  }
+}

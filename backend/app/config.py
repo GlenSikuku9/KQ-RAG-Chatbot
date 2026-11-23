@@ -64,6 +64,12 @@ class Settings(BaseModel):
     embedding_batch_size: int = Field(default=4, gt=0, le=64, strict=True)
     embedding_cache_dir: Path = BASE_DIR.parent / "model_cache"
     retrieval_top_k: int = Field(default=5, ge=1, le=20, strict=True)
+    hybrid_retrieval_enabled: bool = True
+    hybrid_dense_candidates: int = Field(default=20, ge=1, le=100, strict=True)
+    hybrid_lexical_candidates: int = Field(default=20, ge=1, le=100, strict=True)
+    # A lower constant preserves meaningful rank separation in the small,
+    # curated policy corpus instead of making ranks 1-20 nearly equivalent.
+    hybrid_rrf_k: int = Field(default=10, ge=1, le=1000, strict=True)
     conversation_history_exchanges: int = Field(
         default=4,
         ge=1,
@@ -71,6 +77,7 @@ class Settings(BaseModel):
         strict=True,
     )
     context_max_chars: int = Field(default=8000, ge=1, le=100000, strict=True)
+    context_max_tokens: int = Field(default=2200, ge=128, le=16000, strict=True)
     context_max_documents: int = Field(default=2, ge=1, le=10, strict=True)
     context_max_chunks_per_document: int = Field(
         default=3,
@@ -108,13 +115,6 @@ class Settings(BaseModel):
     oag_status_cache_seconds: int = Field(default=60, ge=15, le=900)
     oag_refresh_cooldown_seconds: int = Field(default=15, ge=5, le=300)
     oag_route_search_enabled: bool = False
-    # RAGAS uses a deliberately separate, explicit evaluator configuration.
-    # No evaluation runs unless the administrator invokes its CLI script.
-    ragas_evaluator_model: str | None = None
-    ragas_evaluator_api_key: str | None = Field(default=None, repr=False)
-    ragas_evaluator_base_url: str = "https://api.groq.com/openai/v1"
-    ragas_evaluator_timeout_seconds: float = Field(default=60, gt=0, le=300)
-
     @model_validator(mode="after")
     def validate_chunking(self) -> Self:
         validate_chunk_settings(self.rag_chunk_size, self.rag_chunk_overlap)
@@ -156,17 +156,6 @@ def _get_path(name: str, default: Path | None) -> Path | None:
 def _get_optional(name: str) -> str | None:
     value = os.getenv(name)
     return value.strip() if value and value.strip() else None
-
-
-def _usable_evaluator_value(name: str) -> str | None:
-    """Treat copied documentation placeholders as missing configuration."""
-
-    value = _get_optional(name)
-    if value and value.lower().startswith(
-        ("your-", "replace_", "placeholder", "test-"),
-    ):
-        return None
-    return value
 
 
 def _get_int(name: str, default: int) -> int:
@@ -246,11 +235,25 @@ def get_settings() -> Settings:
         embedding_batch_size=_get_int("EMBEDDING_BATCH_SIZE", 4),
         embedding_cache_dir=_get_path("EMBEDDING_CACHE_DIR", BASE_DIR.parent / "model_cache"),
         retrieval_top_k=_get_int("RETRIEVAL_TOP_K", 5),
+        hybrid_retrieval_enabled=_get_bool(
+            "HYBRID_RETRIEVAL_ENABLED",
+            True,
+        ),
+        hybrid_dense_candidates=_get_int(
+            "HYBRID_DENSE_CANDIDATES",
+            20,
+        ),
+        hybrid_lexical_candidates=_get_int(
+            "HYBRID_LEXICAL_CANDIDATES",
+            20,
+        ),
+        hybrid_rrf_k=_get_int("HYBRID_RRF_K", 10),
         conversation_history_exchanges=_get_int(
             "CONVERSATION_HISTORY_EXCHANGES",
             4,
         ),
         context_max_chars=_get_int("CONTEXT_MAX_CHARS", 8000),
+        context_max_tokens=_get_int("CONTEXT_MAX_TOKENS", 2200),
         context_max_documents=_get_int("CONTEXT_MAX_DOCUMENTS", 2),
         context_max_chunks_per_document=_get_int(
             "CONTEXT_MAX_CHUNKS_PER_DOCUMENT",
@@ -304,23 +307,5 @@ def get_settings() -> Settings:
         oag_route_search_enabled=_get_bool(
             "OAG_ROUTE_SEARCH_ENABLED",
             False,
-        ),
-        # A dedicated override is preferred. Reusing the existing Groq
-        # credential is safe because evaluation remains an explicit CLI action.
-        ragas_evaluator_model=(
-            _usable_evaluator_value("RAGAS_EVALUATOR_MODEL")
-            or _get_optional("GROQ_MODEL")
-        ),
-        ragas_evaluator_api_key=(
-            _usable_evaluator_value("RAGAS_EVALUATOR_API_KEY")
-            or _get_optional("GROQ_API_KEY")
-        ),
-        ragas_evaluator_base_url=os.getenv(
-            "RAGAS_EVALUATOR_BASE_URL",
-            "https://api.groq.com/openai/v1",
-        ).strip(),
-        ragas_evaluator_timeout_seconds=_get_float(
-            "RAGAS_EVALUATOR_TIMEOUT_SECONDS",
-            60,
         ),
     )
