@@ -180,7 +180,7 @@ function Analytics({ analytics, periodDays, user }) {
         <MetricCard
           label="Average response"
           value={
-            analytics.performance.completed_count
+            analytics.performance.average_response_ms != null
               ? `${(analytics.performance.average_response_ms / 1000).toFixed(2)} s`
               : "Unavailable"
           }
@@ -237,18 +237,7 @@ function RagEvaluationPanel({
   onLanguageChange,
   onModelChange,
 }) {
-  // Support the previous API shape during rolling backend/frontend restarts.
-  // Missing metrics render as "Not evaluated" rather than crashing Analytics.
-  const documentMetrics = data?.document_retrieval || {
-    document_source_precision: data?.response_quality?.context_precision,
-    document_source_recall: data?.response_quality?.context_recall,
-  };
-  const ragasMetrics = data?.ragas || {
-    context_precision: undefined,
-    context_recall: undefined,
-    faithfulness: data?.response_quality?.faithfulness,
-    answer_relevance: data?.response_quality?.answer_relevance,
-  };
+  const documentMetrics = data?.document_retrieval;
 
   return (
     <section
@@ -334,8 +323,7 @@ function RagEvaluationPanel({
           <RagMetricSection
             title="Document-level retrieval quality"
             subtitle={
-              "Custom document-source overlap for unique answerable questions; "
-              + "these are not RAGAS metrics."
+              "Custom document-source overlap for unique answerable questions."
             }
             metrics={[
               [
@@ -353,43 +341,6 @@ function RagEvaluationPanel({
                   + "for answerable questions only.",
                 null,
                 "Custom",
-              ],
-            ]}
-          />
-          <RagMetricSection
-            title="RAGAS evaluation"
-            subtitle={
-              "Official RAGAS 0.4 metrics from explicit offline evaluation runs."
-            }
-            metrics={[
-              [
-                "Context precision",
-                ragasMetrics.context_precision,
-                "Rank-aware usefulness of the retrieved chunks against the "
-                  + "validated reference answer.",
-                null,
-                "RAGAS",
-              ],
-              [
-                "Context recall",
-                ragasMetrics.context_recall,
-                "Reference-answer claims supported by the retrieved context.",
-                null,
-                "RAGAS",
-              ],
-              [
-                "Faithfulness",
-                ragasMetrics.faithfulness,
-                "Whether answer claims are supported by retrieved policy context.",
-                null,
-                "RAGAS",
-              ],
-              [
-                "Answer relevance",
-                ragasMetrics.answer_relevance,
-                "Whether the answer addresses the passenger enquiry.",
-                null,
-                "RAGAS",
               ],
             ]}
           />
@@ -542,7 +493,7 @@ function AnalyticsPanels({
                 <span>
                   Average response
                   <strong>
-                    {analytics.performance.completed_count
+                    {analytics.performance.average_response_ms != null
                       ? `${(analytics.performance.average_response_ms / 1000).toFixed(2)} seconds`
                       : "Unavailable"}
                   </strong>

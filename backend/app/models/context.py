@@ -38,6 +38,8 @@ class PreparedContext(BaseModel):
     context: str
     context_chars: int = Field(ge=0)
     max_context_chars: int = Field(gt=0)
+    context_tokens: int = Field(ge=0)
+    max_context_tokens: int = Field(gt=0)
     min_similarity: float = Field(ge=-1, le=1, allow_inf_nan=False)
     sources: list[ContextSource]
     excluded: list[ExcludedChunk]

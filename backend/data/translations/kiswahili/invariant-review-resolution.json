@@ -1,0 +1,35 @@
+{
+  "status": "reviewed",
+  "principle": "Different English and Kiswahili token counts are not errors by themselves. Only loss or alteration of an objective policy invariant requires correction.",
+  "reviewed_items": [
+    {
+      "document": "Baggage Allowance Information - SW.docx",
+      "english": "+1pair of boots",
+      "kiswahili": "+Jozi 1 ya buti",
+      "decision": "accepted_semantic_equivalent",
+      "reason": "The quantity 1 and the pair relationship are preserved."
+    },
+    {
+      "document": "FAQs - SW.docx",
+      "english": "3rd party websites",
+      "kiswahili": "tovuti za wahusika wengine",
+      "decision": "accepted_semantic_equivalent",
+      "reason": "The English ordinal is part of the term third party, not a policy quantity."
+    },
+    {
+      "document": "Payments - SW.docx",
+      "english": "Domestic/International PNRs",
+      "kiswahili": "PNR za safari za ndani/kimataifa",
+      "decision": "accepted_semantic_equivalent",
+      "reason": "Kiswahili does not pluralise the technical acronym PNR with an English suffix."
+    },
+    {
+      "document": "Payments - SW.docx",
+      "english": "5th Freedom Sections",
+      "kiswahili": "Sehemu za Uhuru wa Tano",
+      "decision": "accepted_semantic_equivalent",
+      "reason": "The ordinal fifth is expressed naturally as Tano rather than the digit form 5th."
+    }
+  ],
+  "remaining_objective_invariant_errors": 0
+}

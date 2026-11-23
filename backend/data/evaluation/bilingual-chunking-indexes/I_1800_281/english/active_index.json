@@ -1,0 +1,20 @@
+{
+  "collection": "kq_generation_84df812e582c4ae1aa952e2c499b9a3e",
+  "fingerprint": {
+    "model": "intfloat/multilingual-e5-small",
+    "revision": "614241f622f53c4eeff9890bdc4f31cfecc418b3",
+    "dimension": 384,
+    "max_tokens": 512,
+    "normalization": true,
+    "query_prefix": "query: ",
+    "passage_prefix": "passage: ",
+    "pipeline": "e5-cpu-segments-v2",
+    "libraries": {
+      "sentence-transformers": "6.1.0",
+      "transformers": "5.20.2",
+      "torch": "2.15.0"
+    }
+  },
+  "content_hash": "01ae96ef81c31ae0a479dc887c4092a81626b035f1bfc8d29e4b6db8bc12781a",
+  "count": 170
+}

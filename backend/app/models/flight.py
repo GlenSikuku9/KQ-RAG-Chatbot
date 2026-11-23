@@ -12,6 +12,8 @@ class FlightAirport(BaseModel):
     code: str | None = None
     country_code: str | None = None
     name: str | None = None
+    city: str | None = None
+    country: str | None = None
     terminal: str | None = None
     gate: str | None = None
 

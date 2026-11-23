@@ -176,6 +176,13 @@
   background: #ffffff;
 }
 
+.unified-history-list .history-item-summary {
+  display: grid;
+  gap: 0.12rem;
+  min-width: 0;
+  text-align: left;
+}
+
 .unified-history-list .history-item:not(.selected):hover {
   border-color: #c8d5e5;
   background: #f8fafc;
@@ -205,14 +212,29 @@
   -webkit-line-clamp: 2;
 }
 
+.unified-history-list .history-item-created-at {
+  color: #66758a;
+  font-size: 0.7rem;
+  font-weight: 500;
+  line-height: 1.3;
+  white-space: nowrap;
+}
+
 .unified-history-list .history-item-meta {
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   gap: 0.3rem;
   justify-content: space-between;
   min-width: 0;
   color: inherit;
   font-size: 0.68rem;
+}
+
+.unified-history-list .history-item-meta-copy {
+  display: grid;
+  gap: 0.08rem;
+  min-width: 0;
+  text-align: left;
 }
 
 .history-kind-label {
@@ -845,8 +867,10 @@
 }
 
 .flight-location-display {
-  display: inline-flex;
+  display: flex;
   align-items: center;
+  width: 100%;
+  min-width: 0;
   gap: 0.3rem;
 }
 
@@ -856,23 +880,34 @@
 }
 
 .flight-location-display strong {
+  display: block;
+  width: 100%;
+  min-width: 0;
   padding: 0.08rem 0.3rem;
   border: 1px solid #f3b7bb;
   border-radius: 0.35rem;
   background: #fff1f2;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
 }
 
 .flight-route-display {
-  display: inline-flex;
+  display: grid;
   align-items: center;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  width: 100%;
+  min-width: 0;
   gap: 0.35rem;
 }
 
 .flight-route-display strong {
+  min-width: 0;
   padding: 0.18rem 0.42rem;
   border: 1px solid #f3b7bb;
   border-radius: 0.42rem;
   background: #fff1f2;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
 }
 
 .flight-route-display > span {
@@ -887,6 +922,30 @@
   border-bottom: 1px solid #e2e8f0;
 }
 
+.flight-overview-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.flight-travel-date {
+  display: grid;
+  flex: 0 0 auto;
+  gap: 0.08rem;
+  text-align: right;
+}
+
+.flight-travel-date small {
+  color: #64748b;
+  font-size: 0.66rem;
+}
+
+.flight-travel-date strong {
+  color: #102f70;
+  font-size: 0.76rem;
+}
+
 .flight-detail-section dl {
   display: grid;
   gap: 0.48rem;
@@ -894,7 +953,11 @@
 }
 
 .flight-detail-section .flight-overview-grid {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.flight-overview-grid > div:first-child {
+  min-width: 0;
 }
 
 .flight-detail-section dl div {
@@ -946,14 +1009,23 @@
   font-size: 0.72rem;
 }
 
-@media (max-width: 520px) {
+@media (max-width: 700px) {
   .flight-detail-sections,
   .flight-detail-section .flight-overview-grid {
     grid-template-columns: 1fr;
   }
 
   .flight-detail-section:last-child {
-    margin-top: 0.75rem;
+    margin-top: 0;
+  }
+
+  .flight-route-display {
+    grid-template-columns: 1fr;
+  }
+
+  .flight-route-display > span {
+    justify-self: center;
+    transform: rotate(90deg);
   }
 
   .flight-information-card footer {
@@ -1210,11 +1282,17 @@
 @media (max-width: 700px) {
   .chat-window-wrap,
   .chat-window-wrap.drawer-open {
+    /* On phones the chat is a single vertical screen. Safe-area padding is
+       handled by the header and composer rather than shrinking the viewport. */
+    top: 0;
+    left: 0;
     right: 0;
     bottom: 0;
     width: 100vw;
     height: 100dvh;
+    min-height: 100dvh;
     max-height: none;
+    overflow: hidden;
   }
 
   .chat-window-wrap .chat-panel,
@@ -1224,8 +1302,43 @@
     width: 100%;
     height: 100%;
     max-height: none;
+    overflow: hidden;
     transform: none;
+    border: 0;
     border-radius: 0;
+    box-shadow: none;
+  }
+
+  .chat-main-content {
+    display: grid;
+    grid-template-areas:
+      "header"
+      "controls"
+      "error"
+      "messages"
+      "composer";
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto auto auto minmax(0, 1fr) auto;
+    width: 100%;
+    min-width: 0;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .chat-panel-heading {
+    width: 100%;
+    min-width: 0;
+    padding-top: max(0.5rem, env(safe-area-inset-top));
+  }
+
+  /* Expanding a full-screen phone chat has no useful effect. The desktop
+     control remains visible because this rule exists only in this breakpoint. */
+  .chat-size-toggle {
+    display: none !important;
+  }
+
+  .chat-window-actions {
+    flex: 0 0 auto;
   }
 
   .chat-airline-logo {
@@ -1262,10 +1375,66 @@
 
   .suggested-questions {
     grid-template-columns: 1fr;
+    width: 100%;
+  }
+
+  .chat-window-wrap .message-list {
+    width: 100%;
+    min-width: 0;
+    min-height: 0;
+    padding-inline: 0.75rem;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .message-turn,
+  .message-sources,
+  .sources-list,
+  .source-item,
+  .flight-information-card,
+  .human-support-card {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
   }
 
   .source-row-main {
     grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .source-row-main,
+  .source-link,
+  .source-item p,
+  .message-bubble,
+  .message-bubble :is(p, li, a, code, pre) {
+    min-width: 0;
+    max-width: 100%;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  .message-bubble pre {
+    overflow-x: auto;
+    white-space: pre-wrap;
+  }
+
+  .chat-window-wrap .chat-composer {
+    width: 100%;
+    min-width: 0;
+    padding: 0.6rem 0.75rem max(0.5rem, env(safe-area-inset-bottom));
+  }
+
+  .chat-composer textarea {
+    width: 100%;
+    min-width: 0;
+    resize: none;
+  }
+
+  .composer-actions {
+    width: 100%;
+    min-width: 0;
   }
 
   .composer-meta > p {
@@ -1273,7 +1442,10 @@
   }
 
   .chat-message.assistant,
-  .chat-message.passenger {
-    max-width: 92%;
+  .chat-message.passenger,
+  .chat-message.human-agent {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
   }
 }

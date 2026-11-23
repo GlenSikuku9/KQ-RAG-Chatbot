@@ -45,6 +45,7 @@ export function AdminDashboard({ user, profile, onSignOut }) {
   const [selectedLogId, setSelectedLogId] = useState(null);
   const [selectedSupportRequestId, setSelectedSupportRequestId] = useState(null);
   const [notice, setNotice] = useState(null);
+  const [uploadingDocument, setUploadingDocument] = useState(false);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [analytics, setAnalytics] = useState(null);
@@ -159,14 +160,17 @@ export function AdminDashboard({ user, profile, onSignOut }) {
   async function upload(event) {
     const file = event.target.files?.[0];
     if (!file) return;
+    setUploadingDocument(true);
     try {
       await adminUploadDocument(user, file);
       setNotice({ type: "success", text: "Document uploaded and processed." });
       setTableRevision((value) => value + 1);
     } catch (error) {
       setNotice({ type: "error", text: error.message });
+    } finally {
+      setUploadingDocument(false);
+      event.target.value = "";
     }
-    event.target.value = "";
   }
 
   async function openConversation(conversationId) {
@@ -281,6 +285,7 @@ export function AdminDashboard({ user, profile, onSignOut }) {
             periodDays={periodDays}
             onPeriodChange={setPeriodDays}
             onUpload={upload}
+            uploading={uploadingDocument}
           />
           {refreshing && (
             <p className="admin-page-refresh" role="status">

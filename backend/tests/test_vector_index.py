@@ -5,7 +5,11 @@ import unittest
 from unittest.mock import patch
 
 from app.models.document_chunk import DocumentChunk
-from app.rag.vector_index import IndexStateError, VectorIndex
+from app.rag.vector_index import (
+    IndexStateError,
+    VectorIndex,
+    _bm25_scores,
+)
 
 
 class FakeEmbedder:
@@ -162,6 +166,47 @@ class VectorIndexTests(unittest.TestCase):
         self.assertEqual(len(hits), 1)
         self.assertEqual(hits[0].chunk, parent)
 
+    def test_search_only_representations_return_authoritative_parent(self):
+        parent = chunk(text="authoritative policy wording")
+        result = self.index.sync(
+            [parent],
+            search_representations={
+                parent.chunk_id: ["Baggage / Checked allowance\nauthoritative policy wording"],
+            },
+        )
+        self.assertEqual(result["count"], 1)
+        hit = self.index.search("bag", 1)[0]
+        self.assertEqual(hit.chunk, parent)
+        self.assertNotIn("Baggage / Checked allowance", hit.chunk.text)
+
+    def test_hybrid_lexical_search_uses_search_only_representation(self):
+        translated = chunk(text="authoritative English policy")
+        unrelated = chunk("other", "another policy")
+        self.index.sync(
+            [translated, unrelated],
+            search_representations={
+                translated.chunk_id: ["mizigo iliyopotea"],
+                unrelated.chunk_id: ["chakula maalumu"],
+            },
+        )
+
+        hits = self.index.search_hybrid(
+            "mizigo iliyopotea",
+            2,
+            dense_candidates=2,
+            lexical_candidates=2,
+            rrf_k=10,
+        )
+
+        self.assertEqual(hits[0].chunk, translated)
+        self.assertEqual(hits[0].lexical_rank, 1)
+        self.assertEqual(hits[0].chunk.text, "authoritative English policy")
+
+    def test_search_only_representations_require_complete_parent_mapping(self):
+        with self.assertLogs(level="ERROR"):
+            with self.assertRaises(ValueError):
+                self.index.sync([chunk()], search_representations={})
+
     def test_invalid_queries_and_missing_manifest_are_explicit(self):
         with self.assertLogs(level="ERROR"):
             with self.assertRaises(ValueError):
@@ -203,6 +248,69 @@ class VectorIndexTests(unittest.TestCase):
         with patch.object(type(collection), "query", wraps=collection.query) as query:
             self.assertEqual(len(self.index.search("baggage", 2)), 2)
         self.assertEqual(query.call_args.kwargs["n_results"], 4)
+
+    def test_hybrid_search_promotes_exact_policy_terms_with_rrf(self):
+        semantic = chunk(
+            "semantic",
+            "Flight upgrade options for Economy Class passengers.",
+        )
+        exact = chunk(
+            "exact",
+            "Economy Class baggage allowance is two checked bags.",
+        )
+        self.index.sync([semantic, exact])
+
+        hits = self.index.search_hybrid(
+            "Economy Class baggage allowance",
+            2,
+            dense_candidates=2,
+            lexical_candidates=2,
+            rrf_k=60,
+        )
+
+        self.assertEqual(hits[0].chunk.chunk_id, "exact")
+        self.assertEqual(hits[0].lexical_rank, 1)
+        self.assertIsNotNone(hits[0].dense_rank)
+        self.assertGreater(hits[0].fusion_score, 0)
+
+    def test_bm25_uses_document_category_as_a_relevance_signal(self):
+        allowance = chunk(
+            "allowance",
+            "Economy passengers receive two checked pieces.",
+        )
+        allowance.category = "Baggage Allowance Information"
+        delayed = chunk(
+            "delayed",
+            "Economy passengers can receive an interim payment.",
+        )
+        delayed.category = "Delayed or Lost Baggage"
+
+        scores = _bm25_scores(
+            "Economy baggage allowance",
+            [allowance, delayed],
+        )
+
+        self.assertGreater(scores[0], scores[1])
+
+    def test_hybrid_search_deduplicates_segmented_parent_chunks(self):
+        parent = chunk(text="bag allowance and refund")
+        with patch.object(
+            self.embedder,
+            "segments",
+            return_value=["bag allowance ", "and refund"],
+        ):
+            self.index.sync([parent])
+
+        hits = self.index.search_hybrid(
+            "bag allowance",
+            5,
+            dense_candidates=5,
+            lexical_candidates=5,
+            rrf_k=60,
+        )
+
+        self.assertEqual(len(hits), 1)
+        self.assertEqual(hits[0].chunk, parent)
 
     def test_corrupt_payload_nonfinite_score_or_missing_candidates_are_explicit_errors(self):
         self.index.sync([chunk()])

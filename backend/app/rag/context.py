@@ -1,5 +1,6 @@
 from functools import lru_cache
 import logging
+from math import ceil
 import re
 from typing import Literal
 
@@ -53,12 +54,46 @@ def is_unsupported_policy_query(question: str) -> bool:
     )
 
 
+def estimated_context_tokens(text: str) -> int:
+    """Return a conservative, provider-neutral token estimate.
+
+    Generation providers use different tokenizers. The larger of a Unicode
+    word/punctuation count and four-character estimate avoids a dependency on
+    any one provider while keeping the existing character ceiling as a second
+    hard boundary.
+    """
+
+    lexical_count = len(
+        re.findall(r"[^\W_]+|[^\w\s]", text, flags=re.UNICODE),
+    )
+    return max(lexical_count, ceil(len(text) / 4))
+
+
+def substantially_overlaps(
+    candidate: str,
+    selected: str,
+    threshold: float = 0.9,
+) -> bool:
+    """Detect near copies without removing partially overlapping policies."""
+
+    candidate_terms = set(re.findall(r"[^\W_]+", candidate.casefold()))
+    selected_terms = set(re.findall(r"[^\W_]+", selected.casefold()))
+    if not candidate_terms or not selected_terms:
+        return False
+    return (
+        len(candidate_terms & selected_terms)
+        / len(candidate_terms | selected_terms)
+        >= threshold
+    )
+
+
 def build_context(retrieval: RetrievalResponse, settings: Settings) -> PreparedContext:
     sources: list[ContextSource] = []
     excluded: list[ExcludedChunk] = []
     blocks: list[str] = []
     document_citations: dict[str, str] = {}
     used = 0
+    used_tokens = 0
     eligible = 0
     if is_unsupported_policy_query(retrieval.question):
         language = "en" if retrieval.language == "unknown" else retrieval.language
@@ -70,6 +105,8 @@ def build_context(retrieval: RetrievalResponse, settings: Settings) -> PreparedC
             context="",
             context_chars=0,
             max_context_chars=settings.context_max_chars,
+            context_tokens=0,
+            max_context_tokens=settings.context_max_tokens,
             min_similarity=settings.context_min_similarity,
             sources=[],
             excluded=[],
@@ -122,6 +159,30 @@ def build_context(retrieval: RetrievalResponse, settings: Settings) -> PreparedC
                 chunk_id=chunk.chunk_id, reason="duplicate_content", duplicate_of=duplicate.citation_id,
             ))
             continue
+        # Near-copy removal is deliberately restricted to prose from the same
+        # source section. Tables and partial overlaps may carry distinct limits,
+        # conditions or exceptions and are therefore retained.
+        near_duplicate = next((
+            source
+            for source in sources
+            if source.chunk.document_id == chunk.document_id
+            and source.chunk.version == chunk.version
+            and source.chunk.section == chunk.section
+            and not source.chunk.table_location
+            and not chunk.table_location
+            and bool(
+                set(source.chunk.source_locations)
+                & set(chunk.source_locations)
+            )
+            and substantially_overlaps(chunk.text, source.chunk.text)
+        ), None)
+        if near_duplicate is not None:
+            excluded.append(ExcludedChunk(
+                chunk_id=chunk.chunk_id,
+                reason="duplicate_content",
+                duplicate_of=near_duplicate.citation_id,
+            ))
+            continue
         # Chunks remain separate evidence records, while each stable document
         # receives one passenger-facing citation before the prompt is built.
         citation = document_citations.get(chunk.document_id)
@@ -130,12 +191,19 @@ def build_context(retrieval: RetrievalResponse, settings: Settings) -> PreparedC
             document_citations[chunk.document_id] = citation
         block = f"[{citation}]\n{chunk.text}"
         needed = len(block) + (2 if blocks else 0)
+        needed_tokens = estimated_context_tokens(
+            block + ("\n\n" if blocks else ""),
+        )
         # The budget includes citation markers and separators, never truncated policy text.
-        if used + needed > settings.context_max_chars:
+        if (
+            used + needed > settings.context_max_chars
+            or used_tokens + needed_tokens > settings.context_max_tokens
+        ):
             excluded.append(ExcludedChunk(chunk_id=chunk.chunk_id, reason="context_budget_exceeded"))
             continue
         blocks.append(block)
         used += needed
+        used_tokens += needed_tokens
         sources.append(ContextSource(
             citation_id=citation, retrieval_rank=hit.rank, score=hit.score, chunk=chunk,
         ))
@@ -162,6 +230,8 @@ def build_context(retrieval: RetrievalResponse, settings: Settings) -> PreparedC
     return PreparedContext(
         retrieval=retrieval, decision=decision, reason=reason, message=message,
         context="\n\n".join(blocks), context_chars=used, max_context_chars=settings.context_max_chars,
+        context_tokens=used_tokens,
+        max_context_tokens=settings.context_max_tokens,
         min_similarity=settings.context_min_similarity, sources=sources, excluded=excluded,
     )
 

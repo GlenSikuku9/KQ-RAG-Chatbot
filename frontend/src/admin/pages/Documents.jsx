@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import {
+  ChevronDown,
   EllipsisVertical,
   X,
 } from "lucide-react";
@@ -55,6 +56,7 @@ function Documents({ user, revision }) {
   const [pageSize, setPageSize] = useState(10);
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("");
+  const [categoryMenuOpen, setCategoryMenuOpen] = useState(false);
   const [status, setStatus] = useState("");
   const [sortOrder, setSortOrder] = useState("newest");
   const [refresh, setRefresh] = useState(0);
@@ -64,10 +66,12 @@ function Documents({ user, revision }) {
   const [editor, setEditor] = useState(null);
   const [discard, setDiscard] = useState(false);
   const [versions, setVersions] = useState(null);
+  const [processingResult, setProcessingResult] = useState(null);
   const [busyIds, setBusyIds] = useState(new Set());
   const [notice, setNotice] = useState(null);
   const textareaRef = useRef(null);
   const menuRef = useRef(null);
+  const categoryMenuRef = useRef(null);
   const filters = {
     page,
     page_size: pageSize,
@@ -99,6 +103,27 @@ function Documents({ user, revision }) {
       window.removeEventListener("scroll", outside, true);
     };
   }, [menu]);
+
+  useEffect(() => {
+    if (!categoryMenuOpen) return undefined;
+    const close = (event) => {
+      if (
+        (event.type === "keydown" && event.key === "Escape")
+        || (
+          event.type === "mousedown"
+          && !categoryMenuRef.current?.contains(event.target)
+        )
+      ) {
+        setCategoryMenuOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", close);
+    document.addEventListener("keydown", close);
+    return () => {
+      document.removeEventListener("mousedown", close);
+      document.removeEventListener("keydown", close);
+    };
+  }, [categoryMenuOpen]);
 
   function reset(setter, value) {
     setter(value);
@@ -213,12 +238,26 @@ function Documents({ user, revision }) {
     setMenu(null);
     if (busyIds.has(documentRecord.document_id)) return;
     setBusyIds((current) => new Set(current).add(documentRecord.document_id));
+    feedback("info", `Processing ${documentRecord.filename}…`);
     try {
-      await adminProcessDocument(user, documentRecord.document_id);
+      const processed = await adminProcessDocument(
+        user,
+        documentRecord.document_id,
+      );
       setRefresh((value) => value + 1);
-      feedback("success", `${documentRecord.filename} was processed.`);
+      setNotice(null);
+      setProcessingResult({
+        type: "success",
+        title: "Processing successful",
+        message: `${documentRecord.filename} was processed successfully. Its status is ${readableEventName(processed.status)} with ${processed.chunk_count} indexed chunks.`,
+      });
     } catch (reason) {
-      feedback("error", reason.message);
+      setNotice(null);
+      setProcessingResult({
+        type: "error",
+        title: "Processing failed",
+        message: `${documentRecord.filename} could not be processed. ${reason.message}`,
+      });
     } finally {
       setBusyIds((current) => {
         const next = new Set(current);
@@ -260,16 +299,30 @@ function Documents({ user, revision }) {
   async function restoreVersion(version) {
     if (!window.confirm(`Restore ${version.version}? This creates a new version.`))
       return;
+    const documentId = versions.document.document_id;
+    const filename = versions.document.filename;
+    // Close the history dialog once the administrator confirms. The operation
+    // result is reported through the page-level notice instead of leaving a
+    // stale dialog open while the document list changes underneath it.
+    setVersions(null);
+    setBusyIds((current) => new Set(current).add(documentId));
+    feedback("info", `Restoring ${filename} ${version.version}…`);
     try {
       await adminRestoreDocumentVersion(
         user,
-        versions.document.document_id,
+        documentId,
         version.version_number,
       );
-      setVersions(null);
       setRefresh((value) => value + 1);
+      feedback("success", `${filename} ${version.version} was restored successfully.`);
     } catch (reason) {
       feedback("error", reason.message);
+    } finally {
+      setBusyIds((current) => {
+        const next = new Set(current);
+        next.delete(documentId);
+        return next;
+      });
     }
   }
 
@@ -301,18 +354,38 @@ function Documents({ user, revision }) {
               onChange={(event) => reset(setSearch, event.target.value)}
             />
           </label>
-          <label>
-            Category
-            <select
-              value={category}
-              onChange={(event) => reset(setCategory, event.target.value)}
+          <div className="category-filter" ref={categoryMenuRef}>
+            <span className="category-filter-label">Category</span>
+            <button
+              aria-expanded={categoryMenuOpen}
+              aria-haspopup="listbox"
+              className="category-filter-trigger"
+              type="button"
+              onClick={() => setCategoryMenuOpen((current) => !current)}
             >
-              <option value="">All categories</option>
-              {(data?.categories || []).map((value) => (
-                <option key={value}>{value}</option>
-              ))}
-            </select>
-          </label>
+              <span>{category || "All categories"}</span>
+              <ChevronDown aria-hidden="true" size={16} />
+            </button>
+            {categoryMenuOpen && (
+              <div className="category-filter-menu" role="listbox">
+                {["", ...(data?.categories || [])].map((value) => (
+                  <button
+                    aria-selected={category === value}
+                    className={category === value ? "selected" : ""}
+                    key={value || "all"}
+                    role="option"
+                    type="button"
+                    onClick={() => {
+                      reset(setCategory, value);
+                      setCategoryMenuOpen(false);
+                    }}
+                  >
+                    {value || "All categories"}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
           <label>
             Processing status
             <select
@@ -343,14 +416,14 @@ function Documents({ user, revision }) {
           <table className="admin-table documents-table">
             <thead>
               <tr>
-                <th>Filename</th><th>Category</th><th>Version</th>
+                <th>Filename</th><th>Language</th><th>Category</th><th>Version</th>
                 <th>Uploaded</th><th>Uploaded by</th><th>Status</th>
                 <th>Actions</th>
               </tr>
             </thead>
             <tbody>
               {loading ? (
-                <TableLoadingRows columns={7} />
+                <TableLoadingRows columns={8} />
               ) : items.map((item) => {
                 const processing = busyIds.has(item.document_id);
                 return (
@@ -359,6 +432,7 @@ function Documents({ user, revision }) {
                       <strong title={item.filename}>{item.filename}</strong>
                       <small>{item.title}</small>
                     </td>
+                    <td>{item.language === "sw" ? "Kiswahili" : "English"}</td>
                     <td>{item.category}</td>
                     <td>
                       <strong>{item.version || "v1"}</strong>
@@ -395,7 +469,7 @@ function Documents({ user, revision }) {
                 );
               })}
               {!loading && !items.length && (
-                <tr><td className="admin-empty" colSpan="7">No documents match the selected filters.</td></tr>
+                <tr><td className="admin-empty" colSpan="8">No documents match the selected filters.</td></tr>
               )}
             </tbody>
           </table>
@@ -637,6 +711,31 @@ function Documents({ user, revision }) {
                 <button className="text-button" disabled={version.is_current} type="button" onClick={() => restoreVersion(version)}>Restore</button>
               </article>
             ))}
+          </div>
+        </Modal>
+      )}
+
+      {processingResult && (
+        <Modal
+          label={processingResult.title}
+          onClose={() => setProcessingResult(null)}
+        >
+          <header><h2>{processingResult.title}</h2></header>
+          <p
+            className={`notice admin-notice ${processingResult.type}`}
+            role={processingResult.type === "error" ? "alert" : "status"}
+          >
+            {processingResult.message}
+          </p>
+          <div className="document-editor-actions">
+            <button
+              autoFocus
+              className="button primary"
+              type="button"
+              onClick={() => setProcessingResult(null)}
+            >
+              Close
+            </button>
           </div>
         </Modal>
       )}

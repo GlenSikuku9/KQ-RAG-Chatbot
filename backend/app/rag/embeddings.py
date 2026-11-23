@@ -108,6 +108,7 @@ class E5Embedder:
         def fits(value: str) -> bool:
             return len(model.tokenizer(
                 "passage: " + value, add_special_tokens=True, truncation=False,
+                verbose=False,
             )["input_ids"]) <= limit
 
         if not text.strip():
@@ -141,7 +142,15 @@ class E5Embedder:
             raise EmbeddingInputError("Embedding input must not be empty.")
         model = self._get_model()
         value = prefix + text
-        tokens = model.tokenizer(value, add_special_tokens=True, truncation=False)["input_ids"]
+        # Measure the full input here while suppressing the tokenizer's generic
+        # overflow warning. This class either segments or rejects oversized text
+        # before encoding, so the warning incorrectly suggests an indexing error.
+        tokens = model.tokenizer(
+            value,
+            add_special_tokens=True,
+            truncation=False,
+            verbose=False,
+        )["input_ids"]
         limit = min(512, model.max_seq_length)
         if len(tokens) > limit:
             logger.error("Embedding input %s has %s tokens; limit is %s.", label, len(tokens), limit)

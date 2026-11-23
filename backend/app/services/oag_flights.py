@@ -15,6 +15,7 @@ from app.config import Settings, get_settings
 from app.models.flight import FlightAirport, FlightInformation
 from app.models.generation import GroundedAnswerRequest, GroundedAnswerResponse
 from app.services.airport_lookup import AirportSelection, extract_route
+from app.services.airport_metadata import airport_metadata
 from app.services.operational_logging import get_operational_logger
 
 
@@ -638,20 +639,52 @@ class OAGFlightService:
             or {}
         )
         carrier = record.get("carrier") or {}
+        departure_code = cls._airport_code(departure_record)
+        departure_metadata = airport_metadata(departure_code)
         departure = FlightAirport(
-            code=cls._airport_code(departure_record),
-            country_code=cls._country_code(departure_record),
-            name=cls._airport_name(departure_record),
+            code=departure_code,
+            country_code=(
+                cls._country_code(departure_record)
+                or getattr(departure_metadata, "country_code", None)
+            ),
+            name=(
+                cls._airport_name(departure_record)
+                or getattr(departure_metadata, "name", None)
+            ),
+            city=(
+                cls._city_name(departure_record)
+                or getattr(departure_metadata, "city", None)
+            ),
+            country=(
+                cls._country_name(departure_record)
+                or getattr(departure_metadata, "country", None)
+            ),
             terminal=(
                 cls._nested_text(status_departure, "actualTerminal")
                 or cls._nested_text(departure_record, "terminal")
             ),
             gate=cls._nested_text(status_departure, "gate"),
         )
+        arrival_code = cls._airport_code(arrival_record)
+        arrival_metadata = airport_metadata(arrival_code)
         arrival = FlightAirport(
-            code=cls._airport_code(arrival_record),
-            country_code=cls._country_code(arrival_record),
-            name=cls._airport_name(arrival_record),
+            code=arrival_code,
+            country_code=(
+                cls._country_code(arrival_record)
+                or getattr(arrival_metadata, "country_code", None)
+            ),
+            name=(
+                cls._airport_name(arrival_record)
+                or getattr(arrival_metadata, "name", None)
+            ),
+            city=(
+                cls._city_name(arrival_record)
+                or getattr(arrival_metadata, "city", None)
+            ),
+            country=(
+                cls._country_name(arrival_record)
+                or getattr(arrival_metadata, "country", None)
+            ),
             terminal=(
                 cls._nested_text(status_arrival, "actualTerminal")
                 or cls._nested_text(arrival_record, "terminal")
@@ -761,6 +794,22 @@ class OAGFlightService:
         return (
             cls._nested_text(airport, "name")
             or cls._nested_text(movement, "airportName")
+        )
+
+    @classmethod
+    def _city_name(cls, movement: dict) -> str | None:
+        city = movement.get("city") or {}
+        return (
+            cls._nested_text(city, "name")
+            or cls._nested_text(movement, "cityName")
+        )
+
+    @classmethod
+    def _country_name(cls, movement: dict) -> str | None:
+        country = movement.get("country") or {}
+        return (
+            cls._nested_text(country, "name")
+            or cls._nested_text(movement, "countryName")
         )
 
     @staticmethod
@@ -920,8 +969,16 @@ class OAGFlightService:
     @staticmethod
     def _display_airport(airport: FlightAirport) -> str | None:
         if airport.name and airport.code:
-            return f"{airport.name} ({airport.code})"
-        return airport.name or airport.code
+            identity = f"{airport.name} ({airport.code})"
+        else:
+            identity = airport.name or airport.code
+        if not identity:
+            return None
+        return ", ".join(
+            value
+            for value in (identity, airport.city, airport.country)
+            if value
+        )
 
     @staticmethod
     def _english_status_answer(

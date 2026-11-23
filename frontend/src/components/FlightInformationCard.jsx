@@ -49,8 +49,10 @@ function timingLabel(minutes) {
 
 function flightLocation(airport, fallback) {
   const code = airport?.code;
+  const name = airport?.name;
+  const city = airport?.city;
   const countryCode = airport?.country_code;
-  let country = countryCode;
+  let country = airport?.country || countryCode;
 
   if (countryCode && typeof Intl.DisplayNames === "function") {
     country = new Intl.DisplayNames(["en"], {
@@ -58,20 +60,18 @@ function flightLocation(airport, fallback) {
     }).of(countryCode) || countryCode;
   }
 
-  return [code, country].filter(Boolean).join(", ") || fallback;
+  const identity = name
+    ? `${name}${code ? ` (${code})` : ""}`
+    : code;
+  return [identity, city, country].filter(Boolean).join(", ") || fallback;
 }
 
 function FlightLocation({ airport, fallback }) {
   const location = flightLocation(airport, fallback);
-  const code = airport?.code;
-  const remainder = code
-    ? location.replace(code, "").replace(/^,\s*/, "")
-    : location;
 
   return (
     <span className="flight-location-display">
-      {code && <strong>{code}</strong>}
-      {remainder && <span>{remainder}</span>}
+      <strong>{location}</strong>
     </span>
   );
 }
@@ -131,13 +131,9 @@ function FlightInformationCard({
       "Route",
       <FlightRoute
         key="flight-route"
-        departure={information.departure?.code}
-        arrival={information.arrival?.code}
+        departure={departureLocation}
+        arrival={arrivalLocation}
       />,
-    ],
-    [
-      "Travel date",
-      flightDateTime(information.travel_date, true),
     ],
   ];
   const departureItems = [
@@ -227,7 +223,15 @@ function FlightInformationCard({
       </header>
       <div className="flight-detail-sections">
         <section className="flight-detail-section flight-overview">
-          <h4>Flight overview</h4>
+          <div className="flight-overview-heading">
+            <h4>Flight overview</h4>
+            <span className="flight-travel-date">
+              <small>Travel date</small>
+              <strong>
+                {flightDateTime(information.travel_date, true)}
+              </strong>
+            </span>
+          </div>
           <FlightDetailList
             className="flight-overview-grid"
             items={overviewItems}

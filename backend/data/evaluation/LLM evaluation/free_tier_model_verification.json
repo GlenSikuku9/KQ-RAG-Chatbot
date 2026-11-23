@@ -1,0 +1,46 @@
+{
+  "verified_at": "2026-11-19T03:32:09.196626+00:00",
+  "verification_type": "read_only_model_catalog_no_inference",
+  "openrouter": {
+    "google/gemma-4-26b-a4b-it:free": {
+      "available": true,
+      "prompt_price": "0",
+      "completion_price": "0",
+      "zero_cost_verified": true
+    },
+    "google/gemma-4-31b-it:free": {
+      "available": true,
+      "prompt_price": "0",
+      "completion_price": "0",
+      "zero_cost_verified": true
+    }
+  },
+  "openrouter_key_status": {
+    "is_free_tier": true,
+    "limit": 10,
+    "limit_remaining": 9.970500399,
+    "usage": 0.029499601,
+    "usage_daily": 0,
+    "usage_weekly": 0.016979318,
+    "usage_monthly": 0.026973191,
+    "rate_limit": {
+      "requests": -1,
+      "interval": "10s",
+      "note": "This field is deprecated and safe to ignore."
+    }
+  },
+  "openrouter_request_guards": {
+    "exact_free_model_slug": true,
+    "max_prompt_price_per_million": 0,
+    "max_completion_price_per_million": 0,
+    "provider_fallbacks": "same_exact_free_model_only",
+    "alternative_model_list": false
+  },
+  "openrouter_guarded_probes": {},
+  "groq": {
+    "model_id": "openai/gpt-oss-120b",
+    "available_to_configured_api_key": true,
+    "free_tier_confirmed_by_user": true,
+    "zero_cost_guard_note": "Groq has no per-request zero-price field. Zero-cost execution therefore requires the configured account to remain on its Free tier."
+  }
+}

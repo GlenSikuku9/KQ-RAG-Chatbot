@@ -16,6 +16,8 @@ class AdminDocument(BaseModel):
     version: str | None = None
     uploaded_at: UTCDateTime
     uploaded_by: str | None = None
+    language: Literal["en", "sw"] | None = None
+    related_document_id: str | None = None
     status: str
     source: str
     chunk_count: int = 0
@@ -112,7 +114,7 @@ class AdminAnalytics(BaseModel):
     languages: dict[str, int]
     models: dict[str, int]
     feedback: dict[str, float | int | dict[str, int]]
-    performance: dict[str, float | int]
+    performance: dict[str, float | int | None]
     responses: dict[str, int]
     failures: dict[str, int]
     rating_distribution: dict[str, int]
@@ -130,7 +132,7 @@ class RAGMetricValue(BaseModel):
 
 
 class RAGEvaluationMetrics(BaseModel):
-    """Offline evaluation and live RAG operations shown in Analytics."""
+    """Retrieval evaluation and live RAG operations shown in Analytics."""
 
     period_days: int = Field(ge=1, le=365)
     model_id: str | None = None
@@ -141,9 +143,6 @@ class RAGEvaluationMetrics(BaseModel):
     available_languages: list[str] = Field(default_factory=list)
     retrieval: dict[str, RAGMetricValue]
     document_retrieval: dict[str, RAGMetricValue]
-    ragas: dict[str, RAGMetricValue]
-    # Retained as a compatibility alias for older dashboard clients.
-    response_quality: dict[str, RAGMetricValue]
     fallback: dict[str, RAGMetricValue]
     operational: dict[str, RAGMetricValue]
 

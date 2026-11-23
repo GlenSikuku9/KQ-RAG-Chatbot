@@ -1,0 +1,168 @@
+{
+  "created_at": "2026-11-19T08:20:04.698135+00:00",
+  "dataset_path": "backend\\data\\evaluation\\LLM evaluation\\KQ-RAG-Eval-200.json",
+  "dataset_sha256": "7f137be49ed699def265bdaea1d4138700635d0f454deed9763fc9add669180e",
+  "dataset_questions": 200,
+  "source_documents": [
+    {
+      "path": "KQ Data\\Baggage Allowance Information.docx",
+      "sha256": "3d9e4d4c2b7eebcf176935aada88e30e9b98694ab8510b96ed18d1776eb03ce5"
+    },
+    {
+      "path": "KQ Data\\Baggage Conditions Rules.docx",
+      "sha256": "5d6a65977a0c6693e3cc29608d398f514c23af8d2128ec26aa2581d990d0e6d1"
+    },
+    {
+      "path": "KQ Data\\Baggage Restrictions.docx",
+      "sha256": "caf87136cd0cee56e986a30f916e60b9341e5429382f1f4ec06af513ef73c363"
+    },
+    {
+      "path": "KQ Data\\Bookings and Self-Rebooking.docx",
+      "sha256": "a57ad59b68ea7dff3aea8625e7af674263e23a960b90e01c3f0f2b794757f59f"
+    },
+    {
+      "path": "KQ Data\\Check-in.docx",
+      "sha256": "6b74497cbfd4ca1d91f721f6f1a7c68c47b979ff3684dbadbb4ad323227330e3"
+    },
+    {
+      "path": "KQ Data\\Conditions of Carriage.docx",
+      "sha256": "1d686b377f0cd4f706494033746d5a225de0622bda2a12084e35db3ebe4cf6b8"
+    },
+    {
+      "path": "KQ Data\\Contact.docx",
+      "sha256": "f99c82b060cb5984b6e4fa043091f72c8d82bcb13f85d25d5d7b2076290bca31"
+    },
+    {
+      "path": "KQ Data\\Delayed or Lost or Damaged Baggage.docx",
+      "sha256": "28fc4fe2949bd1510728e2ec4672c06bcd2a61a0a422ac5121756e1410026a84"
+    },
+    {
+      "path": "KQ Data\\FAQs.docx",
+      "sha256": "bb6e1c254977c856331e3c8d3dce1015c9ab50937683336df2ce0a036ce476ea"
+    },
+    {
+      "path": "KQ Data\\Flight upgrade.docx",
+      "sha256": "595aaa3ac8502433b647aeaa9629c255eecd9bbd0c58bd9d554a347a9160b4d4"
+    },
+    {
+      "path": "KQ Data\\Online Refunds.docx",
+      "sha256": "3b9736f60b93d0bcf347b48311f5e67cfd1dbf4617e03aaa42df72dfc0d4ed90"
+    },
+    {
+      "path": "KQ Data\\Payments.docx",
+      "sha256": "8dca47b22f493c5aaafba320f8365214beee6081fe66ba76d472994e99c73987"
+    },
+    {
+      "path": "KQ Data\\Pet Carriage.docx",
+      "sha256": "f02f6fb2574571db248c99bf354be431552e83ed0799237377657c2ee5ce2b28"
+    },
+    {
+      "path": "KQ Data\\Special Care.docx",
+      "sha256": "666f753a2cd7098e9224ec06aaa625ef8bcf3f7c58c214d3a76cc5fcaba6eb20"
+    }
+  ],
+  "embedding_fingerprint": {
+    "model": "intfloat/multilingual-e5-small",
+    "revision": "614241f622f53c4eeff9890bdc4f31cfecc418b3",
+    "dimension": 384,
+    "max_tokens": 512,
+    "normalization": true,
+    "query_prefix": "query: ",
+    "passage_prefix": "passage: ",
+    "pipeline": "e5-cpu-segments-v2",
+    "libraries": {
+      "sentence-transformers": "6.1.0",
+      "transformers": "5.20.2",
+      "torch": "2.15.0"
+    }
+  },
+  "configurations": {
+    "A": [
+      1600,
+      250
+    ],
+    "B": [
+      1800,
+      360
+    ],
+    "C": [
+      1800,
+      0
+    ]
+  },
+  "candidate_depth": 20,
+  "top_k": 5,
+  "rrf_k": 10,
+  "context_max_chars": 8000,
+  "context_max_documents": 2,
+  "random_seed": 20261119,
+  "bootstrap_samples": 2000,
+  "python": "3.12.10",
+  "indexes": {
+    "A": {
+      "parents": 188,
+      "english_sync": {
+        "status": "unchanged",
+        "count": 189,
+        "chunks": 188,
+        "embedded": 0,
+        "reused": 189,
+        "removed": 0
+      },
+      "bilingual_sync": {
+        "status": "unchanged",
+        "count": 407,
+        "chunks": 188,
+        "embedded": 0,
+        "reused": 407,
+        "removed": 0
+      },
+      "english_bytes": 6480653,
+      "bilingual_bytes": 13267725
+    },
+    "B": {
+      "parents": 175,
+      "english_sync": {
+        "status": "indexed",
+        "count": 177,
+        "chunks": 175,
+        "embedded": 177,
+        "reused": 0,
+        "removed": 0
+      },
+      "bilingual_sync": {
+        "status": "indexed",
+        "count": 414,
+        "chunks": 175,
+        "embedded": 414,
+        "reused": 0,
+        "removed": 0
+      },
+      "english_bytes": 6583053,
+      "bilingual_bytes": 13873933
+    },
+    "C": {
+      "parents": 148,
+      "english_sync": {
+        "status": "indexed",
+        "count": 149,
+        "chunks": 148,
+        "embedded": 149,
+        "reused": 0,
+        "removed": 0
+      },
+      "bilingual_sync": {
+        "status": "indexed",
+        "count": 335,
+        "chunks": 148,
+        "embedded": 335,
+        "reused": 0,
+        "removed": 0
+      },
+      "english_bytes": 5395213,
+      "bilingual_bytes": 11096845
+    }
+  },
+  "external_api_calls": 0,
+  "production_index_modified": false
+}

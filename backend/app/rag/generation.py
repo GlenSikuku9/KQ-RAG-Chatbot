@@ -18,8 +18,14 @@ logger = logging.getLogger(__name__)
 
 class GenerationProviderError(Exception):
     """Safe public failure; it never contains credentials or raw provider bodies."""
-    def __init__(self, status_code: int, detail: str) -> None:
+    def __init__(
+        self,
+        status_code: int,
+        detail: str,
+        retry_after_seconds: float | None = None,
+    ) -> None:
         self.status_code, self.detail = status_code, detail
+        self.retry_after_seconds = retry_after_seconds
         super().__init__(detail)
 
 
@@ -319,9 +325,14 @@ class GenerationService:
         if response.status_code == 404:
             raise GenerationProviderError(502, "The selected AI model is unavailable from its provider.")
         if response.status_code == 429:
+            try:
+                retry_after = float(response.headers.get("retry-after", ""))
+            except ValueError:
+                retry_after = None
             raise GenerationProviderError(
                 429,
                 "The selected AI provider rate limit was reached. Please try again later.",
+                retry_after_seconds=retry_after,
             )
         if response.status_code in {500, 502, 503, 504}:
             logger.warning(

@@ -51,8 +51,13 @@ class RetrievalRequest(BaseModel):
 
 class RankedChunk(BaseModel):
     rank: int = Field(ge=1)
+    # Cosine similarity remains separate because the context threshold is
+    # calibrated for this scale, not for BM25 or reciprocal-rank scores.
     score: float = Field(allow_inf_nan=False)
     chunk: DocumentChunk
+    dense_rank: int | None = Field(default=None, ge=1)
+    lexical_rank: int | None = Field(default=None, ge=1)
+    fusion_score: float | None = Field(default=None, ge=0)
 
 
 class RetrievalResponse(BaseModel):
@@ -65,5 +70,6 @@ class RetrievalResponse(BaseModel):
     results: list[RankedChunk]
     score_type: Literal["cosine_similarity"] = "cosine_similarity"
     score_definition: str = "1 - cosine distance; higher is closer, not confidence or proof of answerability."
+    ranking_method: Literal["dense_cosine", "hybrid_rrf"] = "dense_cosine"
     evidence_status: Literal["not_assessed"] = "not_assessed"
     retrieval_ms: float

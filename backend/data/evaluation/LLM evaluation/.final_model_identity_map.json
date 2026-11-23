@@ -1,0 +1,5 @@
+{
+  "openrouter_gemma_26b": "Model A",
+  "groq_gpt_oss_120b": "Model B",
+  "openrouter_gemma_31b": "Model C"
+}

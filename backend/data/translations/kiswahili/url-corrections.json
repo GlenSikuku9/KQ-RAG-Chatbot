@@ -1,0 +1,86 @@
+{
+  "method": "English-aligned URL-only correction",
+  "documents": [
+    {
+      "english": "Baggage Allowance Information.docx",
+      "kiswahili": "Baggage Allowance Information - SW.docx",
+      "applied_corrections": []
+    },
+    {
+      "english": "Baggage Conditions Rules.docx",
+      "kiswahili": "Baggage Conditions Rules - SW.docx",
+      "applied_corrections": [
+        {
+          "paragraph_index": 16,
+          "changes": [
+            {
+              "from": "https://support.apple.com/15-inch-macbook-pro-battery-recallhttps://www.easa.europa.eu/newsroom-and-events/news/safety-precautions-regarding-transport-air-recalled-portable-electronichttps://support.apple.com/15-inch-macbook-pro-battery-recall",
+              "to": "https://support.apple.com/15-inch-macbook-pro-battery-recall"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "english": "Baggage Restrictions.docx",
+      "kiswahili": "Baggage Restrictions - SW.docx",
+      "applied_corrections": []
+    },
+    {
+      "english": "Bookings and Self-Rebooking.docx",
+      "kiswahili": "Bookings and Self-Rebooking - SW.docx",
+      "applied_corrections": []
+    },
+    {
+      "english": "Check-in.docx",
+      "kiswahili": "Check-in - SW.docx",
+      "applied_corrections": []
+    },
+    {
+      "english": "Conditions of Carriage.docx",
+      "kiswahili": "Conditions of Carriage - SW.docx",
+      "applied_corrections": []
+    },
+    {
+      "english": "Contact.docx",
+      "kiswahili": "Contact - SW.docx",
+      "applied_corrections": []
+    },
+    {
+      "english": "Delayed or Lost or Damaged Baggage.docx",
+      "kiswahili": "Delayed or Lost or Damaged Baggage - SW.docx",
+      "applied_corrections": []
+    },
+    {
+      "english": "FAQs.docx",
+      "kiswahili": "FAQs - SW.docx",
+      "applied_corrections": []
+    },
+    {
+      "english": "Flight upgrade.docx",
+      "kiswahili": "Flight upgrade - SW.docx",
+      "applied_corrections": []
+    },
+    {
+      "english": "Online Refunds.docx",
+      "kiswahili": "Online Refunds - SW.docx",
+      "applied_corrections": []
+    },
+    {
+      "english": "Payments.docx",
+      "kiswahili": "Payments - SW.docx",
+      "applied_corrections": []
+    },
+    {
+      "english": "Pet Carriage.docx",
+      "kiswahili": "Pet Carriage - SW.docx",
+      "applied_corrections": []
+    },
+    {
+      "english": "Special Care.docx",
+      "kiswahili": "Special Care - SW.docx",
+      "applied_corrections": []
+    }
+  ],
+  "total_corrections": 1
+}

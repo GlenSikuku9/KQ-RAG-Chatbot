@@ -349,9 +349,56 @@ class OAGFlightServiceTests(unittest.TestCase):
         self.assertIsNone(result.departure.gate)
         self.assertEqual(result.departure.country_code, "KE")
         self.assertEqual(
+            result.departure.name,
+            "Jomo Kenyatta International Airport",
+        )
+        self.assertEqual(result.departure.city, "Nairobi")
+        self.assertEqual(result.departure.country, "Kenya")
+        self.assertEqual(result.arrival.name, "Moi International Airport")
+        self.assertEqual(result.arrival.city, "Mombasa")
+        self.assertEqual(
             result.model_dump()["travel_date"],
             "2026-11-10",
         )
+
+    def test_flight_answer_uses_full_verified_airport_locations(self):
+        information = FlightInformation(
+            flight_number="KQ760",
+            travel_date=date(2026, 11, 10),
+            status="InFlight",
+            departure=FlightAirport(
+                code="NBO",
+                name="Jomo Kenyatta International Airport",
+                city="Nairobi",
+                country="Kenya",
+            ),
+            arrival=FlightAirport(
+                code="JNB",
+                name="O. R. Tambo International Airport",
+                city="Johannesburg",
+                country="South Africa",
+            ),
+            retrieved_at="2026-11-10T17:38:00+00:00",
+        )
+
+        english = OAGFlightService._format_answer(information, "en")
+        swahili = OAGFlightService._format_answer(information, "sw")
+
+        for answer in (english, swahili):
+            self.assertIn(
+                "Jomo Kenyatta International Airport (NBO), Nairobi, Kenya",
+                answer,
+            )
+            self.assertIn(
+                "O. R. Tambo International Airport (JNB), Johannesburg, "
+                "South Africa",
+                answer,
+            )
+
+    def test_unknown_airport_code_is_preserved_without_guessing(self):
+        airport = FlightAirport(code="XYZ")
+
+        self.assertEqual(OAGFlightService._display_airport(airport), "XYZ")
 
     def test_no_match_and_authentication_failures_are_safe(self):
         missing = self.service(response(200, {"data": []}))

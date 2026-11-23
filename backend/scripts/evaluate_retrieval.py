@@ -81,8 +81,20 @@ def evaluate(
             "precision_at_k": len(matched) / top_k if relevant else None,
             "reciprocal_rank_at_k": 1 / first_rank if first_rank else 0 if relevant else None,
             "retrieval_ms": response.retrieval_ms,
-            "candidates": [{"rank": result.rank, "source": result.chunk.source, "score": result.score}
-                           for result in response.results],
+            "ranking_method": response.ranking_method,
+            "candidates": [
+                {
+                    "rank": result.rank,
+                    "source": result.chunk.source,
+                    # Keep cosine similarity separate from rank-fusion data.
+                    "score": result.score,
+                    "cosine_similarity": result.score,
+                    "dense_rank": result.dense_rank,
+                    "lexical_rank": result.lexical_rank,
+                    "fusion_score": result.fusion_score,
+                }
+                for result in response.results
+            ],
         })
         if context_settings is not None:
             prepared = build_context(response, context_settings)
@@ -102,6 +114,11 @@ def evaluate(
         "purpose": "development_passage_retrieval_not_held_out_evaluation",
         "top_k": top_k,
         "score_type": "cosine_similarity",
+        "ranking_method": (
+            outcomes[0]["ranking_method"]
+            if outcomes
+            else "not_evaluated"
+        ),
         "metrics": {
             language: {
                 "questions": len(items),

@@ -34,7 +34,7 @@ class ActiveDocumentVersion(BaseModel):
 
 
 class ProcessingAttempt(BaseModel):
-    status: Literal["processed", "needs_review", "failed", "removed"]
+    status: Literal["pending", "processed", "needs_review", "failed", "removed"]
     version: str | None = None
     chunk_count: int = Field(default=0, ge=0)
     chunking: ChunkingSpec
