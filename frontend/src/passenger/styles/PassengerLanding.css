@@ -156,36 +156,70 @@
   background: transparent;
 }
 
-.passenger-app .launcher-logo-crop {
-  display: block;
-  width: 2rem;
-  height: 2rem;
+.passenger-app .chat-launcher {
+  position: fixed;
+  width: 3.5rem;
+  height: 3.5rem;
+  padding: 0.7rem;
+  justify-content: center;
   overflow: hidden;
-  flex: 0 0 2rem;
+  border: 1px solid #ffffff;
   border-radius: 50%;
-  background: transparent;
+  transition:
+    width 180ms ease,
+    border-radius 180ms ease,
+    background-color 180ms ease;
 }
 
-.passenger-app .launcher-airline-logo {
-  display: block;
-  width: 10.45rem;
-  height: 2rem;
-  padding: 0;
+.passenger-app .launcher-chat-icon {
+  width: 1.7rem;
+  height: 1.7rem;
+  flex: 0 0 auto;
+  color: #ffffff;
+  stroke-width: 1.8;
+  transition: opacity 120ms ease;
 }
 
-.passenger-app .launcher-airline-logo img {
-  width: auto;
-  height: 2rem;
-  max-width: none;
-  /* The source also contains the airline name. Clip at the end of the
-     official circular mark so no adjacent lettering enters the launcher. */
-  clip-path: inset(0 81% 0 0);
+.passenger-app .launcher-hover-content {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 0.08rem;
+  padding-inline: 0.8rem;
+  opacity: 0;
+  color: #ffffff;
+  font-size: 0.78rem;
+  font-weight: 800;
+  white-space: nowrap;
+  transition: opacity 120ms ease;
+}
+
+@media (min-width: 761px) {
+  .passenger-app .chat-launcher:hover,
+  .passenger-app .chat-launcher:focus-visible {
+    width: 14.25rem;
+    border-radius: 999px;
+  }
+
+  .passenger-app .chat-launcher:hover .launcher-chat-icon,
+  .passenger-app .chat-launcher:focus-visible .launcher-chat-icon {
+    opacity: 0;
+  }
+
+  .passenger-app .chat-launcher:hover .launcher-hover-content,
+  .passenger-app .chat-launcher:focus-visible .launcher-hover-content {
+    opacity: 1;
+  }
 }
 
 @media (max-width: 760px) {
   .passenger-landing {
     width: min(100% - 1rem, 45rem);
     padding-top: 0.5rem;
+    padding-bottom: 5rem;
   }
 
   .passenger-app > .topbar .passenger-airline-brand {
@@ -199,44 +233,221 @@
   .support-hero {
     grid-template-columns: 1fr;
     min-height: 0;
+    gap: 0;
+    overflow: hidden;
+    border-radius: 1.1rem;
   }
 
   .support-hero::before {
     display: none;
   }
 
+  .support-hero-content {
+    padding: 1.35rem 1.1rem 0.35rem;
+    background: linear-gradient(
+      to bottom,
+      #ffffff 0%,
+      #ffffff 88%,
+      rgb(255 255 255 / 94%) 100%
+    );
+  }
+
+  .support-hero h1 {
+    margin: 0.35rem 0 0.65rem;
+    font-size: 1.9rem;
+    line-height: 1.08;
+  }
+
+  .support-hero-content > p:not(.eyebrow) {
+    margin-bottom: 1rem;
+    font-size: 0.92rem;
+    line-height: 1.55;
+  }
+
+  .support-hero-content > .button {
+    min-height: 2.65rem;
+    padding: 0.55rem 1rem;
+    font-size: 0.86rem;
+  }
+
   .support-hero-art {
-    min-height: 15rem;
+    width: 100%;
+    min-height: 12.5rem;
+    padding: 0;
+    margin-top: -0.1rem;
     clip-path: none;
-    background-position: center 58%;
+    border-radius: 0 0 1.05rem 1.05rem;
+    background-image:
+      linear-gradient(
+        to bottom,
+        #ffffff 0%,
+        rgb(255 255 255 / 72%) 10%,
+        rgb(255 255 255 / 18%) 24%,
+        transparent 38%
+      ),
+      url("/images/kq_overview_wing_clouds.png");
+    background-position: center, center 58%;
+    background-size: 100% 100%, cover;
+    background-repeat: no-repeat;
   }
 
   .support-hero-art .hero-airline-logo {
-    top: 0.85rem;
-    right: 1rem;
+    display: none;
   }
 
   .support-hero-topics {
-    gap: 0.75rem;
+    gap: 0.4rem;
+    margin-top: 1rem;
+    margin-bottom: 0;
   }
 
   .support-hero-topics span {
-    padding-inline: 0.5rem;
+    gap: 0 0.45rem;
+    padding-inline: 0.4rem;
+    font-size: 0.72rem;
+  }
+
+  .support-hero-topics svg {
+    width: 1.2rem;
+    height: 1.2rem;
+  }
+
+  .support-discovery {
+    margin-top: 1.25rem;
+  }
+
+  .support-search {
+    gap: 0.45rem;
+    padding: 0.5rem 0.55rem;
+  }
+
+  .support-search input {
+    min-width: 0;
+    padding: 0.5rem 0;
+    overflow: hidden;
+    font-size: 0.86rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .support-search .button {
+    min-height: 2.5rem;
+    padding-block: 0.5rem;
+    font-size: 0.84rem;
+  }
+
+  .faq-categories {
+    gap: 0.35rem;
+    margin: 0.8rem 0 1.35rem;
+    padding-bottom: 0.2rem;
+  }
+
+  .faq-filter {
+    padding: 0.4rem 0.65rem;
+    font-size: 0.72rem;
+  }
+
+  .faq-heading-row {
+    gap: 0.4rem;
+    margin-bottom: 0.7rem;
+  }
+
+  .faq-heading-row .eyebrow {
+    font-size: 0.68rem;
+  }
+
+  .faq-heading-row h2 {
+    margin-top: 0.15rem;
+    font-size: 1.4rem;
+  }
+
+  .faq-heading-row > p {
+    margin: 0.35rem 0 0;
+    font-size: 0.84rem;
+    line-height: 1.5;
+  }
+
+  .faq-question {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    gap: 0.55rem;
+    padding: 0.75rem 0.8rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+    line-height: 1.4;
+  }
+
+  .faq-question > span:nth-child(2) {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .faq-icon {
+    width: 1.3rem;
+    height: 1.3rem;
+    border-width: 1px;
+    border-radius: 0.35rem;
+    font-size: 0.72rem;
+  }
+
+  .faq-chevron {
+    font-size: 0.78rem;
+  }
+
+  .faq-answer {
+    padding: 0 0.8rem 0.85rem 2.65rem;
+    font-size: 0.82rem;
+    line-height: 1.55;
+  }
+
+  .passenger-app .chat-launcher {
+    right: 0.75rem;
+    bottom: 0.75rem;
+    width: 3rem;
+    height: 3rem;
+    padding: 0.5rem;
+    justify-content: center;
+  }
+
+  .passenger-app .launcher-chat-icon {
+    width: 1.45rem;
+    height: 1.45rem;
+  }
+
+  .passenger-app .launcher-hover-content {
+    display: none;
   }
 }
 
 @media (max-width: 520px) {
   .support-hero-topics {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0;
   }
 
   .support-hero-topics span {
-    padding: 0.55rem 0;
-    border-right: 0;
-    border-bottom: 1px solid var(--passenger-border, #dce4ef);
+    align-content: center;
+    grid-template-columns: auto auto;
+    justify-content: center;
+    gap: 0 0.3rem;
+    padding: 0.35rem 0.4rem;
+    border-right: 1px solid var(--passenger-border, #dce4ef);
+    border-bottom: 0;
+    font-size: 0.64rem;
+    line-height: 1.25;
+  }
+
+  .support-hero-topics span:first-child {
+    padding-left: 0.4rem;
   }
 
   .support-hero-topics span:last-child {
+    padding-right: 0.4rem;
+    border-right: 0;
     border-bottom: 0;
+  }
+
+  .support-hero-topics svg {
+    width: 1rem;
+    height: 1rem;
   }
 }
