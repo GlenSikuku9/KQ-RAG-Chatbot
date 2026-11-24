@@ -742,6 +742,13 @@
   background: #edf3fb;
 }
 
+/* Decorative card elements are mobile-only; desktop suggestions retain their
+   established compact button presentation. */
+.suggestion-icon,
+.suggestion-chevron {
+  display: none;
+}
+
 .chat-message.assistant,
 .chat-message.passenger {
   width: auto;
@@ -1109,6 +1116,16 @@
   padding: 0.6rem 0.75rem 0.4rem;
 }
 
+/* Preserve the established desktop composer while allowing a single mobile
+   input card to contain its counter and compact submit control. */
+.composer-input-shell {
+  display: contents;
+}
+
+.mobile-submit-icon {
+  display: none;
+}
+
 .chat-composer textarea {
   min-height: 3.15rem;
   max-height: 7.5rem;
@@ -1295,6 +1312,13 @@
     overflow: hidden;
   }
 
+  /* The mobile assistant is a true full-screen view, independent of the
+     compact or expanded desktop state that was active before resizing. */
+  .chat-window-wrap {
+    position: fixed;
+    z-index: 50;
+  }
+
   .chat-window-wrap .chat-panel,
   .chat-window-wrap .chat-panel-expanded {
     position: relative;
@@ -1307,6 +1331,59 @@
     border: 0;
     border-radius: 0;
     box-shadow: none;
+  }
+
+  /* Conversation history replaces the phone screen while open. Higher
+     specificity prevents expanded desktop drawer widths leaking into mobile. */
+  .chat-panel:not(.chat-panel-expanded) .chat-drawer.open,
+  .chat-panel.chat-panel-expanded .chat-drawer.open {
+    position: absolute;
+    inset: 0;
+    z-index: 20;
+    width: 100%;
+    max-width: none;
+    height: 100%;
+    max-height: none;
+    padding:
+      max(1rem, env(safe-area-inset-top))
+      max(1rem, env(safe-area-inset-right))
+      max(1rem, env(safe-area-inset-bottom))
+      max(1rem, env(safe-area-inset-left));
+    flex: 1 1 100%;
+    border-right: 0;
+    box-shadow: none;
+  }
+
+  .chat-panel .drawer-scrim {
+    display: none;
+  }
+
+  /* Keep mobile history actions and cards compact without changing desktop. */
+  .chat-drawer .drawer-new {
+    width: 100%;
+    height: 2.375rem;
+    min-height: 2.375rem;
+    max-height: 2.375rem;
+    padding-block: 0;
+    align-items: center;
+  }
+
+  .chat-drawer .unified-history-list {
+    gap: 0.4rem;
+  }
+
+  .chat-drawer .unified-history-list .history-item {
+    height: 4.5rem;
+    min-height: 4.5rem;
+    max-height: 4.5rem;
+    padding: 0.35rem 0.65rem;
+    grid-template-rows: auto auto;
+    align-content: center;
+    gap: 0.15rem;
+  }
+
+  .chat-drawer .unified-history-list .history-item-summary {
+    gap: 0.05rem;
   }
 
   .chat-main-content {
@@ -1376,6 +1453,95 @@
   .suggested-questions {
     grid-template-columns: 1fr;
     width: 100%;
+    gap: 0.3rem;
+  }
+
+  .welcome-screen .welcome-airline-logo {
+    width: min(11rem, 44vw);
+    margin-bottom: 0.1rem;
+  }
+
+  .welcome-screen {
+    padding-block: 0.35rem;
+    transform: translateY(1.25rem);
+  }
+
+  .welcome-screen h3 {
+    margin-block: 0.1rem;
+  }
+
+  .welcome-screen .empty-chat {
+    margin: 0.1rem auto 0.45rem;
+  }
+
+  .suggested-questions .suggestion-chip.mobile-hidden-suggestion {
+    display: none;
+  }
+
+  .suggested-questions .suggestion-chip {
+    display: grid;
+    grid-template-columns: 2rem minmax(0, 1fr) auto;
+    align-items: center;
+    min-height: 3.2rem;
+    padding: 0.3rem 0.55rem;
+    gap: 0.55rem;
+    border: 1px solid var(--passenger-border, #dce4ef);
+    border-radius: 0.85rem;
+    color: var(--passenger-primary, #102f70);
+    background: #ffffff;
+    box-shadow: 0 0.35rem 0.9rem rgb(16 47 112 / 8%);
+    font-size: 0.76rem;
+    font-weight: 700;
+    line-height: 1.35;
+    text-align: left;
+  }
+
+  .suggested-questions .suggestion-chip:hover:not(:disabled),
+  .suggested-questions .suggestion-chip:focus-visible {
+    border-color: #efb4b8;
+    background: #ffffff;
+    box-shadow: 0 0.45rem 1rem rgb(16 47 112 / 12%);
+  }
+
+  .suggestion-icon {
+    position: relative;
+    display: grid;
+    width: 2rem;
+    height: 2rem;
+    place-items: center;
+    border-radius: 0.55rem;
+    color: var(--passenger-user-message, #d71920);
+    background: #fff0f1;
+  }
+
+  .suggestion-icon::after {
+    position: absolute;
+    top: 0.15rem;
+    right: -0.3rem;
+    width: 1px;
+    height: 1.7rem;
+    background: #e2e8f0;
+    content: "";
+  }
+
+  .suggestion-icon svg {
+    width: 1.05rem;
+    height: 1.05rem;
+    stroke-width: 2;
+  }
+
+  .suggestion-text {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .suggestion-chevron {
+    display: block;
+    width: 0.9rem;
+    height: 0.9rem;
+    flex: 0 0 auto;
+    color: var(--passenger-user-message, #d71920);
+    stroke-width: 2.5;
   }
 
   .chat-window-wrap .message-list {
@@ -1426,19 +1592,70 @@
     padding: 0.6rem 0.75rem max(0.5rem, env(safe-area-inset-bottom));
   }
 
-  .chat-composer textarea {
+  .chat-window-wrap .composer-input-shell {
+    display: grid;
+    min-height: 5.25rem;
+    padding: 0.5rem 0.8rem 0.45rem;
+    border: 1px solid var(--passenger-border, #dce4ef);
+    border-radius: 1.25rem;
+    background: var(--passenger-panel, #ffffff);
+  }
+
+  .chat-window-wrap .composer-input-shell textarea {
     width: 100%;
     min-width: 0;
+    min-height: 2.15rem;
+    max-height: 3.75rem;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    outline: 0;
+    background: transparent;
     resize: none;
   }
 
-  .composer-actions {
+  .chat-window-wrap .composer-input-shell .composer-actions {
     width: 100%;
     min-width: 0;
+    margin: 0;
+    align-items: center;
+    flex-direction: row;
   }
 
-  .composer-meta > p {
+  .chat-window-wrap .composer-input-shell .composer-meta > p {
+    display: block;
+    margin: 0;
+    color: var(--passenger-secondary-text, #64748b);
+    font-size: 0.78rem;
+  }
+
+  .desktop-composer-hint,
+  .desktop-submit-label {
     display: none;
+  }
+
+  .chat-window-wrap .composer-input-shell .composer-submit {
+    display: grid;
+    width: 2.5rem;
+    min-width: 2.5rem;
+    height: 2.5rem;
+    min-height: 2.5rem;
+    padding: 0;
+    place-items: center;
+    border-radius: 50%;
+    color: #ffffff;
+    background: var(--passenger-user-message, #d71920);
+  }
+
+  .chat-window-wrap .composer-input-shell .composer-submit:hover:not(:disabled) {
+    color: #ffffff;
+    background: #ad1018;
+  }
+
+  .mobile-submit-icon {
+    display: block;
+    width: 1.35rem;
+    height: 1.35rem;
   }
 
   .chat-message.assistant,
@@ -1447,5 +1664,27 @@
     width: 100%;
     min-width: 0;
     max-width: 100%;
+  }
+
+  /* Compact long responses on phones while retaining comfortable leading. */
+  .chat-window-wrap .message-bubble {
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+
+  .chat-window-wrap .formatted-answer :is(p, li) {
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+
+  .chat-window-wrap .formatted-answer h3 {
+    font-size: 0.98rem;
+    line-height: 1.4;
+  }
+
+  .chat-window-wrap .formatted-answer table,
+  .chat-window-wrap .formatted-answer :is(th, td) {
+    font-size: 0.8rem;
+    line-height: 1.4;
   }
 }

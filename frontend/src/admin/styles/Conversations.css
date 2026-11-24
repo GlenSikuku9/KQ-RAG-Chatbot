@@ -177,6 +177,54 @@
   background: #eaf2fc;
 }
 
+/* Match the passenger response-table presentation in inspected conversations. */
+.conversation-details-modal .formatted-answer-table-wrap {
+  max-width: 100%;
+  margin-block: 0.75rem;
+  overflow-x: auto;
+  border: 1px solid var(--admin-border, #dce4ef);
+  border-radius: 0.65rem;
+  background: #ffffff;
+  -webkit-overflow-scrolling: touch;
+}
+
+.conversation-details-modal .formatted-answer-table-wrap:focus-visible {
+  outline: 2px solid var(--admin-navy, #102f70);
+  outline-offset: 2px;
+}
+
+.conversation-details-modal .formatted-answer table {
+  width: 100%;
+  min-width: 32rem;
+  border-collapse: separate;
+  border-spacing: 0;
+  color: #172033;
+  background: #ffffff;
+}
+
+.conversation-details-modal .formatted-answer th,
+.conversation-details-modal .formatted-answer td {
+  padding: 0.65rem 0.75rem;
+  border-right: 1px solid var(--admin-border, #dce4ef);
+  border-bottom: 1px solid var(--admin-border, #dce4ef);
+  text-align: left;
+  vertical-align: top;
+}
+
+.conversation-details-modal .formatted-answer th {
+  color: var(--admin-navy, #102f70);
+  background: #f3f6fa;
+  font-weight: 700;
+}
+
+.conversation-details-modal .formatted-answer tr > :last-child {
+  border-right: 0;
+}
+
+.conversation-details-modal .formatted-answer tbody tr:last-child td {
+  border-bottom: 0;
+}
+
 .conversation-details-modal .admin-transcript-message.customer {
   justify-self: end;
   margin-left: auto;

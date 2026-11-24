@@ -6,7 +6,6 @@ import {
   ListChecks,
   Headset,
   MessagesSquare,
-  Settings,
   UsersRound,
 } from "lucide-react";
 import { KenyaAirwaysLogo } from "../../components/KenyaAirwaysLogo";
@@ -22,7 +21,8 @@ const ADMIN_PAGES = [
   { name: "Analytics", icon: ChartNoAxesCombined },
   { name: "Models", icon: Bot },
   { name: "Logs", icon: ListChecks },
-  { name: "Settings", icon: Settings },
+  // Settings remains implemented in the dashboard but is intentionally hidden
+  // from the sidebar until administrators should be given direct access again.
 ];
 
 export function AdminSidebar({ page, profile, onNavigate }) {

@@ -6,6 +6,7 @@ import {
   signOut,
   updateProfile,
 } from "firebase/auth";
+import { MessageCircleMore } from "lucide-react";
 
 import { getPassengerTheme, syncProfile } from "./api";
 import { KenyaAirwaysLogo } from "./components/KenyaAirwaysLogo";
@@ -243,11 +244,10 @@ function AppShell({ profile, user, onSignOut, onRequestAuth }) {
             />
             {!chatOpen && (
               <button className="chat-launcher" type="button" onClick={() => openChat()} aria-label="Open KQ Support chat">
-                {/* Crop the official white artwork to its circular airline mark. */}
-                <span className="launcher-logo-crop" aria-hidden="true">
-                  <KenyaAirwaysLogo className="launcher-airline-logo" />
+                <MessageCircleMore className="launcher-chat-icon" aria-hidden="true" />
+                <span className="launcher-hover-content" aria-hidden="true">
+                  <span>Chat with KQ Support</span>
                 </span>
-                <span>Chat with KQ Support</span>
               </button>
             )}
             {chatMounted && (
@@ -272,6 +272,25 @@ function AppShell({ profile, user, onSignOut, onRequestAuth }) {
         )}
       </div>
     </div>
+  );
+}
+
+function InitialLoadingScreen({ desktopText }) {
+  return (
+    <main className="setup-notice initial-loading-screen" aria-live="polite" aria-busy="true">
+      <span className="initial-loading-desktop">{desktopText}</span>
+      <div className="initial-loading-mobile">
+        <div className="initial-loading-bubbles" aria-hidden="true">
+          <i />
+          <i />
+          <i />
+          <i />
+          <i />
+        </div>
+        <strong>In progress</strong>
+        <span>Please wait.</span>
+      </div>
+    </main>
   );
 }
 
@@ -333,11 +352,7 @@ export function App() {
   }, []);
 
   if (loading) {
-    return (
-      <main className="setup-notice" aria-live="polite">
-        Loading your secure session…
-      </main>
-    );
+    return <InitialLoadingScreen desktopText="Loading your secure session…" />;
   }
 
   if (user && error) {
@@ -356,7 +371,7 @@ export function App() {
   }
 
   if (user && !profile) {
-    return <main className="setup-notice">Loading profile...</main>;
+    return <InitialLoadingScreen desktopText="Loading profile..." />;
   }
 
   return (

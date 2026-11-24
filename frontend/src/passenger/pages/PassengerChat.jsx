@@ -6,10 +6,16 @@ import {
 } from "react";
 import {
   ArrowLeft,
+  ArrowUp,
+  CalendarDays,
+  ChevronRight,
+  ClipboardCheck,
+  Luggage,
   Menu,
   Maximize2,
   Minimize2,
   Minus,
+  RefreshCcw,
   X,
 } from "lucide-react";
 import "../styles/PassengerChat.css";
@@ -46,6 +52,18 @@ const SUGGESTED_QUESTIONS = [
   "What travel documents do I need?",
   "How can I change my booking?",
 ];
+
+const MOBILE_HIDDEN_SUGGESTIONS = new Set([
+  "What payment methods are available?",
+  "What travel documents do I need?",
+]);
+
+const SUGGESTION_ICONS = {
+  "What is the baggage allowance for international flights?": Luggage,
+  "How can I check in online?": ClipboardCheck,
+  "How can I request a ticket refund?": RefreshCcw,
+  "How can I change my booking?": CalendarDays,
+};
 
 function recentConversationContext(messages, conversationId) {
   // Four bounded exchanges provide continuity without sending an entire chat.
@@ -1434,16 +1452,10 @@ export function PassengerChat({
         </div>
       </div>
 
-      {activeView === "ai" && (
+      {activeView === "ai"
+        && conversation?.status === "active"
+        && messages.length > 0 && (
       <div className="chat-controls ai-conversation-header">
-        <button
-          className="support-back-button"
-          type="button"
-          onClick={() => setDrawerOpen(true)}
-          aria-label="Back to conversations"
-        >
-          <ArrowLeft aria-hidden="true" />
-        </button>
         <button
           className="button secondary"
           type="button"
@@ -1452,16 +1464,14 @@ export function PassengerChat({
         >
           {isStarting ? "Starting…" : "New conversation"}
         </button>
-        {conversation?.status === "active" && messages.length > 0 && (
-          <button
-            className="end-conversation-button"
-            type="button"
-            onClick={() => setConfirmEndOpen(true)}
-            disabled={isSending || isEnding}
-          >
-            End conversation
-          </button>
-        )}
+        <button
+          className="end-conversation-button"
+          type="button"
+          onClick={() => setConfirmEndOpen(true)}
+          disabled={isSending || isEnding}
+        >
+          End conversation
+        </button>
       </div>
       )}
 
@@ -1614,18 +1624,37 @@ export function PassengerChat({
             <h3>What can we help you with?</h3>
             <p className="empty-chat">Ask about your Kenya Airways journey or choose a common topic.</p>
             <div className="suggested-questions">
-              {SUGGESTED_QUESTIONS.map((suggestion) => (
-                <button
-                  className="suggestion-chip"
+              {SUGGESTED_QUESTIONS.map((suggestion) => {
+                const SuggestionIcon = SUGGESTION_ICONS[suggestion];
+
+                return (
+                  <button
+                  className={`suggestion-chip ${
+                    MOBILE_HIDDEN_SUGGESTIONS.has(suggestion)
+                      ? "mobile-hidden-suggestion"
+                      : ""
+                  }`}
                   type="button"
                   key={suggestion}
                   onClick={(event) => submitQuestion(event, suggestion)}
                   title={suggestion}
                   disabled={isSending}
                 >
-                  {suggestion}
-                </button>
-              ))}
+                    {SuggestionIcon && (
+                      <span className="suggestion-icon" aria-hidden="true">
+                        <SuggestionIcon />
+                      </span>
+                    )}
+                    <span className="suggestion-text">{suggestion}</span>
+                    {SuggestionIcon && (
+                      <ChevronRight
+                        className="suggestion-chevron"
+                        aria-hidden="true"
+                      />
+                    )}
+                  </button>
+                );
+              })}
             </div>
           </div>
         )}
@@ -1821,37 +1850,46 @@ export function PassengerChat({
       {activeView === "ai" && (
       <form className="chat-composer" ref={composerFormRef} onSubmit={submitQuestion}>
         <label className="sr-only" htmlFor="chat-question">Your question</label>
-        <textarea
-          id="chat-question"
-          value={question}
-          onChange={(event) => setQuestion(event.target.value)}
-          onKeyDown={handleComposerKeyDown}
-          placeholder="Enter your inquiry..."
-          rows="3"
-          maxLength="4000"
-          disabled={
-            isSending
-            || isStarting
-            || conversation?.status === "ended"
-          }
-          required
-        />
-        <div className="composer-actions">
-          <div className="composer-meta">
-            <p>{question.length}/4000 · Enter to send, Shift+Enter for a new line</p>
-          </div>
-          <button
-            className="button primary"
-            type="submit"
+        <div className="composer-input-shell">
+          <textarea
+            id="chat-question"
+            value={question}
+            onChange={(event) => setQuestion(event.target.value)}
+            onKeyDown={handleComposerKeyDown}
+            placeholder="Enter your inquiry..."
+            rows="3"
+            maxLength="600"
             disabled={
-              !question.trim()
-              || isSending
+              isSending
               || isStarting
               || conversation?.status === "ended"
             }
-          >
-            {isSending ? "Sending…" : "Send"}
-          </button>
+            required
+          />
+          <div className="composer-actions">
+            <div className="composer-meta">
+              <p>
+                <span>{question.length}/600</span>
+                <span className="desktop-composer-hint"> · Enter to send, Shift+Enter for a new line</span>
+              </p>
+            </div>
+            <button
+              className="button primary composer-submit"
+              type="submit"
+              aria-label={isSending ? "Sending inquiry" : "Send inquiry"}
+              disabled={
+                !question.trim()
+                || isSending
+                || isStarting
+                || conversation?.status === "ended"
+              }
+            >
+              <span className="desktop-submit-label">
+                {isSending ? "Sending…" : "Send"}
+              </span>
+              <ArrowUp className="mobile-submit-icon" aria-hidden="true" />
+            </button>
+          </div>
         </div>
         <p className="chat-disclaimer">AI can make mistakes. Please verify important travel information.</p>
       </form>

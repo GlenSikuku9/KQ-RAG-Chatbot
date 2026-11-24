@@ -284,6 +284,89 @@ a {
   line-height: 1.6;
 }
 
+.initial-loading-mobile {
+  display: none;
+}
+
+@media (max-width: 700px) {
+  .setup-notice.initial-loading-screen {
+    display: grid;
+    width: 100vw;
+    max-width: none;
+    min-height: 100dvh;
+    padding: max(1rem, env(safe-area-inset-top)) max(1rem, env(safe-area-inset-right))
+      max(1rem, env(safe-area-inset-bottom)) max(1rem, env(safe-area-inset-left));
+    margin: 0;
+    place-items: center;
+    color: var(--passenger-primary, #102f70);
+    background: #ffffff;
+  }
+
+  .initial-loading-desktop {
+    display: none;
+  }
+
+  .initial-loading-mobile {
+    display: grid;
+    justify-items: center;
+    gap: 0.2rem;
+    text-align: center;
+  }
+
+  .initial-loading-bubbles {
+    display: flex;
+    min-height: 1.4rem;
+    align-items: center;
+    gap: 0.32rem;
+    margin-bottom: 1.6rem;
+  }
+
+  .initial-loading-bubbles i {
+    width: 0.38rem;
+    height: 0.38rem;
+    border-radius: 50%;
+    background: var(--passenger-user-message, #d71920);
+    animation: initial-loading-pulse 1.05s ease-in-out infinite;
+  }
+
+  .initial-loading-bubbles i:nth-child(2),
+  .initial-loading-bubbles i:nth-child(4) {
+    width: 0.58rem;
+    height: 0.58rem;
+  }
+
+  .initial-loading-bubbles i:nth-child(3) {
+    width: 0.9rem;
+    height: 0.9rem;
+  }
+
+  .initial-loading-bubbles i:nth-child(2) { animation-delay: 90ms; }
+  .initial-loading-bubbles i:nth-child(3) { animation-delay: 180ms; }
+  .initial-loading-bubbles i:nth-child(4) { animation-delay: 270ms; }
+  .initial-loading-bubbles i:nth-child(5) { animation-delay: 360ms; }
+
+  .initial-loading-mobile strong {
+    font-size: 1.65rem;
+    line-height: 1.25;
+  }
+
+  .initial-loading-mobile > span {
+    font-size: 1.15rem;
+  }
+}
+
+@keyframes initial-loading-pulse {
+  0%, 100% { opacity: 0.35; transform: scale(0.72); }
+  50% { opacity: 1; transform: scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .initial-loading-bubbles i {
+    animation: none;
+    opacity: 1;
+  }
+}
+
 .topbar {
   display: flex;
   align-items: center;
