@@ -2907,6 +2907,27 @@ a {
   border-radius: 999px;
   color: var(--passenger-primary, #102f70);
   background: #ffffff;
+  cursor: pointer;
+  transition:
+    color 160ms ease,
+    border-color 160ms ease,
+    background-color 160ms ease,
+    box-shadow 160ms ease,
+    transform 160ms ease;
+}
+
+.account-login:hover:not(:disabled) {
+  border-color: var(--passenger-user-message, #d71920);
+  color: #ffffff;
+  background: var(--passenger-user-message, #d71920);
+  box-shadow: 0 0.4rem 1rem rgb(215 25 32 / 22%);
+  transform: translateY(-1px);
+}
+
+.account-login:focus-visible {
+  border-color: var(--passenger-user-message, #d71920);
+  outline: 3px solid rgb(215 25 32 / 20%);
+  outline-offset: 2px;
 }
 
 .passenger-landing {

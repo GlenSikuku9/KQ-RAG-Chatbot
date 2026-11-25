@@ -54,6 +54,17 @@ from app.rag.ingestion import publish_document, remove_document
 
 
 logger = logging.getLogger(__name__)
+ANALYTICS_LANGUAGES = frozenset({"en", "sw", "mixed"})
+
+
+def _analytics_language_counts(conversations) -> Counter:
+    """Count only languages supported by the passenger chatbot."""
+
+    return Counter(
+        item.language
+        for item in conversations
+        if item.language in ANALYTICS_LANGUAGES
+    )
 
 
 def _uploader_email(value: object) -> str | None:
@@ -1694,9 +1705,7 @@ def analytics(period_days: int = 30) -> AdminAnalytics:
         if item.created_at >= started:
             feedback.append(item)
 
-    language_counts = Counter(item.language for item in conversations)
     model_counts = Counter(item.model_id for item in events if item.model_id)
-    daily_counts = Counter(item.started_at.date().isoformat() for item in conversations)
     completed = [item for item in events if item.event_type == "chat_completed"]
     timed_completed = [
         item for item in completed if item.duration_ms is not None
@@ -1759,7 +1768,7 @@ def analytics(period_days: int = 30) -> AdminAnalytics:
         for item in conversations
         if item.conversation_id in first_messages
     ]
-    language_counts = Counter(item.language for item in conversations)
+    language_counts = _analytics_language_counts(conversations)
     daily_counts = Counter(
         item.started_at.date().isoformat()
         for item in conversations
