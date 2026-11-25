@@ -145,6 +145,19 @@ class OAGFlightServiceTests(unittest.TestCase):
                 self.assertEqual(result.decision, "flight_information")
                 self.assertEqual(result.flight_info.flight_number, "KQ100")
 
+    def test_booking_action_does_not_route_to_oag(self):
+        provider = response(500, {})
+        service = self.service(provider)
+
+        result = service.answer_if_flight_query(
+            GroundedAnswerRequest(
+                question="Please book me a flight from Nairobi to London",
+                language="en",
+            ),
+        )
+
+        self.assertIsNone(result)
+
     def test_equivalent_kenya_airways_flight_references_route_to_oag(self):
         payload = {
             "data": [{

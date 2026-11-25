@@ -1,199 +1,17 @@
 import { useEffect, useState } from "react";
-import {
-  createUserWithEmailAndPassword,
-  onAuthStateChanged,
-  signInWithEmailAndPassword,
-  signOut,
-  updateProfile,
-} from "firebase/auth";
 import { MessageCircleMore } from "lucide-react";
 
 import { getPassengerTheme, syncProfile } from "./api";
+import { AuthScreen } from "./auth/AuthScreen";
+import {
+  authenticationAvailable,
+  observeAuthentication,
+  signOutCurrentUser,
+} from "./auth/authentication";
 import { KenyaAirwaysLogo } from "./components/KenyaAirwaysLogo";
 import { AdminDashboard } from "./admin/AdminDashboard";
 import { PassengerChat } from "./passenger/pages/PassengerChat";
 import { PassengerLanding } from "./passenger/pages/PassengerLanding";
-import { auth } from "./firebase";
-import "./passenger/styles/AuthScreen.css";
-
-function AuthScreen({ initialScreen = "sign-in", onCancel }) {
-  const [screen, setScreen] = useState(initialScreen);
-  const [email, setEmail] = useState("");
-  const [firstName, setFirstName] = useState("");
-  const [surname, setSurname] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState(null);
-  const [submitting, setSubmitting] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
-  const [attemptedSubmit, setAttemptedSubmit] = useState(false);
-
-  const passwordChecks = {
-    length: password.length >= 8,
-    lowercase: /[a-z]/.test(password),
-    uppercase: /[A-Z]/.test(password),
-    number: /\d/.test(password),
-  };
-  const passwordValid = screen === "sign-in"
-    ? password.length >= 6
-    : Object.values(passwordChecks).every(Boolean);
-  const nameValid = firstName.trim().length > 0 && surname.trim().length > 0;
-  const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
-
-  async function submit(event) {
-    event.preventDefault();
-    setAttemptedSubmit(true);
-
-    if (!auth) {
-      return;
-    }
-
-    if (!emailValid || !passwordValid || (screen === "register" && !nameValid)) {
-      setError("Please correct the highlighted fields before continuing.");
-      return;
-    }
-
-    setSubmitting(true);
-    setError(null);
-
-    try {
-      // The backend derives roles from verified claims; this form never chooses a role.
-      const credential = screen === "register"
-        ? await createUserWithEmailAndPassword(auth, email, password)
-        : await signInWithEmailAndPassword(auth, email, password);
-
-      if (screen === "register") {
-        // Firebase displayName is copied into the trusted backend profile at sync time.
-        await updateProfile(credential.user, {
-          displayName: `${firstName.trim()} ${surname.trim()}`.trim(),
-        });
-      }
-
-      // onAuthStateChanged below owns profile synchronisation. Calling it here
-      // as well would send two identical profile requests after every sign-in.
-    } catch (reason) {
-      const code = reason?.code;
-      const friendlyErrors = {
-        "auth/email-already-in-use": "An account already exists for this email address. Sign in instead.",
-        "auth/invalid-credential": "The email address or password is incorrect.",
-        "auth/invalid-email": "Enter a valid email address.",
-        "auth/network-request-failed": "The registration service could not be reached. Check your connection and try again.",
-        "auth/too-many-requests": "Too many attempts were made. Wait a moment and try again.",
-        "auth/weak-password": "Choose a stronger password that meets every requirement below.",
-      };
-      setError(friendlyErrors[code] || "We could not complete your account request. Please try again.");
-    } finally {
-      setSubmitting(false);
-    }
-  }
-
-  function toggleScreen() {
-    setScreen((currentScreen) =>
-      currentScreen === "sign-in" ? "register" : "sign-in",
-    );
-    setError(null);
-    setAttemptedSubmit(false);
-    setShowPassword(false);
-  }
-
-  return (
-    <main className="auth-layout">
-      <section className="brand-panel">
-        <KenyaAirwaysLogo className="auth-airline-logo" />
-        <p className="eyebrow">CUSTOMER CARE</p>
-        <h1>Your journey, supported.</h1>
-        <p>
-          Get clear answers about bookings, baggage, check-in, refunds, and more.
-        </p>
-      </section>
-
-      <section className="auth-card" aria-labelledby="auth-heading">
-        {onCancel && (
-          <button className="auth-close" type="button" onClick={onCancel} aria-label="Close authentication">
-            ×
-          </button>
-        )}
-        <div className="auth-card-topline">
-          <p className="wordmark"><span>KQ</span> SUPPORT</p>
-        </div>
-        <h2 id="auth-heading">
-          {screen === "sign-in" ? "Welcome back" : "Create your account"}
-        </h2>
-        <p className="muted">
-          {screen === "sign-in"
-            ? "Sign in to continue your conversations."
-            : "Create an account to save your conversations and access your chat history anytime."}
-        </p>
-
-        <form onSubmit={submit}>
-          {screen === "register" && <>
-            <label>First name<input className={attemptedSubmit && !firstName.trim() ? "invalid" : ""} type="text" value={firstName} onChange={(event) => setFirstName(event.target.value)} autoComplete="given-name" aria-invalid={attemptedSubmit && !firstName.trim()} required />{attemptedSubmit && !firstName.trim() && <small className="field-error">Enter your first name.</small>}</label>
-            <label>Surname<input className={attemptedSubmit && !surname.trim() ? "invalid" : ""} type="text" value={surname} onChange={(event) => setSurname(event.target.value)} autoComplete="family-name" aria-invalid={attemptedSubmit && !surname.trim()} required />{attemptedSubmit && !surname.trim() && <small className="field-error">Enter your surname.</small>}</label>
-          </>}
-          <label>
-            Email
-            <input
-              className={attemptedSubmit && !emailValid ? "invalid" : ""}
-              type="email"
-              value={email}
-              onChange={(event) => setEmail(event.target.value)}
-              autoComplete="email"
-              aria-invalid={attemptedSubmit && !emailValid}
-              required
-            />
-            {attemptedSubmit && !emailValid && (
-              <small className="field-error">Enter a valid email address.</small>
-            )}
-          </label>
-
-          <label>
-            Password
-            <span className="password-field">
-              <input
-                className={attemptedSubmit && !passwordValid ? "invalid" : ""}
-                type={showPassword ? "text" : "password"}
-                value={password}
-                onChange={(event) => setPassword(event.target.value)}
-                autoComplete={screen === "sign-in" ? "current-password" : "new-password"}
-                minLength={screen === "register" ? 8 : 6}
-                aria-invalid={attemptedSubmit && !passwordValid}
-                required
-              />
-              <button type="button" onClick={() => setShowPassword((current) => !current)} aria-label={showPassword ? "Hide password" : "Show password"}>{showPassword ? "Hide" : "Show"}</button>
-            </span>
-          </label>
-          {screen === "register" && <div className="password-requirements" aria-live="polite"><p>Your password must include:</p><ul><li className={passwordChecks.length ? "met" : ""}>At least 8 characters</li><li className={passwordChecks.lowercase ? "met" : ""}>A lowercase letter</li><li className={passwordChecks.uppercase ? "met" : ""}>An uppercase letter</li><li className={passwordChecks.number ? "met" : ""}>A number</li></ul></div>}
-
-          {error && (
-            <p className="notice error" role="alert">
-              {error}
-            </p>
-          )}
-
-          <button
-            className="button primary auth-submit"
-            disabled={submitting}
-            aria-busy={submitting}
-          >
-            {submitting
-              ? screen === "sign-in"
-                ? "Signing in..."
-                : "Creating account..."
-              : screen === "sign-in"
-                ? "Sign in"
-                : "Create account"}
-          </button>
-        </form>
-
-        <button className="link-button" type="button" onClick={toggleScreen}>
-          {screen === "sign-in"
-            ? "New here? Create a passenger account"
-            : "Already registered? Sign in"}
-        </button>
-        <p className="auth-footnote">By continuing, you agree to use KQ Support for travel information and assistance.</p>
-      </section>
-    </main>
-  );
-}
 
 function AppShell({ profile, user, onSignOut, onRequestAuth }) {
   const isAdmin = profile?.role === "admin";
@@ -325,14 +143,14 @@ export function App() {
   }
 
   useEffect(() => {
-    if (!auth) {
+    if (!authenticationAvailable()) {
       setLoading(false);
 
       return undefined;
     }
 
     // Firebase is the single source of session truth, including expiry and sign-out.
-    return onAuthStateChanged(auth, async (nextUser) => {
+    return observeAuthentication(async (nextUser) => {
       setUser(nextUser);
       setProfile(null);
       setLoading(false);
@@ -363,7 +181,7 @@ export function App() {
         <button className="button primary" onClick={() => establishProfile(user)}>
           Try again
         </button>
-        <button className="link-button" type="button" onClick={() => signOut(auth)}>
+        <button className="link-button" type="button" onClick={signOutCurrentUser}>
           Sign out
         </button>
       </main>
@@ -379,7 +197,7 @@ export function App() {
       <AppShell
         profile={profile}
         user={user}
-        onSignOut={() => signOut(auth)}
+        onSignOut={signOutCurrentUser}
         onRequestAuth={setAuthScreen}
       />
       {!user && authScreen && (

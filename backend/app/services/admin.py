@@ -12,8 +12,6 @@ from uuid import uuid4
 from fastapi import HTTPException, UploadFile, status
 from firebase_admin import auth
 from google.cloud.firestore_v1.base_query import FieldFilter
-from pydantic import BaseModel
-
 from app.config import get_settings
 from app.models.admin import (
     DEFAULT_PASSENGER_THEME,
@@ -47,6 +45,7 @@ from app.services.firestore_client import (
     get_firestore_client,
 )
 from app.services.knowledge_base import KnowledgeBaseStore
+from app.services.rag_evaluation import is_retired_analytics_model
 from app.security.document_upload import (
     UnsafeDocumentError,
     validate_docx_upload,
@@ -238,27 +237,6 @@ def _model_display_name(upstream_model: str) -> str:
         else part.capitalize()
         for part in parts
     )
-
-
-def _is_legacy_gemini_record(value: object) -> bool:
-    """Identify retired Gemini records without matching active Gemma models."""
-    if isinstance(value, BaseModel):
-        fields = value.model_dump()
-    elif isinstance(value, dict):
-        fields = value
-    else:
-        fields = {"model_id": value}
-    identifiers = " ".join(
-        str(fields.get(name) or "").lower()
-        for name in (
-            "model_id",
-            "model_provider",
-            "model_version",
-            "provider",
-            "upstream_model",
-        )
-    )
-    return "gemini" in identifiers or "google_ai_studio" in identifiers
 
 
 def _audit_description(action: str, details: dict) -> str:
@@ -1706,7 +1684,7 @@ def analytics(period_days: int = 30) -> AdminAnalytics:
         event = OperationalEvent.model_validate(snapshot.to_dict())
         if (
             event.occurred_at >= started
-            and not _is_legacy_gemini_record(event)
+            and not is_retired_analytics_model(event)
         ):
             events.append(event)
 

@@ -821,6 +821,18 @@ export function PassengerChat({
     return () => document.removeEventListener("keydown", closeOnEscape);
   }, [confirmEndOpen, isEnding]);
 
+  function resetConversationSupportState() {
+    // An unsubmitted escalation belongs only to the conversation where it was
+    // offered. Saved support requests remain available in support history.
+    setSupportOffer(false);
+    setSupportReason("passenger_request");
+    setSupportSummary("");
+    setSupportState("idle");
+    setPendingEscalation(null);
+    setActiveSupport(null);
+    setSupportDetail(null);
+  }
+
   async function startConversation() {
     if (isStarting || isSending) {
       return;
@@ -841,6 +853,7 @@ export function PassengerChat({
         started_at: new Date().toISOString(),
         persisted: false,
       };
+      resetConversationSupportState();
       setConversation(nextConversation);
       setMessages([]);
       setFeedback(null);
@@ -870,6 +883,7 @@ export function PassengerChat({
       const detail = await getConversation(user, conversationId);
       // Render persisted messages immediately. Feedback is supplementary and must
       // never prevent an ended conversation from reopening with its history.
+      resetConversationSupportState();
       setConversation(detail.conversation);
       setMessages(detail.messages);
       setDrawerOpen(false);
@@ -894,6 +908,7 @@ export function PassengerChat({
         user,
         item.request_id,
       );
+      resetConversationSupportState();
       setSupportDetail(detail);
       setActiveSupport(detail.request);
       setActiveView("support");

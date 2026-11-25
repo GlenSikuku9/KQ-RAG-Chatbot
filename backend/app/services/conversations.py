@@ -23,6 +23,7 @@ from app.models.user import AuthenticatedUser
 from app.rag.grounded_generation import (
     GroundedAnswerService,
     answer_static_intent,
+    answer_unsupported_language,
     get_grounded_answer_service,
 )
 from app.services.firestore_client import (
@@ -470,6 +471,14 @@ class ConversationService:
                     "conversation_context": list(resolution.context),
                     "resolved_question": resolution.resolved_question,
                 },
+            )
+            # Deterministic language, capability, conversational, and booking
+            # boundaries must run before OAG. Otherwise words such as "flight"
+            # can turn a transaction request into a schedule lookup.
+            generated = (
+                answer_unsupported_language()
+                if detected.source == "unsupported"
+                else answer_static_intent(request)
             )
 
         # Resolve safe model metadata before retrieval/generation so a later

@@ -16,6 +16,7 @@ from app.models.flight import FlightAirport, FlightInformation
 from app.models.generation import GroundedAnswerRequest, GroundedAnswerResponse
 from app.services.airport_lookup import AirportSelection, extract_route
 from app.services.airport_metadata import airport_metadata
+from app.services.chat_intents import is_booking_action_request
 from app.services.operational_logging import get_operational_logger
 
 
@@ -100,6 +101,10 @@ class OAGFlightService:
             request.resolved_question
             or request.question
         ).strip()
+        # Booking transactions are not operational flight-information lookups.
+        # The conversation router supplies deterministic booking guidance.
+        if is_booking_action_request(request.question):
+            return None
         match = FLIGHT_NUMBER.search(question)
         has_flight_intent = bool(FLIGHT_INTENT.search(question))
 
