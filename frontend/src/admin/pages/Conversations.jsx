@@ -366,31 +366,24 @@ function ConversationTable({ user, revision, onSelect }) {
   );
 }
 
-function ConversationModal({ detail, onClose }) {
+function ConversationDetails({ detail, onClose }) {
   const closeButtonRef = useRef(null);
   const { conversation, messages } = detail;
 
   useEffect(() => {
-    const previous = document.body.style.overflow;
     const escape = (event) => event.key === "Escape" && onClose();
-    document.body.style.overflow = "hidden";
     document.addEventListener("keydown", escape);
     closeButtonRef.current?.focus();
     return () => {
-      document.body.style.overflow = previous;
       document.removeEventListener("keydown", escape);
     };
   }, [onClose]);
 
   return (
-    <div className="admin-modal-backdrop" role="presentation" onClick={onClose}>
-      <section
-        aria-labelledby="conversation-details-heading"
-        aria-modal="true"
-        className="admin-modal conversation-details-modal"
-        role="dialog"
-        onClick={(event) => event.stopPropagation()}
-      >
+    <section
+      aria-labelledby="conversation-details-heading"
+      className="conversation-details-page"
+    >
         <header className="conversation-details-header">
           <div>
             <h2 id="conversation-details-heading">Conversation details</h2>
@@ -514,9 +507,8 @@ function ConversationModal({ detail, onClose }) {
             </article>
           ))}
         </div>
-      </section>
-    </div>
+    </section>
   );
 }
-export { ConversationModal };
+export { ConversationDetails };
 export default ConversationTable;

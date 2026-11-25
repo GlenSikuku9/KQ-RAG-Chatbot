@@ -103,8 +103,8 @@ Comparative experiments evaluate the local cross-encoder
 pretrained, runs locally, and was not fine-tuned. It is intentionally **not
 enabled in the deployed E20 pipeline**. See:
 
-- [Reranker evaluation report](docs/reranker_evaluation_report.md)
-- [Reranker error analysis](docs/reranker_error_analysis.md)
+- [Reranker evaluation results](backend/data/evaluation/reranker-evaluation/reranker_evaluation_results.json)
+- [Reranker statistical analysis](backend/data/evaluation/reranker-evaluation/reranker_statistical_analysis.json)
 
 ## Prerequisites
 

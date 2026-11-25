@@ -15,7 +15,7 @@ import { PageHeader } from "./components/PageHeader";
 import Overview from "./pages/Overview";
 import Documents from "./pages/Documents";
 import Users from "./pages/Users";
-import Conversations, { ConversationModal } from "./pages/Conversations";
+import Conversations, { ConversationDetails } from "./pages/Conversations";
 import HumanSupport from "./pages/HumanSupport";
 import Analytics from "./pages/Analytics";
 import Models from "./pages/Models";
@@ -139,6 +139,7 @@ export function AdminDashboard({ user, profile, onSignOut }) {
   }, [page, periodDays, pageRevisions[page]]);
 
   function navigate(targetPage) {
+    setSelectedConversation(null);
     setPage(targetPage);
     setPageRevisions((current) => ({
       ...current,
@@ -172,11 +173,13 @@ export function AdminDashboard({ user, profile, onSignOut }) {
   }
 
   function openLog(eventId) {
+    setSelectedConversation(null);
     setSelectedLogId(eventId);
     setPage("Logs");
   }
 
   function openSupportRequest(requestId) {
+    setSelectedConversation(null);
     setSelectedSupportRequestId(requestId);
     setPage("Human Support");
   }
@@ -258,41 +261,44 @@ export function AdminDashboard({ user, profile, onSignOut }) {
         onNavigate={navigate}
       />
       <section className="admin-workspace">
-        <AdminNavbar
-          user={user}
-          profile={adminProfile}
-          onNavigate={navigate}
-          onOpenConversation={openConversation}
-          onOpenLog={openLog}
-          onOpenSupportRequest={openSupportRequest}
-          onSignOut={onSignOut}
-        />
-        <section className="admin-content">
-          <PageHeader
-            page={page}
-            periodDays={periodDays}
-            onPeriodChange={setPeriodDays}
-            onUpload={upload}
-            uploading={uploadingDocument}
+        {selectedConversation ? (
+          <ConversationDetails
+            detail={selectedConversation}
+            onClose={() => setSelectedConversation(null)}
           />
-          {refreshing && (
-            <p className="admin-page-refresh" role="status">
-              <span aria-hidden="true" />
-              Refreshing data...
-            </p>
-          )}
-          <AdminNotice
-            notice={notice}
-            onDismiss={() => setNotice(null)}
-          />
-          {loading ? <AdminLoadingSkeleton /> : <Page {...pageProps[page]} />}
-          {selectedConversation && (
-            <ConversationModal
-              detail={selectedConversation}
-              onClose={() => setSelectedConversation(null)}
+        ) : (
+          <>
+            <AdminNavbar
+              user={user}
+              profile={adminProfile}
+              onNavigate={navigate}
+              onOpenConversation={openConversation}
+              onOpenLog={openLog}
+              onOpenSupportRequest={openSupportRequest}
+              onSignOut={onSignOut}
             />
-          )}
-        </section>
+            <section className="admin-content">
+              <PageHeader
+                page={page}
+                periodDays={periodDays}
+                onPeriodChange={setPeriodDays}
+                onUpload={upload}
+                uploading={uploadingDocument}
+              />
+              {refreshing && (
+                <p className="admin-page-refresh" role="status">
+                  <span aria-hidden="true" />
+                  Refreshing data...
+                </p>
+              )}
+              <AdminNotice
+                notice={notice}
+                onDismiss={() => setNotice(null)}
+              />
+              {loading ? <AdminLoadingSkeleton /> : <Page {...pageProps[page]} />}
+            </section>
+          </>
+        )}
       </section>
     </main>
   );
