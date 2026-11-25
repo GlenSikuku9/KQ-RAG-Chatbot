@@ -75,6 +75,10 @@ OUT_OF_SCOPE_MESSAGES = {
     "mixed": "Naweza kutoa Kenya Airways policy information, lakini siwezi kufanya booking, payment, flight change, au transaction nyingine.",
     "unknown": "I can provide Kenya Airways policy information, but I cannot make bookings, payments, flight changes, or other transactions.",
 }
+UNSUPPORTED_LANGUAGE_MESSAGE = (
+    "Hello! I currently support English, Kiswahili, or a combination of both. "
+    "Please continue in either of these languages so I can assist you."
+)
 # These patterns intentionally require an action request. They do not match questions
 # such as "How do I book a flight?", because booking guidance is in project scope.
 _TRANSACTION_REQUEST = re.compile(
@@ -192,13 +196,25 @@ def answer_static_intent(
     language = request.language or "unknown"
     decision = (
         "unsupported"
-        if static_response.intent == "unrelated"
+        if static_response.intent in {"unrelated", "booking_request"}
         else "non_rag"
     )
     return GroundedAnswerResponse(
         answer=static_response.for_language(language),
         language=language,
         decision=decision,
+        generation_called=False,
+        sources=[],
+    )
+
+
+def answer_unsupported_language() -> GroundedAnswerResponse:
+    """Return a local language boundary without retrieval or escalation."""
+
+    return GroundedAnswerResponse(
+        answer=UNSUPPORTED_LANGUAGE_MESSAGE,
+        language="unknown",
+        decision="unsupported",
         generation_called=False,
         sources=[],
     )
@@ -261,6 +277,8 @@ class GroundedAnswerService:
                 request.question,
                 request.previous_language,
             )
+            if detected.source == "unsupported":
+                return answer_unsupported_language()
             request = request.model_copy(
                 update={"language": detected.language},
             )

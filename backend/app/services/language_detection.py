@@ -22,6 +22,14 @@ _GREETING_LANGUAGE = {
     "jambo": "sw",
     "mambo": "sw",
 }
+_UNSUPPORTED_GREETING = {
+    "bonjour", "bonsoir", "salut", "hola", "buenos", "buongiorno",
+    "ciao", "hallo", "guten", "olá", "ola", "namaste", "merci",
+    "gracias", "danke",
+}
+_DETECTABLE_LANGUAGES = [
+    "en", "sw", "fr", "es", "de", "pt", "it", "nl", "tr", "id",
+]
 
 # Function words and common passenger phrases provide code-switch boundaries.
 # The statistical model remains authoritative for otherwise monolingual text.
@@ -52,7 +60,10 @@ class LanguageDetector:
 
     def __init__(self) -> None:
         # py3langid is process-local and performs no network requests.
-        langid.set_languages(["en", "sw", "zxx"])
+        # Common unsupported languages are included so confident messages can
+        # be stopped before RAG or OAG. Public requests still use only the
+        # existing en/sw/mixed/unknown language values.
+        langid.set_languages(_DETECTABLE_LANGUAGES)
         self._lock = Lock()
 
     def detect(
@@ -72,6 +83,8 @@ class LanguageDetector:
         )
 
         if not tokens:
+            if any(character.isalpha() for character in cleaned):
+                return LanguageDetection("unknown", "unsupported", 1.0)
             return self._context_or_unknown(previous)
 
         greeting_languages = {
@@ -90,6 +103,8 @@ class LanguageDetector:
         # A single non-greeting word does not provide enough evidence for a
         # trustworthy statistical decision (for example, "Okay" or "Sure").
         if len(tokens) == 1:
+            if tokens[0] in _UNSUPPORTED_GREETING:
+                return LanguageDetection("unknown", "unsupported", 1.0)
             return self._context_or_unknown(previous)
 
         english_evidence = sum(
@@ -115,6 +130,8 @@ class LanguageDetector:
         language, confidence = self._statistical_language(text)
         if language in {"en", "sw"} and confidence >= 0.65:
             return LanguageDetection(language, "detected", confidence)
+        if language not in {"en", "sw"} and confidence >= 0.8:
+            return LanguageDetection("unknown", "unsupported", confidence)
 
         # A short or statistically uncertain turn inherits only established
         # conversation context. Otherwise uncertainty stays visible in storage.

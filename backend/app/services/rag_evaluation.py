@@ -17,6 +17,21 @@ from app.services.firestore_client import (
 )
 
 
+def is_retired_analytics_model(event: OperationalEvent) -> bool:
+    """Exclude historical Gemini events from current analytics."""
+
+    identifiers = " ".join(
+        value.lower()
+        for value in (
+            event.model_id,
+            event.model_provider,
+            event.model_version,
+        )
+        if value
+    )
+    return "gemini" in identifiers or "google_ai_studio" in identifiers
+
+
 def _metric(
     value: float | None,
     sample_size: int,
@@ -45,7 +60,8 @@ def aggregate_rag_operations(
     selected = [
         event
         for event in events
-        if event.event_type in {"chat_completed", "chat_failed"}
+        if not is_retired_analytics_model(event)
+        and event.event_type in {"chat_completed", "chat_failed"}
         and event.response_source not in {
             "flight_information",
             "non_rag",
@@ -139,7 +155,10 @@ def evaluation_metrics(
     events = []
     for snapshot in event_snapshots:
         event = OperationalEvent.model_validate(snapshot.to_dict())
-        if event.occurred_at >= started:
+        if (
+            event.occurred_at >= started
+            and not is_retired_analytics_model(event)
+        ):
             events.append(event)
     available_models = sorted(
         {str(event.model_id) for event in events if event.model_id}

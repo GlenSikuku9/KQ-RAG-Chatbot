@@ -281,6 +281,36 @@ class ConversationStoreTests(unittest.TestCase):
         answers.generation_service.selected_model.assert_not_called()
         flight_service.answer_if_flight_query.assert_not_called()
 
+    def test_booking_capability_and_unsupported_language_bypass_oag_and_rag(self):
+        cases = (
+            ("Book for me a flight to London", ResponseSource.UNSUPPORTED),
+            ("Hello, do you speak Spanish?", ResponseSource.NON_RAG),
+            ("Bonjour", ResponseSource.UNSUPPORTED),
+        )
+        for question, expected_source in cases:
+            with self.subTest(question=question):
+                answers = Mock()
+                flight_service = Mock()
+                service = ConversationService(
+                    self.store,
+                    answers,
+                    Mock(),
+                    flight_service,
+                )
+
+                result = service.start(
+                    self.user,
+                    SendMessageRequest(question=question),
+                )
+
+                self.assertEqual(
+                    result.chatbot_message.response_source,
+                    expected_source,
+                )
+                answers.answer.assert_not_called()
+                answers.generation_service.selected_model.assert_not_called()
+                flight_service.answer_if_flight_query.assert_not_called()
+
 
 class ConversationEndpointTests(unittest.TestCase):
     def setUp(self):

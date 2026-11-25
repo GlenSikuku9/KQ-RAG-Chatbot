@@ -46,6 +46,25 @@ class LanguageDetectorTests(unittest.TestCase):
         self.assertEqual(result.language, "unknown")
         self.assertEqual(result.source, "undetermined")
 
+    def test_confident_unsupported_languages_are_flagged_before_routing(self) -> None:
+        for message in (
+            "Bonjour",
+            "Bonjour, comment allez-vous?",
+            "Hola, necesito ayuda con mi reserva",
+        ):
+            with self.subTest(message=message):
+                result = self.detector.detect(message)
+                self.assertEqual(result.language, "unknown")
+                self.assertEqual(result.source, "unsupported")
+
+    def test_short_valid_supported_queries_are_not_rejected(self) -> None:
+        for message in ("Baggage?", "Refund please", "Mizigo?"):
+            with self.subTest(message=message):
+                self.assertNotEqual(
+                    self.detector.detect(message).source,
+                    "unsupported",
+                )
+
 
 if __name__ == "__main__":
     unittest.main()

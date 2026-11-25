@@ -686,11 +686,20 @@
   background: var(--passenger-background, #f8fafc);
 }
 
+/* When no messages exist, treat the complete welcome content as one group and
+   centre it within the message viewport. Active conversations keep the normal
+   top-to-bottom message flow. */
+.chat-window-wrap .message-list:has(> .welcome-screen) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .welcome-screen {
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 100%;
+  min-height: 0;
   width: 100%;
   padding: 1rem 0.5rem;
   flex-direction: column;
@@ -1463,7 +1472,7 @@
 
   .welcome-screen {
     padding-block: 0.35rem;
-    transform: translateY(1.25rem);
+    transform: none;
   }
 
   .welcome-screen h3 {

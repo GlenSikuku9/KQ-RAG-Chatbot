@@ -72,6 +72,30 @@ class RAGEvaluationTests(unittest.TestCase):
         )
         self.assertIsNone(metrics["failure_rate"].value)
 
+    def test_retired_gemini_events_are_excluded(self):
+        events = [
+            event(
+                "gemini-success",
+                "chat_completed",
+                250,
+                model_id="google_gemini_flash",
+                response_source="generated",
+            ),
+            event(
+                "current-success",
+                "chat_completed",
+                1000,
+                model_id="groq_gpt_oss_120b",
+                response_source="generated",
+            ),
+        ]
+
+        metrics = aggregate_rag_operations(events)
+
+        self.assertEqual(metrics["average_response_ms"].value, 1000)
+        self.assertEqual(metrics["average_response_ms"].sample_size, 1)
+        self.assertEqual(metrics["failure_rate"].sample_size, 1)
+
 
 if __name__ == "__main__":
     unittest.main()

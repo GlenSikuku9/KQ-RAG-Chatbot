@@ -28,6 +28,12 @@ _THANKS = re.compile(
     r"[!.? ]*$",
     re.IGNORECASE,
 )
+_COURTESY = re.compile(
+    r"^(?:how\s+are\s+you|how(?:'s|\s+is)\s+it\s+going|"
+    r"goodbye|bye|see\s+you|uko\s+aje|unaendeleaje|kwa\s+heri)"
+    r"[!.? ]*$",
+    re.IGNORECASE,
+)
 _IDENTITY = re.compile(
     r"\b(?:who\s+are\s+you|what(?:'s|\s+is)\s+your\s+name|"
     r"wewe\s+ni\s+nani|jina\s+lako)\b",
@@ -35,7 +41,12 @@ _IDENTITY = re.compile(
 )
 _LANGUAGES = re.compile(
     r"\b(?:what|which)\s+languages?\b|\b(?:supported|speak)\s+languages?\b|"
-    r"\blugha\s+gani\b|\bunaweza\s+kuongea\b",
+    r"\b(?:do|can)\s+you\s+(?:speak|understand|reply\s+in|chat\s+in)\b|"
+    r"\bdo\s+you\s+support\s+(?:spanish|french|german|portuguese|italian|"
+    r"arabic|english|kiswahili|swahili)\b|"
+    r"\b(?:is|are)\s+(?:spanish|french|german|portuguese|italian|arabic|"
+    r"english|kiswahili|swahili)\s+supported\b|"
+    r"\blugha\s+gani\b|\bunaweza\s+(?:kuongea|kuelewa|kujibu)\b",
     re.IGNORECASE,
 )
 _CAPABILITIES = re.compile(
@@ -44,8 +55,27 @@ _CAPABILITIES = re.compile(
     r"what\s+do\s+you\s+help\s+with|unaweza\s+kusaidia\s+na\s+nini|"
     r"unanisaidia\s+vipi|what\s+questions\s+can\s+you\s+answer|"
     r"which\s+topics\s+do\s+you\s+support|what\s+are\s+your\s+capabilities|"
+    r"what\s+services\s+do\s+you\s+(?:provide|offer)|"
+    r"what\s+can\s+(?:this|the)\s+(?:chatbot|assistant)\s+(?:do|help\s+with)|"
     r"unajibu\s+maswali\s+gani|unajibu\s+maswali\s+kuhusu\s+nini|"
     r"what\s+services\s+unaweza\s+kusaidia\s+nazo)\b",
+    re.IGNORECASE,
+)
+_BOOKING_ACTION = re.compile(
+    r"^\s*(?:please\s+)?(?:book|reserve|purchase)\b"
+    r"|\b(?:can|could|would|will)\s+you\s+(?:please\s+)?"
+    r"(?:book|reserve|purchase)\b"
+    r"|\b(?:i\s+(?:want|need)\s+you\s+to|help\s+me\s+to)\s+"
+    r"(?:book|reserve|purchase)\b"
+    r"|^\s*(?:tafadhali\s+)?(?:niwekee|nibukie|nibookie)\b"
+    r"|\bunaweza\s+(?:kuni)?(?:wekea|bookia|bukia)\b"
+    r"|\bnataka\s+u(?:ni)?(?:wekee|bookie|bukie)\b",
+    re.IGNORECASE,
+)
+_INFORMATION_REQUEST = re.compile(
+    r"\b(?:explain|tell\s+me|what|how|when|where|which|why|policy|rules?|"
+    r"requirements?|fees?|allowance|information|details|eleza|niambie|nini|"
+    r"vipi|lini|wapi|gani|ngapi|sera|utaratibu|masharti|taarifa|maelezo)\b",
     re.IGNORECASE,
 )
 _UNRELATED = re.compile(
@@ -88,6 +118,14 @@ _RESPONSES = {
             "mixed": "Mimi ni Kenya Airways virtual support assistant.",
         },
     ),
+    "courtesy": StaticIntentResponse(
+        "courtesy",
+        {
+            "en": "I’m ready to help with your Kenya Airways journey. What can I assist you with?",
+            "sw": "Niko tayari kukusaidia kuhusu safari yako ya Kenya Airways. Ninaweza kukusaidia na nini?",
+            "mixed": "Niko ready kukusaidia na Kenya Airways journey yako. Ninaweza kusaidia na nini?",
+        },
+    ),
     "languages": StaticIntentResponse(
         "languages",
         {
@@ -102,6 +140,14 @@ _RESPONSES = {
             "en": "I can explain Kenya Airways booking and payment procedures, baggage, check-in, refunds, cancellations, rebooking, upgrades, special assistance, and other available policies. I can also look up supported KQ flight status and schedule information. I cannot directly complete bookings, payments, refunds, or flight changes.",
             "sw": "Ninaweza kueleza taratibu za Kenya Airways kuhusu nafasi na malipo, mizigo, kuingia, marejesho, kughairi, kubadilisha safari, kuboresha daraja, msaada maalum, na sera nyingine zinazopatikana. Pia ninaweza kuangalia hali na ratiba za ndege za KQ zinazotumika. Siwezi kutekeleza nafasi, malipo, marejesho, au mabadiliko ya safari moja kwa moja.",
             "mixed": "Ninaweza kusaidia na Kenya Airways booking na payment procedures, baggage, check-in, refunds, cancellations, rebooking, upgrades, special assistance, na sera nyingine zinazopatikana. Pia ninaweza ku-check supported KQ flight status na schedules. Siwezi kukamilisha transactions moja kwa moja.",
+        },
+    ),
+    "booking_request": StaticIntentResponse(
+        "booking_request",
+        {
+            "en": "I cannot book or pay for a flight on your behalf. You can book securely on the [official Kenya Airways website](https://www.kenya-airways.com/). I can help explain the booking steps, fare options, baggage rules, or payment procedures.",
+            "sw": "Siwezi kukuwekea nafasi au kufanya malipo ya ndege kwa niaba yako. Unaweza kuweka nafasi kwa usalama kwenye [tovuti rasmi ya Kenya Airways](https://www.kenya-airways.com/). Ninaweza kukueleza hatua za kuweka nafasi, chaguo za nauli, masharti ya mizigo, au taratibu za malipo.",
+            "mixed": "Siwezi kuku-bookia au kufanya payment ya flight kwa niaba yako. Unaweza ku-book kwa usalama kwenye [official Kenya Airways website](https://www.kenya-airways.com/). Ninaweza kusaidia kueleza booking steps, fare options, baggage rules, au payment procedures.",
         },
     ),
     "unrelated": StaticIntentResponse(
@@ -123,15 +169,32 @@ def classify_static_intent(question: str) -> StaticIntentResponse | None:
         return _RESPONSES["greeting"]
     if _THANKS.fullmatch(normalized):
         return _RESPONSES["acknowledgement"]
+    if _COURTESY.fullmatch(normalized):
+        return _RESPONSES["courtesy"]
     if _IDENTITY.search(normalized):
         return _RESPONSES["identity"]
     if _LANGUAGES.search(normalized):
         return _RESPONSES["languages"]
     if _CAPABILITIES.search(normalized):
         return _RESPONSES["capabilities"]
+    if (
+        _BOOKING_ACTION.search(normalized)
+        and not _INFORMATION_REQUEST.search(normalized)
+    ):
+        return _RESPONSES["booking_request"]
     if _UNRELATED.search(normalized) or _PROMPT_DISCLOSURE.search(normalized):
         return _RESPONSES["unrelated"]
     return None
+
+
+def is_booking_action_request(question: str) -> bool:
+    """Identify requests for the assistant to perform a booking transaction."""
+
+    normalized = _NORMALIZED_SPACE.sub(" ", question.strip())
+    return bool(
+        _BOOKING_ACTION.search(normalized)
+        and not _INFORMATION_REQUEST.search(normalized)
+    )
 
 
 def is_substantive_message(question: str) -> bool:

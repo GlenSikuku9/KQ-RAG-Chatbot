@@ -199,6 +199,22 @@ class GroundedGenerationTests(unittest.TestCase):
             self.assertEqual(context.requests, [])
             self.assertEqual(generation.calls, [])
 
+    def test_booking_action_returns_official_guidance_without_retrieval(self):
+        service, context, generation = self.service(self.prepared())
+        result = service.answer(
+            GroundedAnswerRequest(
+                question="Book for me a flight to London",
+                language="en",
+            ),
+        )
+
+        self.assertEqual(result.decision, "unsupported")
+        self.assertIn("cannot book or pay", result.answer)
+        self.assertIn("https://www.kenya-airways.com/", result.answer)
+        self.assertIn("booking steps", result.answer)
+        self.assertEqual(context.requests, [])
+        self.assertEqual(generation.calls, [])
+
     def test_transaction_detection_generalises_across_supported_language_styles(self):
         cases = (
             ("Could you cancel my booking?", "en"),
@@ -329,6 +345,26 @@ class GroundedGenerationTests(unittest.TestCase):
         self.assertTrue(result.generation_called)
         self.assertEqual(len(context.requests), 1)
         self.assertEqual(len(generation.calls), 1)
+
+    def test_language_variations_and_services_questions_bypass_retrieval(self):
+        cases = (
+            ("Hello, do you speak Spanish?", "English, Kiswahili"),
+            ("Can you understand French?", "English, Kiswahili"),
+            ("Do you support German?", "English, Kiswahili"),
+            ("What services do you provide?", "booking and payment procedures"),
+            ("What can this chatbot help with?", "booking and payment procedures"),
+            ("How are you?", "ready to help"),
+        )
+        for question, expected in cases:
+            with self.subTest(question=question):
+                service, context, generation = self.service(self.prepared())
+                result = service.answer(
+                    GroundedAnswerRequest(question=question, language="en"),
+                )
+                self.assertIn(expected, result.answer)
+                self.assertEqual(result.decision, "non_rag")
+                self.assertEqual(context.requests, [])
+                self.assertEqual(generation.calls, [])
 
 
 if __name__ == "__main__":
