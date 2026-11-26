@@ -15,7 +15,12 @@ import {
   Maximize2,
   Minimize2,
   Minus,
+  MoreVertical,
+  Pencil,
+  Pin,
+  PinOff,
   RefreshCcw,
+  Trash2,
   X,
 } from "lucide-react";
 import "../styles/PassengerChat.css";
@@ -24,6 +29,7 @@ import {
   cancelSupportRequest,
   convertSupportRequest,
   createSupportRequest,
+  deleteConversation,
   endConversation,
   getConversation,
   getConversationFeedback,
@@ -37,6 +43,7 @@ import {
   sendGuestMessage,
   sendSupportMessage,
   startConversationWithMessage,
+  updateConversation,
 } from "../../api";
 import { FormattedAnswer } from "../../components/FormattedAnswer";
 import { FlightInformationCard } from "../../components/FlightInformationCard";
@@ -558,6 +565,11 @@ export function PassengerChat({
   const [isSending, setIsSending] = useState(false);
   const [isEnding, setIsEnding] = useState(false);
   const [confirmEndOpen, setConfirmEndOpen] = useState(false);
+  const [historyMenuId, setHistoryMenuId] = useState(null);
+  const [historyMutationId, setHistoryMutationId] = useState(null);
+  const [renameTarget, setRenameTarget] = useState(null);
+  const [renameTitle, setRenameTitle] = useState("");
+  const [deleteTarget, setDeleteTarget] = useState(null);
   const [supportOffer, setSupportOffer] = useState(false);
   const [supportReason, setSupportReason] = useState("passenger_request");
   const [supportSummary, setSupportSummary] = useState("");
@@ -589,6 +601,7 @@ export function PassengerChat({
       statusKey: item.status,
       statusLabel: item.status === "ended" ? "Ended" : "Active",
       title: item.title,
+      pinned: Boolean(item.pinned),
     }));
     const supportItems = supportRequests.map((item) => ({
       activityAt: item.resolved_at
@@ -603,11 +616,13 @@ export function PassengerChat({
       statusKey: item.status,
       statusLabel: supportStatusLabel(item),
       title: item.issue_summary,
+      pinned: false,
     }));
 
-    return [...aiItems, ...supportItems].sort((left, right) => (
-      new Date(right.activityAt || 0) - new Date(left.activityAt || 0)
-    ));
+    return [...aiItems, ...supportItems].sort((left, right) => {
+      if (left.pinned !== right.pinned) return left.pinned ? -1 : 1;
+      return new Date(right.activityAt || 0) - new Date(left.activityAt || 0);
+    });
   }, [history, supportRequests]);
 
   useEffect(() => {
@@ -635,6 +650,9 @@ export function PassengerChat({
       setFeedback(null);
       setQuestion("");
       setDrawerOpen(false);
+      setHistoryMenuId(null);
+      setRenameTarget(null);
+      setDeleteTarget(null);
     }
 
     previouslyAuthenticated.current = isAuthenticated;
@@ -730,6 +748,7 @@ export function PassengerChat({
   useEffect(() => {
     function closeDrawerOnEscape(event) {
       if (event.key === "Escape") {
+        setHistoryMenuId(null);
         setDrawerOpen(false);
       }
     }
@@ -740,6 +759,19 @@ export function PassengerChat({
 
     return () => document.removeEventListener("keydown", closeDrawerOnEscape);
   }, [drawerOpen]);
+
+  useEffect(() => {
+    if (!historyMenuId) return undefined;
+
+    function closeHistoryMenu(event) {
+      if (!event.target.closest(".history-actions")) {
+        setHistoryMenuId(null);
+      }
+    }
+
+    document.addEventListener("pointerdown", closeHistoryMenu);
+    return () => document.removeEventListener("pointerdown", closeHistoryMenu);
+  }, [historyMenuId]);
 
   useEffect(() => {
     let ignoreResponse = false;
@@ -897,6 +929,96 @@ export function PassengerChat({
       }
     } catch (reason) {
       setError(reason instanceof Error ? reason.message : "That conversation could not be reopened.");
+    }
+  }
+
+  async function toggleConversationPin(item) {
+    if (!user || historyMutationId) return;
+    setHistoryMenuId(null);
+    setHistoryMutationId(item.conversation_id);
+    setError(null);
+    try {
+      const updated = await updateConversation(
+        user,
+        item.conversation_id,
+        { pinned: !item.pinned },
+      );
+      setHistory((current) => current.map((entry) => (
+        entry.conversation_id === updated.conversation_id ? updated : entry
+      )));
+      setConversation((current) => (
+        current?.conversation_id === updated.conversation_id
+          ? { ...current, ...updated }
+          : current
+      ));
+    } catch (reason) {
+      setError(reason instanceof Error ? reason.message : "The conversation could not be updated.");
+    } finally {
+      setHistoryMutationId(null);
+    }
+  }
+
+  function beginConversationRename(item) {
+    setHistoryMenuId(null);
+    setRenameTarget(item);
+    setRenameTitle(item.title);
+  }
+
+  async function submitConversationRename(event) {
+    event.preventDefault();
+    const title = renameTitle.trim().replace(/\s+/g, " ");
+    if (!user || !renameTarget || !title || historyMutationId) return;
+    setHistoryMutationId(renameTarget.conversation_id);
+    setError(null);
+    try {
+      const updated = await updateConversation(
+        user,
+        renameTarget.conversation_id,
+        { title },
+      );
+      setHistory((current) => current.map((entry) => (
+        entry.conversation_id === updated.conversation_id ? updated : entry
+      )));
+      setConversation((current) => (
+        current?.conversation_id === updated.conversation_id
+          ? { ...current, ...updated }
+          : current
+      ));
+      setRenameTarget(null);
+    } catch (reason) {
+      setError(reason instanceof Error ? reason.message : "The conversation could not be renamed.");
+      setRenameTarget(null);
+    } finally {
+      setHistoryMutationId(null);
+    }
+  }
+
+  async function confirmConversationDelete() {
+    if (!user || !deleteTarget || historyMutationId) return;
+    const conversationId = deleteTarget.conversation_id;
+    setHistoryMutationId(conversationId);
+    setError(null);
+    try {
+      await deleteConversation(user, conversationId);
+      setHistory((current) => current.filter(
+        (entry) => entry.conversation_id !== conversationId,
+      ));
+      setSupportRequests((current) => current.filter(
+        (entry) => entry.conversation_id !== conversationId,
+      ));
+      if (conversation?.conversation_id === conversationId) {
+        resetConversationSupportState();
+        setConversation(null);
+        setMessages([]);
+        setFeedback(null);
+        setActiveView("ai");
+      }
+      setDeleteTarget(null);
+    } catch (reason) {
+      setError(reason instanceof Error ? reason.message : "The conversation could not be deleted.");
+      setDeleteTarget(null);
+    } finally {
+      setHistoryMutationId(null);
     }
   }
 
@@ -1358,8 +1480,8 @@ export function PassengerChat({
           ) : (
             <div className="history-list unified-history-list">
               {combinedHistory.map((item) => (
-                <button
-                  className={`history-item ${
+                <div
+                  className={`history-item-shell ${
                     item.kind === "ai"
                     && item.record.conversation_id
                       === conversation?.conversation_id
@@ -1371,44 +1493,108 @@ export function PassengerChat({
                         ? "selected"
                         : ""
                   }`}
-                  type="button"
                   key={item.id}
-                  onClick={() => (
-                    item.kind === "support"
-                      ? openSupportHistory(item.record)
-                      : openConversation(item.record.conversation_id)
-                  )}
                 >
-                  <span className="history-item-summary">
-                    <strong className="history-item-title">
-                      {item.title}
-                    </strong>
-                  </span>
-                  <span className="history-item-meta">
-                    <span className="history-item-meta-copy">
-                      {item.createdAtLabel && (
-                        <time
-                          className="history-item-created-at"
-                          dateTime={item.createdAt}
-                        >
-                          {item.createdAtLabel}
-                        </time>
-                      )}
-                      {item.kind === "support" && (
-                        <span className="history-kind-label">
-                          Human Support
-                        </span>
-                      )}
+                  <button
+                    className="history-item"
+                    type="button"
+                    onClick={() => {
+                      setHistoryMenuId(null);
+                      if (item.kind === "support") {
+                        openSupportHistory(item.record);
+                      } else {
+                        openConversation(item.record.conversation_id);
+                      }
+                    }}
+                  >
+                    <span className="history-item-summary">
+                      <strong className="history-item-title">
+                        {item.pinned && (
+                          <Pin
+                            className="history-pinned-icon"
+                            aria-label="Pinned conversation"
+                          />
+                        )}
+                        {item.title}
+                      </strong>
                     </span>
-                    <span
-                      className={`history-status-badge ${
-                        item.kind
-                      } ${item.statusKey}`}
-                    >
-                      {item.statusLabel}
+                    <span className="history-item-meta">
+                      <span className="history-item-meta-copy">
+                        {item.createdAtLabel && (
+                          <time
+                            className="history-item-created-at"
+                            dateTime={item.createdAt}
+                          >
+                            {item.createdAtLabel}
+                          </time>
+                        )}
+                        {item.kind === "support" && (
+                          <span className="history-kind-label">
+                            Human Support
+                          </span>
+                        )}
+                      </span>
+                      <span
+                        className={`history-status-badge ${
+                          item.kind
+                        } ${item.statusKey}`}
+                      >
+                        {item.statusLabel}
+                      </span>
                     </span>
-                  </span>
-                </button>
+                  </button>
+                  {item.kind === "ai" && (
+                    <div className="history-actions">
+                      <button
+                        className="history-menu-trigger"
+                        type="button"
+                        aria-expanded={historyMenuId === item.id}
+                        aria-haspopup="menu"
+                        aria-label={`Manage ${item.title}`}
+                        disabled={historyMutationId === item.record.conversation_id}
+                        onClick={() => setHistoryMenuId((current) => (
+                          current === item.id ? null : item.id
+                        ))}
+                      >
+                        <MoreVertical aria-hidden="true" />
+                      </button>
+                      {historyMenuId === item.id && (
+                        <div className="history-action-menu" role="menu">
+                          <button
+                            type="button"
+                            role="menuitem"
+                            onClick={() => beginConversationRename(item.record)}
+                          >
+                            <Pencil aria-hidden="true" />
+                            Rename
+                          </button>
+                          <button
+                            type="button"
+                            role="menuitem"
+                            onClick={() => toggleConversationPin(item.record)}
+                          >
+                            {item.pinned
+                              ? <PinOff aria-hidden="true" />
+                              : <Pin aria-hidden="true" />}
+                            {item.pinned ? "Unpin" : "Pin"}
+                          </button>
+                          <button
+                            className="danger"
+                            type="button"
+                            role="menuitem"
+                            onClick={() => {
+                              setHistoryMenuId(null);
+                              setDeleteTarget(item.record);
+                            }}
+                          >
+                            <Trash2 aria-hidden="true" />
+                            Delete
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
               ))}
             </div>
           )}
@@ -1419,6 +1605,96 @@ export function PassengerChat({
             : "Guest messages are temporary and are cleared when this page is refreshed."}
         </p>
       </aside>}
+      {renameTarget && (
+        <div
+          className="chat-confirm-backdrop"
+          role="presentation"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget && !historyMutationId) {
+              setRenameTarget(null);
+            }
+          }}
+        >
+          <form
+            aria-labelledby="rename-conversation-title"
+            aria-modal="true"
+            className="chat-confirm-dialog history-rename-dialog"
+            role="dialog"
+            onSubmit={submitConversationRename}
+          >
+            <h3 id="rename-conversation-title">Rename conversation</h3>
+            <label htmlFor="conversation-title-input">Conversation title</label>
+            <input
+              id="conversation-title-input"
+              type="text"
+              value={renameTitle}
+              maxLength="120"
+              autoFocus
+              required
+              onChange={(event) => setRenameTitle(event.target.value)}
+            />
+            <div className="chat-confirm-actions">
+              <button
+                className="button secondary"
+                type="button"
+                disabled={Boolean(historyMutationId)}
+                onClick={() => setRenameTarget(null)}
+              >
+                Cancel
+              </button>
+              <button
+                className="button primary"
+                type="submit"
+                disabled={!renameTitle.trim() || Boolean(historyMutationId)}
+              >
+                {historyMutationId ? "Saving..." : "Save"}
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
+      {deleteTarget && (
+        <div
+          className="chat-confirm-backdrop"
+          role="presentation"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget && !historyMutationId) {
+              setDeleteTarget(null);
+            }
+          }}
+        >
+          <section
+            aria-labelledby="delete-conversation-title"
+            aria-modal="true"
+            className="chat-confirm-dialog"
+            role="dialog"
+          >
+            <h3 id="delete-conversation-title">Delete conversation?</h3>
+            <p>
+              “{deleteTarget.title}” and its saved messages will be permanently deleted.
+              This action cannot be undone.
+            </p>
+            <div className="chat-confirm-actions">
+              <button
+                className="button secondary"
+                type="button"
+                disabled={Boolean(historyMutationId)}
+                onClick={() => setDeleteTarget(null)}
+              >
+                Cancel
+              </button>
+              <button
+                className="button primary history-delete-confirm"
+                type="button"
+                disabled={Boolean(historyMutationId)}
+                onClick={confirmConversationDelete}
+              >
+                {historyMutationId ? "Deleting..." : "Delete"}
+              </button>
+            </div>
+          </section>
+        </div>
+      )}
       <div className="chat-main-content">
         <div className="chat-panel-heading">
         <div className="chat-header-left">

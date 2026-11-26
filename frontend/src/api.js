@@ -265,6 +265,21 @@ export function getConversation(user, conversationId) {
   return authenticatedRequest(user, `/conversations/${conversationId}`);
 }
 
+/** Rename or change the pinned state of one passenger-owned conversation. */
+export function updateConversation(user, conversationId, changes) {
+  return authenticatedRequest(user, `/conversations/${conversationId}`, {
+    method: "PATCH",
+    body: JSON.stringify(changes),
+  });
+}
+
+/** Permanently delete one passenger-owned conversation and its saved records. */
+export function deleteConversation(user, conversationId) {
+  return authenticatedRequest(user, `/conversations/${conversationId}`, {
+    method: "DELETE",
+  });
+}
+
 /** Mark the active conversation as ended before a passenger submits feedback. */
 export function endConversation(user, conversationId) {
   return authenticatedRequest(user, `/conversations/${conversationId}/end`, {

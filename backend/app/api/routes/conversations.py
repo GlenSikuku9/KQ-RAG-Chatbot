@@ -6,7 +6,8 @@ from fastapi import APIRouter, Depends, HTTPException, status
 
 from app.api.dependencies import require_passenger_or_admin
 from app.models.conversation import (
-    Conversation, ConversationCreateRequest, ConversationDetail, SendMessageRequest, SendMessageResponse,
+    Conversation, ConversationCreateRequest, ConversationDetail,
+    ConversationUpdateRequest, SendMessageRequest, SendMessageResponse,
 )
 from app.models.user import AuthenticatedUser
 from app.rag.generation import GenerationProviderError
@@ -80,6 +81,30 @@ def reopen_conversation(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
             detail="This conversation is temporarily unavailable. Please try again.",
         ) from error
+
+
+@router.patch("/{conversation_id}", response_model=Conversation)
+def update_conversation(
+    conversation_id: str,
+    payload: ConversationUpdateRequest,
+    current_user: AuthenticatedUser = Depends(require_passenger_or_admin),
+) -> Conversation:
+    """Rename or pin one caller-owned conversation."""
+    return get_conversation_service().store.update_metadata(
+        current_user,
+        conversation_id,
+        payload,
+    )
+
+
+@router.delete("/{conversation_id}")
+def delete_conversation(
+    conversation_id: str,
+    current_user: AuthenticatedUser = Depends(require_passenger_or_admin),
+) -> dict[str, bool | str]:
+    """Permanently delete one caller-owned saved conversation."""
+    get_conversation_service().store.delete(current_user, conversation_id)
+    return {"deleted": True, "conversation_id": conversation_id}
 
 
 @router.post("/{conversation_id}/messages", response_model=SendMessageResponse)
