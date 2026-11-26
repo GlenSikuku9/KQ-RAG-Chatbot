@@ -3,7 +3,7 @@
 from enum import Enum
 from typing import Literal
 
-from pydantic import BaseModel, ConfigDict, Field, field_serializer, field_validator
+from pydantic import BaseModel, ConfigDict, Field, model_validator, field_serializer, field_validator
 
 from app.models.database import UTCDateTime
 from app.models.feedback import Feedback
@@ -39,6 +39,30 @@ class ConversationCreateRequest(BaseModel):
     language: Literal["en", "sw", "mixed"] | None = None
 
 
+class ConversationUpdateRequest(BaseModel):
+    """Passenger-managed conversation metadata."""
+
+    model_config = ConfigDict(extra="forbid")
+    title: str | None = Field(default=None, min_length=1, max_length=120)
+    pinned: bool | None = None
+
+    @field_validator("title")
+    @classmethod
+    def normalize_title(cls, value: str | None) -> str | None:
+        if value is None:
+            return None
+        normalized = " ".join(value.split())
+        if not normalized:
+            raise ValueError("Conversation title must not be blank.")
+        return normalized
+
+    @model_validator(mode="after")
+    def require_change(self):
+        if self.title is None and self.pinned is None:
+            raise ValueError("Provide a title or pinned state to update.")
+        return self
+
+
 class Conversation(BaseModel):
     conversation_id: str = Field(min_length=1, max_length=128)
     user_id: str = Field(min_length=1, max_length=128)
@@ -49,6 +73,7 @@ class Conversation(BaseModel):
     ended_at: UTCDateTime | None = None
     support_mode: Literal["ai", "human"] = "ai"
     active_support_request_id: str | None = None
+    pinned: bool = False
     # The counter is updated in the same transaction as messages, preserving order.
     next_sequence: int = Field(default=1, ge=1, exclude=True)
 

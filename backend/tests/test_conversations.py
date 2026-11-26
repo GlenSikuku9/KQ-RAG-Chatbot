@@ -7,7 +7,7 @@ from fastapi.testclient import TestClient
 
 from app.models.context import ContextSource
 from app.models.conversation import (
-    ConversationCreateRequest,
+    ConversationCreateRequest, ConversationUpdateRequest,
     ConversationStatus,
     ResponseSource,
     SendMessageRequest,
@@ -27,9 +27,11 @@ from app.services.conversations import (
 
 
 class Snapshot:
-    def __init__(self, payload):
+    def __init__(self, payload, reference=None):
         self.payload = payload
         self.exists = payload is not None
+        self.reference = reference
+        self.id = reference.identifier if reference else ""
     def to_dict(self):
         return self.payload.copy() if self.payload else None
 
@@ -38,9 +40,14 @@ class MemoryReference:
     def __init__(self, client, collection, identifier):
         self.client, self.collection, self.identifier = client, collection, identifier
     def get(self, **kwargs):
-        return Snapshot(self.client.records.setdefault(self.collection, {}).get(self.identifier))
+        return Snapshot(
+            self.client.records.setdefault(self.collection, {}).get(self.identifier),
+            self,
+        )
     def set(self, payload):
         self.client.records.setdefault(self.collection, {})[self.identifier] = payload.copy()
+    def delete(self):
+        self.client.records.setdefault(self.collection, {}).pop(self.identifier, None)
 
 
 class MemoryQuery:
@@ -53,12 +60,20 @@ class MemoryQuery:
         self.order, self.descending = field, direction == "DESCENDING"
         return self
     def stream(self, **kwargs):
-        values = list(self.client.records.setdefault(self.collection, {}).values())
+        records = self.client.records.setdefault(self.collection, {})
+        values = list(records.items())
         if self.field is not None:
-            values = [value for value in values if value.get(self.field) == self.value]
+            values = [
+                (identifier, value)
+                for identifier, value in values
+                if value.get(self.field) == self.value
+            ]
         if self.order:
-            values.sort(key=lambda value: value.get(self.order), reverse=self.descending)
-        return [Snapshot(value) for value in values]
+            values.sort(key=lambda item: item[1].get(self.order), reverse=self.descending)
+        return [
+            Snapshot(value, MemoryReference(self.client, self.collection, identifier))
+            for identifier, value in values
+        ]
 
 
 class MemoryCollection(MemoryQuery):
@@ -132,6 +147,75 @@ class ConversationStoreTests(unittest.TestCase):
         with self.assertRaises(HTTPException) as caught:
             self.store.get_detail(self.other, first.conversation_id)
         self.assertEqual(caught.exception.status_code, 404)
+
+    def test_passenger_can_rename_pin_and_unpin_owned_conversation(self):
+        conversation = self.create()
+        renamed = self.store.update_metadata(
+            self.user,
+            conversation.conversation_id,
+            ConversationUpdateRequest(title="  London   booking  "),
+        )
+        self.assertEqual(renamed.title, "London booking")
+
+        pinned = self.store.update_metadata(
+            self.user,
+            conversation.conversation_id,
+            ConversationUpdateRequest(pinned=True),
+        )
+        self.assertTrue(pinned.pinned)
+        self.assertTrue(self.store.list_for_user(self.user)[0].pinned)
+
+        unpinned = self.store.update_metadata(
+            self.user,
+            conversation.conversation_id,
+            ConversationUpdateRequest(pinned=False),
+        )
+        self.assertFalse(unpinned.pinned)
+
+        with self.assertRaises(HTTPException) as caught:
+            self.store.update_metadata(
+                self.other,
+                conversation.conversation_id,
+                ConversationUpdateRequest(title="Not allowed"),
+            )
+        self.assertEqual(caught.exception.status_code, 404)
+
+    def test_delete_removes_owned_conversation_and_dependent_records(self):
+        conversation = self.create()
+        conversation_id = conversation.conversation_id
+        self.client.records["messages"] = {
+            "message": {
+                "message_id": "message",
+                "conversation_id": conversation_id,
+            },
+        }
+        self.client.records["message_chunks"] = {
+            "chunk": {"message_id": "message"},
+        }
+        self.client.records["feedback"] = {
+            "feedback": {"conversation_id": conversation_id},
+        }
+        self.client.records["operational_events"] = {
+            "event": {"conversation_id": conversation_id},
+        }
+
+        self.store.delete(self.user, conversation_id)
+
+        self.assertNotIn(conversation_id, self.client.records["conversations"])
+        for collection in (
+            "messages", "message_chunks", "feedback", "operational_events",
+        ):
+            self.assertFalse(self.client.records[collection])
+
+    def test_foreign_conversation_cannot_be_deleted(self):
+        conversation = self.create()
+        with self.assertRaises(HTTPException) as caught:
+            self.store.delete(self.other, conversation.conversation_id)
+        self.assertEqual(caught.exception.status_code, 404)
+        self.assertIn(
+            conversation.conversation_id,
+            self.client.records["conversations"],
+        )
 
     def test_exchange_persists_order_model_and_retrieval_traceability(self):
         conversation = self.create()

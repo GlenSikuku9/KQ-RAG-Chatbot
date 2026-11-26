@@ -14,7 +14,7 @@ from app.config import get_settings
 
 from app.models.conversation import (
     Conversation, ConversationCreateRequest, ConversationDetail, ConversationMessage,
-    ConversationStatus, MessageChunk, ResponseSource, SenderType, SendMessageRequest,
+    ConversationStatus, ConversationUpdateRequest, MessageChunk, ResponseSource, SenderType, SendMessageRequest,
     SendMessageResponse,
 )
 from app.models.database import encode_document_id, utc_now
@@ -168,7 +168,10 @@ class ConversationStore:
             conversations.append(conversation)
         # Sorting after the ownership-filtered read avoids requiring a Firestore
         # composite index for the passenger history screen.
-        return sorted(conversations, key=lambda item: item.started_at, reverse=True)
+        return sorted(
+            conversations,
+            key=lambda item: (not item.pinned, -item.started_at.timestamp()),
+        )
 
     def get_detail(self, user: AuthenticatedUser, conversation_id: str) -> ConversationDetail:
         with firestore_operation():
@@ -177,6 +180,113 @@ class ConversationStore:
             )
         self._assert_owner(conversation, user)
         return ConversationDetail(conversation=conversation, messages=self._messages(conversation_id))
+
+    def update_metadata(
+        self,
+        user: AuthenticatedUser,
+        conversation_id: str,
+        request: ConversationUpdateRequest,
+    ) -> Conversation:
+        reference = self._conversation_reference(conversation_id)
+
+        def operation(transaction: Transaction) -> Conversation:
+            conversation = self._read_conversation(
+                reference.get(
+                    transaction=transaction,
+                    timeout=FIRESTORE_READ_TIMEOUT,
+                ),
+                conversation_id,
+            )
+            self._assert_owner(conversation, user)
+            changes = request.model_dump(exclude_none=True)
+            updated = conversation.model_copy(update=changes)
+            transaction.set(reference, self._conversation_payload(updated))
+            return updated
+
+        return run_transaction(self.client, operation)
+
+    def _matching_snapshots(
+        self,
+        collection: str,
+        field: str,
+        value: str,
+    ) -> list[DocumentSnapshot]:
+        with firestore_operation():
+            return list(
+                self.client.collection(collection).where(
+                    filter=FieldFilter(field, "==", value),
+                ).stream(timeout=FIRESTORE_READ_TIMEOUT),
+            )
+
+    @staticmethod
+    def _delete_snapshots(snapshots: list[DocumentSnapshot]) -> None:
+        for snapshot in snapshots:
+            snapshot.reference.delete()
+
+    def delete(self, user: AuthenticatedUser, conversation_id: str) -> None:
+        reference = self._conversation_reference(conversation_id)
+        with firestore_operation():
+            conversation = self._read_conversation(
+                reference.get(timeout=FIRESTORE_READ_TIMEOUT),
+                conversation_id,
+            )
+            self._assert_owner(conversation, user)
+            support_requests = self._matching_snapshots(
+                "support_requests",
+                "conversation_id",
+                conversation_id,
+            )
+            if any(
+                (snapshot.to_dict() or {}).get("status")
+                in {"pending", "in_progress"}
+                for snapshot in support_requests
+            ):
+                raise HTTPException(
+                    status.HTTP_409_CONFLICT,
+                    "Resolve or cancel the active human support request before deleting this conversation.",
+                )
+
+            for support_snapshot in support_requests:
+                request_id = str(
+                    (support_snapshot.to_dict() or {}).get("request_id")
+                    or support_snapshot.id
+                )
+                self._delete_snapshots(self._matching_snapshots(
+                    "support_messages",
+                    "request_id",
+                    request_id,
+                ))
+                self._delete_snapshots(self._matching_snapshots(
+                    "support_feedback",
+                    "request_id",
+                    request_id,
+                ))
+
+            messages = self._matching_snapshots(
+                "messages",
+                "conversation_id",
+                conversation_id,
+            )
+            for message_snapshot in messages:
+                message_id = str(
+                    (message_snapshot.to_dict() or {}).get("message_id")
+                    or message_snapshot.id
+                )
+                self._delete_snapshots(self._matching_snapshots(
+                    "message_chunks",
+                    "message_id",
+                    message_id,
+                ))
+            self._delete_snapshots(messages)
+
+            for collection in ("feedback", "operational_events"):
+                self._delete_snapshots(self._matching_snapshots(
+                    collection,
+                    "conversation_id",
+                    conversation_id,
+                ))
+            self._delete_snapshots(support_requests)
+            reference.delete()
 
     def end(self, user: AuthenticatedUser, conversation_id: str) -> Conversation:
         reference = self._conversation_reference(conversation_id)

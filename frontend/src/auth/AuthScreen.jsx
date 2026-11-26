@@ -31,9 +31,10 @@ export function AuthScreen({ initialScreen = "sign-in", onCancel }) {
   const [surname, setSurname] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
-  const [submitting, setSubmitting] = useState(false);
+  const [submittingMethod, setSubmittingMethod] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
   const [attemptedSubmit, setAttemptedSubmit] = useState(false);
+  const submitting = submittingMethod !== null;
 
   const passwordChecks = {
     length: password.length >= 8,
@@ -67,7 +68,7 @@ export function AuthScreen({ initialScreen = "sign-in", onCancel }) {
       return;
     }
 
-    setSubmitting(true);
+    setSubmittingMethod("google");
     setError(null);
 
     try {
@@ -78,7 +79,7 @@ export function AuthScreen({ initialScreen = "sign-in", onCancel }) {
         "We could not sign you in with Google. Please try again.",
       );
     } finally {
-      setSubmitting(false);
+      setSubmittingMethod(null);
     }
   }
 
@@ -100,7 +101,7 @@ export function AuthScreen({ initialScreen = "sign-in", onCancel }) {
       return;
     }
 
-    setSubmitting(true);
+    setSubmittingMethod("email");
     setError(null);
 
     try {
@@ -117,7 +118,7 @@ export function AuthScreen({ initialScreen = "sign-in", onCancel }) {
         "We could not complete your account request. Please try again.",
       );
     } finally {
-      setSubmitting(false);
+      setSubmittingMethod(null);
     }
   }
 
@@ -174,10 +175,14 @@ export function AuthScreen({ initialScreen = "sign-in", onCancel }) {
           type="button"
           onClick={handleGoogleAuthentication}
           disabled={submitting}
-          aria-busy={submitting}
+          aria-busy={submittingMethod === "google"}
         >
           <GoogleIcon />
-          <span>{submitting ? "Connecting..." : "Continue with Google"}</span>
+          <span>
+            {submittingMethod === "google"
+              ? "Connecting..."
+              : "Continue with Google"}
+          </span>
         </button>
 
         <div className="auth-divider" aria-hidden="true">
@@ -289,9 +294,9 @@ export function AuthScreen({ initialScreen = "sign-in", onCancel }) {
           <button
             className="button primary auth-submit"
             disabled={submitting}
-            aria-busy={submitting}
+            aria-busy={submittingMethod === "email"}
           >
-            {submitting
+            {submittingMethod === "email"
               ? screen === "sign-in"
                 ? "Signing in..."
                 : "Creating account..."

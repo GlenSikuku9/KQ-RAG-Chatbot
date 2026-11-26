@@ -166,11 +166,16 @@
   gap: 0.4rem;
 }
 
+.history-item-shell {
+  position: relative;
+  min-width: 0;
+}
+
 .unified-history-list .history-item {
   grid-template-rows: minmax(2.25rem, auto) auto;
   gap: 0.25rem;
   min-height: 0;
-  padding: 0.58rem 0.65rem;
+  padding: 0.58rem 2.85rem 0.58rem 0.65rem;
   border: 1px solid var(--passenger-border, #dce4ef);
   border-radius: 0.6rem;
   background: #ffffff;
@@ -188,8 +193,8 @@
   background: #f8fafc;
 }
 
-.unified-history-list .history-item.selected,
-.unified-history-list .history-item.selected:hover {
+.unified-history-list .history-item-shell.selected .history-item,
+.unified-history-list .history-item-shell.selected .history-item:hover {
   border-color: var(--passenger-border, #dce4ef);
   border-left: 0.25rem solid #d71920;
   background: #eaf2fc;
@@ -210,6 +215,93 @@
   overflow-wrap: anywhere;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
+}
+
+.history-pinned-icon {
+  display: inline-block;
+  width: 0.78rem;
+  height: 0.78rem;
+  margin-right: 0.3rem;
+  color: #d71920;
+  vertical-align: -0.08rem;
+  fill: rgb(215 25 32 / 10%);
+}
+
+.history-actions {
+  position: absolute;
+  z-index: 4;
+  top: 0.3rem;
+  right: 0.3rem;
+}
+
+.history-menu-trigger {
+  display: grid;
+  width: 2.25rem;
+  height: 2.25rem;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  place-items: center;
+  color: #52647c;
+  background: transparent;
+}
+
+.history-menu-trigger:hover,
+.history-menu-trigger[aria-expanded="true"] {
+  color: #102f70;
+  background: #eef3f9;
+}
+
+.history-menu-trigger svg {
+  width: 1.1rem;
+  height: 1.1rem;
+}
+
+.history-action-menu {
+  position: absolute;
+  z-index: 8;
+  top: calc(100% + 0.2rem);
+  right: 0;
+  display: grid;
+  width: 9.5rem;
+  padding: 0.3rem;
+  border: 1px solid #d8e1ed;
+  border-radius: 0.65rem;
+  background: #ffffff;
+  box-shadow: 0 12px 28px rgb(15 23 42 / 16%);
+}
+
+.history-action-menu button {
+  display: flex;
+  min-height: 2.4rem;
+  padding: 0.5rem 0.6rem;
+  border: 0;
+  border-radius: 0.45rem;
+  align-items: center;
+  gap: 0.55rem;
+  color: #172033;
+  background: transparent;
+  font-size: 0.78rem;
+  font-weight: 650;
+  text-align: left;
+}
+
+.history-action-menu button:hover {
+  background: #f2f5f9;
+}
+
+.history-action-menu button.danger {
+  color: #b4232c;
+}
+
+.history-action-menu button.danger:hover {
+  background: #fff0f1;
+}
+
+.history-action-menu svg {
+  width: 1rem;
+  height: 1rem;
+  flex: 0 0 auto;
 }
 
 .unified-history-list .history-item-created-at {
@@ -1289,6 +1381,39 @@
   line-height: 1.5;
 }
 
+.history-rename-dialog {
+  display: grid;
+  gap: 0.7rem;
+}
+
+.history-rename-dialog label {
+  color: #172033;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.history-rename-dialog input {
+  width: 100%;
+  min-height: 2.75rem;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid var(--passenger-border, #dce4ef);
+  border-radius: 0.55rem;
+  color: #172033;
+  background: #ffffff;
+  font: inherit;
+}
+
+.history-rename-dialog input:focus {
+  border-color: #102f70;
+  outline: 3px solid rgb(16 47 112 / 14%);
+}
+
+.history-delete-confirm,
+.history-delete-confirm:hover {
+  border-color: #d71920;
+  background: #d71920;
+}
+
 .chat-confirm-actions {
   display: flex;
   justify-content: flex-end;
@@ -1459,7 +1584,7 @@
     height: 4.5rem;
     min-height: 4.5rem;
     max-height: 4.5rem;
-    padding: 0.35rem 0.65rem;
+    padding: 0.35rem 2.85rem 0.35rem 0.65rem;
     grid-template-rows: auto auto;
     align-content: center;
     gap: 0.15rem;
