@@ -18,6 +18,7 @@ import {
   adminSupportRequests,
   adminSupportSummary,
 } from "../../api";
+import { FormattedAnswer } from "../../components/FormattedAnswer";
 import { Pagination, TableLoadingRows } from "../components/Pagination";
 import { AdminNotice } from "../components/AdminNotice";
 import { AdminRefreshIndicator } from "../components/AdminRefreshIndicator";
@@ -220,7 +221,9 @@ function SupportWorkspace({
                   </time>
                 </p>
                 <div className="support-message-bubble">
-                  {item.message_text}
+                  {item.kind === "ai"
+                    ? <FormattedAnswer text={item.message_text} />
+                    : item.message_text}
                 </div>
                 {item.retrieved_chunks?.length > 0 && (
                   <div className="support-case-sources">
